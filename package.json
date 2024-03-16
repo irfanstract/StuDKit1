@@ -1,0 +1,42 @@
+{
+  "private": true
+  ,
+  "devDependencies": {
+     "@types/lodash": "^4.14.186"
+     ,
+     "@types/react": "18.2.55"
+     ,
+     "@types/react-dom": "18.2.19"
+     ,
+     "@types/mocha": "10.0.6"
+     ,
+     "@types/node": "20.11.17"
+     ,
+     "@types/d3": "7.4.3"
+     ,
+     "@types/vscode": "^1.75.1"
+     ,
+     "core-js": "3.35.1"
+     ,
+     "lodash": "^4.17.21"
+     ,
+     "immutable": "^4.1.0"
+     ,
+     "mocha": "^10.3.0"
+     ,
+     "eslint": "^8.56.0"
+     ,
+     "eslint-plugin-import": "^2.29.1"
+  }
+  ,
+  "dependencies": {
+  }
+  ,
+  "workspaces": [
+     "packages/*"
+  ]
+  ,
+  "scripts": {
+     "versionOfNode": "node --version"
+  }
+}
