@@ -8,8 +8,6 @@ import { isMainModuleImportMeta } from 'typexpe-commons/src/isImportMetaObjForMa
 
 import { bashMainImpl } from './src/cli-main.mjs';
 
-import { startReadEvalLoop, runReadEvalLoop, } from './src/cli-repl.mjs';
-
 
 
 
