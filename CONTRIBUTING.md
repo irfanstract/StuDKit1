@@ -8,7 +8,7 @@
 
 
 
-# CONTRIBUTING for The IExpX Compiler Project
+# CONTRIBUTING For This Project
 
 
 
