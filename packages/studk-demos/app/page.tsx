@@ -17,6 +17,9 @@ export default function App() {
       <p>
         This is StuDK!
       </p>
+      <figure>
+        <JsxLivingroomCornerBallFigure />
+      </figure>
       <p>
         This is StuDK!
       </p>
@@ -40,6 +43,8 @@ import dynamicComponent from "next/dynamic";
 // import mainOtfUrl from "otf-export/otfDemo.mjs" ;
 
 // console.log({ mainOtfUrl, }) ;
+
+import JsxLivingroomCornerBallFigure from "../components/jsxLivingroomCornerBallFigure" ;
 
 
 // const KIFF = (() => {
