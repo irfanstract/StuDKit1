@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.json" ,
+  "compilerOptions": {
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true ,
+
+    /* https://www.typescriptlang.org/docs/handbook/project-references.html */
+    "composite": true ,
+    "noEmit": false,
+    "allowImportingTsExtensions": false ,
+    /* https://stackoverflow.com/a/61513685 */
+    "rootDir": "src" ,
+    "outDir": "dist",
+  },
+  "references": [
+    { "path": "../typexpe-commons", } ,
+    { "path": "../studk-fwcore", } ,
+  ] ,
+  "include": [
+    "src" ,
+  ],
+  // "exclude": [
+  //   "src/**/*" ,
+  // ],
+}
