@@ -68,7 +68,7 @@ yarn-error.log*
 *.sln
 *.sw?
 *.swp
-/test/
+# /test/
 /src/_x/numeric*
 # /.env
 *.local
