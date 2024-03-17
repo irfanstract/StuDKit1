@@ -50,5 +50,7 @@
   ,
   "scripts": {
      "versionOfNode": "node --version"
+     ,
+     "test": "npx mocha"
   }
 }

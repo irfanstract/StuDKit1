@@ -57,6 +57,10 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
  * @template {LinTrSupportedDimensions } i
  */
 
+/** @typedef {LinTrCoords<2> } LinTrCoords2 */
+/** @typedef {LinTrCoords<3> } LinTrCoords3 */
+/** @typedef {LinTrCoords<4> } LinTrCoords4 */
+
 /**
  * @typedef {{ readonly [k in LinTrAxesAsTrKey<i> ]: number ; }} LinTrTranslate
  * @template {LinTrSupportedDimensions } i
@@ -82,9 +86,9 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
 
 /**
  * 
- * @type {(x: Point2D) => LinTr2D }
+ * @type {(x: LinTrCoords2) => LinTr2D }
  */
-export function matrixFromPoint2({ x, y, })
+export function linTrFromScaleCoord2({ x, y, })
 {
   return {
     // DIAGONAL
@@ -101,9 +105,77 @@ export function matrixFromPoint2({ x, y, })
 
 /**
  * 
+ * @type {(x: LinTrCoords2) => LinTr2D }
+ */
+export function linTrFromTranslateCoord2({ x, y, })
+{
+  return {
+    // DIAGONAL
+    sXX: 1 ,
+    sYY: 1 ,
+    // ELSEWHERE ALONG THE DIAGONAL
+    sYX: 0,
+    sXY: 0,
+    // TRANSLATION
+    trX: x,
+    trY: y,
+  } ;
+}
+
+export function identityTr2D()
+{
+  return linTrFromScaleCoord2({ x: 1, y: 1, }) ;
+}
+
+/**
+ * 
+ * @type {(x: import("./LinearMap1.mjs").Matrix3 ) => LinTr2D }
+ */
+export function matrixAsTr(m1)
+{
+  ;
+  return {
+    // DIAGONAL
+    sXX: m1["m1,1"] ,
+    sYY: m1["m2,2"] ,
+    // ELSEWHERE ALONG THE DIAGONAL
+    sXY: m1["m1,2"] ,
+    sYX: m1["m2,1"] ,
+    // TRANSLATION
+    trX: m1["m1,3"] ,
+    trY: m1["m2,3"] ,
+  } ;
+}
+
+/**
+ * 
+ * @type {(x: LinTr2D ) => import("./LinearMap1.mjs").Matrix3 }
+ */
+export function matrixFromTr(m1)
+{
+  ;
+  return {
+    // DIAGONAL
+    "m1,1": m1.sXX ,
+    "m2,2": m1.sYY ,
+    // ELSEWHERE ALONG THE DIAGONAL
+    "m1,2": m1.sXY ,
+    "m2,1": m1.sYX ,
+    // TRANSLATION
+    "m1,3": m1.trX ,
+    "m2,3": m1.trY ,
+    // BOTTOM ROW
+    "m3,1": 0 ,
+    "m3,2": 0 ,
+    "m3,3": 1 ,
+  } ;
+}
+
+/**
+ * 
  * @type {(x0: LinTrTranslate<2>, x1: LinTr2D) => LinTr2D }
  */
-export function matrixTranslated(m0, m1)
+export function linTrTranslated(m0, m1)
 {
   ;
   return {
@@ -123,7 +195,7 @@ export function matrixTranslated(m0, m1)
  * 
  * @type {(x0: LinTrScale2, x1: LinTr2D) => LinTr2D }
  */
-export function matrixScaled(m0, m1)
+export function linTrScaled(m0, m1)
 {
   /**
    * for scale-element `s<L><L>` in resulting matrix
@@ -157,6 +229,32 @@ export function matrixScaled(m0, m1)
     trX: m0.sXX * m1.trX ,
     trY: m1.sYY * m1.trY ,
   } ;
+}
+
+/**
+ * 
+ * @type {(x0: LinTr2D, x1: LinTr2D) => LinTr2D }
+ */
+export function linTrConcat(m0, m1)
+{
+  const m3 = matrixFromTr(m0) ;
+  const m2 = matrixFromTr(m1) ;
+  const m4 = multipliedMat3(m3, m2) ;
+  return matrixAsTr(m4) ;
+}
+
+import { multipliedMat3, } from "./LinearMap1.mjs" ;
+
+/**
+ * 
+ * @type {(x0: LinTr2D, x1: Point2D) => Point2D }
+ */
+export function linTrTransformedPosition(m, r0 )
+{
+  ;
+  const r1 = linTrFromTranslateCoord2(r0) ;
+  const r2 = linTrConcat(m, r1 ) ;
+  return { x: r2.trX, y: r2.trY } ;
 }
 
 

@@ -59,9 +59,64 @@ export function multipliedMat4(m1, m2)
 
 /**
  * 
- * @type {<const n extends 2 | 3 | 4 | 5>(...args: [x1: Matrix<n>, x2: Matrix<n>, ord: (NUpTo<n> )[] ] ) => Matrix<4> }
+ * @type {<const n extends 2 | 3 | 4 | 5>(...args: [x1: Matrix<n>, x2: Matrix<n>, ord: (NUpTo<n> )[] ] ) => Matrix<n> }
  */
 export function multipliedMatVari(m1, m2, ord)
+{
+  // @ts-ignore
+  return (
+    new (/** */ class MatrImpl{ constructor() {
+      ;
+
+      /**
+       * step 1: initialisation
+       * 
+       */
+      for (const i of ord )
+      {
+        for (const j of ord )
+        {
+          ;
+          // @ts-ignore
+          this[`m${i},${j}`] ??= 0 ;
+        }
+      }
+
+      /**
+       * step 2: collection
+       */
+      for (const i of ord )
+      {
+        for (const j of ord )
+        {
+          ;
+          /**
+           * addition
+           */
+          for (const k of ord )
+          {
+            ;
+            // @ts-ignore
+            this[`m${i},${j}`] += (
+              m1[`m${i},${k}`] * m2[`m${k},${j}`]
+            ) ;
+          }
+        }
+      }
+    } } )()
+  ) ;
+}
+
+export const identityMat2 = () => identityMatVari(/** @type {const } */ ([1, 2]         )) ;
+export const identityMat3 = () => identityMatVari(/** @type {const } */ ([1, 2, 3]      )) ;
+export const identityMat4 = () => identityMatVari(/** @type {const } */ ([1, 2, 3, 4]   )) ;
+export const identityMat5 = () => identityMatVari(/** @type {const } */ ([1, 2, 3, 4, 5])) ;
+
+/**
+ * 
+ * @type {<const n extends 2 | 3 | 4 | 5, const I extends [1, 2, 3?, 4?, 5?][number] >(...args: [ ord: readonly (I)[] ] ) => Matrix<n> }
+ */
+export function identityMatVari(ord)
 {
   // @ts-ignore
   return (
@@ -73,15 +128,13 @@ export function multipliedMatVari(m1, m2, ord)
           ;
           // @ts-ignore
           this[`m${i},${j}`] ??= 0 ;
-          for (const k of ord )
-          {
-            ;
-            // @ts-ignore
-            this[`m${i},${j}`] += (
-              m1[`m${k},${j}`] * m2[`m${i},${k}`]
-            ) ;
-          }
         }
+      }
+      for (const k of ord )
+      {
+        ;
+        // @ts-ignore
+        this[`m${k},${k}`] = 1 ;
       }
     } } )()
   ) ;
