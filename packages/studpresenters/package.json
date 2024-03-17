@@ -1,5 +1,5 @@
 {
-	"name": "studk-fwcore"
+	"name": "studpresenters"
   ,
 	"description": "StuDKit FW Core ; Internal",
 	"license": "MIT",
@@ -17,6 +17,5 @@
 	}
 	,
 	"scripts": {
-		"test": "npx mocha"
 	}
 }
