@@ -33,6 +33,14 @@ jobs:
         cd packages/typexpe-commons
         npm run test
         cd ../../
+        
+        tsc --build 
+        
+        npm run test
+        
+        cd packages/typexpe-commons
+        npm run test
+        cd ../../
 
 
 

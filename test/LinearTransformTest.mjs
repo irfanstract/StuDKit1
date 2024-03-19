@@ -56,7 +56,7 @@ describe("Linear Transforms Test", function () {
     ;
     
     const m = LT.identityTr2D() ;
-    const mp = LT.linTrTransformedPosition(m, { x: 32, y: 5, } ) ;
+    const mp = LT.linTrTransformedPosition2D(m, { x: 32, y: 5, } ) ;
     
     util.assert.deepStrictEqual(mp.x, 32 ) ;
     util.assert.deepStrictEqual(mp.y, 5 ) ;
@@ -66,7 +66,7 @@ describe("Linear Transforms Test", function () {
     ;
     
     const m = LT.linTrFromScaleCoord2({ x: 2.5, y: 2 }) ;
-    const mp = LT.linTrTransformedPosition(m, { x: 32, y: 5, } ) ;
+    const mp = LT.linTrTransformedPosition2D(m, { x: 32, y: 5, } ) ;
     
     util.assert.deepStrictEqual(mp.x, 80 ) ;
     util.assert.deepStrictEqual(mp.y, 10 ) ;

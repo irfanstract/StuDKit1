@@ -24,6 +24,8 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
  * @typedef {SquareMt<NUpTo<l> > } Matrix
  * @template {number & (3 | 1 | 2 | 4 | 5) } l
  */
+/** {@link Matrix} @namespace */
+export const Matrix = {} ;
 
 /** @typedef { 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 } Base10Digit */
 
@@ -111,6 +113,10 @@ export const identityMat2 = () => identityMatVari(/** @type {const } */ ([1, 2] 
 export const identityMat3 = () => identityMatVari(/** @type {const } */ ([1, 2, 3]      )) ;
 export const identityMat4 = () => identityMatVari(/** @type {const } */ ([1, 2, 3, 4]   )) ;
 export const identityMat5 = () => identityMatVari(/** @type {const } */ ([1, 2, 3, 4, 5])) ;
+
+export const matrixAssign = /** @satisfies {<T extends {}>(...args: [T, Partial<T>] ) => any } */ (lhs, rhs) => (
+  Object.assign(new Object, lhs, rhs )
+) ;
 
 /**
  * 

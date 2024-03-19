@@ -19,13 +19,20 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
  * @template {LinTrSupportedDimensions } i
  */
 
-/** @typedef {Point<2> } Point2D */
-/** @typedef {Point<3> } Point3D */
-/** @typedef {Point<4> } Point4D */
-/** @typedef {Point<5> } Point5D */
+/** {@link Point2D } @typedef {Point<2> } Point2D */ export const Point2D = {} ;
+/** {@link Point3D } @typedef {Point<3> } Point3D */ export const Point3D = {} ;
+/** {@link Point4D } @typedef {Point<4> } Point4D */ export const Point4D = {} ;
+/** {@link Point5D } @typedef {Point<5> } Point5D */ export const Point5D = {} ;
 
 
 
+
+import {
+  Matrix,
+  identityMat4 ,
+  identityMat3 ,
+  matrixAssign ,
+} from "./LinearMap1.mjs";
 
 /** @typedef {{ 2: "x" | "y", 3: "x" | "y" | "z", 4: "p" | "x" | "y" | "z", 5: "p" | "q" | "x" | "y" | "z" } } LinTrAxeLists */
 
@@ -109,17 +116,38 @@ export function linTrFromScaleCoord2({ x, y, })
  */
 export function linTrFromTranslateCoord2({ x, y, })
 {
-  return {
-    // DIAGONAL
-    sXX: 1 ,
-    sYY: 1 ,
-    // ELSEWHERE ALONG THE DIAGONAL
-    sYX: 0,
-    sXY: 0,
-    // TRANSLATION
-    trX: x,
-    trY: y,
-  } ;
+  return matrixAsTr2D((
+    linTrFromTranslateCoord2Matr({ x, y, })
+  )) ;
+}
+
+/**
+ * 
+ * @type {(x: LinTrCoords2) => Matrix<3> }
+ */
+export function linTrFromTranslateCoord2Matr({ x, y, })
+{
+  return (
+    matrixAssign(identityMat3() , {
+      "m1,3": x ,
+      "m2,3": y ,
+    } )
+  ) ;
+}
+
+/**
+ * 
+ * @type {(x: LinTrCoords3) => Matrix<4> }
+ */
+export function linTrFromTranslateCoord3Matr({ x, y, z, })
+{
+  return (
+    matrixAssign(identityMat4() , {
+      "m1,3": x ,
+      "m2,3": y ,
+      "m3,3": z ,
+    } )
+  ) ;
 }
 
 export function identityTr2D()
@@ -129,9 +157,9 @@ export function identityTr2D()
 
 /**
  * 
- * @type {(x: import("./LinearMap1.mjs").Matrix3 ) => LinTr2D }
+ * @type {(x: Matrix<3> ) => LinTr2D }
  */
-export function matrixAsTr(m1)
+export function matrixAsTr2D(m1)
 {
   ;
   return {
@@ -149,9 +177,9 @@ export function matrixAsTr(m1)
 
 /**
  * 
- * @type {(x: LinTr2D ) => import("./LinearMap1.mjs").Matrix3 }
+ * @type {(x: LinTr2D ) => Matrix<3> }
  */
-export function matrixFromTr(m1)
+export function matrixFromTr2D(m1)
 {
   ;
   return {
@@ -175,7 +203,7 @@ export function matrixFromTr(m1)
  * 
  * @type {(x0: LinTrTranslate<2>, x1: LinTr2D) => LinTr2D }
  */
-export function linTrTranslated(m0, m1)
+export function linTrTranslated2D(m0, m1)
 {
   ;
   return {
@@ -195,7 +223,7 @@ export function linTrTranslated(m0, m1)
  * 
  * @type {(x0: LinTrScale2, x1: LinTr2D) => LinTr2D }
  */
-export function linTrScaled(m0, m1)
+export function linTrScaled2D(m0, m1)
 {
   /**
    * for scale-element `s<L><L>` in resulting matrix
@@ -235,26 +263,73 @@ export function linTrScaled(m0, m1)
  * 
  * @type {(x0: LinTr2D, x1: LinTr2D) => LinTr2D }
  */
-export function linTrConcat(m0, m1)
+export function linTrConcat2D(m0, m1)
 {
-  const m3 = matrixFromTr(m0) ;
-  const m2 = matrixFromTr(m1) ;
-  const m4 = multipliedMat3(m3, m2) ;
-  return matrixAsTr(m4) ;
+  const m3 = matrixFromTr2D(m0) ;
+  const m2 = matrixFromTr2D(m1) ;
+  const m4 = linTrConcat2DMat(m3, m2) ;
+  return matrixAsTr2D(m4) ;
 }
 
-import { multipliedMat3, } from "./LinearMap1.mjs" ;
+/**
+ * 
+ * @type {(x0: Matrix<3>, x1: Matrix<3> ) => Matrix<3> }
+ */
+export function linTrConcat2DMat(m3, m2)
+{
+  const m4 = multipliedMat3(m3, m2) ;
+  return (m4) ;
+}
+
+/**
+ * 
+ * @type {(x0: Matrix<4>, x1: Matrix<4> ) => Matrix<4> }
+ */
+export function linTrConcat3DMat(m3, m2)
+{
+  const m4 = multipliedMat4(m3, m2) ;
+  return (m4) ;
+}
+
+import { multipliedMat3, multipliedMat4, } from "./LinearMap1.mjs" ;
 
 /**
  * 
  * @type {(x0: LinTr2D, x1: Point2D) => Point2D }
+ * 
+ * @deprecated
+ * 
  */
-export function linTrTransformedPosition(m, r0 )
+export function linTrTransformedPosition2D(m, r0 )
 {
   ;
   const r1 = linTrFromTranslateCoord2(r0) ;
-  const r2 = linTrConcat(m, r1 ) ;
+  const r2 = linTrConcat2D(m, r1 ) ;
   return { x: r2.trX, y: r2.trY } ;
+}
+
+/**
+ * 
+ * @type {(x0: Matrix<3>, x1: Point2D) => Point2D }
+ */
+export function linTrTransformedPosition2DMat(m, r0 )
+{
+  ;
+  const r1 = linTrFromTranslateCoord2Matr(r0) ;
+  const r2 = linTrConcat2DMat(m, r1 ) ;
+  return { x: r2["m1,1"], y: r2["m2,2"] } ;
+}
+
+/**
+ * 
+ * @type {(x0: Matrix<4>, x1: Point3D) => Point3D }
+ */
+export function linTrTransformedPosition3DMat(m, r0 )
+{
+  ;
+  const r1 = linTrFromTranslateCoord3Matr(r0) ;
+  const r2 = linTrConcat3DMat(m, r1 ) ;
+  return { x: r2["m1,1"], y: r2["m2,2"], z: r2["m3,3"], } ;
 }
 
 
