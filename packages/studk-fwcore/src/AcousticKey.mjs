@@ -8,7 +8,7 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
 
 
 /**
- * @typedef {{ is_F ?: any } & string } F
+ * @typedef {{ iFVObjFrand ?: any } & string }
  * 
  */
 /**
@@ -16,8 +16,24 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
  */
 export function F(c)
 {
-  return `F:${c }` ;
+  return `Frequency.InHertz(${c })` ;
 }
+
+export const getFrequencyInHertz = (
+  /** @type {(x: F) => number } */
+  (
+    (() => {
+      /** reference: {@link F} */
+      {
+        const firmware = `{ Frequency: { InHertz: (x) => x , } , }` ;
+        return (
+          (Function(`const { Frequency } = ${firmware } ; return x => eval(x) ;`) )
+          ()
+        ) ;
+      }
+    })()
+  )
+) ;
 
 
 
@@ -36,21 +52,68 @@ export function normaliseAngDeg(aDArg)
 
 
 /**
+ * @typedef {{ iChdObjBrand ?: any } & string }
+ * 
+ */
+/* name duplication on `@typedef` omitted ; see `jsdocTreatAsExported` in `binder.ts` on https://github.com/Microsoft/TypeScript/tree/0a671aa393760957743e9081c1798d5acc23b2c7 */
+/**
  * *key ignoring octave*
  * 
- */
-/**
- * @typedef {{ is_F ?: any } & string } Chd
+ * @namespace
  * 
  */
-/**
- * @type {(...args: [x: number] ) => Chd }
- */
-export function Chd(aDArg)
-{
-  const aDeg = normaliseAngDeg(aDArg) ;
-  return `MKeyDeg:${aDeg }` ;
-}
+export const Chd = {
+
+  /* needs hard-wiring via `@type`, due to the recursivity */
+
+  /**
+   * *key ignoring octave, by degrees from key C*
+   * 
+   * @type {(...args: [x: number] ) => Chd }
+   * 
+   * @see {@link Chd.ByDegreesFromA}
+   * @see {@link Chd.ByDegreesFromC}
+   * 
+   */
+  ByDegreesFromC: function Chd(aDArg)
+  {
+    const aDeg = normaliseAngDeg(aDArg) ;
+    return `AcousticKey.ByDegreesFromKeyC(${aDeg })` ;
+  } ,
+  
+  /**
+   * 
+   * @type {(...args: [x: Chd] ) => number }
+   * 
+   */
+  getDegreesFromC: /** @type {any} */ (
+    (() => {
+      /** reference: {@link Chd.ByDegreesFromC} */
+      {
+        const firmware = `{ AcousticKey: { ByDegreesFromKeyC: (x) => x , } , }` ;
+        return (
+          (Function(`const { AcousticKey } = ${firmware } ; return x => eval(x) ;`) )
+          ()
+        ) ;
+      }
+    })()
+  ) ,
+
+  /**
+   * *key ignoring octave, by degrees from key A*
+   * 
+   * @type {(...args: [x: number] ) => Chd }
+   * 
+   * @see {@link Chd.ByDegreesFromA}
+   * @see {@link Chd.ByDegreesFromC}
+   * 
+   */
+  ByDegreesFromA: function (aDArg)
+  {
+    return Chd.ByDegreesFromC(-90 + aDArg ) ;
+  } ,
+
+} ;
 
 
 

@@ -15,14 +15,19 @@
 
 ## Coding Conventions
 
-indentations should be 2 spaces (char `0x20`, *SPACE*)
+### indentations should be 2 spaces (char `0x20`, *SPACE*)
+
+...and __avoid using <code>Tab</code>s__
+
+### avoid using plain `.js` ext for JS files ; use `.cjs` or `.mjs`
 
 avoid using plain `.js` ext for JS files,
 usually `import`s will be rejected in plain `.js`es, so
 needs to rewrite (in)to `.cjs` or `.mjs`
 (maybe not that much of an issue if they were (the needing extra compile-step, type-ascription-heavy superset ) TS instead )
 
-`break` should always be labelled:
+### `break` should always be labelled
+
 ```javascript
 /* avoid */
 for (const segmt of segments )
@@ -40,7 +45,30 @@ for (const segmt of segments )
 }
 ```
 
-avoid potential pit-falls in null-checking of `number`:
+### DO NOT use `eslint:recommended`!
+
+`eslint:recommended` would try to get rid of labels, but
+that's against best practices of *explicit is better than implicit*, so
+you should disable the check
+
+more generally,
+`eslint:recommended`
+tries to get rid of a large number of common, safe constructs,
+whose avoiding would require even worse constructs
+(eg forced to resort to more bug-prone, implicit label-less `break`s),
+so don't enable it
+
+### avoid `typeof x === "object"`
+```javascript
+/** @type {number | number[] | null } */ const xArg ;
+
+if (typeof xArg === "object") {
+  // what if `xArg` were `null` ?
+}
+
+```
+
+### avoid potential pit-falls in null-checking of `number`
 ```javascript
 ({ height: heightArg, }) => {
   ;
@@ -49,12 +77,20 @@ avoid potential pit-falls in null-checking of `number`:
   if (heightArg) { return proceed({ height: heightArg, }) ; } /* wrong ; `0` would coerce to `false` */
   
   /* OK */
-  if (heightArg?.toPrecision ) { return proceed({ height: heightArg, }) ; } /* OK ; `heightArg?.toPrecision` would only evaluate to non-null if (1) `heightArg` is non-null, and (2) `toPrecision` exists on it (necessarily the case if it's a ``number ) */
+  if (typeof heightArg === "number" ) { return proceed({ height: heightArg, }) ; } /* OK ; `heightArg?.toPrecision` would only evaluate to non-null if (1) `heightArg` is non-null, and (2) `toPrecision` exists on it (necessarily the case if it's a ``number ) */
 
   ;
 }
 
 ```
+
+### `@typedef` name omission when accompanying an `export const Bar = ... ... ;`
+
+when accompanying an `export const Bar = ... ... ;`,
+name duplication on `@typedef` could be omitted ;
+see `jsdocTreatAsExported` in `binder.ts` on https://github.com/microsoft/TypeScript/blob/0a671aa393760957743e9081c1798d5acc23b2c7/src/compiler/binder.ts#L940
+
+https://github.com/Microsoft/TypeScript/tree/0a671aa393760957743e9081c1798d5acc23b2c7
 
 ### Relevant Considerations Affecting Coding
 

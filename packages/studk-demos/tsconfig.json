@@ -41,7 +41,9 @@
     /* https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases#module-aliases */
     // "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
+      "@/*": [
+        "./*" ,
+      ],
     },
     "moduleResolution": "bundler" /* https://github.com/microsoft/TypeScript/pull/51669 */,
     "forceConsistentCasingInFileNames": true,
@@ -134,6 +136,10 @@
   "include": [
     "packages" ,
     "src" ,
+    /* for some reason omitting this caused the type-checker to fail resolving custom-paths */
+    "app/**/*" ,
+
+    /* https://nextjs.org/docs/app/building-your-application/configuring/typescript#custom-type-declarations */
     ".next/types/**/*.ts" ,
   ],
   // "references": [
