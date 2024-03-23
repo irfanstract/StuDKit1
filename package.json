@@ -2,7 +2,8 @@
   "private": true
   ,
   "devDependencies": {
-     "@types/lodash": "^4.14.186"
+     "@types/lodash": "^4.14.186",
+     "@types/lodash-es": "^4.17.12"
      ,
      "@types/react": "18.2.55"
      ,
@@ -18,7 +19,8 @@
      ,
      "core-js": "3.35.1"
      ,
-     "lodash": "^4.17.21"
+     "lodash": "^4.17.21",
+     "lodash-es": "^4.17.21"
      ,
      "immutable": "^4.1.0"
      ,
