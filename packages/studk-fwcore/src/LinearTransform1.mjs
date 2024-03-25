@@ -5,6 +5,34 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
 
 
 
+import {
+  Angle,
+  normaliseAngDeg ,
+  cosineAt ,
+  sineAt ,
+} from "./Trigonometric1.mjs";
+
+import {
+  Matrix,
+  identityMat4 ,
+  identityMat3 ,
+  matrixAssign ,
+} from "./LinearMap1.mjs";
+
+/**
+ * @typedef {Matrix<{ 2: 3, 3: 4, 4: 5 }[dim] > } LinTrMat
+ * @template {2 | 3 | 4} dim
+ * 
+ */
+/** @typedef {LinTrMat<2> } LinTr2DMat */
+/** @typedef {LinTrMat<3> } LinTr3DMat */ 
+
+
+
+
+
+
+
 
 /**
  * @typedef {(LinTrScale<i, i> & LinTrTranslate<i> ) } LinTr
@@ -26,13 +54,6 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
 
 
 
-
-import {
-  Matrix,
-  identityMat4 ,
-  identityMat3 ,
-  matrixAssign ,
-} from "./LinearMap1.mjs";
 
 /** @typedef {{ 2: "x" | "y", 3: "x" | "y" | "z", 4: "p" | "x" | "y" | "z", 5: "p" | "q" | "x" | "y" | "z" } } LinTrAxeLists */
 
@@ -257,6 +278,38 @@ export function linTrScaled2D(m0, m1)
     trX: m0.sXX * m1.trX ,
     trY: m1.sYY * m1.trY ,
   } ;
+}
+
+/**
+ * 
+ * @param {[Angle] } args
+ */
+export function linTrRotation3DForXConYMat(...[ang] )
+{
+  return (
+    matrixAssign(identityMat4(), {
+      "m1,1": cosineAt(ang) ,
+      "m2,2": cosineAt(ang),
+      "m1,2": -sineAt(ang),
+      "m2,1":  sineAt(ang),
+    } )
+  ) ;
+}
+
+/**
+ * 
+ * @param {[Angle] } args
+ */
+export function linTrRotation3DForXConZMat(...[ang] )
+{
+  return (
+    matrixAssign(identityMat4(), {
+      "m1,1": cosineAt(ang) ,
+      "m3,3": cosineAt(ang),
+      "m1,3": -sineAt(ang),
+      "m3,1":  sineAt(ang),
+    } )
+  ) ;
 }
 
 /**
