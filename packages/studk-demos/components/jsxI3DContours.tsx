@@ -137,34 +137,39 @@ export const I3DFullMeshPerspDisplay = function I3DFullMeshGraphPerspDisplayComp
         if (ndUnit instanceof I3D.PolygonallyMarkedNodeUnitGraph)
         {
           const pts = (
-            ndUnit
-            .points
-            .map(pos => (
-              linTrTransformedPosition3DMat(finalPersp, pos )
-            ))
-            .map(pos => ({
-              x: pos.x / Math.max(0, pos.z ) ,
-              y: pos.y / Math.max(0, pos.z ) ,
-            }) )
-            .map(pos => ({
-              x: pos.x * 120 ,
-              y: pos.y * 120 ,
-            }) )
-            .flatMap((e, i, seq): ([] | [{ [k in keyof { x, y } ]: number ; }] ) => {
-              if (!(`${e.x} ${e.y}`.match(/Inf|NaN/g) ) )
-              {
-                return [e] ;
-              }
-              if (0)
-              {
+            util.NLR<readonly { [k in keyof { x, y } ]: number ; }[] , false>(ctx => (
+              ndUnit
+              .points
+              .map(pos => (
+                linTrTransformedPosition3DMat(finalPersp, pos )
+              ))
+              .map(pos => ({
+                x: pos.x / Math.max(0, pos.z ) ,
+                y: pos.y / Math.max(0, pos.z ) ,
+              }) )
+              .map(pos => ({
+                x: pos.x * 120 ,
+                y: pos.y * 120 ,
+              }) )
+              .flatMap((e, i, seq): ([] | [{ [k in keyof { x, y } ]: number ; }] ) => {
+                if (!(`${e.x} ${e.y}`.match(/Inf|NaN/g) ) )
                 {
-                  const v = seq[i + 1] ;
-                  if (v) { return [v] ; }
+                  return [e] ;
                 }
-                return [{ x: 0, y: 0, }]  ;
-              }
-              return [] ;
-            } )
+                if (0)
+                {
+                  {
+                    const v = seq[i + 1] ;
+                    if (v) { return [v] ; }
+                  }
+                  return [{ x: 0, y: 0, }]  ;
+                }
+                if (1) {
+                  ctx.exit(false) ;
+                }
+                return [] ;
+              } )
+            ) )
           ) ;
           const keyImpl = (
             `${itemKeyingPrefix} (PolygonallyMarkedNodeUnitGraph)`
@@ -177,14 +182,16 @@ export const I3DFullMeshPerspDisplay = function I3DFullMeshGraphPerspDisplayComp
             }, (
               <g>
               <title>{ keyImpl }</title>
-              <path
-              d={
-                pts.length ?
-                `M ${pts.map(pos => `${pos.x } ${pos.y }` ).join(" L ") } z`
-                : "M 0 0 z"
-              }
-              style={{ fill: ndUnit.fill ?? "yellow", }}
-              />
+              { pts ? (
+                <path
+                d={
+                  pts.length ?
+                  `M ${pts.map(pos => `${pos.x } ${pos.y }` ).join(" L ") } z`
+                  : "M 0 0 z"
+                }
+                style={{ fill: ndUnit.fill ?? "yellow", }}
+                />
+              ) : null }
               </g>
             ) )
           ) ;

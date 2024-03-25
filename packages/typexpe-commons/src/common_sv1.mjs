@@ -11,6 +11,53 @@ export const throwTypeError = /** @satisfies {(...a: ConstructorParameters<typeo
 
 export const throwAssertionError = /** @satisfies {(...a: ConstructorParameters<typeof Error> ) => never } */ (...a) => { throw new Error(...a) ; } ;
 
+/**
+ * nonlocally-returning ev
+ * 
+ * @type {<R>(impl: (ctx: { exit: (value: NoInfer<R>) => never } ) => R ) => R }
+ * 
+ */
+export function NLR1(impl)
+{
+  return NLR(impl) ;
+}
+
+/**
+ * nonlocally-returning ev
+ * 
+ * @type {<R1, R2, const R1Spcl extends R1 = R1>(impl: (ctx: { exit: (value: R2) => never } ) => R1Spcl ) => (R1Spcl | R2) }
+ * 
+ */
+export function NLR(impl)
+{
+  class SpclReturn extends Error
+  {
+    /** @param {any} value */
+    constructor(value)
+    {
+      super() ;
+      
+      /** the value submitted */
+      this.value = value ;
+    }
+  }
+
+  try {
+    return impl({ exit: (value) => { throw new SpclReturn(value) ; } }) ;
+  }
+  catch (z) {
+    if (z instanceof SpclReturn) { return z.value ; }
+    throw z ;
+  }
+} ;
+
+/**
+ * @typedef {[keyof O, O[keyof O] ] }
+ * @template {{}} O
+ */
+/** */
+export const EntryOfPlain = {} ;
+
 
 
 const iterateNonNull = /** @type {<const A>(x: A) => ([A & {}] | []) } */ (x) => (
