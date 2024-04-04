@@ -114,11 +114,11 @@ module.exports = {
 } ;
 ```
 
-#### DO NOT use `eslint:recommended`!
+#### avoid presets like `eslint:recommended`; instead, enable items individually!
 
 __`eslint:recommended`
-tries to get rid of a large number of common, safe constructs,
-whose avoiding would require even worse constructs
+tries to get rid of a large number of common, safe constructs;
+adherence to that preset would require even worse constructs
 (eg forced to resort to more bug-prone, implicit label-less `break`s)!__
 __avoid enabling the whole set__ ;
 instead,
@@ -135,7 +135,7 @@ instead,
 +     "always"
 +   ],
 +   "array-callback-return": "error" ,
-+   "getter-return": "error" ,
++   // "getter-return": "error" , /* unnecessary for now; typechecker already takes care of this */
 +   "no-constructor-return": "warn" ,
 +   "no-unsafe-finally": "warn" ,
 +   "no-case-declarations": "warn" ,
@@ -184,6 +184,16 @@ if (typeof xArg === "object") {
 
 #### avoid non-trivial overloading if possible
 
+JavaScript, as does Python,
+is not
+Java, Kotlin, Scala nor Rust,
+all which each *makes overriding/conformance take declared parameter-types into account*, and
+accordingly resolve overloads statically based on the actual arguments' static types ;
+JavaScript doesn't consider signatures when mindmapping and resolving methods,
+thus preventing Java-style overlading, instead treating all methods as `(...Object) => Object`.
+
+the first alternative is to give em different names:
+
 ```diff
   interface DispatchService
   {
@@ -202,6 +212,27 @@ if (typeof xArg === "object") {
 
 ```
 
+however, sometimes it's not applicable since the author intended them the same name (ie superclass version of the named method only support two signature(s), while subclass is more general and support 6 different sig(s)), so what abt alternative tweaks like parameter-reordering like this instead?
+
+```diff
+  interface DispatchService
+  {
++   /* reordered the parameters */
+    schedule
+        (callbk: NoArgCallback ) ;
++   schedule
++       (callbk: NoArgCallback, tMillis ?: number, cancelPt ?: AbortSignal,) ;
+    schedule
+-       (tMillis: number, cb: NoArgCallback ) ;
++       (cb: NoArgCallback, tMillis: number, ) ;
+    schedule
+-       (s: AbortSignal, tMillis: number, cb: NoArgCallback ) ;
++       (cb: NoArgCallback, tMillis: number, s: AbortSignal,) ;
+
+  }
+
+```
+
 ### avoid using CommonJS ; stick to ESM
 
 avoid using CommonJS ;
@@ -212,8 +243,14 @@ stick to ESM, to avoid the following issues:
     // ^^^^^
     // [Error] Import Error:
     // module "react" does not provide named export 'Context' ;
+    // Note: "react" is a CommonJS module which may not provide named export ;
     // CommonJS modules can always be imported using `import * as React from "react"`, and
     // use `const { Context, } = React ` ;
+    ```
+    then u tried to do what the diagnostic suggested u to:
+    ```javascript
+    import * as React from "react" ;
+    const { Context, } = React  ;
     ```
     but u can't always do this since this as u'll lose the `type`s:
     ```typescript
@@ -223,6 +260,9 @@ stick to ESM, to avoid the following issues:
     //       ^^^^^^
     //      [Error] Type Error: 'Context' being used as type here, yet refers to value
     ```
+    the only way to resolve these,
+    is to *switch to ESM, and revert your "import" back to the original syntax `import { Context, } from ... ;`*.
+
 -  `ERR_REQUIRE_ESM`
 
 ### what to consider when defining and exporting `type`s
