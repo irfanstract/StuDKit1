@@ -45,6 +45,11 @@ is [a NextJS app](https://nextjs.org/docs/) can be run by
 
 and then open the (`localhost`) URL shown.
 
+### the package `studk-demos` nested in `packages`
+
+its `package.json` has `script` entry `dev` to run the dev server; if started, it should report the URL which u should then open.
+you should then see some showcases; they're mostly stuffs building on these packages developed here in this monorepo.
+
 
 
 
