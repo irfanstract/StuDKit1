@@ -17,9 +17,9 @@ export const throwAssertionError = /** @satisfies {(...a: ConstructorParameters<
  * @type {<R>(impl: (ctx: { exit: (value: NoInfer<R>) => never } ) => R ) => R }
  * 
  */
-export function NLR1(impl)
+export function asNonlocalReturnBasedRun1(impl)
 {
-  return NLR(impl) ;
+  return asNonlocalReturnBasedRun(impl) ;
 }
 
 /**
@@ -28,7 +28,7 @@ export function NLR1(impl)
  * @type {<R1, R2, const R1Spcl extends R1 = R1>(impl: (ctx: { exit: (value: R2) => never } ) => R1Spcl ) => (R1Spcl | R2) }
  * 
  */
-export function NLR(impl)
+export function asNonlocalReturnBasedRun(impl)
 {
   class SpclReturn extends Error
   {
@@ -50,6 +50,46 @@ export function NLR(impl)
     throw z ;
   }
 } ;
+
+/**
+ * 
+ * @template {void} R
+ * @param {[{ referenceEvtObj: Error, }, () => R, ]} args
+ */
+export function SINGLETNLR(...[{ referenceEvtObj, }, runMainThing,])
+{
+  ;
+  C :
+  try {
+    ;
+    return runMainThing() ;
+  } catch (z) {
+    if (z === referenceEvtObj) {
+      break C ;
+    }
+    throw z ;
+  }
+}
+
+/**
+ * 
+ * @template {void} R
+ * @param {[{ referenceEvtObj: Error, }, () => Promise<R>, ]} args
+ */
+export async function SINGLETNLR_ASYNC(...[{ referenceEvtObj, }, iRMT,])
+{
+  ;
+  C :
+  try {
+    ;
+    return await iRMT() ;
+  } catch (z) {
+    if (z === referenceEvtObj) {
+      break C ;
+    }
+    throw z ;
+  }
+}
 
 /**
  * @typedef {[keyof O, O[keyof O] ] }

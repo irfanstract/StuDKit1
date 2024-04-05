@@ -13,6 +13,31 @@
 
 
 
+## `packages`
+
+all deliverable packages go to `packages`.
+
+### the package `studk-demos` nested in `packages`
+
+its `package.json` has `script` entry `dev` to run the dev server; if started, it should report the URL which u should then open.
+you should then see some showcases; they're mostly stuffs building on these packages developed here in this monorepo.
+
+it builds on Next(JS). all source-codes were TS.
+
+### StuDK deliverables nested in `packages`
+
+except as otherwise noted
+all source-code were Type-Checked JS.
+
+prefer `.mjs` ext(s); see "Coding Conventions" below.
+
+### the package `typexpe-commons` nested in `packages`
+
+this one package was pulled here from onea my other codebase. in future this pkg may get externalised away from this monorepo.
+
+
+
+
 ## Coding Conventions
 
 ### indentations should be 2 spaces (char `0x20`, *SPACE*)
