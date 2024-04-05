@@ -7,6 +7,10 @@
 
 import * as React from "react" ;
 
+import {
+  useResource,
+} from "@/components/useEffectAlt";
+
 
 
 
@@ -62,73 +66,45 @@ function IAudStudioComp() {
   ) ;
 }
 
-const useIAudCtxInit = () => {
-  ;
-  const [c, initC ] = (
-    /**
-     * remarks:
-     * - the way the overload is written - combined with how {@link React.ReducerState } is written -
-     *   led to unexpected "type not assignable" issues
-     * - coundn't use {@link InputEvent} ; used plain {@link Event} instead
-     * 
-     */
-    (
-      React.useReducer<(...a: [any, Event]) => (AudioContext | null)>((...args) => new AudioContext() , null )
-    )
+function IAudStudioActiveComp({ c, } : { c: BaseAudioContext, } )
+{
+  return (
+    <div>
+      <p>Beep Samples:</p>
+      <CAudioBeepSamplesComp c={c} />
+      <p>Beep Samples:</p>
+      <CAudioBeepSamplesComp c={c} />
+      <p>:</p>
+      <CEWADComp c={c} />
+    </div>
   ) ;
-  return [c, initC ] satisfies [any, any] ;
-} ;
+}
 
-const iAudCreateAndConnect = (
-  <T extends AudioNode ,>(...[nd0, GN, c ] : [dest: AudioNode | AudioParam, CN: new (ctx: BaseAudioContext) => T, ctx: BaseAudioContext ] ) => {
-    const gn = new GN(c) ;
-    gn.connect(nd0) ;
-    return gn ;
-  }
-) ;
+import {
+  useIAudCtxInit,
+} from "@/components/iaudCtxInReactjs";
 
-function IAudStudioActiveComp({ c, } : { c: BaseAudioContext, } ) {
+import {
+  iAudCreateAndConnect,
+  simuls ,
+} from "@/components/iaudCtxInReactjs";
+
+import {
+  LinearMetrostatus,
+  StudKQuarterMetronomicUnit ,
+} from "studk-fwcore/src/ixmw.mjs";
+
+function CAudioBeepSamplesComp({ c, } : { c: BaseAudioContext, } ) {
   ;
 
   function runBeepBtnAction()
   {
-    const gn = new GainNode(c, { gain: 2 ** -3 } ) ;
-    gn.connect(c.destination) ;
-
-    const t = c.currentTime ;
-
-    {
-      const o = new OscillatorNode(c, { frequency: 440, } ) ;
-      o.connect(gn) ;
-      o.start(t ) ;
-      o.stop (t + 0.5 ) ;
-    }
+    simuls.BEEP.run(c) ;
   }
 
   function runBeatDropBtnAction()
   {
-    const nd0 = c.destination ;
-
-    const t = c.currentTime ;
-
-    const masterGn = new GainNode(c, { gain: 2 ** -3 } ) ;
-    masterGn.connect(nd0) ;
-    
-    const gn = iAudCreateAndConnect(masterGn, GainNode, c) ;
-
-    gn.gain.setValueAtTime(3 ** 1, 0 ) ;
-    gn.gain.setTargetAtTime(0, t, 3 ) ;
-
-    const o = iAudCreateAndConnect(gn, OscillatorNode, c ) ;
-    o.start(t ) ;
-    o.stop (t + 35.5 ) ;
-
-    o.frequency.setValueAtTime((
-      (x => ((2 ** (x / 12 ) ) * 55 ) )(7 )
-    ) , 0 ) ;
-
-    o.detune.setValueAtTime(0, 0 ) ;
-    o.detune.setTargetAtTime(-12 * 100 , t, 2 ) ;
+    simuls.BEATDROP.run(c) ;
   }
 
   return (
@@ -141,6 +117,44 @@ function IAudStudioActiveComp({ c, } : { c: BaseAudioContext, } ) {
         Beat Drop
       </button>
       </p>
+    </div>
+  ) ;
+}
+
+import EWAD from "studpresenters/src/EWAD.mjs" ;
+
+function CEWADComp({ c, } : { c: BaseAudioContext, } )
+{
+  const iewd = (
+    useResource(() => (
+      console["log"](`initialised`)
+      ,
+      EWAD({ mtCtx: c, initiallyStart: false, } , ({ metronStat, }) => {
+        // TODO
+        {
+          C :
+          {
+            if (metronStat.getBarsToRoundedForthBy(StudKQuarterMetronomicUnit.SJUIVE) < 1.05 )
+            { break C ; }
+            simuls.BASSDRUM.run(c) ;
+          }
+        }
+      } )
+    ) , [c] )
+  ) ;
+
+  return (
+    !!iewd && 
+    <div>
+      <p>
+        <span><code>iewd</code> present.</span>
+      </p>
+      <button type="button" onClick={() => iewd.setRunning(true) } >
+        Resume
+      </button>
+      <button type="button" onClick={() => iewd.setRunning(false) } >
+        Suspend
+      </button>
     </div>
   ) ;
 }

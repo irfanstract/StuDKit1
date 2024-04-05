@@ -12,6 +12,14 @@
     /* https://stackoverflow.com/a/61513685 */
     "rootDir": "src" ,
   },
+  "references": [
+    { "path": "../typexpe-commons"      , } ,
+    { "path": "../studk-fwcore"         , } ,
+    { "path": "../studk-video-fwcore"   , } ,
+    { "path": "../studk-audio-fwcore"   , } ,
+    { "path": "../studk-dom-mediarecorder"   , } ,
+    // { "path": "../../packages/studpresenters"       , } ,
+  ] ,
   "include": [
     "src" ,
   ],

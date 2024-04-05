@@ -137,7 +137,7 @@ export const I3DFullMeshPerspDisplay = function I3DFullMeshGraphPerspDisplayComp
         if (ndUnit instanceof I3D.PolygonallyMarkedNodeUnitGraph)
         {
           const pts = (
-            util.NLR<readonly { [k in keyof { x, y } ]: number ; }[] , false>(ctx => (
+            util.asNonlocalReturnBasedRun<readonly { [k in keyof { x, y } ]: number ; }[] , false>(ctx => (
               ndUnit
               .points
               .map(pos => (
