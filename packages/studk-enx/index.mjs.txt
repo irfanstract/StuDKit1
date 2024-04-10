@@ -1,0 +1,48 @@
+
+
+import { reiterable } from 'typexpe-commons/src/common_sv1.mjs';
+
+import { pathToFileURL, } from 'node:url' ;
+
+import { isMainModuleByMeta } from 'typexpe-commons/src/isImportMetaObjForMainModule.mjs';
+
+import { execSync, spawnSync, } from 'node:child_process';
+import {  } from 'node:os';
+
+
+
+
+
+
+// TODO
+if ((
+  /* whether this is being run as the main module */
+  isMainModuleByMeta(import.meta )
+)) {
+  ;
+  console.warn(`'studk-enx' invoked as main module`) ;
+  console.warn(`['studk-enx'] evaluating 'bashMainImpl()'`) ;
+  ;
+  bashMainImpl(process.argv.slice(2) ) ;
+}
+else {
+  ;
+  console.info(`'studk-enx' imported as regular package`) ;
+}
+
+
+
+
+// TODO
+function bashMainImpl()
+{
+  console["error"](`nothing to run`) ;
+  // spawnSync(`npx`, ["electron@29.2.0", ...(1 ? ["--"] : ["./iem.mjs"])]) ;
+  execSync(`npx electron@29.2.0 ./iem.mjs`, {
+    stdio: "inherit"
+    ,
+  } ) ;
+}
+
+
+
