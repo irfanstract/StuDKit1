@@ -2,7 +2,7 @@
 
 import { reiterable } from 'typexpe-commons/src/common_sv1.mjs';
 
-import { pathToFileURL, } from 'node:url' ;
+import { fileURLToPath, pathToFileURL, } from 'node:url' ;
 
 import { isMainModuleByMeta } from 'typexpe-commons/src/isImportMetaObjForMainModule.mjs';
 
@@ -34,15 +34,23 @@ else {
 
 
 // TODO
-function bashMainImpl()
+function bashMainImpl(/** @type {String[]} */ args)
 {
-  console["error"](`nothing to run`) ;
+  const c = args[0] ?? process.cwd() ;
+  console["error"](`app:`, { appPath: c, browserPath: getIemScriptPath(), } ) ;
   // spawnSync(`npx`, ["electron@29.2.0", ...(1 ? ["--"] : ["./iem.mjs"])]) ;
-  execSync(`npx electron@29.2.0 ./iem.mjs`, {
+  execSync(`npx electron@29.2.0 ${getIemScriptPath() }`, {
     stdio: "inherit"
     ,
   } ) ;
 }
+
+
+
+import { getIemScriptPath, } from './launching.mjs';
+
+
+
 
 
 

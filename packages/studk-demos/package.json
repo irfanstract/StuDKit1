@@ -31,5 +31,9 @@
   ,
   "scripts": {
     "dev": "next dev"
+    ,
+    "devAlt": "npm exec --package=studk-enx -- start"
+    ,
+    "devAltAlt": "node ../../node_modules/studk-enx/index.mjs"
   }
 }

@@ -10,8 +10,18 @@ import { pathToFileURL, } from 'node:url' ;
 
 
 
-export const isMainModuleByMeta = /** @type {(x: ImportMeta) => Boolean } */ (m) => (
-  pathToFileURL(getProcessArgv1() ).href === m.url
+import { realpath, realpathSync, } from 'node:fs';
+
+/** @satisfies {() => string } */
+const getApparentMainScriptPath = () => (
+  process.argv[1] ?? throwTypeError(JSON.stringify({ processArgv: process.argv }) )
+) ;
+
+
+
+export const isMainModuleByMeta = /** @type {(x: ImportMeta) => Boolean } */ (talkedAbtMdlMeta) => (
+  console["log"]({ m: talkedAbtMdlMeta, }) ,
+  pathToFileURL(realpathSync(getApparentMainScriptPath() ) ).href === talkedAbtMdlMeta.url
 ) ;
  
 export const sayThisNeedsToBeTheEntryPoint = /** @type {(x: ImportMeta) => void } */ (m) => {
@@ -19,12 +29,7 @@ export const sayThisNeedsToBeTheEntryPoint = /** @type {(x: ImportMeta) => void 
 } ;
  
 
-
-/** @satisfies {() => string } */
-const getProcessArgv1 = () => (
-  process.argv[1] ?? throwTypeError(JSON.stringify({ processArgv: process.argv }) )
-) ;
-
+;
 
 
 
