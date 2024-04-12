@@ -30,10 +30,12 @@
   }
   ,
   "scripts": {
-    "dev": "next dev"
+    "dev": "npm run runDevApp102"
     ,
-    "devAlt": "npm exec --package=studk-enx -- start"
+    "runDevServer": "next dev"
     ,
-    "devAltAlt": "node ../../node_modules/studk-enx/index.mjs"
+    "runDevApp101": "npm exec --package=studk-enx -- start"
+    ,
+    "runDevApp102": "node ../../node_modules/studk-enx/index.mjs"
   }
 }

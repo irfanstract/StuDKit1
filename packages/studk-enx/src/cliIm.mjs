@@ -13,11 +13,18 @@ import {  } from 'node:os';
 
 
 
+
+import { runExpoMode, } from './launching1.mjs';;
+
+export { shMainImpl, } ;
+
 // TODO
-export function getIemScriptPath()
+function shMainImpl(/** @type {String[]} */ args)
 {
-  return fileURLToPath(`${import.meta.url }/../iem.mjs`) ;
+  return runExpoMode(args[0]) ;
 }
+
+
 
 
 
