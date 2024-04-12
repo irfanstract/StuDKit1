@@ -52,7 +52,7 @@ import {
     )) ;
 
     // TODO
-    if (1) {
+    if (0) {
       const win = initMainChildWindow() ;
       win.loadURL(`data:text/html,<title>not serving the client app</title><body><h1>error, not serving the client app</h1>`) ;
       return ;
