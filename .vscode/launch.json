@@ -13,7 +13,9 @@
       "cwd": "${workspaceFolder}/packages/studk-demos",
       "runtimeArgs": [
         "run",
-        "dev"
+        "dev",
+        // "--",
+        // "--help",
       ],
       "runtimeExecutable": "npm",
       "skipFiles": [

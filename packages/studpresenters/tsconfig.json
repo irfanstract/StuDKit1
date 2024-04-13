@@ -13,11 +13,12 @@
     "rootDir": "src" ,
   },
   "references": [
-    { "path": "../typexpe-commons"      , } ,
-    { "path": "../studk-fwcore"         , } ,
-    { "path": "../studk-video-fwcore"   , } ,
-    { "path": "../studk-audio-fwcore"   , } ,
-    { "path": "../studk-dom-mediarecorder"   , } ,
+    { "path": "../../packages/typexpe-commons"      , } ,
+    { "path": "../../packages/studk-fwcore"         , } ,
+    { "path": "../../packages/studk-simulations-commons", } ,
+    { "path": "../../packages/studk-video-fwcore"   , } ,
+    { "path": "../../packages/studk-audio-fwcore"   , } ,
+    { "path": "../../packages/studk-dom-mediarecorder"   , } ,
     // { "path": "../../packages/studpresenters"       , } ,
   ] ,
   "include": [

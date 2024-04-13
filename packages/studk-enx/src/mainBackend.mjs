@@ -11,6 +11,8 @@ import { pathToFileURL, } from 'node:url' ;
 
 import { exec, execSync, spawnSync, } from 'node:child_process';
 
+import { buildShRefFromStringArray, } from './shUtil.mjs' ;
+
 
 
 
@@ -51,13 +53,18 @@ async function startBackendOnPort(/** @type {Number} */ port)
       } ;
     }
     {
+      let dropNpxPrefix = true ;
+
       shallRunNpxNextJsHelpAfterSubplatformAndEtcConfig &&
       execSync(`npx next --help`, {
         stdio: "inherit",
       } ) ;
     
       return {
-        cm: `npx next dev --port ${port}`
+        cm: (
+          // `npx next dev --port ${port}`
+          buildShRefFromStringArray([dropNpxPrefix ? null : "npx", "next", "dev", "--port", String(port), ])
+        )
         ,
       } ;
     }

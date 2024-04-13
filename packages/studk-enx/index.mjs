@@ -4,6 +4,8 @@ import { reiterable } from 'typexpe-commons/src/common_sv1.mjs';
 
 import { fileURLToPath, pathToFileURL, } from 'node:url' ;
 
+import { shUtilArgParse, getAppArgs, } from './src/shUtil.mjs';
+
 import { isMainModuleByMeta } from 'typexpe-commons/src/isImportMetaObjForMainModule.mjs';
 
 import { execSync, spawnSync, } from 'node:child_process';
@@ -23,7 +25,9 @@ if ((
   console.warn(`'studk-enx' invoked as main module`) ;
   console.warn(`['studk-enx'] evaluating 'shMainImpl()'`) ;
   ;
-  shMainImpl(process.argv.slice(2) ) ;
+  shMainImpl((
+    getAppArgs()
+  ) ) ;
 }
 else {
   ;

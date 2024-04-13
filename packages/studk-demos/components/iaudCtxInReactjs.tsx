@@ -55,7 +55,7 @@ export const iAudCreateAndConnect = (
 export const simuls = {
   //
   BEEP: (
-    DWGN_DROPLIKESND(({ ctx: c, dest: gn, t, }) => {
+    DWGN(({ ctx: c, dest: gn, t, }) => {
       ;
 
       {

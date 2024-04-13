@@ -34,8 +34,6 @@
     ,
     "runDevServer": "next dev"
     ,
-    "runDevApp101": "npm exec --package=studk-enx -- start"
-    ,
     "runDevApp102": "node ../../node_modules/studk-enx/index.mjs"
   }
 }

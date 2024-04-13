@@ -14,7 +14,11 @@ import {  } from 'node:os';
 
 
 
-import { runExpoMode, } from './launching1.mjs';;
+import {
+  runExpoMode,
+  runExpoModeHelpDump,
+  specifiesNoAppMode ,
+} from './launching1.mjs';;
 
 export { shMainImpl, } ;
 
@@ -24,41 +28,27 @@ export { shMainImpl, } ;
  */
 function shMainImpl( args)
 {
-  const { main: a, config: configFlags, } = shUtilArgParse(args) ;
-  if (configFlags.includes("--help") || configFlags.includes("-h") )
+  const parsedArgs = shUtilArgParse(args) ;
+  console["log"]({ parsedArgs, }) ;
+
+  if (parsedArgs.preConfig.some(s => isAcceptableHelpModeSwitch(s) ) )
   {
     ;
     return (
-      console["info"]((
-        util.stringLinesConcat(function* () {
-          yield `Expo For JS App` ;
-          yield `Usage:` ;
-          yield `  run from a directory assumed to be the root-dir of ur app src-tree.` ;
-          yield ` ` ;
-        } )
-      ))
+      runExpoModeHelpDump()
     ) ;
   }
-  return runExpoMode(a[0]) ;
+  return (
+    runExpoMode(parsedArgs.main[0] , {
+      noAppMode: parsedArgs.preConfig.some(x => specifiesNoAppMode(x) )
+      ,
+      originalArgs: parsedArgs.main
+      ,
+    } )
+  ) ;
 }
 
-/** @type {(x: String[]) => { readonly main: string[], readonly config: string[] }} */ 
-function shUtilArgParse(args)
-{
-  ;
-  if (args[0]?.match(/^\-/g) )
-  {
-    const { main, config: remainingConfigFlags, } = shUtilArgParse(args.slice(1) ) ;
-    return {
-      main: main,
-      config: [args[0], ...remainingConfigFlags ] ,
-    } ;
-  }
-  return {
-    main: args ,
-    config: [] ,
-  } ;
-}
+import { shUtilArgParse, isAcceptableHelpModeSwitch, } from './shUtil.mjs';
 
 
 

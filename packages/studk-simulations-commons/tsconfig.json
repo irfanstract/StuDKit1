@@ -20,6 +20,5 @@
   // ],
   "references": [
     { "path": "../../packages/typexpe-commons", } ,
-    { "path": "../../packages/studk-simulations-commons", } ,
   ] ,
 }
