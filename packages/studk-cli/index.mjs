@@ -6,7 +6,7 @@ import { pathToFileURL, } from 'node:url' ;
 
 import { isMainModuleByMeta } from 'typexpe-commons/src/isImportMetaObjForMainModule.mjs';
 
-import { bashMainImpl } from './src/cli-main.mjs';
+import { spclShMainImpl } from './src/cli-main.mjs';
 
 
 
@@ -22,7 +22,7 @@ if ((
   console.warn(`'typexpe-cli' invoked as main module`) ;
   0 && console.warn(`['typexpe-cli'] evaluating 'startReadEvalLoop()'`) ;
   ;
-  bashMainImpl(process.argv.slice(2) ) ;
+  spclShMainImpl(process.argv.slice(2) ) ;
 }
 else {
   ;

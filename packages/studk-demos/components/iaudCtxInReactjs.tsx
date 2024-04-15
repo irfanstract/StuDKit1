@@ -66,22 +66,31 @@ export const simuls = {
       }
     } )
   ) ,
-  BEATDROP: (
-    DWGN_DROPLIKESND(({ ctx: c, dest: gn, t, }) => {
-      ;
-
-      const o = iAudCreateAndConnect(gn, OscillatorNode, c ) ;
-      o.start(t ) ;
-      o.stop (t + 35.5 ) ;
+  BEATDROP: (() => {
+    const {
+      ampTCoef ,
+      pitchTCoef ,
+    } = {
+      ampTCoef: 1.8 ,
+      pitchTCoef: 2.3 ,
+    } ;
+    return (
+      DWGN_DROPLIKESND(({ ctx: c, dest: gn, t, }) => {
+        ;
   
-      o.frequency.setValueAtTime((
-        (x => ((2 ** (x / 12 ) ) * 55 ) )(7 )
-      ) , 0 ) ;
-  
-      o.detune.setValueAtTime(0, 0 ) ;
-      o.detune.setTargetAtTime(-12 * 100 , t, 2 ) ;
-    } , { tCoef: 0.5, } )
-  ) ,
+        const o = iAudCreateAndConnect(gn, OscillatorNode, c ) ;
+        o.start(t ) ;
+        o.stop (t + 35.5 ) ;
+    
+        o.frequency.setValueAtTime((
+          (x => ((2 ** (x / 12 ) ) * 55 ) )(7 )
+        ) , 0 ) ;
+    
+        o.detune.setValueAtTime(0, 0 ) ;
+        o.detune.setTargetAtTime(-12 * 100 , t, pitchTCoef ) ;
+      } , { tCoef: ampTCoef, } )
+    ) ;
+  } )() ,
   BASSDRUM: (
     DWGN_DROPLIKESND(({ ctx: c, dest: gn, t, }) => {
       ;

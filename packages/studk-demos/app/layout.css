@@ -1,0 +1,56 @@
+
+
+
+
+
+
+
+
+
+/* equivalent to ((32 + 8)em ), but we can't use `px` so we assume per `em` is `16px` */
+
+.strl-d2 {
+  flex: 1 1 32em !important;
+}
+.strl-exploringAndOutline {
+  display: flex !important;
+  flex-direction: column-reverse !important;
+}
+.strl-exploringAndOutline > * {
+  flex: 1 1 auto !important ;
+}
+@media (max-width: 800px)
+{  
+  .strl-d2 {
+    flex: 1 1 28em !important;
+  }
+}
+@media (max-width: 720px)
+{  
+  .strl-d2 {
+    flex: 1 1 24em !important;
+  }
+}
+@media (max-width: 640px)
+{  
+  .strl-d1 {
+    flex-direction: column !important;
+  }
+  .strl-exploringAndOutline {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
