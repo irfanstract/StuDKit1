@@ -325,6 +325,17 @@ export function linTrRotation3DForXConZMat(...[ang] )
   ) ;
 }
 
+// TODO
+// /**
+//  * 
+//  * @param {[Angle, Angle] } args
+//  */
+// export function linTrRotation3DForCustomAxisMat(...[vAng, baseAng] )
+// {
+//   return (
+//   ) ;
+// }
+
 /**
  * 
  * @type {(x0: LinTr2D, x1: LinTr2D) => LinTr2D }

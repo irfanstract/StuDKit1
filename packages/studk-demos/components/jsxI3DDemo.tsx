@@ -74,18 +74,28 @@ function xTransformedly(...[tr, pts] : [LinTr3DMat, readonly (Point3D | null)[]]
 function xBall(...[
   pos,
   r = 0.35,
+  { grnInDeg = 22.5, } = {} ,
 ] : [
-  pos: Point3D,
-  r ?: number,
+  ...[
+    pos: Point3D,
+    r ?: number,
+  ] ,
+  opts ?: {
+    grnInDeg ?: number ,
+  } ,
 ]){
   return (
     new I3D.PolygonallyMarkedNodeUnitGraph([
       ...(
-        xEquilateralPolygon(pos, "xConY", r, { granularityInDegrees: 22.5, } )
+        xEquilateralPolygon(pos, "xConY", r, { granularityInDegrees: grnInDeg, } )
         .points
       ) ,
       ...(
-        xEquilateralPolygon(pos, "xConZ", r, { granularityInDegrees: 22.5, } )
+        xEquilateralPolygon(pos, "yConZUnisigned", r, { granularityInDegrees: grnInDeg, } )
+        .points
+      ) ,
+      ...(
+        xEquilateralPolygon(pos, "xConZ", r, { granularityInDegrees: grnInDeg, } )
         .points
       ) ,
     ])
@@ -100,7 +110,7 @@ function xEquilateralPolygon(...[
 ] : [
   pos: Point3D,
   ...[
-    md?: keyof { xConY, xConZ } ,
+    md?: I3D.CartesOrthoFaceAngle ,
   ] ,
   r : number,
   options: { granularityInDegrees: number, } ,
@@ -111,6 +121,7 @@ function xEquilateralPolygon(...[
         ;
         for (const a of (
           util.range(0, 360, granularityInDegrees )
+          .map(v => Angle.ByDegrees(v) )
         ) )
         {
           ;
@@ -136,7 +147,7 @@ function xEquilateralTriangle(...[
   r = 0.35,
 ] : [
   pos: Point3D,
-  md: keyof { xConY, xConZ } ,
+  md: I3D.CartesOrthoFaceAngle ,
   r ?: number,
 ])
 {
@@ -186,7 +197,7 @@ export const I3DDemo = function I3DDemoComp() {
         ) ;
         for (const { x, z, y, } of pts )
         {
-          yield xEquilateralPolygon({ x, z, y, }, undefined, 0.05, { granularityInDegrees: 90, } ) ;
+          yield xBall({ x, z, y, }, 0.05, { grnInDeg: 90, } ) ;
         }
       } ) ,
       ...[

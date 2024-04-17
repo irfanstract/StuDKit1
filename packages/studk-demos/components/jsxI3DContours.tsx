@@ -26,6 +26,7 @@ import {
 import {
   //
   LinTr3D ,
+  linTrConcat3DMat,
   linTrFromTranslateCoord3Matr,
   linTrRotation3DForXConYMat,
   linTrRotation3DForXConZMat,
@@ -128,13 +129,22 @@ namespace I3D
   { return linTrRotation3DForXConZMat(ang) ;
   }
 
-  export function describeCartesOrthoRotationFwd(...[mde, ang]: [keyof { xConY, xConZ }, Angle] ) : Matrix4
+  export function describeCartesOrthoRotationFwd(...[mde, ang]: [CartesOrthoFaceAngle, Angle] ) : Matrix4
   {
     switch (mde) {
       case 'xConY': return linTrRotation3DForXConYMat(ang) ; ;
       case 'xConZ': return linTrRotation3DForXConZMat(ang) ; ;
+      case 'yConZUnisigned': return linTrConcat3DMat(linTrRotation3DForXConYMat(Angle.ByDegrees(-90 ) ), linTrRotation3DForXConZMat(ang) ) ; ;
+      default: return util.throwTypeError(`unsupported ${JSON.stringify({ mde, }) }`) ;
     }
+    return util.throwAssertionError() ;
   }
+
+  export type CartesOrthoFaceAngle = keyof {
+    // @ts-ignore
+    xConY, xConZ, yConZUnisigned,
+  } ;
+  export const CartesOrthoFaceAngle = {} ;
 
   ;
 }

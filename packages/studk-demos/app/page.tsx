@@ -81,12 +81,12 @@ export default function App()
               { renderPictureCard({
                 titleElem: (
                   <p>
-                    The StuDK Audio Pipeline Demo App Screenshot
+                    The StuDK Audio Pipeline Demo App
                   </p>
                 ) ,
                 contents: (
                   <Image
-                  alt="The StuDK Audio Pipeline Demo App Screenshot"
+                  alt="The StuDK Audio Pipeline Demo App"
                   src={iIAudAppScreenshotUrl }
                   width={250}
                   height={250}
@@ -98,9 +98,22 @@ export default function App()
           </li>
           <li>
             <Link href="/i3d" >
-              <p>
-              I3D (unfinished)
-              </p>
+              { renderPictureCard({
+                titleElem: (
+                  <p>
+                    I3D (unfinished)
+                  </p>
+                ) ,
+                contents: (
+                  <Image
+                  alt="The I3D Demo App"
+                  src={iI3DDemoAppScreenshot }
+                  width={250}
+                  height={250}
+                  priority={false}
+                  />
+                ) ,
+              }) }
             </Link>
           </li>
           </ul>
@@ -128,6 +141,8 @@ export default function App()
 } ;
 
 import iIAudAppScreenshotUrl from "@/components/spcl/IAudAppScreenshot.png" ;
+
+import iI3DDemoAppScreenshot from "@/components/spcl/I3DDemoAppScreenshot.png" ;
 
 
 
