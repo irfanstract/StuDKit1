@@ -50,13 +50,19 @@ import {
 namespace I3D
 {
   ;
+  
+  export class SpclDisplayable
+  extends Object
+  {
+    //
+  }
 
   /**
    * an array of {@link I3D.NodeUnitGraph} (each or `null` to avoid issues with DOM-diffing)
    * 
    */
   export class IndividuallyMarkedNodeList
-  extends Object
+  extends SpclDisplayable
   {
     /**
      * caveat:
@@ -157,13 +163,13 @@ export { I3D , } ;
 
 
 export const I3DFullMeshPerspDisplay = function I3DFullMeshGraphPerspDisplayComp({ content: cont, perspective: finalPersp, } : {
-  content: I3D.IndividuallyMarkedNodeList
+  content: I3D.SpclDisplayable
   ,
   perspective: Matrix4,
 })
 {
 
-  const describeNdUnitJsxContour = function (...[key, { zDepth: zDepthArg, }, gr]: [key: string, options: {
+  const describeJsxNdUnitContour = function (...[key, { zDepth: zDepthArg, }, gr]: [key: string, options: {
     zDepth ?: number ;
   }, content: React.ReactElement | null ] ) {
     ;
@@ -175,105 +181,128 @@ export const I3DFullMeshPerspDisplay = function I3DFullMeshGraphPerspDisplayComp
     ) ;
   } ;
 
-  const renderedContours = (
-    cont.posAll
-    .map((ndUnit, contourI) => {
-      ;
+  // TODO
+  function describeJsxRenderedContour(...[itemKey, ndUnit] : [key: string, v: I3D.PolygonallyMarkedNodeUnitGraph ] )
+  {
+    ;
 
-      const itemKeyingPrefix = `e ${contourI}`;
+    type KXY = keyof { x, y } ;
 
-      if (ndUnit === null ) {
+    const pts = (
+      util.asNonlocalReturnBasedRun<readonly { [k in KXY ]: number ; }[] , false>(ctx => (
+        ndUnit
+        .points
+        .map(pos => (
+          linTrTransformedPosition3DMat(finalPersp, pos )
+        ))
+        .map(pos => ({
+          x: pos.x / Math.max(0, pos.z ) ,
+          y: pos.y / Math.max(0, pos.z ) ,
+        }) )
+        .map(pos => ({
+          x: pos.x * 120 ,
+          y: pos.y * 120 ,
+        }) )
+        .flatMap((e, i, seq): ([] | [{ [k in KXY ]: number ; }] ) => {
+          if (!(`${e.x} ${e.y}`.match(/Inf|NaN/g) ) )
+          {
+            return [e] ;
+          }
+          if (0)
+          {
+            {
+              const v = seq[i + 1] ;
+              if (v) { return [v] ; }
+            }
+            return [{ x: 0, y: 0, }]  ;
+          }
+          if (1) {
+            ctx.exit(false) ;
+          }
+          return [] ;
+        } )
+      ) )
+    ) ;
+    const ctgr = (
+      pts ? (
+        <path
+        d={
+          pts.length ?
+          `M ${pts.map(pos => `${pos.x } ${pos.y }` ).join(" L ") } z`
+          : "M 0 0 z"
+        }
+        style={{ fill: ndUnit.fill ?? "yellow", }}
+        />
+      ) : null
+    ) ;
+    const keyImpl = (
+      itemKey
+    ) ;
+    return (
+      describeJsxNdUnitContour((
+        keyImpl
+      ), {
+        zDepth: ndUnit.points[0]?.z ,
+      }, (
+        <g>
+        <title>{ keyImpl }</title>
+        { ctgr }
+        </g>
+      ) )
+    ) ;
+  }
+
+  if (cont instanceof I3D.IndividuallyMarkedNodeList )
+  {
+    const renderedContours = (
+      cont.posAll
+      .map((ndUnit, contourI) => {
         ;
-        /* `null`. */
-        return (
-          <React.Fragment key={`${itemKeyingPrefix} (null)`} />
-        ) ;
-      }
-      else {
-        ;
-
-        if (ndUnit instanceof I3D.PolygonallyMarkedNodeUnitGraph)
-        {
-          const pts = (
-            util.asNonlocalReturnBasedRun<readonly { [k in keyof { x, y } ]: number ; }[] , false>(ctx => (
-              ndUnit
-              .points
-              .map(pos => (
-                linTrTransformedPosition3DMat(finalPersp, pos )
-              ))
-              .map(pos => ({
-                x: pos.x / Math.max(0, pos.z ) ,
-                y: pos.y / Math.max(0, pos.z ) ,
-              }) )
-              .map(pos => ({
-                x: pos.x * 120 ,
-                y: pos.y * 120 ,
-              }) )
-              .flatMap((e, i, seq): ([] | [{ [k in keyof { x, y } ]: number ; }] ) => {
-                if (!(`${e.x} ${e.y}`.match(/Inf|NaN/g) ) )
-                {
-                  return [e] ;
-                }
-                if (0)
-                {
-                  {
-                    const v = seq[i + 1] ;
-                    if (v) { return [v] ; }
-                  }
-                  return [{ x: 0, y: 0, }]  ;
-                }
-                if (1) {
-                  ctx.exit(false) ;
-                }
-                return [] ;
-              } )
-            ) )
-          ) ;
-          const keyImpl = (
-            `${itemKeyingPrefix} (PolygonallyMarkedNodeUnitGraph)`
-          ) ;
+  
+        const itemKey = `e ${contourI}`;
+  
+        if (ndUnit === null ) {
+          ;
+          /* `null`. */
           return (
-            describeNdUnitJsxContour((
-              keyImpl
-            ), {
-              zDepth: ndUnit.points[0]?.z ,
-            }, (
-              <g>
-              <title>{ keyImpl }</title>
-              { pts ? (
-                <path
-                d={
-                  pts.length ?
-                  `M ${pts.map(pos => `${pos.x } ${pos.y }` ).join(" L ") } z`
-                  : "M 0 0 z"
-                }
-                style={{ fill: ndUnit.fill ?? "yellow", }}
-                />
-              ) : null }
-              </g>
-            ) )
+            <React.Fragment key={itemKey} />
           ) ;
         }
-
-        /* it's not supported. */
-        return (
-          <React.Fragment key={`${itemKeyingPrefix} (Unsupported Type )`} >
-            <g />
-          </React.Fragment>
-        ) ;
-      }
-    } )
-  ) ;
-
-  const rc = (
-    <g>
-      { renderedContours }
-    </g>
-  ) ;
+        else {
+          ;
+  
+          if (ndUnit instanceof I3D.PolygonallyMarkedNodeUnitGraph)
+          {
+            return (
+              describeJsxRenderedContour(itemKey, ndUnit)
+            ) ;
+          }
+  
+          /* it's not supported. */
+          return (
+            <React.Fragment key={itemKey} >
+              <g />
+            </React.Fragment>
+          ) ;
+        }
+      } )
+    ) ;
+  
+    const rc = (
+      <g>
+        { renderedContours }
+      </g>
+    ) ;
+  
+    return (
+      <g>
+        { rc } 
+      </g>
+    ) ;
+  }
 
   return (
     <g>
-      { rc } 
     </g>
   ) ;
 } ;
@@ -312,7 +341,15 @@ export const I3DFullSceneFigureDisplay = function I3DFullSceneFigureDisplayComp(
   })() ;
 
   return (
-    <svg viewBox="-200 -100 400 200">
+    <svg
+    viewBox={(
+      (() => {
+        const r = 50 ;
+        const asp = 2.25 ;
+        return `${-1 * asp * r} ${-1 * 1 * r} ${2 * asp * r} ${2 * r } ` ;
+      } )()
+    )}
+    >
       <path d={`M -8000 -8000 H 8000 V 8000 H -8000 z ` } fill="black" />
       <g>
         <I3DFullMeshPerspDisplay perspective={finalPersp} content={cont} />

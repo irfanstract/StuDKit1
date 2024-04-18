@@ -197,7 +197,7 @@ export const I3DDemo = function I3DDemoComp() {
         ) ;
         for (const { x, z, y, } of pts )
         {
-          yield xBall({ x, z, y, }, 0.05, { grnInDeg: 90, } ) ;
+          yield xBall({ x, z, y, }, 0.05, { grnInDeg: 52, } ) ;
         }
       } ) ,
       ...[

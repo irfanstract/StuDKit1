@@ -6,6 +6,11 @@ import * as React from "react" ;
 
 
 
+/* import needs to be pre/repeated preceding the imports of component defs, as work-around to the naive approach the platform takes to bundle CSS */
+// console["log"](new Error("l") ) ;
+import "@/public/global.css" ;
+import "@/appInternalScripts/env" ;
+
 import {
   SingleChildDiv,
 } from "@/components/SingularComponent1"; ;
@@ -19,6 +24,8 @@ import { NavigateBackButton, } from "@/components/NavigateButtons"; ;
 
 
 import "@/appInternalScripts/env" ;
+
+import { allFontsAliasingVars, } from "./fonts" ;
 
 import "./layout.css" ;
 
@@ -38,11 +45,14 @@ export default function RootLayout({
   return (
     <html lang="en" style={{ }}>
       <body
+      className={` `}
       style={{
         padding: 0,
         margin: 0,
         maxWidth: `100vw`,
         overflowX: "clip",
+        ...(allFontsAliasingVars)
+        ,
       }}
       >
       <MainAndNavAndFinaleC
@@ -97,18 +107,24 @@ export default function RootLayout({
                 </div>
               ) }
               outline={(
-                <div>
-                <p>
-                  ⛳ In This Article
-                </p>
-                </div>
+                describeHeadlinedWidget({
+                  heading: (
+                    <span>
+                      ⛳ In This Article
+                    </span>
+                  ) ,
+                  children: <div/> ,
+                })
               )}
               exploring={(
-                <div>
-                <p>
-                  ↗⛰⛱ Explore
-                </p>
-                </div>
+                describeHeadlinedWidget({
+                  heading: (
+                    <span>
+                      ↗⛰⛱ Explore
+                    </span>
+                  ) ,
+                  children: <div/> ,
+                })
               )}
               />
             </div>
@@ -155,6 +171,12 @@ export default function RootLayout({
     </html>
   )
 }
+
+import {
+  pagesConventions,
+  describeHeadlinedWidget ,
+} from "@/appInternalScripts/appPagesConvention"; ;
+
 
 
 const ChildrenAndOutlineAndExploring = (...[{ children, outline: outlinePane, exploring: exploringPane, }] : [{ children: (React.ReactNode & {} ) | null, outline?: React.ReactElement, exploring?: React.ReactElement, }]) => {
