@@ -28,18 +28,34 @@ except for the React-specific stuffs since
 for now they'll only be used for the apps written for Vite or Next anyway;
 use `npx --yes ts-node` to run such src files.
 
-### the package `studk-demos` nested in `packages`
+### the packages located in [`./packages`](./packages/) and their structures
+
+the StuDK deliverables nested in directory `packages`
+
+#### `studk-util`
+
+level-1 infrastructure.
+
+#### `studk-ui`
+
+`studk-ui`
+
+in contrast to the general recommendation of avoiding extra 'manually click to build' step,
+a subset of the source files there
+will only be used for apps written for Vite or Next, so
+one should use TypeScript for that ;
+use `npx --yes ts-node` to run such src files.
+
+#### `studk-demos`
 
 its `package.json` has `script` entry `dev` to run the dev server; if started, it should report the URL which u should then open.
 you should then see some showcases; they're mostly stuffs building on these packages developed here in this monorepo.
 
-it builds on Next(JS). all source-codes were TS.
-
-### StuDK deliverables nested in `packages`
-
-the StuDK deliverables nested in directory `packages`
-
-#### `studk-demos`
+for now
+the source files
+will only be used for the apps written for Vite or Next anyway, so
+one should use TypeScript for that ;
+use `npx --yes ts-node` to run such src files.
 
 #### `studpresenters`
 
@@ -55,21 +71,22 @@ infrastructure for simulations.
 as you keep making contribs to this package
 be sure to keep the checklist in [`README.md`](./README.md) updated.
 
-#### the `typexpe-commons` packages
+#### `studk-dom-util`
 
-this one package was pulled here from onea my other codebase.
-the naming of the stuffs defined there seems rather arbitrary.
-in future this pkg may get externalised away from this monorepo.
-because this package is anticipated to go away,
-avoid making significant amount of breaking changes
-unless it's to fix the naming issues.
+utility concerning DOM API(s).
+
+server-side usage of this
+will need installing `jsdom` etc or switching to Electron
+.
 
 #### the `studk-yyy-fwcore` packages
 
 internal package defining the conventions across the packages there.
 internal only.
 
-### the package `typexpe-commons` nested in `packages`
+#### the `typexpe-commons` packages
+
+__do not confuse with `studk-util`.__
 
 this one package was pulled here from onea my other codebase.
 the naming of the stuffs defined there seems rather arbitrary.
