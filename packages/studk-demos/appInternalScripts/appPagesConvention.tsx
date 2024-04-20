@@ -42,6 +42,14 @@ namespace pagesConventions { ; }
 
 namespace pagesConventions
 {
+  /*
+   * 
+   * TODO update this to
+   * reflect the discussions
+   * https://css-tricks.com/document-outline-dilemma/ and
+   * https://github.com/whatwg/html/issues/83 and https://github.com/whatwg/html/pull/3499 
+   * 
+   */
   export function describeArticlePage(...[{ heading, children, ...prps }] : [{
     heading: React.ReactElement,
     children: React.ReactElement | React.ReactElement[] ,

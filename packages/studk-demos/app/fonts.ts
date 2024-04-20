@@ -28,43 +28,18 @@ import { range } from 'lodash-es'; ;
 
 
 import {
-  Inter ,
-  Outfit ,
-  Poppins ,
+  INTER,
+  OUTFIT,
+  POPPINS,
+} from "@/appInternalScripts/fonts" ;
+
+import {
+  // Inter ,
+  // Outfit ,
+  // Poppins ,
 } from 'next/font/google' ;
 
-export const INTER = Inter({
-  variable: '--font-inter',
-  subsets: [
-    'latin',
-    'latin-ext',
-    'cyrillic',
-    'cyrillic-ext',
-    'greek',
-    'greek-ext',
-    'vietnamese',
-  ] ,
-}) ;
-
-export const OUTFIT = Outfit({
-  variable: '--font-outfittt',
-  subsets: [
-    'latin',
-    'latin-ext',
-    // 'cyrillic',
-    // 'cyrillic-ext',
-  ] ,
-}) ;
-
-/* "values must be explicitly written literals", can't use ranges */
-export const POPPINS = Poppins({
-  variable: '--font-poppins',
-  subsets: [
-    "latin",
-    "latin-ext",
-  ] ,
-  weight: ['200','300','400','500','600','700','800','900' ] ,
-}) ;
+export { INTER, OUTFIT, POPPINS, } ;
 
 
 
@@ -76,16 +51,11 @@ const allFonts = {
   POPPINS ,
 } ;
 
+export { allFonts, } ;
 
-export const allFontsAliasingVars = (
-  Object.fromEntries((
-    Object.entries(allFonts)
-    .map(([k, v]) => (
-      [`--font-${k.toLowerCase() }`, v.style.fontFamily ] as const
-    ) )
-    .map(e => e)
-  ))
-) as import('react').CSSProperties ;
+
+
+export default allFonts ;
 
 
 

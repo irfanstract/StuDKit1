@@ -13,9 +13,20 @@
 
 
 
-## `packages`
+## [`./packages`](./packages/)
 
 all deliverable packages go to `packages`.
+
+as you keep making contributions to the packages
+be sure to keep updating the corresponding overview "packages" in [`README.md`](./README.md) including the completion checklists
+
+except as otherwise noted
+all source-code were Type-Checked JS.
+this
+is necessary to allow loading the packages natively in Node without needing to "manually first searching, reaching and hiting the 'build' button".
+except for the React-specific stuffs since
+for now they'll only be used for the apps written for Vite or Next anyway;
+use `npx --yes ts-node` to run such src files.
 
 ### the package `studk-demos` nested in `packages`
 
@@ -26,14 +37,144 @@ it builds on Next(JS). all source-codes were TS.
 
 ### StuDK deliverables nested in `packages`
 
-except as otherwise noted
-all source-code were Type-Checked JS.
+the StuDK deliverables nested in directory `packages`
 
-prefer `.mjs` ext(s); see "Coding Conventions" below.
+#### `studk-demos`
+
+#### `studpresenters`
+
+infrastructure for presentation slides.
+
+as you keep making contribs to this package
+be sure to keep the checklist in [`README.md`](./README.md) updated.
+
+#### `studk-simulations-commons`
+
+infrastructure for simulations.
+
+as you keep making contribs to this package
+be sure to keep the checklist in [`README.md`](./README.md) updated.
+
+#### the `typexpe-commons` packages
+
+this one package was pulled here from onea my other codebase.
+the naming of the stuffs defined there seems rather arbitrary.
+in future this pkg may get externalised away from this monorepo.
+because this package is anticipated to go away,
+avoid making significant amount of breaking changes
+unless it's to fix the naming issues.
+
+#### the `studk-yyy-fwcore` packages
+
+internal package defining the conventions across the packages there.
+internal only.
 
 ### the package `typexpe-commons` nested in `packages`
 
-this one package was pulled here from onea my other codebase. in future this pkg may get externalised away from this monorepo.
+this one package was pulled here from onea my other codebase.
+the naming of the stuffs defined there seems rather arbitrary.
+in future this pkg may get externalised away from this monorepo.
+because this package is anticipated to go away,
+avoid making significant amount of breaking changes
+unless it's to fix the naming issues.
+
+
+
+
+## Package Dependencies Concerns
+
+### the versions of the depended-on packages
+
+things to consider
+when it comes to
+the versions of the depended-on packages
+
+#### when specifying dependencies, avoid tag `latest`
+
+when it comes to packages,
+tag `latest` is volatile -
+running `npm install` at different times would yield different major versions, thereby a breaking change
+
+instead,
+specify exact version together with prefix `^`,
+so you get one like `^20.11.17`, etc.
+(you can also omit the prefix `^`, but this will prevent automatic upgrade so it's not recommended)
+
+suggestion:
+```diff json
+{
+    "devDependencies": {
+        "@types/chai": "^4.3.12"
+        "@types/mocha": "^10.0.6",
+-       "@types/node": "latest",
++       "@types/node": "^20.11.17",
+-       "@types/which": "latest",
++       "@types/which": "^3.0.3",
+        "hereby": "^1.8.9",
+    },
+    "dependencies": {
+        "chai": "^4.4.1",
+        "chalk": "^4.1.2",
+-       "chokidar": "latest",
++       "chokidar": "^3.6.0",
+-       "glob": "latest",
++       "glob": "^10.3.10",
+        "jsonc-parser": "^3.2.1",
+    },
+}
+```
+
+#### when to use `^`, when to not
+
+you can also omit the prefix `^`, but this will prevent automatic upgrade so it's not recommended
+
+however,
+in a small nomber of cases of strict deployment constraints
+exact pinning of versions (by omitting the prefix `^`)
+may be necessary
+
+### installing dependencies via `npm install <packages>` will *naively reformat `package.json` in Git-unfriendly way*; instead, add into [`package.json`](./package.json) first and then run `npm install`
+
+installing dependencies via `npm install <packages>`
+will [*naively reformat `package.json` in Git-unfriendly way*](https://stackoverflow.com/questions/24852116/what-exactly-is-a-merge-conflict).
+
+```
+npm install chokidar glob@10  ❌❌ don't do this
+```
+
+instead,
+add into [`package.json`](./package.json) first and then run `npm install` (ie NPM `install` without arguments)
+.
+
+```diff json
+{
+    "devDependencies": {
++       "@esfx/canceltoken": "^1.0.0",
+        "@types/chai": "^4.3.12",
+        "@types/minimist": "^1.2.5",
+        "@types/mocha": "^10.0.6",
+        "@types/ms": "^0.7.34",
+        "@types/node": "latest",
++       "@types/which": "^3.0.3",
+        "hereby": "^1.8.9",
++       "esbuild": "^0.20.1"
+    },
+    "dependencies": {
++       "@esfx/canceltoken": "^1.0.0",
+        "chai": "^4.4.1",
++       "chalk": "^4.1.2",
++       "chokidar": "^3.6.0",
++       "fast-xml-parser": "^4.3.5",
++       "glob": "^10.3.10",
+        "hereby": "^1.8.9",
+        "jsonc-parser": "^3.2.1",
+    },
+}
+```
+
+```
+npm install
+```
 
 
 
@@ -41,6 +182,13 @@ this one package was pulled here from onea my other codebase. in future this pkg
 ## Scripting Conventions
 
 conventions to be adhered when scripting
+
+except as otherwise noted
+all source-code were Type-Checked JS.
+this
+is necessary to allow loading the packages natively in Node without needing to "manually first searching, reaching and hiting the 'build' button".
+
+prefer `.mjs` ext(s); see "Coding Conventions" below.
 
 ### indentations should be 2 spaces (char `0x20`, *SPACE*)
 

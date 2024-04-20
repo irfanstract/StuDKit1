@@ -25,7 +25,7 @@ import { NavigateBackButton, } from "@/components/NavigateButtons"; ;
 
 import "@/appInternalScripts/env" ;
 
-import { allFontsAliasingVars, } from "./fonts" ;
+import { allFonts, } from "@/appInternalScripts/fonts" ;
 
 import "./layout.css" ;
 
@@ -45,14 +45,21 @@ export default function RootLayout({
   return (
     <html lang="en" style={{ }}>
       <body
-      className={` `}
+      className={(
+        [
+          ...(
+            [...Object.values(allFonts) ]
+            .map(fnt => fnt.variable )
+          )
+          ,
+        ]
+        .join(" ")
+      )}
       style={{
         padding: 0,
         margin: 0,
         maxWidth: `100vw`,
         overflowX: "clip",
-        ...(allFontsAliasingVars)
-        ,
       }}
       >
       <MainAndNavAndFinaleC

@@ -1,0 +1,19 @@
+{
+	"license": "MIT",
+	"version": "0.0.1"
+  ,
+	"dependencies": {
+		"core-js": "3.35.1"
+		,
+		"lodash-es": "^4.17.21"
+		,
+		"immutable": "^4.1.0"
+	}
+  ,
+	"devDependencies": {
+	}
+	,
+	"scripts": {
+		"test": "npx mocha"
+	}
+}
