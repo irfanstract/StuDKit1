@@ -12,6 +12,16 @@ import {
   useResource,
 } from "@/components/useEffectAlt";
 
+import {
+  NativeButton ,
+  Button ,
+} from "studk-ui/src/meta/react/dbc.tsx" ;
+console["log"]({ NativeButton, }) ;
+
+import dynamicComponent from "next/dynamic";
+
+import Link from "next/link";
+
 
 
 
@@ -74,10 +84,7 @@ export function IAudPage()
 
 
 
-import dynamicComponent from "next/dynamic";
-
-import Link from "next/link";
-
+;
 
 
 
@@ -90,15 +97,17 @@ function IAudStudioComp()
   return c ? (
     <div>
       <p>
-      <button type="button" >Running</button>
+      <Button onClick={false} >
+        Running
+      </Button>
       </p>
       <IAudStudioActiveComp c={c} />
     </div>
   ) : (
     <p>
-      <button type="button" onClick={e => initC(e.nativeEvent) } >
+      <Button onClick={e => initC(e.nativeEvent) } >
         Initialise
-      </button>
+      </Button>
     </p>
   ) ;
 }

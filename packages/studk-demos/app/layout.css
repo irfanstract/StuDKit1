@@ -1,5 +1,4 @@
 
-/* ☄☘☃↗ */
 
 
 
@@ -8,99 +7,11 @@
 
 
 
-/* equivalent to ((32 + 8)em ), but we can't use `px` so we assume per `em` is `16px` */
-
-.strl-d1 {
-  display: grid;
-  grid: "main exploringView" "main ." ;
-  grid-template-columns: 3fr 1fr ;
-  grid-template-rows: 92vh 1fr ;
-}
-.strl-d1 > :nth-child(1) { grid-area: main; }
-.strl-d1 > :nth-child(2) { grid-area: exploringView; }
-
-.strl-d1 {
-  overflow-x: clip;
-}
-
-.strl-exploringAndOutline {
-  display: grid;
-  grid: "a" "b";
-  height: 96vh;
-  position: sticky;
-  top: 2em;
-}
-
-.strl-exploringAndOutline {
-  display: flex;
-  flex-direction: column-reverse;
-}
-.strl-exploringAndOutline > * {
-  flex: 1 1 auto;
-}
-
-/* .strl-d1 {
-  display: flex;
-  flex-direction: row;
-}
-.strl-d1 > :nth-child(1) { flex: 1 1 33em ; }
-.strl-d1 > :nth-child(2) { flex: 1 1 11em ; }
-
-*/
-
-.strl-d2 {
-  min-height: 200vh ;
-}
 
 
-@media (max-width: 800px)
-{  
-}
-@media (max-width: 720px)
-{  
-}
 
-.strl-exploringAndOutline {
-  background: rgba(0 0 0 / 0.2);
-}
 
-@media (max-width: 640px)
-{  
-  .strl-d1 {
-    grid: "main" "exploringView" ;
-    grid-template-rows: auto ;
-  }
-  .strl-d1 {
-    /* display: flex; */
-    flex-direction: column ;
-  }
-  .strl-exploringAndOutline
-  {
-    flex-direction: column;
-  }
-  .strl-exploringAndOutline > *:not(:last-child)
-  {
-    display: none;
-  }
-}
 
-@media (max-width: 640px )
-{
-  .strl-exploringAndOutline {
-    background: rgba(0 0 0 / 0);
-  }
-}
-
-.strl-exploringAndOutline {
-  zoom: 81%;
-  padding: 0.5em;
-}
-
-.strl-exploringAndOutline {
-  background: rgba(0 0 0 / 0.82);
-  color: rgba(255 255 255 / 0.9);
-  border-radius: 0.3em ;
-}
 
 
 
@@ -115,10 +26,6 @@
 
 }
 
-.arbrd-d2 {
-  border-radius: 0.25em;
-}
-
 @media (min-width: 1024px)
 {  
   .arbrd-d1 {
@@ -128,9 +35,9 @@
 
 html {
   background: hsl(89.88deg 100% 11.5%) ;
+  color: white;
+  font-weight: 530;
 }
-
-
 
 
 

@@ -1,0 +1,32 @@
+
+
+
+
+
+
+
+
+@layer defaults {
+/* */
+
+.studk-ui-dbcj {
+  display: inline-block;
+  position: relative;
+  padding-block-end: 1.5ex;
+  padding-inline-end: 1.5ex;
+}
+
+.studk-ui-dbcb:not(:disabled)::before {
+  content: "⚾";
+  font-size: 75% ;
+  margin-inline-end: 0.5ex;
+  margin-block-end : 0.5ex;
+}
+
+}
+
+
+
+
+
+

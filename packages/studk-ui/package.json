@@ -13,8 +13,6 @@
 	"devDependencies": {
 	}
   ,
-	"type": "module"
-	,
 	"imports": {
 		"#currentPkg/*": "./*"
 	}

@@ -1,4 +1,9 @@
-name: Test Everything Including Stuffs Still Negative
+
+
+# note: to change/amend the workflow title, be sure to change the 'name' below as well!
+
+
+name: Run `npm test`, `tsc --build` in each in `packages`
 
 on:
   push:
@@ -23,7 +28,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Test Everything Including Stuffs Still Negative
+    - name: Run `npm test`, `tsc --build`, in each in `packages`
       run: |
         npm ci
         # npm install

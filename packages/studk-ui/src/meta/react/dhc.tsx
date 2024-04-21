@@ -1,4 +1,5 @@
 
+"use client" ;
 
 
 
@@ -19,6 +20,10 @@ import {
 
 
 import * as React from "react" ;
+
+import {
+  describeComponent,
+} from '#currentPkg/src/meta/react/dec.tsx'; ;
 
 
 
@@ -61,12 +66,10 @@ export function describeHeadlinedArticle(...[{ heading, children, ...prps }] : [
 
 
 
-export function describeComponent(...[a] : [(...args: [] ) => React.ReactElement] ): React.FC ;
-export function describeComponent<Props>(...[a] : [(...args: [props: Props] ) => React.ReactElement] ): React.FC<Props> ;
-export function describeComponent<Props>(...[a] : [(...args: [props: Props] | [] ) => React.ReactElement] )
-{
-  return a ;
-}
+export {
+  /** @deprecated */
+  describeComponent ,
+} ;
 
 
 

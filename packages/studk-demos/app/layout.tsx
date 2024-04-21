@@ -19,7 +19,10 @@ import { MainAndNavAndFinaleC, } from "@/components/mainAndAside" ;
 
 import Link from "next/link" ;
 
-import { NavigateBackButton, } from "@/components/NavigateButtons"; ;
+import {
+  NavigateBackButton,
+  NavigateForwardButton ,
+} from "@/components/NavigateButtons"; ;
 
 
 
@@ -70,12 +73,6 @@ export default function RootLayout({
 
           // ↗⛰⛱⛲⛳☸★
 
-          const articleWindowPaddingProps = {
-            //
-            paddingBlock: "2em 3em",
-            paddingInline: "0.51em 0.51em",
-          } satisfies React.CSSProperties ;
-
           return (
             //
             <div
@@ -84,57 +81,7 @@ export default function RootLayout({
               //
             }}
             >
-            <div
-            className="arbrd-d2"
-            style={{
-              background: "white",
-              color: "black",
-              //
-              boxShadow: "#0000002d 0 0 0.3em 0.3em" ,
-              borderRadius: "0.25em" ,
-              border: "0.05em solid black" ,
-              //
-              minWidth: "60vw",
-              minHeight: "60vh",
-              //
-              paddingBlock: articleWindowPaddingProps.paddingBlock,
-              paddingInline: articleWindowPaddingProps.paddingInline,
-            }}
-            >
-              <ChildrenAndOutlineAndExploring
-              children={(
-                <div
-                style={{
-                  display: "block flow-root",
-                  paddingInlineEnd: `2em` ,
-                  minBlockSize: "45em",
-                }}
-                >
-                  { children ?? null }
-                </div>
-              ) }
-              outline={(
-                describeHeadlinedWidget({
-                  heading: (
-                    <span>
-                      ⛳ In This Article
-                    </span>
-                  ) ,
-                  children: <div/> ,
-                })
-              )}
-              exploring={(
-                describeHeadlinedWidget({
-                  heading: (
-                    <span>
-                      ↗⛰⛱ Explore
-                    </span>
-                  ) ,
-                  children: <div/> ,
-                })
-              )}
-              />
-            </div>
+              { children ?? null }
           </div>
           ) ;
         } )()
@@ -169,6 +116,7 @@ export default function RootLayout({
                   </Link>
                   --
                   <NavigateBackButton />
+                  <NavigateForwardButton />
               </React.Fragment>
             </menu>
         </SingleChildDiv>
@@ -180,26 +128,17 @@ export default function RootLayout({
 }
 
 import {
+  SpclCurrentlyPathDisplay ,
+} from "./layoutComponents" ;
+
+import {
   pagesConventions,
   describeHeadlinedWidget ,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 
 
-const ChildrenAndOutlineAndExploring = (...[{ children, outline: outlinePane, exploring: exploringPane, }] : [{ children: (React.ReactNode & {} ) | null, outline?: React.ReactElement, exploring?: React.ReactElement, }]) => {
-  ;
-  return (
-    <div className="strl-d1">
-      <div className="strl-d2">
-        {children}
-      </div>
-      <div className="strl-exploringAndOutline">
-        { outlinePane }
-        { exploringPane }
-      </div>
-    </div>
-  ) ;
-} ;
+
 
 
 

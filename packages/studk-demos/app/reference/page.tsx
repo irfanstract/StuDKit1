@@ -19,8 +19,8 @@ import "@/appInternalScripts/env" ;
 
 
 export const metadata = {
-  title: 'StuDK',
-  description: 'StuDK.',
+  title: 'StuDK Reference Directory',
+  description: 'StuDK Reference Directory.',
 }
 
 function renderPictureCard(...[{ titleElem, contents, }] : [{ titleElem: React.ReactElement | string, contents: React.ReactElement | null, }])
@@ -50,7 +50,7 @@ export default function App()
     pagesConventions.describeArticlePage({
       heading: (
         <span>
-          This is StuDK
+          The StuDK Reference Directory
         </span>
       ) ,
       children: (
@@ -61,6 +61,30 @@ export default function App()
             developed to demonstrate what can be done with StuDK.
             The packages we're developing here in this monorepo
             are tried out in these demos.
+          </p>
+          <p>
+            This is
+            a demo app
+            developed to demonstrate what can be done with StuDK.
+            The packages we're developing here in this monorepo
+            are tried out in these demos.
+            This is
+            a demo app
+            developed to showcase various applets building on StuDK.
+            The packages we're developing here in this monorepo
+            are brought into usage in these demos.
+          </p>
+          <p>
+            This is
+            a demo app
+            developed to demonstrate what can be done with StuDK.
+            The packages we're developing here in this monorepo
+            are tried out in these demos.
+            This is
+            a demo app
+            developed to showcase various applets building on StuDK.
+            The packages we're developing here in this monorepo
+            are brought into usage in these demos.
           </p>
           <ul>
           <li>
@@ -81,11 +105,6 @@ export default function App()
                   />
                 ) ,
               }) }
-            </Link>
-          </li>
-          <li>
-            <Link href="/reference" >
-              StuDK Reference Directory
             </Link>
           </li>
           </ul>

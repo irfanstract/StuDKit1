@@ -19,8 +19,8 @@ import "@/appInternalScripts/env" ;
 
 
 export const metadata = {
-  title: 'StuDK',
-  description: 'StuDK.',
+  title: 'Demos Of StuDK',
+  description: 'Demo Applets Building On StuDK.',
 }
 
 function renderPictureCard(...[{ titleElem, contents, }] : [{ titleElem: React.ReactElement | string, contents: React.ReactElement | null, }])
@@ -50,31 +50,32 @@ export default function App()
     pagesConventions.describeArticlePage({
       heading: (
         <span>
-          This is StuDK
+          Demos Of StuDK
         </span>
       ) ,
       children: (
         <div>
           <p>
-            This is
-            a demo app
-            developed to demonstrate what can be done with StuDK.
+            The packages we're developing here in this monorepo
+            are tried out in these demos.
+            The packages we're developing here in this monorepo
+            are brought into usage in these demos.
             The packages we're developing here in this monorepo
             are tried out in these demos.
           </p>
           <ul>
           <li>
-            <Link href="/reference/demos" >
+            <Link href="/reference/demos/iaud" >
               { renderPictureCard({
                 titleElem: (
                   <p>
-                    Demo Applets Using StuDK
+                    The StuDK Audio Pipeline Demo App
                   </p>
                 ) ,
                 contents: (
                   <Image
-                  alt="Demo Applets Using StuDK"
-                  src={iI3DDemoAppScreenshot }
+                  alt="The StuDK Audio Pipeline Demo App"
+                  src={iIAudAppScreenshotUrl }
                   width={250}
                   height={250}
                   priority={false}
@@ -84,11 +85,38 @@ export default function App()
             </Link>
           </li>
           <li>
-            <Link href="/reference" >
-              StuDK Reference Directory
+            <Link href="/reference/demos/i3d" >
+              { renderPictureCard({
+                titleElem: (
+                  <p>
+                    I3D (unfinished)
+                  </p>
+                ) ,
+                contents: (
+                  <Image
+                  alt="The I3D Demo App"
+                  src={iI3DDemoAppScreenshot }
+                  width={250}
+                  height={250}
+                  priority={false}
+                  />
+                ) ,
+              }) }
             </Link>
           </li>
           </ul>
+          <p>
+            This is
+            a demo app
+            developed to demonstrate various applets building on StuDK.
+            The packages carried by this monorepo
+            are put into usage in these demos.
+            This is
+            a demo app
+            developed to demonstrate various applets building on StuDK.
+            The packages carried by this monorepo
+            are put into usage in these demos.
+          </p>
           <p>
             <q>
             This is StuDK!

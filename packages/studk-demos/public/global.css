@@ -265,10 +265,18 @@ b {
 }
 
 body {
-  /* font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
-  font-family: var(--font-outfittt), var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+  font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+  /* font-family: var(--font-outfittt), var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
   /* font-weight: 530; */
   letter-spacing: 0.028ex ;
+}
+
+pre, code, kbd {
+  font-family: 'Consolas', 'Monaco', 'Fira Code', 'Inconsolata', monospace ;
+}
+
+a[href] {
+  color: rgba(96 128 192 / 1);
 }
 
 
