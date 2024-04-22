@@ -60,9 +60,10 @@ export default function ReferenceDirPageLayoutC({
               minHeight: "60vh",
             }}
             >
-              <div>
-
               <SpclCurrentlyPathDisplay />
+              <div
+              >
+
               <ChildrenAndOutlineAndExploring
               children={(
                 <div
@@ -72,7 +73,14 @@ export default function ReferenceDirPageLayoutC({
                   minBlockSize: "45em",
                 }}
                 >
+                  <div
+                  className="arbrd-d3"
+                  style={{
+                    //
+                  }}
+                  >
                   { children ?? null }
+                  </div>
                 </div>
               ) }
               outline={(

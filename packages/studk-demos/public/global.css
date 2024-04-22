@@ -245,10 +245,6 @@ menu {
   flex-wrap: wrap;
 }
 
-p {
-  padding-inline-end: calc(100% - max(0px, 28em ) ) ;
-}
-
 body {
   
   /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
