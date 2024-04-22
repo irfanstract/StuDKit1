@@ -10,6 +10,47 @@
 
 # CONTRIBUTING For This Project
 
+important considerations for
+CONTRIBUTING For This Project
+
+
+
+
+## Troubleshooting Unexpected Problems While Testing Or Deploying In Different Devices
+
+### forgetting to run `npm ci`
+
+forgetting to run `npm ci`
+is one of the top reasons behind these problems
+- (in editor) errors `cannot find module "bar" or corresponding @types`
+- (on run-time) unexpected `ENOENT`s or `ImportError`s
+
+note: avoid using plain `npm install`; use `npm ci`; see below
+
+### *in testing env(s)*, `npm install` shall be replaced with `npm ci`
+
+regular `npm install` (sub)cmd
+will show its nondeterminism *from time to time* -
+`npm install` *from clean condition* can lead to unexpected, incompatibly-behaving versions of packages.
+for guaranteed stability *in testing env(s)*,
+replace `npm install` with `npm ci`
+.
+
+`npm ci` uses `package-lock.json` exclusively.
+during devel
+each `npm install` run
+update(s) `package-lock.json` ;
+the state of `package-lock.json` at given time
+tends to reflect the state of the dir `node_modules` (unless you manually make changes to `package-lock.json` or `node_modules`) and therefore
+in testing env(s)
+`npm ci` would be useful to restore everything there
+.
+(if you're lucky
+regular `npm install` will account `package-lock`
+but you shouldn't totally rely on this)
+
+same goes for `pnpm` and other pkg managers.
+
 
 
 
@@ -20,6 +61,21 @@ all deliverable packages go to `packages`.
 as you keep making contributions to the packages
 be sure to keep updating the corresponding overview "packages" in [`README.md`](./README.md) including the completion checklists
 
+### the packages located in [`./packages`](./packages/) and their structures
+
+the StuDK deliverables nested in directory `packages`
+
+some of these packages
+are marked as "commons" or "util",
+meaning that they're intended to be reusable outside this FW ;
+if you want to define some fw-specific code, which are not intended to be exported,
+move such modules into
+one of
+the `studk-yyy-fwcore` package(s), "framework core", package(s) intended to host the fw-specific code.
+
+as you keep making contribs to any of these package(s)
+be sure to keep the checklist in [`README.md`](./README.md) updated.
+
 except as otherwise noted
 all source-code were Type-Checked JS.
 this
@@ -28,17 +84,17 @@ except for the React-specific stuffs since
 for now they'll only be used for the apps written for Vite or Next anyway;
 use `npx --yes ts-node` to run such src files.
 
-### the packages located in [`./packages`](./packages/) and their structures
-
-the StuDK deliverables nested in directory `packages`
-
 #### `studk-util`
 
-level-1 infrastructure.
+reusable, level-1 infrastructure.
 
 #### `studk-ui`
 
-`studk-ui`
+reusable infrastructure for implementing user-interface(s).
+
+all code (with)in this package
+shall be reusable outside this FW ;
+use `studk-fwcore` instead, for defining FW-specific conventions
 
 in contrast to the general recommendation of avoiding extra 'manually click to build' step,
 a subset of the source files there
@@ -66,21 +122,39 @@ be sure to keep the checklist in [`README.md`](./README.md) updated.
 
 #### `studk-simulations-commons`
 
-infrastructure for simulations.
+reusable infrastructure for simulations.
+
+all code (with)in this package
+shall be reusable outside this FW ;
+use `studk-fwcore` instead, for defining FW-specific conventions
 
 as you keep making contribs to this package
 be sure to keep the checklist in [`README.md`](./README.md) updated.
 
 #### `studk-dom-util`
 
-utility concerning DOM API(s).
+reusable utility concerning DOM API(s).
+
+all code (with)in this package
+shall be reusable outside this FW ;
+use `studk-fwcore` instead, for defining FW-specific conventions
 
 server-side usage of this
 will need installing `jsdom` etc or switching to Electron
 .
 
-#### the `studk-yyy-fwcore` packages
+#### `studk-nextjs-util`
 
+reusable utils for implementing Next(JS) apps -
+in future we may add additional Next(JS) app packages.
+
+all code (with)in this package
+shall be reusable outside this FW ;
+use `studk-fwcore` instead, for defining FW-specific conventions
+
+#### `studk-yyy-fwcore`
+
+packages marked as "fw core" ("framework core") ;
 internal package defining the conventions across the packages there.
 internal only.
 
@@ -457,6 +531,23 @@ stick to ESM, to avoid the following issues:
 
 -  `ERR_REQUIRE_ESM`
 
+### avoid `lodash`, switch to `lodash-es`
+
+`lodash` cannot be reasonably used in ESM code.
+- `module "xyz" does not provide named export 'foo'`
+    ```javascript
+    import { once, } from "lodash" ;
+    // ^^^^^
+    // [Error] Import Error:
+    // module "lodash" does not provide named export 'once' ;
+    // Note: "react" is a CommonJS module which may not provide named export ;
+    // CommonJS modules can always be imported using `import * as React from "react"`, and
+    // use `const { Context, } = React ` ;
+    ```
+
+I got rid of `lodash`, in favour of `lodash-es`,
+for these very reasons.
+
 ### what to consider when defining and exporting `type`s
 
 #### `'type Bar' cannot be exported under --isolatedModules`
@@ -508,9 +599,22 @@ relevant open issues with `tsc`:
 for example Next(JS),
 all those fws which maps client-browsed paths to pages according to the structure in `app` or `pages` tree.
 
+Next(JS) as done in our project:
+https://nextjs.org/docs/app/building-your-application 
+
+Next(JS) supports two mutually-exclusive conventions, the newer one `app`, and the earlier one `pages`;
+you must first find out "which one", to avoid confusions arising from the differences of how the two modes work.
+`studk-demos` uses the `app` convention.
+
+### directive `"use client"` is obligatory at times
+
 ### Avoid using `public` directory where possible
 
 ### avoid absolute import which involves traversal upwards (ie `../<path>`)
+
+avoid absolute import which involves traversal upwards (ie `../<path>`).
+consider
+[configuring import-alias(es) as desribed by "Absolute Import Aliases" in `nextjs.org/docs/app`](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases).
 
 
 

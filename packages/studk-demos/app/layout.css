@@ -38,6 +38,21 @@ html {
   color: white;
   font-weight: 530;
 }
+html {
+  justify-content: center;
+  text-align: center;
+}
+
+html {
+  background: hsl(240, 84%, 17%);
+}
+
+/* 
+.arbrd-d1 {
+  display: block;
+  max-inline-size: 1196px;
+  margin-inline: auto ;
+} */
 
 
 

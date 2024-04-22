@@ -94,8 +94,28 @@ export default function App()
                 ) ,
                 contents: (
                   <Image
-                  alt="The I3D Demo App"
+                  alt={`The I3D Demo App`}
                   src={iI3DDemoAppScreenshot }
+                  width={250}
+                  height={250}
+                  priority={false}
+                  />
+                ) ,
+              }) }
+            </Link>
+          </li>
+          <li>
+            <Link href="/reference/demos/iui" >
+              { renderPictureCard({
+                titleElem: (
+                  <p>
+                    StuDK UI Components (unfinished)
+                  </p>
+                ) ,
+                contents: (
+                  <Image
+                  alt={`The StuDK UI Components Demo App`}
+                  src={iStUiDemoAppScreenshot }
                   width={250}
                   height={250}
                   priority={false}
@@ -131,6 +151,8 @@ export default function App()
 import iIAudAppScreenshotUrl from "@/components/spcl/IAudAppScreenshot.png" ;
 
 import iI3DDemoAppScreenshot from "@/components/spcl/I3DDemoAppScreenshot.png" ;
+
+import iStUiDemoAppScreenshot from "@/components/spcl/StUiDemoScreenshot.png" ;
 
 
 

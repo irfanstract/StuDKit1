@@ -162,7 +162,7 @@ button {
   filter: none;
 }
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.263;
   filter: contrast(0.3);
   filter: contrast(0.3) blur(0.035em);
 }
@@ -243,10 +243,6 @@ menu {
   display: flex;
   /* flex-direction: row; */
   flex-wrap: wrap;
-}
-
-p {
-  padding-inline-end: calc(100% - max(0px, 28em ) ) ;
 }
 
 body {

@@ -61,6 +61,9 @@ const SpclCurrentlyPathDisplay = () => {
         ) )
         .flatMap(e => [' > ', e] )
         .slice(1)
+        .map((e, i) => (
+          <React.Fragment key={i} children={e} />
+        ) )
       ) }
     </p>
   ) ;

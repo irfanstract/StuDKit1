@@ -80,6 +80,7 @@ const Button = (
         className={`studk-ui-dbca ${inlinenessClassName } ${cn}`}
         children={headline}
         href={href}
+        target='_blank'
         {...prp}
         />
       )

@@ -91,8 +91,9 @@ export default function App()
           </ul>
           <p>
             <q>
-            This is StuDK!
+            This is StuDK
             </q>
+            , we said it.
           </p>
         </div>
       ) ,
