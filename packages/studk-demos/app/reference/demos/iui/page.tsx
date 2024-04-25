@@ -73,6 +73,9 @@ export default function App() {
             </p>
           </details>
         </studk-card>
+        <studk-card>
+          <TbmcDemo />
+        </studk-card>
       </div>
       ) ,
     })
@@ -82,6 +85,16 @@ export default function App() {
 
 
 
+
+import {
+  default as TbmcDemoImpl,
+} from "studk-ui/src/tabularUi/reactjs/tbmcdemo.tsx" ;
+
+function TbmcDemo()
+{
+  return <TbmcDemoImpl /> ;
+  return <div /> ;
+}
 
 // import dynamicComponent from "next/dynamic";
 

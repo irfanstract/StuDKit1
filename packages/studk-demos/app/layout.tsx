@@ -39,6 +39,8 @@ import "./layout.css" ;
 
 
 
+import { KmcbsRootLayoutC, } from "@/components/kmcbsRootLayout1" ;
+
 export default function RootLayout({
   children,
 }: {
@@ -65,62 +67,8 @@ export default function RootLayout({
         overflowX: "clip",
       }}
       >
-      <MainAndNavAndFinaleC
-      main={(
-        //
-        (() => {
-          ;
-
-          // ↗⛰⛱⛲⛳☸★
-
-          return (
-            //
-            <div
-            className="arbrd-d1"
-            style={{
-              //
-            }}
-            >
-              { children ?? null }
-          </div>
-          ) ;
-        } )()
-      )}
-      nav1={(
-        <SingleChildDiv style={{ background: "black", color: "white", fontWeight: "650" }}>
-          <menu>
-            <span>
-            KMC Book Studio
-            </span>
-          </menu>
-        </SingleChildDiv>
-      )}
-      finale={(
-        <SingleChildDiv style={{ background: "black", color: "white", fontWeight: "650" }}>
-            <menu>
-              <span>
-              KMC Book Studio
-              </span>
-              --
-              <React.Fragment>
-                  <Link href="/" >
-                  Home
-                  </Link>
-                  --
-                  <Link href="credits/">
-                  credits
-                  </Link>
-                  --
-                  <Link href="about:blank">
-                  <code>about:blank</code>
-                  </Link>
-                  --
-                  <NavigateBackButton />
-                  <NavigateForwardButton />
-              </React.Fragment>
-            </menu>
-        </SingleChildDiv>
-      )}
+      <KmcbsRootLayoutC
+      children={children }
       />
       </body>
     </html>

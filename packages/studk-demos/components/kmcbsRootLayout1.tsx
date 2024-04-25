@@ -35,10 +35,12 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
   children,
   subsiteLogo: subsiteLogoArg ,
   organisingTeamLogo: organisingTeamLogoArg ,
+  version: versionArg ,
 }: {
   children: React.ReactNode ,
   subsiteLogo ?: React.ReactElement ,
   organisingTeamLogo ?: React.ReactElement ,
+  version ?: "1.0" | "1.1" ,
 })
 {
   const templateMaintainerLogo = (
@@ -56,6 +58,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
       templateMaintainerLogo
     )
   ) ;
+  const version = versionArg ?? "1.1";
   return (
       <MainAndNavAndFinaleC
       main={(
@@ -79,7 +82,14 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
         } )()
       )}
       nav1={(
-        <SingleChildDiv style={{ background: "black", color: "white", fontWeight: "650" }}>
+        <SingleChildDiv
+        style={{
+          background: (1.1 <= Number(version)) ? `rgba(0 0 0 / 0.6)` : "black",
+          color: "white",
+          fontWeight: "650" ,
+          backdropFilter: `blur(0.75em)`,
+        }}
+        >
           <menu>
             { subsiteLogo }
           </menu>

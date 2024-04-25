@@ -37,6 +37,15 @@ export function describeComponent<Props extends {}>(...[a] : [(...args: [props?:
 
 
 
+export function mkClasses(s: () => Iterable<string> ) : string ;
+export function mkClasses(s: () => Iterable<string> )
+{
+  return [...s() ].join(" ")
+}
+
+
+
+
 
 
 

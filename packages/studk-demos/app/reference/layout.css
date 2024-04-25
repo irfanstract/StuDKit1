@@ -48,7 +48,7 @@
     display: grid;
     grid: "main exploringView" "main ." ;
     grid-template-columns: 3fr 1fr ;
-    grid-template-rows: 92vh 1fr ;
+    grid-template-rows: 98vh 1fr ;
   }
   .strl-d1 > :nth-child(1) { grid-area: main; }
   .strl-d1 > :nth-child(2) { grid-area: exploringView; }
@@ -59,13 +59,23 @@
     grid-template-rows: 1fr 1.9fr ;
   }
 
-}
-
-@media (max-width: 640px )
-{
   .strl-exploringAndOutline {
     background: rgba(0 0 0 / 0);
   }
+
+  /* .strl-exploringAndOutline {
+    padding-block-end: 5em ;
+    margin-block-end: -4.5em ;
+  } */
+
+  .strl-d1 {
+    grid-template-rows: 116vh 1fr ;
+  }
+  .strl-exploringAndOutline {
+    height: 116vh;
+    top: 0;
+  }
+
 }
 
 .strl-exploringAndOutline {

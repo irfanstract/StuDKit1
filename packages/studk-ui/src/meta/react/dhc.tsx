@@ -1,4 +1,13 @@
 
+/* 
+ * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
+ * https://stackoverflow.com/q/77592173  
+ * https://nextjs.org/docs/app/building-your-application/rendering/client-components#how-are-client-components-rendered  
+ * 
+ * "client components" can still be rendered server-side so
+ * lets just have `"use client"` wherever possible
+ * 
+ * */
 "use client" ;
 
 
@@ -43,18 +52,40 @@ import {
  * acquire automatic means for *automatically assigning h-level(s) properly for these "heading"s* .
  * 
  */
-export function describeHeadlinedArticle(...[{ heading, children, ...prps }] : [{
-  heading: React.ReactElement,
+export function describeHeadlinedArticle(...[{ heading: headingArg = null, children, ...prps }] : [{
+  heading?: React.ReactElement,
   children: React.ReactElement | React.ReactElement[] ,
 } & Pick<JSX.IntrinsicElements["div"] , "style" > ])
 {
   return (
     <section {...prps}>
-      <p>
-        <b>
-        { heading }
-        </b>
-      </p>
+      { (headingArg !== null) && (
+        <p>
+          <b>
+          { headingArg }
+          </b>
+        </p>
+      ) }
+      <div>
+        { children }
+      </div>
+    </section>
+  ) ;
+}
+
+export function describeWorksheet(...[{ heading, children, style = {}, ...prps }] : [{
+  heading?: never,
+  children: React.ReactElement | React.ReactElement[] ,
+} & Pick<JSX.IntrinsicElements["div"] , "style" > ])
+{
+  return (
+    <section
+    style={{
+      overflow: "auto",
+      ...style,
+    }}
+    {...prps}
+    >
       <div>
         { children }
       </div>

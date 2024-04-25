@@ -8,8 +8,8 @@
 
     /* https://www.typescriptlang.org/docs/handbook/project-references.html */
     "composite": true ,
-    "noEmit": false,
-    "allowImportingTsExtensions": false ,
+    "noEmit": true,
+    "allowImportingTsExtensions": true ,
     /* https://stackoverflow.com/a/61513685 */
     "rootDir": "src" ,
     "outDir": "dist",

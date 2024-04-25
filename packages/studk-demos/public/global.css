@@ -274,6 +274,12 @@ pre, code, kbd {
 a[href] {
   color: rgba(96 128 192 / 1);
 }
+h1
+/* , h2, h3, h4, h5, h6 */
+{
+  z-index: 2;
+  border-radius: 0.35em;
+}
 
 
 
