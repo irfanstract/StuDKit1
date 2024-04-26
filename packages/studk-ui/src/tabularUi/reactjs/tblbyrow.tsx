@@ -34,6 +34,7 @@ import {
  */
 import type {
   ArgsWithOptions ,
+  ArgsGetOptions ,
 } from '#currentPkg/src/fwCore/ewo.ts'; ;
 
 import {
@@ -203,17 +204,12 @@ namespace renderTableByRowDtListAndRowRenderer1
 
 }
 
-function renderTableByRowDtListAndColumnList<T extends object | true | false | null>(...[
+function renderTableByRowDtListAndColumnList<const T extends object | true | false | null>(...[
   dat ,
   { perRowCellRenderers, renderItemKey , } ,
 ] : ArgsWithOptions<[readonly T[] ] , {
   perRowCellRenderers: NoInfer<(
-    readonly ({
-      readonly renderContent: (data: T, i: number) => (React.ReactElement | null) ,
-      readonly renderHead: () => (React.ReactElement) ,
-      readonly id: React.Key,
-      readonly classNames?: string[] ,
-    })[]
+    readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
   )> ,
   readonly renderItemKey: (...a: NoInfer<[data: T, i: number]>) => Exclude<React.Key, symbol >
   ,
@@ -273,6 +269,33 @@ function renderTableByRowDtListAndColumnList<T extends object | true | false | n
       ,
     } )
   ) ;
+}
+
+namespace renderTableByRowDtListAndColumnList { ; }
+
+namespace renderTableByRowDtListAndColumnList {
+  export type XArgs<T> = (
+    ArgsGetOptions<(
+      Parameters<typeof renderTableByRowDtListAndColumnList<T> >
+    )>
+  ) ;
+
+  export interface PerColumnPrImpl<T> {
+    readonly renderContent: (data: T, i: number) => (React.ReactElement | null) ,
+    readonly renderHead: () => (React.ReactElement) ,
+    readonly id: React.Key,
+    readonly classNames?: string[] ,
+  }
+
+  export type PerColumnProps<T> = (
+    XArgs<T>["perRowCellRenderers"][number]
+  ) ;
+
+  export function generateColumns<T>(...[d] : [NoInfer<() => Iterable<PerColumnProps<T> > >] )
+  : readonly PerColumnProps<T>[]
+  {
+    return [...d() ] ;
+  }
 }
 
 // #currentPkg/src/fwCore/ewo.ts

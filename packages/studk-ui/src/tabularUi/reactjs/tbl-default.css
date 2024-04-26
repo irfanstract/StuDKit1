@@ -64,15 +64,15 @@
 
 }
 
-.studk-ui-tbmc-horizsect {
+.studk-ui-tbmc-timewatchcolumncell {
   padding-inline: 0 ;
 }
 
-.studk-ui-tbmc-horizsect {
+tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
   padding-block: 0.1em ;
 }
 
-.studk-ui-tbmc-horizsect {
+tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
   opacity: 0.5;
 }
 

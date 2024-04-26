@@ -74,7 +74,7 @@ export default function ReferenceDirPageLayoutC({
                 }}
                 >
                   <div
-                  className="arbrd-d3"
+                  className="arbrd-d3 studk-ui-pageoverall-main "
                   style={{
                     //
                   }}

@@ -71,7 +71,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
           return (
             //
             <div
-            className="arbrd-d1"
+            className="arbrd-d1 studk-kmcbsrootmnvf-main "
             style={{
               //
             }}
@@ -83,6 +83,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
       )}
       nav1={(
         <SingleChildDiv
+        className="studk-kmcbsrootmnvf-aside "
         style={{
           background: (1.1 <= Number(version)) ? `rgba(0 0 0 / 0.6)` : "black",
           color: "white",
@@ -96,7 +97,10 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
         </SingleChildDiv>
       )}
       finale={(
-        <SingleChildDiv style={{ background: "black", color: "white", fontWeight: "650" }}>
+        <SingleChildDiv
+        className="studk-kmcbsrootmnvf-aside "
+        style={{ background: "black", color: "white", fontWeight: "650" }}
+        >
             <menu>
               <span>
                 { organisingTeamLogo }

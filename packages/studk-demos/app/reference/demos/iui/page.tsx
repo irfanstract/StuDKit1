@@ -19,13 +19,16 @@ import {
 
 import {
   NativeButton ,
-  Button ,
+  Button, 
+  Span,
 } from "studk-ui/src/meta/react/dbc.tsx" ;
 console["log"]({ NativeButton, }) ;
 
 import dynamicComponent from "next/dynamic";
 
 import Link from "next/link";
+
+import Image from "next/image";
 
 
 
@@ -50,16 +53,56 @@ export default function App() {
         <p>
           This is the <code>studk-ui</code> demo page
         </p>
+        <p>
+          This is the page meant to be the test-page for <code>studk-ui</code>.
+          the various selection defined there
+          are put into usage here.
+          This is the page meant to be the test-page for <code>studk-ui</code>.
+          the various selection defined there
+          are put into usage here.
+        </p>
         <studk-card>
-          <Button onClick={e => alert(`hello!`) } >
-            Hello
-          </Button>
-          <Button onClick={"falseprotocol:!" } >
-            False Protocol
-          </Button>
-          <Button onClick={false } >
-            Initialise
-          </Button>
+          <Image
+          alt={`The StuDK UI Components Demo App`}
+          src={iStUiDemoAppScreenshot }
+          width={250}
+          height={250}
+          priority={false}
+          />
+        </studk-card>
+        <p>
+          This is the page meant to be the test-page for <code>studk-ui</code>.
+          the various selection defined there
+          are put into usage here.
+          This is the page meant to be the test-page for <code>studk-ui</code>.
+          the various selection defined there
+          are put into usage here.
+        </p>
+        <studk-card>
+          <p>
+            <Button onClick={e => alert(`hello!`) } >
+              Hello
+            </Button>
+            <Button onClick={"falseprotocol:!" } >
+              False Protocol
+            </Button>
+            <Button onClick={false } >
+              Initialise
+            </Button>
+          </p>
+          <p>
+            you can {}
+            <Span onClick={e => alert(`hello!`) } >
+              send a hello
+            </Span>,
+            <Span onClick={"falseprotocol:!" } >
+              try directing to False Protocol
+            </Span>,
+            <Span onClick={false } >
+              bring it in into init
+            </Span>,
+            .
+          </p>
           <details>
             <p>
               <em>
@@ -96,9 +139,7 @@ function TbmcDemo()
   return <div /> ;
 }
 
-// import dynamicComponent from "next/dynamic";
-
-// import Link from "next/link";
+import iStUiDemoAppScreenshot from "@/components/spcl/StUiDemoScreenshot.png" ;
 
 
 

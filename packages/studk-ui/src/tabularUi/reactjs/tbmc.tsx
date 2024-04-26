@@ -91,7 +91,7 @@ const SpclCoreC = (
         { (
           renderTableByRowDtListAndColumnList(rowDataList , {
             renderItemKey: (v, i) => `item ${i}-th` ,
-            perRowCellRenderers: mkArray(function* () {
+            perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
               yield {
                 renderHead: () => <span children={`kind`} /> ,
                 renderContent: (v) => <span children={`${v.kind}`} /> ,
@@ -100,7 +100,7 @@ const SpclCoreC = (
               for (const { i, } of hoSegmentDescs) {
                 yield {
                   id: `Horizon Segment ${i}`,
-                  classNames: ['studk-ui-tbmc-horizsect'],
+                  classNames: ['studk-ui-tbmc-timewatchcolumncell'],
                   renderHead: () => (
                     <span>
                       { `(Hor ${i})` }

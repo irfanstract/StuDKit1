@@ -21,6 +21,54 @@ export type ArgsWithOptions<mainArgsT extends readonly any[], optsT extends obje
   readonly [...mainArgsT, ...(({} & object) extends optsT ? [options?: optsT] : [options: optsT ] ) ]
 ) ;
 
+export type ArgsGetOptions<argsT extends readonly any[]> = (
+  /**
+   * note:
+   * if {@link argsT} were plain `readonly T[]` then
+   * this method would immediately exit with {@link AGO_NOT_REDUCED}.
+   * 
+   * note:
+   * to avoid distributivity,
+   * needs to wrap both sides each as one-item tuple-type
+   * 
+   */
+  (
+    [argsT] extends [ /* don't forget `readonly`!!! */ readonly [infer arg0T, ...(infer etcArgsT extends readonly any[])] ] ?
+    (
+      ArgsGetOptions<etcArgsT> extends infer etcCaseResultT ?
+      (
+        etcCaseResultT extends AGO_ERROR_NOSUCHELEMENTEXCEPTION ?
+        /* stop here. */
+        Required<{ readonly value?: arg0T }>["value"]
+        : etcCaseResultT
+      )
+      : /* shall never happen. */ never
+    )
+    :
+    [argsT] extends [AGO_EEMPTYARRAY]  ?
+    AGO_ERROR_NOSUCHELEMENTEXCEPTION
+    :
+    AGO_NOT_REDUCED
+  )
+) ;
+
+type AGO_NOT_REDUCED = never ;
+
+type AGO_ERROR_NOSUCHELEMENTEXCEPTION = undefined | never ;
+
+type AGO_EEMPTYARRAY = (
+  | (readonly [])
+  | (readonly never[] )
+
+  /* an edge-case: `readonly undefined[]` */
+  | (readonly undefined[] )
+) ;
+
+
+
+
+
+
 // TODO move into new file
 export function MNI_CTXTUALONLY<E0, E2>(src: readonly E0[], mp: (item: NoInfer<E0>, i: number ) => NoInfer<E2> )
 : readonly E2[]
