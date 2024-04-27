@@ -16,7 +16,8 @@
   padding-inline-end: 1.5ex;
 }
 
-.studk-ui-dbcj.studk-ui-dbcb:not(:disabled)::before {
+.studk-ui-dbcj.studk-ui-dbcb:not(:disabled)::before,
+.studk-ui-dbci.studk-ui-dbcb:not(:disabled)::after {
   content: "⚾";
 }
 .studk-ui-dbcj.studk-ui-dbca:not(:disabled)::before {

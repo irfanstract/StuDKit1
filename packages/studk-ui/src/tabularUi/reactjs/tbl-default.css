@@ -31,6 +31,10 @@
   min-inline-size: 3em;
 }
 
+.studk-ui-table {
+  zoom: 82.367%;
+}
+
 .studk-ui-table > :is(tbody, thead) > tr > td {
   /* backdrop-filter: blur(0.25em) ; */
   color: black;
@@ -51,30 +55,6 @@
 
 
 
-
-
-
-
-
-
-/* TODO move this out */
-
-@layer defaults {
-/* */
-
-}
-
-.studk-ui-tbmc-timewatchcolumncell {
-  padding-inline: 0 ;
-}
-
-tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
-  padding-block: 0.1em ;
-}
-
-tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
-  opacity: 0.5;
-}
 
 
 

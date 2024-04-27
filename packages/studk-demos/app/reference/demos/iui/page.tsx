@@ -39,6 +39,18 @@ import {
   describeHeadlinedWidget ,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
+function SCDI() {
+  return (
+    <Image
+    alt={`The StuDK UI Components Demo App`}
+    src={iStUiDemoAppScreenshot }
+    width={250}
+    height={250}
+    priority={false}
+    />
+  ) ;
+}
+
 export default function App() {
   ;
   return (
@@ -51,24 +63,19 @@ export default function App() {
       children: (
         <div>
         <p>
-          This is the <code>studk-ui</code> demo page
+          This is the <i>studk-ui</i> demo page.
+          This is the demo-page for <i>studk-ui</i>.
         </p>
         <p>
-          This is the page meant to be the test-page for <code>studk-ui</code>.
-          the various selection defined there
-          are put into usage here.
-          This is the page meant to be the test-page for <code>studk-ui</code>.
-          the various selection defined there
+          This is a test-page for <i>studk-ui</i>.
+          the various elements defined there
+          are put into exhibition here.
+          This is the page meant to be the test-page for <i>studk-ui</i>.
+          a wide range of elements defined in the package
           are put into usage here.
         </p>
         <studk-card>
-          <Image
-          alt={`The StuDK UI Components Demo App`}
-          src={iStUiDemoAppScreenshot }
-          width={250}
-          height={250}
-          priority={false}
-          />
+          <SCDI />
         </studk-card>
         <p>
           This is the page meant to be the test-page for <code>studk-ui</code>.
@@ -78,6 +85,35 @@ export default function App() {
           the various selection defined there
           are put into usage here.
         </p>
+        <div>
+        <p>
+          Some reasons to stick to <i>studk-ui</i>:
+        </p>
+        <ul>
+          <li
+          children={(
+            <p>
+              it
+              is designed to
+              allow
+              content authors
+              to put hands up away from directly dealing with CSS-styling-related complexities
+              .
+            </p>
+          )}
+          />
+          <li
+          children={(
+            <p>
+              it
+              features elements like <code>Span</code> and <code>Button</code>
+              to enable authors to write contents without worrying about presentation
+              .
+            </p>
+          )}
+          />
+        </ul>
+        </div>
         <studk-card>
           <p>
             <Button onClick={e => alert(`hello!`) } >
@@ -94,14 +130,25 @@ export default function App() {
             you can {}
             <Span onClick={e => alert(`hello!`) } >
               send a hello
-            </Span>,
+            </Span>, {}
             <Span onClick={"falseprotocol:!" } >
               try directing to False Protocol
-            </Span>,
+            </Span>, {}
             <Span onClick={false } >
               bring it in into init
-            </Span>,
-            .
+            </Span>, {}
+            as you desire. {}
+            you can {}
+            <Span onClick={e => alert(`hello!`) } >
+              send a hello
+            </Span>, {}
+            <Span onClick={"falseprotocol:!" } >
+              try directing to False Protocol
+            </Span>, {}
+            <Span onClick={false } >
+              bring it in into init
+            </Span>, {}
+            as you desire. {}
           </p>
           <details>
             <p>
@@ -119,6 +166,22 @@ export default function App() {
         <studk-card>
           <TbmcDemo />
         </studk-card>
+        <ul>
+        <li
+        children={(
+          <studk-card>
+          <SCDI />
+          </studk-card>
+        )}
+        />
+        <li
+        children={(
+          <studk-card>
+          <SCDI />
+          </studk-card>
+        )}
+        />
+        </ul>
       </div>
       ) ,
     })

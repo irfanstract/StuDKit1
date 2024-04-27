@@ -20,6 +20,8 @@ import {
 
 
 
+import "studk-ui/src/quick/studkCssPresets/iui.tsx" ;
+
 import "@/public/global.css" ;
 
 import "@/components/jsxStudkCard" ;

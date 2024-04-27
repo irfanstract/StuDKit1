@@ -48,6 +48,12 @@ import {
   TableRowsetRendererOpsImpl ,
 } from '#currentPkg/src/tabularUi/reactjs/tblbyrow.tsx'; ;
 
+import {
+  Svg ,
+  describeSvg ,
+  describeSvgContent ,
+} from '#currentPkg/src/meta/react/gec.tsx'; ;
+
 
 
 
@@ -77,7 +83,7 @@ const SpclCoreC = (
       }) )
     ) ;
 
-    const rowDataList = (
+    const chnlDataList = (
       valueArg ??
       mkArray(function* () {
         for (const i of util.range(0, 10) ) {
@@ -85,11 +91,35 @@ const SpclCoreC = (
         }
       } )
     ) ;
+
+    function renderChannelPlotIframe(...[v]: [(typeof chnlDataList)[number]] )
+    {
+      return (
+        <Svg
+        viewBox={`0 0 30 10 `}
+        children={(
+          <rect
+          width={10}
+          height={6}
+          y={2}
+          x={0}
+          style={{
+            fill: `rgba(192 192 192 / 0.5 )`,
+          }}
+          />
+        )}
+        style={{
+          background: `black`,
+          // height: `100%`,
+        }}
+        />
+      ) ;
+    }
     
     return (
       <div>
         { (
-          renderTableByRowDtListAndColumnList(rowDataList , {
+          renderTableByRowDtListAndColumnList(chnlDataList , {
             renderItemKey: (v, i) => `item ${i}-th` ,
             perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
               yield {
@@ -109,28 +139,15 @@ const SpclCoreC = (
                   renderContent: (v) => (
                     <span
                     children={(
-                      <svg
-                      style={{
-                        background: `black`,
-                      }}
-                      viewBox={`0 0 30 10 `}
-                      children={(
-                        <rect
-                        width={10}
-                        height={6}
-                        y={2}
-                        x={0}
-                        style={{
-                          fill: `rgba(192 192 192 / 0.5 )`,
-                        }}
-                        />
-                      )}
-                      />
+                      renderChannelPlotIframe(v)
                     )}
                     style={{
-                      inlineSize: `7em`, blockSize: `1.0em`,
+                      inlineSize: `7em`,
+                      blockSize: `1.70em`,
+                      // blockSize: `100%`,
                       display: "grid",
                       // margin: `0.7ex` ,
+                      overflow: "hidden",
                     }}
                     />
                   )
@@ -144,6 +161,8 @@ const SpclCoreC = (
     ) ;
   })
 ) ;
+
+import '#currentPkg/src/tabularUi/reactjs/tbmc-defaults.css' ;
 
 export {
   /**

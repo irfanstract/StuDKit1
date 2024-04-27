@@ -23,32 +23,43 @@
 
 /* RECOMMENDED PER-COMPONENT DEFAULTS */
 
-@layer defaults {
-  /* */
-
-  button {
-    
-    font-family: inherit;
-  }
-
-  details {
-    zoom: 82%;
-  }
-    
-  details {
-    border: 0.05em solid currentColor;
-    padding-block: 0.5em ;
-    /* padding-block: 0.7em 1.5em; */
-    /* margin-block: 1em ;
-    margin-block-end: 1.5em; */
-    box-shadow: 0 0 0.35em rgba(0 0 0 / 0.5 ) ;
-    background: rgba(128 128 128 / 0.7 );
-  }
-  details {
-    cursor: pointer;
-  }
+/* that's it */
 
 
+
+
+
+
+
+
+h1, h2 {
+  /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-family: 'Inter', Roboto, 'Helvetica Neue', sans-serif ;
+}
+
+/* we deliberately restrict this to "bring attention" elems, not "strong" elems */
+b {
+  /* font-family: var(--font-poppins), var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-family: "Poppins", "Inter", Roboto, 'Helvetica Neue', sans-serif ;
+}
+
+
+
+
+
+
+body {
+  
+  /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-weight: 500;
+}
+
+body {
+  /* font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+  /* font-family: var(--font-outfittt), var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
+  /* font-weight: 530; */
+  letter-spacing: 0.028ex ;
 }
 
 
@@ -57,20 +68,19 @@
 
 
 
-/* RECOMMENDED PAGE METRICS DEFAULTS */
-
-@layer defaults {
-
-  body {
-    margin: 0 ;
+:is(h1, h2, h3, h4, h5, h6)
+{
+  &::before
+  {
+    content: "§";
+    color: rgba(128 128 128 / 0.5 );
   }
 
-  body {
-  
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
-    font-weight: 500;
+  &:hover::before
+  {
+    color: hsla(217, 100%, 75%, 0.5);
   }
-  
+
 }
 
 
@@ -78,30 +88,20 @@
 
 
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6
+{
+
   position: sticky;
   top : 0.25em ;
   offset-block-start : 0.25em ;
   left: 0.25em ;
   offset-inline-start: 0.25em ;
 
-  backdrop-filter: blur(1em) ;
-
-  font-family: sans-serif;
-
-  display: block;
-  display: block flow-root;
-  padding-block: 0.5em;
 }
 
-h1::before, h2::before, h3::before {
-  content: "§";
-  color: rgba(128 128 128 / 0.5 );
-}
 
-h1:hover::before, h2:hover::before {
-  color: rgba(0 96 255 / 0.5 );
-}
+
+
 
 
 
@@ -137,194 +137,7 @@ dialog {
 
 
 
-* {
-  transition: all 0.35s ease-out ;
-}
 
-
-
-
-
-
-
-
-body {
-  user-select: none;
-}
-.studk-ui-pageoverall-main {
-  user-select: text;
-}
-
-
-
-
-
-
-
-
-button {
-}
-
-button {
-  font-family: inherit;
-  /* background: canvas; */
-  -webkit-margin-end: 0.5em;
-  margin-inline-end: 0.5em;
-  background: black;
-  color: white;
-  padding: 0.3em 0.2em;
-  border-radius: 0.2em;
-  /* border-radius: 0.5em; */
-  padding-block: 0.25em 0.4em;
-}
-
-.card {
-  border: 0.05em solid currentColor;
-  /* display: inline-block; */
-  display: block;
-  display: flow-root;
-  padding: 0.3em 0.2em;
-  margin-block-end: 0.5em;
-  margin-inline-end: 0.5em;
-  border-radius: 0.25em;
-  backdrop-filter: blur(0.9em);
-}
-
-studk-card {
-  zoom: 92%;
-}
-
-studk-card {
-  /* overflow-inline: hidden; */
-  overflow-x: hidden;
-}
-
-button:not(:disabled) {
-  cursor: pointer;
-}
-button {
-  opacity: 1;
-  filter: none;
-}
-button:disabled {
-  opacity: 0.263;
-  filter: contrast(0.3);
-  filter: contrast(0.3) blur(0.035em);
-}
-
-button {
-  font-weight: 500;
-  font-weight: bold;
-  border-color: hsl(240 20% 40% / 1);
-  background-color: hsl(240 20% 40% / 1);
-  color: hsl(240 20% 95% / 1);
-  font-size: 75%;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Inter", "Roboto", "Microsoft Sans Serif", sans-serif;
-}
-
-ul, ol {
-  padding-inline-start: 0.85em;
-  /* list-style-type: disc;
-  marker: "-"; */
-}
-
-ul > li::marker,
-ol > li::marker,
-#-----e {
-  /* font-size: 85%; */
-}
-
-ul, ol {
-  border: none;
-  border-inline-start: 0.025em dashed currentColor;
-  border-inline-start-color: gray;
-}
-
-img {
-  border-radius: 2%;
-  filter: blur(0.5px);
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-}
-
-img {
-  border: 0.20em solid black ;
-}
-
-studk-card {
-  filter: blur(0.01px);
-}
-
-ul, ol {
-  zoom: 93%;
-}
-
-h1 {
-  position: sticky;
-}
-
-h1 {
-  margin-block-end: 1.5em;
-}
-
-a {
-  text-decoration-thickness: 0.05em ;
-  text-decoration-style: dotted ;
-}
-
-p {
-  margin-block: 1.51em 2.5em;
-}
-
-menu {
-  padding-inline-start: 1em ;
-}
-
-menu {
-  line-height: 2em;
-  display: flex;
-  /* flex-direction: row; */
-  flex-wrap: wrap;
-}
-
-body {
-  
-  /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
-  font-weight: 500;
-}
-
-h1, h2 {
-  font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ;
-}
-
-/* we deliberately restrict this to "bring attention" elems, not "strong" elems */
-b {
-  font-family: var(--font-poppins), var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ;
-}
-
-body {
-  font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
-  /* font-family: var(--font-outfittt), var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
-  /* font-weight: 530; */
-  letter-spacing: 0.028ex ;
-}
-
-pre, code, kbd {
-  font-family: 'Consolas', 'Monaco', 'Fira Code', 'Inconsolata', monospace ;
-}
-
-a[href] {
-  color: rgba(96 128 192 / 1);
-}
-h1
-/* , h2, h3, h4, h5, h6 */
-{
-  z-index: 2;
-  border-radius: 0.35em;
-}
 
 
 

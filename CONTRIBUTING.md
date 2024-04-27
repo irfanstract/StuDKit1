@@ -357,17 +357,49 @@ JSON Specification disallows trailing comma, but
 omission of trailing comma doesn't play well Git
 (eg unexpected auto-merge corrupting your JSON files)
 
-```javascript
-{
-  "imports": {
-    // from current branch
-    "dest": "${project}/dist"
-    // from merged branch
-    "pipelining": true
-//  ^^^^^^^ [Syntax Error] Unexpected Identifier; Expected Comma Or Closing Brace
-  } ,
-}
-```
+1) [in your branch] `package.json`:
+    ```jsonc
+    {
+      "imports": {
+        "dest": "${project}/dist"
+      } ,
+    }
+    ```
+  
+2) [in a different branch] [`package.json`] changed:
+    ```diff jsonc
+      {
+        "imports": {
+    +     "pipelining": true
+        } ,
+      }
+    ```
+  
+3) your branch merged that branch:
+    ```diff jsonc
+      {
+        "imports": {
+          "dest": "${project}/dist"
+    +     "pipelining": true
+        } ,
+      }
+    ```
+    
+4) the merge ends up making `package.json` corrupted:
+    ```jsonc
+    // === [Syntax Error] File `package.json`,  line 1 to 6 ========================
+        {
+          "imports": {
+            "dest": "${project}/dist"
+            "pipelining": true
+    //   ^^^^^^ [Syntax Error] Unexpected Identifier;   Expected Comma Or Closing Brace
+          } ,
+        }
+    ```
+
+this isn't just a joke; this kind of *merge*-related corruption has happened in fact:
+
+- https://github.com/microsoft/TypeScript/pull/50820/commits/1fbaa5c52058c222348c07e0ad7ae49682d222e3 
 
 JSONC and regular JS/TS would avoid the above problem:
 
@@ -379,6 +411,8 @@ module.exports = {
     "pipelining": true , // we can freely use trailing comma here, avoiding the above issues
 } ;
 ```
+
+Babel and Webpack config only supports JS files, not JSON.
 
 #### avoid presets like `eslint:recommended`; instead, enable items individually!
 
