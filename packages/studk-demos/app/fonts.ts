@@ -9,6 +9,20 @@ import { range } from 'lodash-es'; ;
 
 
 
+/**
+ * 
+ * for now
+ * we use direct CSS import from `fonts.google.com`, rather than `import`s of from here,
+ * due to the implied maintainability issue
+ * 
+ */
+
+
+
+
+
+
+
 
 // import * as fonts from 'next/font/google' ;
 //  
@@ -27,11 +41,7 @@ import { range } from 'lodash-es'; ;
 
 
 
-import {
-  INTER,
-  OUTFIT,
-  POPPINS,
-} from "@/appInternalScripts/fonts" ;
+// import * as allOfferedFonts from "@/appInternalScripts/fonts" ;
 
 import {
   // Inter ,
@@ -39,23 +49,20 @@ import {
   // Poppins ,
 } from 'next/font/google' ;
 
-export { INTER, OUTFIT, POPPINS, } ;
+// export { INTER, OUTFIT, POPPINS, } ;
 
 
 
 
 
-const allFonts = {
-  INTER ,
-  OUTFIT,
-  POPPINS ,
+const allBeholdFonts = {
 } ;
 
-export { allFonts, } ;
+export { allBeholdFonts, } ;
 
 
 
-export default allFonts ;
+export default allBeholdFonts ;
 
 
 

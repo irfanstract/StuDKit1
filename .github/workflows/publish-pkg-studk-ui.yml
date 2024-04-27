@@ -45,5 +45,11 @@ jobs:
         tsc --build 
         cd ../../
         
+        # NPM-RUN-TEST(s)
+
+        cd packages/studk-ui
+        npm run test
+        cd ../../
+        
 
 
