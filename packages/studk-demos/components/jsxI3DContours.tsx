@@ -186,7 +186,10 @@ export const I3DFullMeshPerspDisplay = function I3DFullMeshGraphPerspDisplayComp
   {
     ;
 
-    type KXY = keyof { x, y } ;
+    type KXY = (
+      // @ts-ignore
+      keyof { x, y }
+    ) ;
 
     const pts = (
       util.asNonlocalReturnBasedRun<readonly { [k in KXY ]: number ; }[] , false>(ctx => (

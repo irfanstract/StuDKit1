@@ -176,7 +176,7 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
           dat
           .map((va, i) => (
             <React.Fragment
-            key={renderItemRow.renderKey(va, i) }
+            key={renderItemRow.getHash(va, i) }
             children={(
               renderItemRow.renderContent.renderStandalone(va, i)
             )}
@@ -198,7 +198,7 @@ namespace renderTableByRowDtListAndRowRenderer1
   }
 
   export interface ItemRowRenderer<in T> {
-    renderKey: { (data: T, i: number): React.Key ; } ,
+    getHash: { (data: T, i: number): React.Key ; } ,
     renderContent: TableRowRendererMono<T> ;
   }
 
@@ -206,16 +206,18 @@ namespace renderTableByRowDtListAndRowRenderer1
 
 function renderTableByRowDtListAndColumnList<const T extends object | true | false | null>(...[
   dat ,
-  { perRowCellRenderers, renderItemKey , } ,
+  { perRowCellRenderers, getRowHash: getRowHash , } ,
 ] : ArgsWithOptions<[readonly T[] ] , {
   perRowCellRenderers: NoInfer<(
     readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
   )> ,
-  readonly renderItemKey: (...a: NoInfer<[data: T, i: number]>) => Exclude<React.Key, symbol >
+  readonly getRowHash: (...a: NoInfer<[data: T, i: number]>) => Exclude<React.Key, symbol >
   ,
 }> )
 {
   ;
+
+  const rowValues = dat ;
 
   const renderRowContents = (e0: { value: T } | 0 ) => (
     perRowCellRenderers
@@ -248,7 +250,7 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
   ) ;
 
   return (
-    renderTableByRowDtListAndRowRenderer1(dat, {
+    renderTableByRowDtListAndRowRenderer1(rowValues, {
       //
       renderHead: { render: TableRowsetRendererOpsImpl.ofRenderer(() => (
         //
@@ -256,7 +258,7 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
       ) , "thead" ) , }
       ,
       renderItemRow: {
-        renderKey: (e, i) => renderItemKey(e, i) ,
+        getHash: (e, i) => getRowHash(e, i) ,
         renderContent: TableRowsetRendererOpsImpl.ofRenderer((e, i) => (
           //
           <React.Fragment
@@ -273,10 +275,15 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
 
 namespace renderTableByRowDtListAndColumnList { ; }
 
-namespace renderTableByRowDtListAndColumnList {
-  export type XArgs<T> = (
+namespace renderTableByRowDtListAndColumnList
+{
+  export type BaseColT = (
+    (Required<Parameters<typeof renderTableByRowDtListAndColumnList > >[0])[number]
+  ) ;
+
+  export type XArgs<T > = (
     ArgsGetOptions<(
-      Parameters<typeof renderTableByRowDtListAndColumnList<T> >
+      Parameters<typeof renderTableByRowDtListAndColumnList<T & BaseColT> >
     )>
   ) ;
 

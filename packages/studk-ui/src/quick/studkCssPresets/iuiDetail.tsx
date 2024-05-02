@@ -14,9 +14,11 @@ import {
 
 import "./iuian.css" ;
 
-import "./iuib.css" ;
+import "./iuib.scss" ;
+import "./iuib1.css" ;
 
-import "./iuipaddings.css" ;
+import "./iuipaddings.scss" ;
+import "./iuipaddings1.css" ;
 
 
 

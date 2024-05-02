@@ -1,6 +1,11 @@
 
 
 
+// @ts-check
+
+
+
+
 
 /** @type {import("eslint").ESLint.ConfigData } */
 module.exports = {
@@ -58,6 +63,11 @@ module.exports = {
   },
   
   "overrides": [
+    /**
+     * effectively disabling ESLint for now.
+     */
+    { "files": ["*.tsx", "*.mtsx", ], },
+
     // /**
     //  * By default, the ESLint CLI only looks at .js files. But, it will also look at
     //  * any files which are referenced in an override config. Most users of typescript-eslint

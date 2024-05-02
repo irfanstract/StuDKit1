@@ -40,6 +40,9 @@ function renderPictureCard(...[{ titleElem, contents, }] : [{ titleElem: React.R
 
 import {
   pagesConventions,
+  dynamicComponent,
+  Image ,
+  Link ,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 export default function App()
@@ -108,11 +111,7 @@ import iI3DDemoAppScreenshot from "@/components/spcl/I3DDemoAppScreenshot.png" ;
 
 
 
-import dynamicComponent from "next/dynamic";
-
-import Link from "next/link";
-
-import Image from "next/image";
+;
 
 
 

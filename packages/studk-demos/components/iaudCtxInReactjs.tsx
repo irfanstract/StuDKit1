@@ -5,6 +5,20 @@
 
 
 
+
+import {
+  util,
+} from 'typexpe-commons/src/common_sv.mjs';
+
+import {
+  identity,
+  random,
+} from "lodash-es" ;
+
+
+
+
+
 import * as React from "react" ;
 
 import {
@@ -58,7 +72,7 @@ export const useIAudCtxInit = () => {
 export const iAudCreateAndConnect = (
   <T extends AudioNode ,>(...[nd0, GN, c ] : [dest: AudioNode | AudioParam, CN: new (ctx: BaseAudioContext) => T, ctx: BaseAudioContext ] ) => {
     const gn = new GN(c) ;
-    gn.connect(nd0) ;
+    identity<{ connect(x: AudioNode | AudioParam): any ; }>(gn).connect(nd0) ;
     return gn ;
   }
 ) ;

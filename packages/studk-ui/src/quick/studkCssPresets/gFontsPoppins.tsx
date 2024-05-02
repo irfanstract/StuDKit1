@@ -13,12 +13,10 @@ import {
 
 
 
-function installCssFromUrl(...[src]: [Extract<URL["href"], {}>] )
-{
-  const s = document.head.appendChild(document.createElement("link") ) ;
-  s.rel = "stylesheet" ;
-  s.href = src ;
-}
+import {
+  installCssFromUrl ,
+  createAndAddNewScriptTag,
+} from '#currentPkg/src/meta/dom/linkAndScriptTagOnDemand.tsx'; ;
 
 
 

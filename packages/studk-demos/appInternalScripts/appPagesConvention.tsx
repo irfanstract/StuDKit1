@@ -28,9 +28,18 @@ import * as React from "react" ;
 
 import dynamicComponent from "next/dynamic";
 
+export {
+  dynamicComponent as dynamicComponent,
+} ;
+
 import Link from "next/link";
 
 import Image from "next/image";
+
+export {
+  Link as Link,
+  Image as Image,
+} ;
 
 
 

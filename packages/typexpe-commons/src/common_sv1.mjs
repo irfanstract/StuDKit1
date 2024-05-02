@@ -52,6 +52,7 @@ export function asNonlocalReturnBasedRun(impl)
 } ;
 
 /**
+ * lite variant of {@link asNonlocalReturnBasedRun} expecting *reference throwable* to be specified
  * 
  * @template {void} R
  * @param {[{ referenceEvtObj: Error, }, () => R, ]} args
@@ -72,6 +73,7 @@ export function SINGLETNLR(...[{ referenceEvtObj, }, runMainThing,])
 }
 
 /**
+ * async version of {@link SINGLETNLR}
  * 
  * @template {void} R
  * @param {[{ referenceEvtObj: Error, }, () => Promise<R>, ]} args
@@ -174,6 +176,18 @@ export const arrayFromAsync = /** @template E @param {AsyncIterable<E> } x */ as
 export const arrayFromAsyncFac = /** @template E @param {() => AsyncIterable<E> } x */ (x) => arrayFromAsync(x() ) ;
 
 /**
+ * by a generator-function, render a readonly array.
+ * equivalent to `Array.from(reiterable(x) )`, except possibly additionally `freeze`ed .
+ * 
+ */
+export const reiterated = /** @template E @param {() => Generator<E, void, void> } x @return {ReadonlyArray<E> } */ (x) => {
+  return (
+    Object.freeze((
+      Array.from(reiterable(x) )
+    ) )
+  ) ;
+} ;
+/**
  * by a generator-function, describe a {@link Iterable re-iterable}:
  * ```
  * return reiterable(function* () {
@@ -254,9 +268,13 @@ export const stringLinesConcat = /** @template {String} E @param {() => Generato
   .join("\r\n")
 ) ;
 
-import * as lodash from "lodash-es" ;
+import * as L from "lodash-es" ;
 
-export { lodash, } ;
+export {
+  /** @deprecated */
+  L as lodash,
+  L ,
+} ;
 
 /** @type {(...x: [string, number]) => string} */
 export function indent(x, n) {
@@ -268,9 +286,30 @@ export function indent(x, n) {
   ) ;
 }
 
+const {
+  debounce,
+} = L ;
+
+/** @type {{ <T extends (...args: [...argsT]) => any, const argsT extends any[]>(func: T, resolver: ((...args: Parameters<T>) => any) | undefined): ReturnType<(typeof L.memoize<T>)>; } } */
+export const xMemoize = (
+  function (...[f, r])
+  {
+    const newF = (
+      L.memoize(f, r ?? throwTypeError(`missing 'resolver'.`) )
+    ) ;
+    return newF ;
+  }
+) ;
+
+export {
+  xMemoize as memoize ,
+  debounce ,
+  // throt
+}  ;
 export {
   range ,
-  debounce ,
+  // memoize ,
+  // debounce ,
   // throt
 } from "lodash-es" ; ;
 

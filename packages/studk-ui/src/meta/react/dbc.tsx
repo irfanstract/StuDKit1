@@ -1,4 +1,13 @@
 
+
+
+
+/* 
+ * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
+ * https://stackoverflow.com/q/77592173  
+ * https://nextjs.org/docs/app/building-your-application/rendering/client-components#how-are-client-components-rendered  
+ * 
+ * */
 "use client" ;
 
 
@@ -42,6 +51,8 @@ const NativeButton: "button" = (
   "button"
 ) ;
 
+import "./dbc.scss" ;
+
 export { Span, Button, } ;
 
 const Span = (
@@ -71,7 +82,7 @@ const Button = (
       headlineArg
     ) ;
     const inlinenessClassName = (
-      asInline ? "studk-ui-dbci" : "studk-ui-dbcj"
+      asInline ? "studk-ui-dbc-subsntcspan" : "studk-ui-dbc-standalonespan"
     ) ;
     return (
       (typeof href === "string") ?
@@ -115,8 +126,6 @@ const Button = (
     ) ;
   })
 ) ;
-
-import "./dbc.css" ;
 
 
 

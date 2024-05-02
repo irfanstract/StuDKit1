@@ -48,6 +48,8 @@
 
     "target": "ESNext",
     "useDefineForClassFields": true,
+    /* `experimentalDecorators` is effectively backwards. */
+    "experimentalDecorators": false,
     
     /* these three is at the heart of typechecking */
 
@@ -108,10 +110,13 @@
    * see also https://stackoverflow.com/a/60933948 .
    */
   "include": [
+    "scripts" ,
     "packages" ,
     // "packages/*/src" ,
     // "src" ,
     // ".next/types/**/*.ts" ,
+    ".eslintrc.mjs" ,
+    "next.config.mjs" ,
   ],
   "references": [
     // { "path": "./packages/studk-demos", } ,

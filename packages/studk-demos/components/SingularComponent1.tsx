@@ -30,11 +30,12 @@ import * as React from "react" ;
 
 
 
-export const SingleChildDiv = (({ style, ...props }) => {
-  return (
-     <div {...props} style={{ display: "grid", grid: `"a"`, ...style } } />
-  ) ;
-}) satisfies React.FC<JSX.IntrinsicElements["div"] > ;
+export {
+  /**
+   * @deprecated
+   */
+  SingleChildDiv,
+} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx" ;
 
 
 

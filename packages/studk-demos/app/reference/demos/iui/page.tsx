@@ -24,12 +24,6 @@ import {
 } from "studk-ui/src/meta/react/dbc.tsx" ;
 console["log"]({ NativeButton, }) ;
 
-import dynamicComponent from "next/dynamic";
-
-import Link from "next/link";
-
-import Image from "next/image";
-
 
 
 
@@ -37,6 +31,9 @@ import Image from "next/image";
 import {
   pagesConventions,
   describeHeadlinedWidget ,
+  dynamicComponent ,
+  Link ,
+  Image ,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 function SCDI() {

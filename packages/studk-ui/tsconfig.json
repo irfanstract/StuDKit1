@@ -14,8 +14,8 @@
     "rootDir": "src" ,
     "outDir": "dist",
 
-    /* `jsx` in `studk-demos` needs to be set to `"preserve"` per the Next(JS) docs - therefore we assume `"react-jsx"` */
-    "jsx": "react-jsx",
+    /* `jsx` in `studk-demos` needs to be set to `"preserve"` per the Next(JS) docs - therefore we assume `"react-jsx"` or `"react"` */
+    "jsx": "react",
   },
   "references": [
     { "path": "../../packages/typexpe-commons", } ,

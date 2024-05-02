@@ -39,7 +39,7 @@ import "./layout.css" ;
 
 
 
-import { KmcbsRootLayoutC, } from "@/components/kmcbsRootLayout1" ;
+import { KmcbsRootLayoutC, } from "studk-ui/src/xst/prefabs/kmcbsRootLayout1.tsx" ;
 
 export default function RootLayout({
   children,

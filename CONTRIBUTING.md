@@ -27,7 +27,7 @@ is one of the top reasons behind these problems
 
 note: avoid using plain `npm install`; use `npm ci`; see below
 
-### *in testing env(s)*, `npm install` shall be replaced with `npm ci`
+### when testing, `npm install` shall be replaced with `npm ci`
 
 regular `npm install` (sub)cmd
 will show its nondeterminism *from time to time* -
@@ -36,30 +36,29 @@ for guaranteed stability *in testing env(s)*,
 replace `npm install` with `npm ci`
 .
 
-`npm ci` uses `package-lock.json` exclusively.
-during devel
-each `npm install` run
-update(s) `package-lock.json` ;
-the state of `package-lock.json` at given time
-tends to reflect the state of the dir `node_modules` (unless you manually make changes to `package-lock.json` or `node_modules`) and therefore
-in testing env(s)
-`npm ci` would be useful to restore everything there
-.
-(if you're lucky
-regular `npm install` will account `package-lock`
-but you shouldn't totally rely on this)
+__discussed in depth in section "when testing, `npm install` shall be replaced with `npm ci`" in "Package Dependencies Converns" below__.
 
-same goes for `pnpm` and other pkg managers.
+
+
+
+## [`./scripts`](./scripts/)
+
+[`./scripts`](./scripts/) is reserved for the build-script(s).
 
 
 
 
 ## [`./packages`](./packages/)
 
-all deliverable packages go to `packages`.
+[`./packages`](./packages/) is reserved for the project deliverable packages.
 
 as you keep making contributions to the packages
-be sure to keep updating the corresponding overview "packages" in [`README.md`](./README.md) including the completion checklists
+__be sure to keep updating these files__
+- the corresponding test-file(s) (generally the package's base dir's `test` )
+- [`./scripts/package-listing`](./scripts/packageListing.mjs)
+- the corresponding overview "packages" in [`README.md`](./README.md) including the completion checklists
+- [the repo-wide `tsconfig.json`](./tsconfig.json)
+- [`./next.config.mjs`](./next.config.mjs)
 
 ### the packages located in [`./packages`](./packages/) and their structures
 
@@ -152,6 +151,10 @@ all code (with)in this package
 shall be reusable outside this FW ;
 use `studk-fwcore` instead, for defining FW-specific conventions
 
+#### the `encore`-named packages
+
+the `encore`-named packages
+
 #### `studk-yyy-fwcore`
 
 packages marked as "fw core" ("framework core") ;
@@ -173,6 +176,36 @@ unless it's to fix the naming issues.
 
 
 ## Package Dependencies Concerns
+
+this (sub)section
+talks about package dependency management in general
+
+for the list(ing) of packages which shall not be removed because eg they serve as the cmd-line tools (eg `ts-node`, `esbuild`, `typescript`, `sass`, etc),
+see "The Dependencies Of The StuDK Source(s) And Binaries" below
+
+### when testing, `npm install` shall be replaced with `npm ci`
+
+regular `npm install` (sub)cmd
+will show its nondeterminism *from time to time* -
+`npm install` *from clean condition* can lead to unexpected, incompatibly-behaving versions of packages.
+for guaranteed stability *in testing env(s)*,
+replace `npm install` with `npm ci`
+.
+
+`npm ci` uses `package-lock.json` exclusively.
+during devel
+each `npm install` run
+update(s) `package-lock.json` ;
+the state of `package-lock.json` at given time
+tends to reflect the state of the dir `node_modules` (unless you manually make changes to `package-lock.json` or `node_modules`) and therefore
+in testing env(s)
+`npm ci` would be useful to restore everything there
+.
+(if you're lucky
+regular `npm install` will account `package-lock`
+but you shouldn't totally rely on this)
+
+same goes for `pnpm` and other pkg managers.
 
 ### the versions of the depended-on packages
 
@@ -240,7 +273,6 @@ add into [`package.json`](./package.json) first and then run `npm install` (ie N
 ```diff json
 {
     "devDependencies": {
-+       "@esfx/canceltoken": "^1.0.0",
         "@types/chai": "^4.3.12",
         "@types/minimist": "^1.2.5",
         "@types/mocha": "^10.0.6",
@@ -248,10 +280,8 @@ add into [`package.json`](./package.json) first and then run `npm install` (ie N
         "@types/node": "latest",
 +       "@types/which": "^3.0.3",
         "hereby": "^1.8.9",
-+       "esbuild": "^0.20.1"
     },
     "dependencies": {
-+       "@esfx/canceltoken": "^1.0.0",
         "chai": "^4.4.1",
 +       "chalk": "^4.1.2",
 +       "chokidar": "^3.6.0",
@@ -266,6 +296,24 @@ add into [`package.json`](./package.json) first and then run `npm install` (ie N
 ```
 npm install
 ```
+
+
+
+
+## The Dependencies Of The StuDK Source And Binaries
+
+__INCOMPLETE__
+
+The Dependencies Of The StuDK Source And Binaries
+
+The Dependencies Of The StuDK Source And Binaries can be divided as:
+- INCOMPLETE!
+- Compiler, Bundler
+- Linter
+- Runtime (`ts-node`, `next`)
+- `core-js`, `lodash`
+- React
+- ReactDOM, polyfills, D3
 
 
 
@@ -285,73 +333,9 @@ prefer `.mjs` ext(s); see "Coding Conventions" below.
 
 ...and __avoid using <code>Tab</code>s__
 
-### avoid using plain `.js` ext for JS files ; use `.cjs` or `.mjs`
+### avoid using JSON where possible ; use ESM instead
 
-__avoid using plain `.js` ext for JS files ; use `.cjs` or `.mjs`__
-
-avoid using plain `.js` ext for JS files,
-usually `import`s will be rejected in plain `.js`es, so
-needs to rewrite (in)to `.cjs` or `.mjs`
-(maybe not that much of an issue if they were (the needing extra compile-step, type-ascription-heavy superset ) TS instead )
-
-__when using TypeScript, prefer explicit ext `.cts` or `.mts`, for exactly the same reason__
-
-when using TypeScript, prefer explicit ext `.cts` or `.mts`, for the same reason ;
-under *emit* `.mts` would become `.mjs`, `.cts` would become `.cjs`, while
-plain `.ts` would become plain `.js`
-
-### the need of `paths` in `tsconfig.json`
-
-the need of `paths` in `tsconfig.json` is metioned in:
-
--  https://stackoverflow.com/a/57273280
-
--  *the tickets linked to* ticket at https://github.com/microsoft/TypeScript/pull/56946 .
-
-
-### consider using labels in control-flow
-
-#### `break` and `continue` should always be labelled
-
-```diff
-+LOOP :
- for (const segmt of segments )
- {
-   if (isG2DClosePathCmd(segmt) )
--  { break ; }
-+  { break LOOP ; }
- }
-```
-
-an example involving a pitfall (guess where!):
-
-```diff
-+ LOOP:
-  for (const { kind, dest, } of instructions )
-  {
-    /* if kind is "EOF", break the loop  */
-    switch (kind) {
-      case "EOF" :
--       break ;
-+       break LOOP ;
-      default:
--       continue ;
-+       continue LOOP ;
-    }
-  }
-```
-
-### Usage Of ESLint In This Project
-
-#### The ESLint Rules For This Project
-
-see [the ESLint Config CJS File, `./.eslintrc.cjs`](./.eslintrc.cjs)
-
-#### use `.eslintrc.cjs`, avoid `.eslintrc.json`
-
-(note: ESLint doesn't yet support `.mjs` ext!)
-
-##### issues with JSON
+issues with JSON
 
 JSON Specification disallows trailing comma, but
 omission of trailing comma doesn't play well Git
@@ -411,6 +395,141 @@ module.exports = {
     "pipelining": true , // we can freely use trailing comma here, avoiding the above issues
 } ;
 ```
+
+Babel and Webpack config only supports JS files, not JSON.
+same for NextJS.
+Gulp and Hereby does the same.
+
+### avoid using plain `.js` ext for JS files ; use `.cjs` or `.mjs`
+
+__avoid using plain `.js` ext for JS files ; use `.cjs` or `.mjs`__
+
+avoid using plain `.js` ext for JS files,
+usually `import`s will be rejected in plain `.js`es, so
+needs to rewrite (in)to `.cjs` or `.mjs`
+(maybe not that much of an issue if they were (the needing extra compile-step, type-ascription-heavy superset ) TS instead )
+
+__when using TypeScript, prefer explicit ext `.cts` or `.mts`, for exactly the same reason__
+
+when using TypeScript, prefer explicit ext `.cts` or `.mts`, for the same reason ;
+under *emit* `.mts` would become `.mjs`, `.cts` would become `.cjs`, while
+plain `.ts` would become plain `.js`
+
+### the need of `paths` in `tsconfig.json`
+
+the need of `paths` in `tsconfig.json` is metioned in:
+
+-  https://stackoverflow.com/a/57273280
+
+-  *the tickets linked to* ticket at https://github.com/microsoft/TypeScript/pull/56946 .
+
+
+### consider using labels in control-flow
+
+#### `break` and `continue` should always be labelled
+
+```javascript
+ //❌ BAD!
+ for (const segmt of segments )
+ {
+   if (isG2DClosePathCmd(segmt) )
+   { break ; }
+ }
+```
+
+```diff
++LOOP :
+ for (const segmt of segments )
+ {
+   if (isG2DClosePathCmd(segmt) )
+-  { break ; }
++  { break LOOP ; }
+ }
+```
+
+an example involving a pitfall (guess where!):
+
+```diff
+  sendChecksum() ;
+
++ LOOP:
+  for (const { kind, dest, } of instructions )
+  {
+    /**
+     * if kind is "EOF" , break the loop;
+     * if kind is "SKIP", jump to the next row;
+     */
+    switch (kind) {
+      case "EOF" :
+-       break ;
++       break LOOP ;
+      case "SKIP" :
+-       continue ;
++       continue LOOP ;
+    }
+    sendData(nextGeneratedBigInt({ iKind: kind, }) , { dest, }) ;
+  }
+
+  sendPaddingAndFlushCloseAllDest() ;
+```
+
+yes,
+unlabelled `break`s there
+would stop at the enclosing `switch` rather than the outer loop.
+
+#### "extract a function" is not always a solution
+
+"extract a function" is not always a solution to these problem.
+
+how'd you do "extract `runCentralLoop`" here?
+
+```javascript
+if (transactionOkay)
+{
+  if (transStepAlreadyHandledByCo )
+  {
+    return STAT_TAKEN_OVER_BY_CO_EARLY({ transStat, }) ;
+  }
+
+  /*
+   * he/she (my co-worker)
+   * asked me to "extract `function runCentralLoop(instructions)`" this, but
+   * there's `return specialReturnValue` there inside!
+   */
+  PAYLOAD_LOOP:
+  for (const { kind, dest, } of instructions )
+  {
+    await SPCL_SOME_RECESS() ;
+
+    /**
+     * if kind is "EOF" , break the loop;
+     * if kind is "SKIP", jump to the next row;
+     */
+    switch (kind) {
+      case SpclInstruction.TAKEN_OVER_BY_CO :
+        return STAT_TAKEN_OVER_BY_CO_LATE({ kind, dest, etc: transStat, }) ;
+      case SpclInstruction.EOF :
+        break PAYLOAD_LOOP ;
+      case SpclInstruction.SKIP :
+        continue PAYLOAD_LOOP ;
+    }
+    sendData(nextGeneratedBigInt({ iKind: kind, }) , { dest, }) ;
+  }
+
+}
+```
+
+### Usage Of ESLint In This Project
+
+#### The ESLint Rules For This Project
+
+see [the ESLint Config CJS File, `./.eslintrc.cjs`](./.eslintrc.cjs)
+
+#### use `.eslintrc.cjs`, avoid `.eslintrc.json`
+
+(note: ESLint doesn't yet support `.mjs` ext!)
+
+__see "avoid JSON; use ESM instead" above__
 
 Babel and Webpack config only supports JS files, not JSON.
 
@@ -565,6 +684,8 @@ stick to ESM, to avoid the following issues:
 
 -  `ERR_REQUIRE_ESM`
 
+-  trying to `require` an ESM-only package
+
 ### avoid `lodash`, switch to `lodash-es`
 
 `lodash` cannot be reasonably used in ESM code.
@@ -604,6 +725,21 @@ add `namespace Bar { /* must have at-least a semicolon! */ ; } `:
 #### `@typedef` name omission when accompanying an `export const Bar = ... ... ;`
 
 when accompanying an `export const Bar = ... ... ;`,
+name duplication on `@typedef` could be omitted .
+(don't forget to tag the accompanying `const` with `@module` as well).
+you should do that - it's one of *the best-practices*.
+
+```javascript
+/** @typedef {{ x: number, y: number, } } */
+/**
+ * Point X and Y
+ * 
+ * @module
+ */
+export const Point = {} ;
+```
+
+when accompanying an `export const Bar = ... ... ;`,
 name duplication on `@typedef` could be omitted ;
 see `jsdocTreatAsExported` in `binder.ts` on https://github.com/microsoft/TypeScript/blob/0a671aa393760957743e9081c1798d5acc23b2c7/src/compiler/binder.ts#L940
 
@@ -617,13 +753,17 @@ see [the ESLint Config CJS File, `./.eslintrc.cjs`](./.eslintrc.cjs)
 relevant open issues with `tsc`:
 
 - Merging, Occurences, Highlighting, of same-named decl(s):
-  - https://github.com/microsoft/TypeScript/issues/36626  (missing *merging* for between same-named `const =` and `type =` )
+  - (unresolved) https://github.com/microsoft/TypeScript/issues/36626  (missing *merging* for between same-named `const =` and `type =` )
 - Dependent-Typing, Type-Guard(s), Aliased Boolean Expr(s) :
-  - https://github.com/microsoft/TypeScript/issues/17588 (missing support for Scala-style inner-class(es) ) 
-  - https://github.com/microsoft/TypeScript/issues/27808 (missing support for `extends oneof`) 
-  - https://github.com/microsoft/TypeScript/pull/47190 (CFA/narrowing involving destructured property from -   discriminant-union-typed structs )
-  - https://github.com/microsoft/TypeScript/pull/44730 (transparency, of boolean expr aliases (ie `const` without type-ascription ) )
-  - https://github.com/microsoft/TypeScript/pull/57465 (missing inferring of `x is T` signatures )
+  - (unresolved) https://github.com/microsoft/TypeScript/issues/17588 (missing support for Scala-style inner-class(es) ) 
+  - (unresolved) https://github.com/microsoft/TypeScript/issues/27808 (missing support for `extends oneof`) 
+  - (`5.0`) https://github.com/microsoft/TypeScript/pull/47190 (CFA/narrowing involving destructured property from -   discriminant-union-typed structs )
+  - (`5.0`) https://github.com/microsoft/TypeScript/pull/44730 (transparency, of boolean expr aliases (ie `const` without type-ascription ) )
+  - (`5.5`) https://github.com/microsoft/TypeScript/pull/57465 (missing inferring of `x is T` signatures )
+
+### potential usage of other interpreted language(s)
+
+*potential future usage of other interpreted language(s)* (eg Dart, Python, `scala-cli`)
 
 
 

@@ -1,8 +1,37 @@
 
+
+
+
+
+
+
+import {
+  util,
+} from 'typexpe-commons/src/common_sv.mjs';
+
+import {
+  random,
+} from "lodash-es" ;
+
+
+
+
+
+
 import * as React from "react" ;
 
 
 
+
+
+
+
+import {
+  pagesConventions,
+  dynamicComponent,
+  Link,
+  Image,
+} from "@/appInternalScripts/appPagesConvention"; ;
 
 
 
@@ -38,9 +67,7 @@ export default function App() {
 
 
 
-import dynamicComponent from "next/dynamic";
-
-import Link from "next/link";
+;
 
 
 

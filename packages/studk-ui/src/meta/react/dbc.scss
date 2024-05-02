@@ -1,4 +1,6 @@
 
+/* was once `dbc.css` */
+
 
 
 
@@ -9,48 +11,48 @@
 @layer defaults {
 /* */
 
-.studk-ui-dbcj {
+.studk-ui-dbc-standalonespan {
   display: inline-block;
   position: relative;
   padding-block-end: 1.5ex;
   padding-inline-end: 1.5ex;
 }
 
-.studk-ui-dbcj.studk-ui-dbcb:not(:disabled)::before,
-.studk-ui-dbci.studk-ui-dbcb:not(:disabled)::after {
+.studk-ui-dbc-standalonespan.studk-ui-dbcb:not(:disabled)::before,
+.studk-ui-dbc-subsntcspan.studk-ui-dbcb:not(:disabled)::after {
   content: "⚾";
 }
-.studk-ui-dbcj.studk-ui-dbca:not(:disabled)::before {
+.studk-ui-dbc-standalonespan.studk-ui-dbca:not(:disabled)::before {
   content: "[link]";
 }
-.studk-ui-dbcj:is(.studk-ui-dbca, .studk-ui-dbcb ):not(:disabled)::before {
+.studk-ui-dbc-standalonespan:is(.studk-ui-dbca, .studk-ui-dbcb ):not(:disabled)::before {
   margin-inline-end: 0.5ex;
   margin-block-end : 0.5ex;
 }
 
-.studk-ui-dbcj {
+.studk-ui-dbc-standalonespan {
   border: 0.05em solid currentColor;
   padding-block: 0.25em;
   border-radius: 0.25em;
   font-size: 90% ;
 }
 
-.studk-ui-dbcj {
+.studk-ui-dbc-standalonespan {
   margin-inline-end: 1.0ex;
 }
 
-.studk-ui-dbci {
+.studk-ui-dbc-subsntcspan {
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
 }
 
-.studk-ui-dbcj {
+.studk-ui-dbc-standalonespan {
   user-select: none;
   user-select: none !important ;
 }
 
-.studk-ui-dbcj.studk-ui-dbca {
+.studk-ui-dbc-standalonespan.studk-ui-dbca {
   color: hsl(240, 100%, 50%) !important ;
   border: 0.115em solid currentColor;
   background-color: white ;

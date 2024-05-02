@@ -74,6 +74,8 @@ export function describeSvg(...[{} = {}, c ] : (
   ) ;
 }
 
+import "./gec.scss" ;
+
 export { SvgFramedC as Svg, } ;
 
 const SvgFramedC = ({
@@ -87,8 +89,10 @@ const SvgFramedC = ({
 } : JSX.IntrinsicElements["svg"] ) => {
   return (
     <span
+    className='studk-ui-gec-sfc-d11'
     children={(
       <svg
+      className='studk-ui-gec-sfc-d12'
       children={c}
       preserveAspectRatio='none'
       style={{
