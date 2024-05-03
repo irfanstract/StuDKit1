@@ -8,7 +8,9 @@
 
 
 
-@layer defaults {
+@layer studk-ui-dbc-defaults, defaults ;
+
+@layer studk-ui-dbc-defaults {
 /* */
 
 .studk-ui-dbc-standalonespan {
@@ -18,17 +20,10 @@
   padding-inline-end: 1.5ex;
 }
 
-.studk-ui-dbc-standalonespan.studk-ui-dbcb:not(:disabled)::before,
-.studk-ui-dbc-subsntcspan.studk-ui-dbcb:not(:disabled)::after {
-  content: "⚾";
 }
-.studk-ui-dbc-standalonespan.studk-ui-dbca:not(:disabled)::before {
-  content: "[link]";
-}
-.studk-ui-dbc-standalonespan:is(.studk-ui-dbca, .studk-ui-dbcb ):not(:disabled)::before {
-  margin-inline-end: 0.5ex;
-  margin-block-end : 0.5ex;
-}
+
+@layer studk-ui-dbc-defaults {
+/* */
 
 .studk-ui-dbc-standalonespan {
   border: 0.05em solid currentColor;
@@ -52,12 +47,27 @@
   user-select: none !important ;
 }
 
+.studk-ui-dbc-standalonespan {
+  border: 0.115em solid black;
+}
+
 .studk-ui-dbc-standalonespan.studk-ui-dbca {
   color: hsl(240, 100%, 50%) !important ;
-  border: 0.115em solid currentColor;
+  border-color: currentColor;
   background-color: white ;
   /* color: hsl(240, 100%, 25%) !important ; */
   /* background-color: hsl(210, 100%, 75%) !important ; */
+}
+
+.studk-ui-dbc-subsntcspan:is(.studk-ui-dbcb)
+{
+  padding-inline: 0;
+  display: inline;
+}
+
+.studk-ui-dbc-subsntcspan:is(.studk-ui-dbcb)
+{
+  border-radius: 0.625em;
 }
 
 }
@@ -66,6 +76,22 @@
 
 
 @layer defaults {
+
+  .studk-ui-dbc-standalonespan.studk-ui-dbcb:not(:disabled)::before,
+  .studk-ui-dbc-subsntcspan.studk-ui-dbcb:not(:disabled)::after {
+    content: "⚾";
+  }
+  .studk-ui-dbc-standalonespan.studk-ui-dbca:not(:disabled)::before {
+    content: "[link]";
+    content: "⛱";
+    font-size: 75% ;
+    background-color: hsl(240, 100%, 50%) ;
+    color: white ;
+  }
+  .studk-ui-dbc-standalonespan:is(.studk-ui-dbca, .studk-ui-dbcb ):not(:disabled)::before {
+    margin-inline-end: 0.5ex;
+    margin-block-end : 0.5ex;
+  }
 
 }
 

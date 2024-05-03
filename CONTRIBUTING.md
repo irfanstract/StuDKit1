@@ -16,7 +16,9 @@ CONTRIBUTING For This Project
 
 
 
-## Troubleshooting Unexpected Problems While Testing Or Deploying In Different Devices
+## Getting Started Here And Troubleshooting It
+
+Troubleshooting Unexpected Problems While Testing Or Deploying In Different Devices
 
 ### forgetting to run `npm ci`
 
@@ -37,6 +39,23 @@ replace `npm install` with `npm ci`
 .
 
 __discussed in depth in section "when testing, `npm install` shall be replaced with `npm ci`" in "Package Dependencies Converns" below__.
+
+### app crashed with "syntax error, unexpected (.....)"
+
+__for example, app crashed with__
+- "syntax error, unexpected keyword 'type'",
+- "syntax error, unexpected token ':'",
+  "syntax error, unexpected token '!'",
+- "syntax error, unexpected keyword 'satisfies'"
+
+__replacing `node` with `npx --yes ts-node`__ would likely resolve this issue.
+see *replacing `node` with `npx --yes ts-node`* below for the intro to that.
+
+### replacing `node` with `npx --yes ts-node`
+
+replacing `node` with `npx --yes ts-node`
+
+see https://typestrong.org/ts-node/docs/ .
 
 
 
@@ -81,7 +100,7 @@ this
 is necessary to allow loading the packages natively in Node without needing to "manually first searching, reaching and hiting the 'build' button".
 except for the React-specific stuffs since
 for now they'll only be used for the apps written for Vite or Next anyway;
-use `npx --yes ts-node` to run such src files.
+use `npx --yes ts-node` to run such src files - see *replacing `node` with `npx --yes ts-node`* above for the intro to that.
 
 #### `studk-util`
 

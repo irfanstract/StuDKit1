@@ -25,8 +25,8 @@ import { exec, execSync, spawnSync, } from 'node:child_process';
 
 
 import {
-  repoActualPath ,
-  pkgsActualPath ,
+  baseDirActualPath ,
+  pkgsDirActualPath ,
 } from "./paths1.mjs" ;
 
 
@@ -36,7 +36,7 @@ import { PackageNames, } from './util-all.mjs';
 /** @type {PackageNames} */
 export const pkgs = (
   // TODO
-  FS.readdirSync(pkgsActualPath)
+  FS.readdirSync(pkgsDirActualPath)
 ) ;
 
 export { describeExpectedPkgNames, } ;
@@ -46,8 +46,12 @@ function describeExpectedPkgNames(xPkgs)
 {
   return (
     util.L.intersection(xPkgs, pkgs)
+    .toSorted()
   ) ;
 }
+
+/* `toSorted` */
+import "core-js/proposals/change-array-by-copy.js" ;
 
 
 /**

@@ -110,11 +110,22 @@
    * see also https://stackoverflow.com/a/60933948 .
    */
   "include": [
+
+    /* SRC FILES */
+    
     "scripts" ,
     "packages" ,
     // "packages/*/src" ,
     // "src" ,
     // ".next/types/**/*.ts" ,
+
+    /* IN-SOURCE D-TS FILES */
+    
+    /* otherwise `next-env.d.ts` has no effect */
+    "next-env.d.ts" ,
+
+    /* CONFIG FILES */
+    
     ".eslintrc.mjs" ,
     "next.config.mjs" ,
   ],
@@ -128,17 +139,25 @@
     { "path": "./packages/studpresenters"       , } ,
     { "path": "./packages/studk-dom-mediarecorder"   , } ,
   ] ,
-
-  "ts-node": {
-
-    "esm": true,
-    "transpileOnly": true,
-    
-  } ,
   "exclude": [
     "node_modules" ,
     "**/dist" ,
     "**/dist/**/*" ,
   ],
+  
+  "ts-node": {
+
+    /*
+     * we need to disable `transpileOnly` to avoid run-time `ReferenceError`s and thelike, since
+     * it's possible some src-file(s) were written under `isolatedModules: false` and relies on type-checking (eg `const enum`s)
+     */
+    "transpileOnly": false,
+
+    /* https://typestrong.org/ts-node/docs/troubleshooting/#missing-types */
+    "files": true,
+    
+    "esm": true,
+
+  } ,
 
 }

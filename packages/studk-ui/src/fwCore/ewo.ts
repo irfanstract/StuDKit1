@@ -116,7 +116,8 @@ export { XJson } ;
 namespace XJson { ; }
 namespace XJson
 {
-  export type IAny = null | boolean | (number | bigint) | string | IArray | IDict ;
+  export type IAny = null | boolean | IDecimal | string | IArray | IDict ;
+
   export type IArray = readonly IAny[] ;
   export interface IDict { readonly [key: string]: IAny ; }
 
@@ -127,6 +128,13 @@ namespace XJson
     // TODO if had been standardised ES Records And Tuples would need alternative check
     return (x !== null) && (Object(x) === x ) ;
   }
+
+  export type IDecimal = (number | bigint) & { isXJsonIDecimal ?: true } ;
+
+  type KVLE<in k extends string, out vle> = { readonly [key in k]: vle ; }
+  
+  export type IDictFor<k extends string, v extends IAny = IAny> = IDict & KVLE<k, v>
+
 }
 
 

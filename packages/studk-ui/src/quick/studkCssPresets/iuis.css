@@ -68,6 +68,27 @@
 
 }
 
+@layer defaults {
+  
+  details {
+    background: hsla(240, 20%, 25%, 0.4526);
+    color: inherit;
+    zoom: 80%;
+  }
+  details {
+    border-width: 0.05em ;
+  }
+    
+  details
+  {
+    opacity: 1;
+  }
+  .studk-ui-pageoverall-main:not(:focus-within, :hover) details:not([open])
+  {
+    opacity: 0.75;
+  }
+}
+
 
 
 
@@ -107,12 +128,22 @@ button {
   /* background: canvas; */
   -webkit-margin-end: 0.5em;
   margin-inline-end: 0.5em;
+}
+button:not(.studk-ui-dbc-subsntcspan) {
   background: black;
   color: white;
+}
+button:not(.studk-ui-dbc-subsntcspan) {
   padding: 0.3em 0.2em;
   border-radius: 0.2em;
+}
+button:not(.studk-ui-dbc-subsntcspan)
+, .studk-ui-dbc-standalonespan:is(a)
+{
   /* border-radius: 0.5em; */
   padding-block: 0.25em 0.4em;
+}
+button:not(.studk-ui-dbc-subsntcspan) {
 }
 
 .card {
@@ -136,14 +167,48 @@ studk-card {
   overflow-x: hidden;
 }
 
-button {
-  font-weight: 500;
+button:not(.studk-ui-dbc-subsntcspan)
+, .studk-ui-dbc-standalonespan:is(a)
+{
+  /* font-weight: 500; */
   font-weight: bold;
+}
+button:is(.studk-ui-dbc-subsntcspan) {
+  font-weight: 590;
+}
+
+button:is(.studk-ui-dbc-subsntcspan) {
+  background: hsl(0, 0%, 68%);
+  color: rgb(10, 10, 10);
+  border-color: transparent;
+}
+button:is(.studk-ui-dbc-subsntcspan) {
+  background: hsla(0, 0%, 68%, 0.349);
+}
+button:is(.studk-ui-dbc-subsntcspan)
+{
+  background: transparent;
+}
+button:not(.studk-ui-dbc-subsntcspan)
+, .studk-ui-pageoverall-main:is(:focus-within, :hover) button
+{
   border-color: hsl(240 20% 40% / 1);
   background-color: hsl(240 20% 40% / 1);
   color: hsl(240 20% 95% / 1);
+}
+button:not(.studk-ui-dbc-subsntcspan) {
+}
+
+.studk-ui-pageoverall-main:not(:focus-within, :hover) .studk-ui-dbc-standalonespan:is(button, a ) {
+  opacity: 0.18;
+}
+
+button:not(.studk-ui-dbc-subsntcspan) {
   /* font-size: 75%; */
   font-size: 90% ;
+}
+button:is(.studk-ui-dbc-subsntcspan) {
+  font-size: 95% ;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -156,6 +221,9 @@ pre, code, kbd {
 
 a[href] {
   color: rgba(96 128 192 / 1);
+}
+a[href]:is(.studk-ui-pageoverall-main:is(:focus-within, :hover) *) {
+  color: blue;
 }
 h1
 /* , h2, h3, h4, h5, h6 */

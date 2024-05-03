@@ -110,6 +110,44 @@ export default function App() {
           )}
           />
         </ul>
+        <p>
+          We'd do this sequence of things to implement it:
+        </p>
+        <ol>
+          <li
+          children={(
+            <p>
+              it
+              features elements like <code>Span</code> and <code>Button</code>
+              to enable authors to write contents without worrying about presentation
+              .
+            </p>
+          )}
+          />
+          <li
+          children={(
+            <p>
+              it
+              features elements like <code>Span</code> and <code>Button</code>
+              to enable authors to write contents without worrying about presentation
+              .
+            </p>
+          )}
+          />
+          { (
+            util.range(0, 10 )
+            .map((i) => (
+              <li
+              key={`joe-${i}`}
+              children={(
+                <p>
+                  Joe
+                </p>
+              )}
+              />
+            ) )
+          ) }
+        </ol>
         </div>
         <studk-card>
           <p>
@@ -147,6 +185,14 @@ export default function App() {
             </Span>, {}
             as you desire. {}
           </p>
+          <p>
+            This is a test-page for <i>studk-ui</i>.
+            the various elements defined there
+            are put into exhibition here.
+            This is the page meant to be the test-page for <i>studk-ui</i>.
+            a wide range of elements defined in the package
+            are put into usage here.
+          </p>
           <details>
             <p>
               <em>
@@ -157,6 +203,11 @@ export default function App() {
               this means that
               we need an explicit user-done pointer-click to get the engine started.
               yeah
+            </p>
+            <p>
+              <del>
+                wrong
+              </del>
             </p>
           </details>
         </studk-card>

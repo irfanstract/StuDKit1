@@ -24,16 +24,16 @@ import { exec, execSync, spawnSync, } from 'node:child_process';
 
 
 
-export const scriptsActualPath = (
+export const scriptsDirActualPath = (
   Path.join(fileURLToPath(import.meta.url), ".." )
 ) ;
 
-export const repoActualPath = (
-  Path.join(scriptsActualPath, ".." )
+export const baseDirActualPath = (
+  Path.join(scriptsDirActualPath, ".." )
 ) ;
 
-export const pkgsActualPath = (
-  Path.join(repoActualPath, "packages" )
+export const pkgsDirActualPath = (
+  Path.join(baseDirActualPath, "packages" )
 ) ;
 
 

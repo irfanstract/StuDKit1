@@ -38,6 +38,16 @@
     zoom: 93%;
   }
 
+  ul, ol {
+    border-inline-start-width: 0.05em;
+  }
+
+  ol > li::marker {
+    // font-family: "Consolas", "Monaco", monospace ;
+    // letter-spacing: 0.1ex;
+    font-family: 'Times New Roman', Times, serif;
+  }
+
 }
 
 

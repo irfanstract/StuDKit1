@@ -146,6 +146,8 @@
     "appInternalScripts/**/*" ,
     "components/**/*" ,
 
+    /* otherwise `next-env.d.ts` has no effect */
+    "next-env.d.ts" ,
     /* https://nextjs.org/docs/app/building-your-application/configuring/typescript#custom-type-declarations */
     ".next/types/**/*.ts" ,
   ],

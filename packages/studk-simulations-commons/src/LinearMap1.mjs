@@ -83,8 +83,8 @@ export function getMultipliedMatrCtor(ord)
 
 /* for performance reasons we're forced to cache things */
 
-const MUL3CON = getMultipliedMatrCtorUncached([1, 2, 3, ]) ;
-const MUL4CON = getMultipliedMatrCtorUncached([1, 2, 3, 4]) ;
+const MUL3CON = getMultipliedMatrCtorUncached(/** @type {const} */ ([1, 2, 3,  ])) ;
+const MUL4CON = getMultipliedMatrCtorUncached(/** @type {const} */ ([1, 2, 3, 4])) ;
 
 /**
  * 
@@ -92,13 +92,13 @@ const MUL4CON = getMultipliedMatrCtorUncached([1, 2, 3, 4]) ;
  * 
  * be sure to check the CSP settings!
  * 
- * @type {<const n extends 2 | 3 | 4 | 5>(...args: [ord: (NUpTo<n> )[] ] ) => (new (...args: [x1: Matrix<n>, x2: Matrix<n>, ] ) => Matrix<n> ) }
+ * @type {<const t extends NUpTo<n>, const n extends 2 | 3 | 4 | 5 = (4 extends t ? 4 : 3 extends t ? 3 : never ) >(...args: [ord: t[] ] ) => (new (...args: [x1: Matrix<n>, x2: Matrix<n>, ] ) => Matrix<n> ) }
  * 
  */
 export function getMultipliedMatrCtorUncached(ord)
 {
   ;
-  return new Function("m1", "m2", (
+  const C = new Function("m1", "m2", (
     util.stringLinesConcat(function* () {
       yield* [] ;
       
@@ -144,6 +144,8 @@ export function getMultipliedMatrCtorUncached(ord)
       }
     })
   )) ;
+  // @ts-ignore
+  return C ;
 }
 
 /**

@@ -11,6 +11,18 @@ import {
   random,
 } from "lodash-es" ;
 
+/**
+ * 
+ * @typedef {import("studk-ui/src/fwCore/ewo.ts").XJson.IDictFor<k, v> }
+ * @template {string} [k=string]
+ * @template {import("studk-ui/src/fwCore/ewo.ts").XJson.IAny} [v=any]
+ * 
+ */
+/**
+ * 
+ */
+const XDict = {};
+
 import { pathToFileURL, } from 'node:url' ;
 
 import * as FS from 'node:fs' ;
@@ -30,14 +42,36 @@ import { exec, execSync, spawnSync, } from 'node:child_process';
 
 
 
-import * as ief from "./packageListing.mjs" ;
+;
 
-console["info"](ief ) ;
+/**
+ * 
+ * @type {(x: XDict<"dependencies" | "peerDependencies", XDict<string, string>>) => XDict }
+ */
+function getAllDependencies(pMan)
+{
+  // TODO
+  return { ...pMan.dependencies, ...pMan.peerDependencies, } ;
+}
+
+
+
+
+import * as projectActualPaths from "./paths1.mjs" ;
+
+import * as packageListing from "./packageListing.mjs" ;
+
+console["info"]((
+  {
+    packageListing ,
+    projectActualPaths,
+  }
+)) ;
 
 if (1)
 {
-  console["info"]((
-    ief.pkgs
+  const pkgsSummary = (
+    packageListing.pkgs
     .filter(e => {
       if (0) {
         return !(
@@ -65,11 +99,15 @@ if (1)
       const pMan = require(pjsLoc) ;
       return {
         name: pMan.name ?? name ,
-        deps: { ...pMan.dependencies, ...pMan.peerDependencies, } ,
+        dependencies: getAllDependencies(pMan) ,
         pjsLoc,
       } ;
     } )
-  ) ) ;
+  ) ;
+
+  console["info"]({
+    pkgsSummary,
+  }) ;
 }
 
 

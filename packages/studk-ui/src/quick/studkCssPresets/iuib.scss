@@ -26,17 +26,29 @@
 @layer defaults {
   /* */
 
-  button:not(:disabled) {
+  :is(button, a):not(:disabled) {
     cursor: pointer;
   }
-  button {
+  :is(button, a) {
     opacity: 1;
     filter: none;
   }
-  button:disabled {
-    opacity: 0.263;
+  :is(button, a):disabled
+  {
+    opacity: 0.576;
+    .studk-ui-pageoverall-main:not(:focus-within, :hover) &
+    {
+      opacity: 0.263;
+    }
+
     filter: contrast(0.3);
     filter: contrast(0.3) blur(0.035em);
+
+  }
+  :is(button, a):disabled
+  {
+    text-decoration: line-through;
+    text-decoration: line-through double ;
   }
 
 

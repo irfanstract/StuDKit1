@@ -19,22 +19,62 @@ import {
   util,
 } from "typexpe-commons/src/common_sv.mjs";
 
+import {
+  MNI_CTXTUALONLY ,
+  mkArray ,
+} from '#currentPkg/src/fwCore/ewo.ts'; ;
+
+import type {
+  ArgsGetOptions ,
+  ArgsWithOptions ,
+} from '#currentPkg/src/fwCore/ewo.ts'; ;
 
 
 
 
 
 
-function createAndAddNewLinkRelStylesheetTag(...[]: [ ] )
+
+function createAndAddNewLinkRelStylesheetTag(...[{ targetSelector = null, } = {}]: ArgsWithOptions<[], { targetSelector ?: string | null ; }> )
 {
-  const s = document.head.appendChild(document.createElement("link") ) ;
+  const s = SharedElement.forTagName(document.head, "link" , { targetSelector, } ) ;
   s.rel = "stylesheet" ;
   return s ;
 }
 
-function installCssFromUrl(...[src]: [Extract<URL["href"], {}>] )
+namespace SharedElement { ; }
+namespace SharedElement
 {
-  const s = createAndAddNewLinkRelStylesheetTag() ;
+  export type EGA<T> = (
+    readonly [... ArgsWithOptions<[host: Element, init: T, ], { targetSelector : string | null ; }> ]
+  ) ;
+  
+  export function forTagName<const tgnm extends keyof HTMLElementTagNameMap>(...[host, init, { targetSelector, } ]: SharedElement.EGA<tgnm> )
+  {
+    return (
+      SharedElement.forDoCreateTag(host, () => document.createElement<tgnm>(init ) , { targetSelector, } )
+    ) ;
+  }
+
+  export function forDoCreateTag<T extends Element>(...[host, init, { targetSelector, } ]: SharedElement.EGA<() => T> )
+  {
+    const s = (
+      (
+        (typeof targetSelector === "string") ?
+        host.querySelector<T>(targetSelector)
+        : null 
+      )
+      ??
+      host.appendChild(init() )
+    ) satisfies T ;
+    return s ;
+  }
+
+}
+
+function installCssFromUrl(...[src, { targetSelector = null, } = {}]: ArgsWithOptions<[srcUrl: Extract<URL["href"], {}>], { targetSelector ?: string | null ; } > )
+{
+  const s = createAndAddNewLinkRelStylesheetTag({ targetSelector, }) ;
   s.href = src ;
 }
 
