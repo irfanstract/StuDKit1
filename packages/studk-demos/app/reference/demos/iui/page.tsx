@@ -230,12 +230,79 @@ export default function App() {
         )}
         />
         </ul>
+        <studk-card>
+          <p>
+            difference between {}
+            managed button components and native/raw ones
+            .
+          </p>
+          <p>
+            you can {}
+            <Span onClick={e => alert(`hello!`) } >
+              send a hello
+            </Span>, {}
+            <Span onClick={"falseprotocol:!" } >
+              try directing to False Protocol
+            </Span>, {}
+            <Span onClick={false } >
+              bring it in into init
+            </Span>, {}
+            as you desire. {}
+            you can {}
+            <button onClick={e => alert(`hello!`) } >
+              send a hello
+            </button>, {}
+            <a href={"falseprotocol:!" } >
+              try directing to False Protocol
+            </a>, {}
+            <Span onClick={false } >
+              bring it in into init
+            </Span>, {}
+            as you desire. {}
+            <button disabled >
+              Perform Action
+            </button>
+            <button disabled >
+              Send Feedback
+            </button>
+            . {}
+          </p>
+          <p>
+            This is a test-page for <i>studk-ui</i>.
+            the various elements defined there
+            are put into exhibition here.
+            This is the page meant to be the test-page for <i>studk-ui</i>.
+            a wide range of elements defined in the package
+            are put into usage here.
+          </p>
+        </studk-card>
+        <studk-card>
+          <p>
+            copy and paste text here
+          </p>
+          <StudkPlainTextComp
+          value={`plain text here`}
+          />
+          <p>
+            to test whether <code>user-select</code> works or not.
+          </p>
+        </studk-card>
       </div>
       ) ,
     })
   ) ;
 } ;
 
+
+
+
+
+;
+
+import {
+  StudkRichTextComp,
+  StudkPlainTextComp ,
+} from "studk-ui/src/xst/prefabs/studkdem-x-richtext-all.tsx"; ;
 
 
 

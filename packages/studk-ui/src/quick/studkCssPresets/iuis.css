@@ -201,6 +201,10 @@ button:not(.studk-ui-dbc-subsntcspan) {
 
 .studk-ui-pageoverall-main:not(:focus-within, :hover) .studk-ui-dbc-standalonespan:is(button, a ) {
   opacity: 0.18;
+
+  &:is(:disabled) {
+    opacity: 0;
+  }
 }
 
 button:not(.studk-ui-dbc-subsntcspan) {
