@@ -787,6 +787,26 @@ relevant open issues with `tsc`:
 
 
 
+## Relevant UI/Front-End Libraries
+
+currently we only use React. however,
+we aren't closing the doors for potential alternative FW(s).
+
+### React
+
+get started to learn React;
+browse https://react.dev/learn .
+
+some *important lessons* which aren't immediately listed, however:
+
+- https://react.dev/learn/describing-the-ui 
+- https://19.react.dev/learn/adding-interactivity 
+- https://react.dev/learn/managing-state 
+- https://19.react.dev/learn/separating-events-from-effects 
+
+
+
+
 ## Routed App Conventions
 
 for example Next(JS),

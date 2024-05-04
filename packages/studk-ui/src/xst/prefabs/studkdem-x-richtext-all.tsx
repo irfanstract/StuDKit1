@@ -78,8 +78,13 @@ import {
 
 export type StudkRichTextContent = string ;
 
+interface SpclCommonProps
+{
+  onChange ?: (e: { newValue: StudkRichTextContent | string, }) => void ,
+}
+
 export const StudkRichTextComp = (
-  describeComponent(function StudkTxt1({ value, } : { value: StudkRichTextContent }) {
+  describeComponent(function StudkTxt1({ value, ...prps } : { value: StudkRichTextContent } & SpclCommonProps) {
     // TODO
     return (
       <div
@@ -88,6 +93,7 @@ export const StudkRichTextComp = (
       }}
       >
         <StudkPlainTextComp
+        {...prps}
         value={value}
         />
       </div>
@@ -96,19 +102,24 @@ export const StudkRichTextComp = (
 ) ;
 
 export const StudkPlainTextComp = (
-  describeComponent(function StudkTxt1({ value, } : { value: string; }) {
+  describeComponent(function StudkTxt1({ value, onChange, } : { value: string; } & SpclCommonProps) {
     return (
       <div
       style={{
         display: "grid",
+        // resize: "block",
+        overflowInline: "hidden",
       }}
       >
         <textarea
         value={value}
         style={{
           fontFamily: "monospace",
-          // resize: "block",
+          // resize: "none",
+          resize: "block",
+          transition: "none" ,
         }}
+        {...(onChange ? { onChange: e => onChange({ newValue: e.target.value, }) , } : { readOnly: true, }) }
         />
       </div>
     ) ;

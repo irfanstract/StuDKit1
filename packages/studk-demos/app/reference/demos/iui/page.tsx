@@ -280,9 +280,14 @@ export default function App() {
           <p>
             copy and paste text here
           </p>
-          <StudkPlainTextComp
-          value={`plain text here`}
-          />
+          { (
+            withState({ initialVal: `plain text here` , } , (e: string, ctx) => (
+              <StudkPlainTextComp
+              value={e}
+              onChange={e => { ctx.setState(e.newValue ) ; } }
+              />
+            ))
+          ) }
           <p>
             to test whether <code>user-select</code> works or not.
           </p>
@@ -292,6 +297,15 @@ export default function App() {
     })
   ) ;
 } ;
+
+
+
+
+
+import {
+  withState ,
+  WithStateC ,
+} from "@/components/WithStateC.tsx" ;
 
 
 
