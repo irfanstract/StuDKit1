@@ -23,18 +23,37 @@ import {
  */
 const XDict = {};
 
-import { pathToFileURL, } from 'node:url' ;
-
-import * as FS from 'node:fs' ;
-import * as Path from 'node:path' ;
-
 /* `require` is not provided for ESM */
-import { createRequire, } from 'node:module' ;
+import {
+  createRequire,
+} from './util-all.mjs' ;
+
+/* PLATFORM */
+
+import {
+
+  /* PLATFORM PATHS */
+
+  pathToFileURL,
+  pathFromFileURL,
+  fileURLToPath,
+  fileURLFromPath,
+  Path,
+
+  /* PLATFORM I/O */
+  
+  IO,
+
+  /* PLATFORM SHELL */
+  
+  execAsync,
+  exec,
+  execSync,
+  spawnSync,
+} from './util-all.mjs' ;
 
 /** @type {NodeRequire} */
 const require = createRequire(import.meta.url) ;
-
-import { exec, execSync, spawnSync, } from 'node:child_process';
 
 
 
@@ -46,12 +65,17 @@ import { exec, execSync, spawnSync, } from 'node:child_process';
 
 /**
  * 
- * @type {(x: XDict<"dependencies" | "peerDependencies", XDict<string, string>>) => XDict }
+ * @type {(x: import("studk-fwcore-setups/src/util-p.mts").PackageManifest ) => import("studk-fwcore-setups/src/util-p.mts").PrDependencyDict }
  */
 function getAllDependencies(pMan)
 {
   // TODO
-  return { ...pMan.dependencies, ...pMan.peerDependencies, } ;
+  return {
+    ...pMan.dependencies        ,
+    ...pMan.peerDependencies    ,
+    ...(0 ? pMan.optionalDependencies : {}),
+    ...(0 ? pMan.devDependencies      : {}),
+  } ;
 }
 
 
@@ -64,6 +88,11 @@ import * as packageListing from "./packageListing.mjs" ;
 console["info"]((
   {
     packageListing ,
+  }
+)) ;
+
+console["info"]((
+  {
     projectActualPaths,
   }
 )) ;
@@ -92,22 +121,25 @@ if (1)
       return true ;
     } )
     .map(nm => ({
-      pjsLoc: `${nm }/package.json` ,
       name: nm ,
     }) )
-    .map(({ pjsLoc, name, }) => {
-      const pMan = require(pjsLoc) ;
+    .map(({ name, }) => {
+      const pMan = projectActualPaths.getPackageManifest(name) ;
       return {
         name: pMan.name ?? name ,
-        dependencies: getAllDependencies(pMan) ,
-        pjsLoc,
+        version: pMan.version,
+        exports: pMan.exports ?? pMan.main ,
+        dependencies: (
+          Object.keys(getAllDependencies(pMan) )
+        ) ,
+        physicalPath: projectActualPaths.getNamedPackagePaths(name).pBasePath ,
       } ;
     } )
   ) ;
 
-  console["info"]({
-    pkgsSummary,
-  }) ;
+  console["info"]('pkgs summary:', (
+    pkgsSummary
+  )) ;
 }
 
 

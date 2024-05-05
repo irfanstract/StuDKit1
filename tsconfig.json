@@ -120,8 +120,9 @@
     // ".next/types/**/*.ts" ,
 
     /* IN-SOURCE D-TS FILES */
+    /* otherwise, the `yyyyy.d.ts` has no effect */
     
-    /* otherwise `next-env.d.ts` has no effect */
+    "**/corejs.d.ts",
     "next-env.d.ts" ,
 
     /* CONFIG FILES */
