@@ -5,7 +5,25 @@
 
 
 
+
+import {
+  util,
+} from 'typexpe-commons/src/common_sv.mjs';
+
+import {
+  identity,
+  random,
+} from "lodash-es" ;
+
+
+
+
+
 import * as React from "react" ;
+
+import {
+  useResource,
+} from "@/components/useEffectAlt";
 
 
 
@@ -20,7 +38,7 @@ import * as React from "react" ;
  */
 export const useIAudCtxInit = () => {
   ;
-  const [c, initC ] = (
+  const [e, initC ] = (
     /**
      * remarks:
      * - the way the overload is written - combined with how {@link React.ReducerState } is written -
@@ -29,8 +47,19 @@ export const useIAudCtxInit = () => {
      * 
      */
     (
-      React.useReducer<(...a: [any, Event]) => (AudioContext | null)>((...args) => new AudioContext() , null )
+      React.useReducer<(...a: [any, Event]) => (Event | null)>((...[e0, e2]) => (e0 || e2) , null )
     )
+  ) ;
+  const c = (
+    useResource(() => (
+      e
+      &&
+      (() => {
+        const c = new AudioContext() ;
+        console["log"]({ c, }) ;
+        return c ;
+      })()
+    ) , [e] )
   ) ;
   return [c, initC ] satisfies [any, any] ;
 } ;
@@ -43,7 +72,7 @@ export const useIAudCtxInit = () => {
 export const iAudCreateAndConnect = (
   <T extends AudioNode ,>(...[nd0, GN, c ] : [dest: AudioNode | AudioParam, CN: new (ctx: BaseAudioContext) => T, ctx: BaseAudioContext ] ) => {
     const gn = new GN(c) ;
-    gn.connect(nd0) ;
+    identity<{ connect(x: AudioNode | AudioParam): any ; }>(gn).connect(nd0) ;
     return gn ;
   }
 ) ;

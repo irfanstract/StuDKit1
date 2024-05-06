@@ -20,5 +20,6 @@
   // ],
   "references": [
     { "path": "../../packages/typexpe-commons", } ,
+    { "path": "../../packages/studk-util", } ,
   ] ,
 }

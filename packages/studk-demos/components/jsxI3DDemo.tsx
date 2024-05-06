@@ -74,24 +74,44 @@ function xTransformedly(...[tr, pts] : [LinTr3DMat, readonly (Point3D | null)[]]
 function xBall(...[
   pos,
   r = 0.35,
+  { grnInDeg = 22.5, } = {} ,
 ] : [
-  pos: Point3D,
-  r ?: number,
+  ...[
+    pos: Point3D,
+    r ?: number,
+  ] ,
+  opts ?: {
+    grnInDeg ?: number ,
+  } ,
 ]){
-  if (1) {
-    return xEquilateralTriangle(pos, r, ) ;
-  }
   return (
-    xEquilateralPolygon(pos, r, { granularityInDegrees: 22.5, } )
+    new I3D.PolygonallyMarkedNodeUnitGraph([
+      ...(
+        xEquilateralPolygon(pos, "xConY", r, { granularityInDegrees: grnInDeg, } )
+        .points
+      ) ,
+      ...(
+        xEquilateralPolygon(pos, "yConZUnisigned", r, { granularityInDegrees: grnInDeg, } )
+        .points
+      ) ,
+      ...(
+        xEquilateralPolygon(pos, "xConZ", r, { granularityInDegrees: grnInDeg, } )
+        .points
+      ) ,
+    ])
   ) ;
 } ;
 
 function xEquilateralPolygon(...[
-  pos,
+  nodeAnchPos,
+  md = "xConY" ,
   r,
   { granularityInDegrees, } ,
 ] : [
   pos: Point3D,
+  ...[
+    md?: I3D.CartesOrthoFaceAngle ,
+  ] ,
   r : number,
   options: { granularityInDegrees: number, } ,
 ]){
@@ -100,19 +120,21 @@ function xEquilateralPolygon(...[
       [...util.reiterable(function* () {
         ;
         for (const a of (
-          util.reiterable(function* () {
-            for (let i=0; i<360; i+=granularityInDegrees)
-            { yield Angle.ByDegrees(i) ; }
-          } )
+          util.range(0, 360, granularityInDegrees )
+          .map(v => Angle.ByDegrees(v) )
         ) )
         {
           ;
-          const offsettingTr = (
-            multipliedMat4(I3D.describeXConYRotationFwd(a), (
-              linTrFromTranslateCoord3Matr({ x: -r, y:  0   , z: 0, })
-            ) )
-          ) ;
-          yield linTrTransformedPosition3DMat(offsettingTr, pos) ;
+          yield (() => {
+            const mvVec1 = (
+              linTrTransformedPosition3DMat(I3D.describeCartesOrthoRotationFwd(md, a), (
+                ({ x: -r, y:  0   , z: 0, })
+              ) )
+            ) ;
+            return linTrTransformedPosition3DMat((
+              linTrFromTranslateCoord3Matr(mvVec1)
+            ), nodeAnchPos) ;
+          })() ;
         }
       }) ]
     ))
@@ -121,14 +143,16 @@ function xEquilateralPolygon(...[
 
 function xEquilateralTriangle(...[
   pos,
+  md,
   r = 0.35,
 ] : [
   pos: Point3D,
+  md: I3D.CartesOrthoFaceAngle ,
   r ?: number,
 ])
 {
   return (
-    xEquilateralPolygon(pos, r, { granularityInDegrees: 120, } )
+    xEquilateralPolygon(pos, md, r, { granularityInDegrees: 120, } )
   ) ;
 } ;
 
@@ -173,7 +197,7 @@ export const I3DDemo = function I3DDemoComp() {
         ) ;
         for (const { x, z, y, } of pts )
         {
-          yield xEquilateralPolygon({ x, z, y, }, 0.05, { granularityInDegrees: 90, } ) ;
+          yield xBall({ x, z, y, }, 0.05, { grnInDeg: 52, } ) ;
         }
       } ) ,
       ...[
@@ -211,11 +235,6 @@ export const I3DDemo = function I3DDemoComp() {
       <div>
         <I3DFullSceneFigureDisplay content={posAll } perspective={persp} />
       </div>
-      <details>
-        <pre>
-          {JSON.stringify({ persp, ang, posAll, }, null, 2) }
-        </pre>
-      </details>
       <p>
         <IAngularSliderComp
         value={ang}
@@ -223,6 +242,14 @@ export const I3DDemo = function I3DDemoComp() {
         propagateEdit={(e) => setTimeout(() => setPersp(e.newValue) , 0 ) }
         />
       </p>
+      <details key="details">
+        <div style={{ position: "relative", overflow: "auto", }}>
+        <pre style={{ whiteSpace: "pre-wrap" }} >
+          { JSON.stringify({ persp, ang, }, null, 2) }
+          { /* debugging no longer necessary for now ; huge number of lines */ null && posAll.toDebugSnippet() }
+        </pre>
+        </div>
+      </details>
     </div>
   ) ;
 } ;

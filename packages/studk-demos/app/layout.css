@@ -7,43 +7,52 @@
 
 
 
-/* equivalent to ((32 + 8)em ), but we can't use `px` so we assume per `em` is `16px` */
 
-.strl-d2 {
-  flex: 1 1 32em !important;
+
+
+
+
+
+
+
+
+
+
+
+.arbrd-d1 {
+  padding-inline: 1em 1em;
+  padding-block: 1em 1em;
+  /* overflow-x: auto; */
+
 }
-.strl-exploringAndOutline {
-  display: flex !important;
-  flex-direction: column-reverse !important;
-}
-.strl-exploringAndOutline > * {
-  flex: 1 1 auto !important ;
-}
-@media (max-width: 800px)
+
+@media (min-width: 1024px)
 {  
-  .strl-d2 {
-    flex: 1 1 28em !important;
-  }
-}
-@media (max-width: 720px)
-{  
-  .strl-d2 {
-    flex: 1 1 24em !important;
-  }
-}
-@media (max-width: 640px)
-{  
-  .strl-d1 {
-    flex-direction: column !important;
-  }
-  .strl-exploringAndOutline {
-    display: flex !important;
-    flex-direction: column !important;
+  .arbrd-d1 {
+    padding-inline: 3em 1em;
   }
 }
 
+html {
+  background: hsl(89.88deg 100% 11.5%) ;
+  color: white;
+  font-weight: 530;
+}
+html {
+  justify-content: center;
+  text-align: center;
+}
 
+html {
+  background: hsl(240, 84%, 17%);
+}
 
+/* 
+.arbrd-d1 {
+  display: block;
+  max-inline-size: 1196px;
+  margin-inline: auto ;
+} */
 
 
 

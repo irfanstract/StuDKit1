@@ -50,7 +50,7 @@ export const Matrix = {} ;
  */
 export function multipliedMat3(m1, m2)
 {
-  return multipliedMatVari(m1, m2, [1, 2, 3] ) ;
+  return new MUL3CON(m1, m2,) ;
 }
 
 /**
@@ -59,7 +59,93 @@ export function multipliedMat3(m1, m2)
  */
 export function multipliedMat4(m1, m2)
 {
-  return multipliedMatVari(m1, m2, [1, 2, 3, 4] ) ;
+  return new MUL4CON(m1, m2,) ;
+}
+
+/**
+ * 
+ * returns a constructor to compute multiplied matrix
+ * 
+ * be sure to check the CSP settings!
+ * 
+ * @type {<const n extends 2 | 3 | 4 | 5>(...args: [ord: (NUpTo<n> )[] ] ) => (new (...args: [x1: Matrix<n>, x2: Matrix<n>, ] ) => Matrix<n> ) }
+ * 
+ */
+export function getMultipliedMatrCtor(ord)
+{
+  // switch (lengthArg) {
+  //   case 3 : return IDENTITYMATRIX3 ;
+  //   case 4 : return IDENTITYMATRIX4 ;
+  //   default: return identityMatForLengthUncached(lengthArg) ;
+  // }
+  return getMultipliedMatrCtorUncached(ord) ;
+}
+
+/* for performance reasons we're forced to cache things */
+
+const MUL3CON = getMultipliedMatrCtorUncached(/** @type {const} */ ([1, 2, 3,  ])) ;
+const MUL4CON = getMultipliedMatrCtorUncached(/** @type {const} */ ([1, 2, 3, 4])) ;
+
+/**
+ * 
+ * returns a constructor to compute multiplied matrix
+ * 
+ * be sure to check the CSP settings!
+ * 
+ * @type {<const t extends NUpTo<n>, const n extends 2 | 3 | 4 | 5 = (4 extends t ? 4 : 3 extends t ? 3 : never ) >(...args: [ord: t[] ] ) => (new (...args: [x1: Matrix<n>, x2: Matrix<n>, ] ) => Matrix<n> ) }
+ * 
+ */
+export function getMultipliedMatrCtorUncached(ord)
+{
+  ;
+  const C = new Function("m1", "m2", (
+    util.stringLinesConcat(function* () {
+      yield* [] ;
+      
+      /**
+       * step 1: initialisation
+       * 
+       */
+      yield `/* initialise with zeroes */` ;
+      for (const i of ord )
+      {
+        for (const j of ord )
+        {
+          ;
+          yield `/** @type {number} */` ;
+          yield `this[${JSON.stringify(`m${i},${j}`) }] = 0 ;` ;
+        }
+      }
+      
+      yield `  ` ;
+
+      /**
+       * step 2: collection
+       */
+      yield `/* do the main thing */` ;
+      for (const i of ord )
+      {
+        for (const j of ord )
+        {
+          ;
+          /**
+           * addition
+           */
+          yield `this[${JSON.stringify(`m${i},${j}`) }] += (` ;
+          yield `  0` ;
+          for (const k of ord )
+          {
+            ;
+            yield `  +` ;
+            yield `  m1[${JSON.stringify(`m${i},${k}`) }] * m2[${JSON.stringify(`m${k},${j}`) }]` ;
+          }
+          yield `) ;` ;
+        }
+      }
+    })
+  )) ;
+  // @ts-ignore
+  return C ;
 }
 
 /**
@@ -70,45 +156,9 @@ export function multipliedMatVari(m1, m2, ord)
 {
   // @ts-ignore
   return (
-    new (/** */ class MatrImpl{ constructor() {
-      ;
-
-      /**
-       * step 1: initialisation
-       * 
-       */
-      for (const i of ord )
-      {
-        for (const j of ord )
-        {
-          ;
-          // @ts-ignore
-          this[`m${i},${j}`] ??= 0 ;
-        }
-      }
-
-      /**
-       * step 2: collection
-       */
-      for (const i of ord )
-      {
-        for (const j of ord )
-        {
-          ;
-          /**
-           * addition
-           */
-          for (const k of ord )
-          {
-            ;
-            // @ts-ignore
-            this[`m${i},${j}`] += (
-              m1[`m${i},${k}`] * m2[`m${k},${j}`]
-            ) ;
-          }
-        }
-      }
-    } } )()
+    new (
+      getMultipliedMatrCtor(ord)
+    )(m1, m2)
   ) ;
 }
 
@@ -131,6 +181,32 @@ export const matrixAssign = /** @satisfies {<T extends {}>(...args: [T, Partial<
  * 
  */
 export function identityMatForLength(lengthArg)
+{
+  switch (lengthArg) {
+    case 3 : return IDENTITYMATRIX3 ;
+    case 4 : return IDENTITYMATRIX4 ;
+    default: return identityMatForLengthUncached(lengthArg) ;
+  }
+}
+
+/*
+ * with assumption of immutability
+ * we cache matrices.
+ */
+
+const IDENTITYMATRIX3 = identityMatForLengthUncached(3) ;
+const IDENTITYMATRIX4 = identityMatForLengthUncached(4) ;
+
+/**
+ * identity matrix (ie on diagonal are all `1`s, and elsewhere `0`s).
+ * 
+ * __caveat__,
+ * `Transform<n>D` expects `Matrix<n+1>`, watco
+ * 
+ * @type {<const n extends 2 | 3 | 4 | 5, const I extends [1, 2, 3?, 4?, 5?][number] >(...args: [length: n, ] ) => Matrix<n> }
+ * 
+ */
+export function identityMatForLengthUncached(lengthArg)
 {
   /**
    * all the `i`s ;
