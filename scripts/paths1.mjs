@@ -100,10 +100,12 @@ export const getPackageManifest = (p) => {
 /** @satisfies {(x: string) => object } */
 export const getNamedPackagePaths = (p) => {
   const pBasePath = Path.join(nodeModulesDirActualPath, p, ) ;
+  const pBaseRealPath = IO.realpathSync(pBasePath) ;
   const pJsonPath = Path.join(pBasePath, "package.json") ;
   return {
     p ,
     pBasePath,
+    pBaseRealPath ,
     pJsonPath ,
   } ;
 } ;

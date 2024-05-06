@@ -84,6 +84,19 @@ export type {
 
 
 
+;
+
+class LocallyPackageRef
+{
+  readonly pkgRealPath!: string;
+}
+
+export { LocallyPackageRef, } ;
+
+
+
+
+
 
 
 
