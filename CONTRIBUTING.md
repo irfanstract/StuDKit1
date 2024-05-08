@@ -43,19 +43,26 @@ __discussed in depth in section "when testing, `npm install` shall be replaced w
 ### app crashed with "syntax error, unexpected (.....)"
 
 __for example, app crashed with__
-- "syntax error, unexpected keyword 'type'",
-- "syntax error, unexpected token ':'",
-  "syntax error, unexpected token '!'",
-- "syntax error, unexpected keyword 'satisfies'"
+- `ERR_UNKNOWN_FILE_EXTENSION`
+- SyntaxError(s):
+  - "syntax error, unexpected keyword 'type'",
+  - "syntax error, unexpected token ':'",
+  - "syntax error, unexpected token '!'",
+  - "syntax error, unexpected keyword 'satisfies'"
 
-__replacing `node` with `npx --yes ts-node`__ would likely resolve this issue.
-see *replacing `node` with `npx --yes ts-node`* below for the intro to that.
+__replacing `node <the-file>` with <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100)__ would likely resolve this issue.
+see *replacing `node` with <s>`npx --yes ts-node`</s> `node --import ./scripts/setup-tsnodeimportfixups.mjs`* below
+for the intro to that.
 
-### replacing `node` with `npx --yes ts-node`
+### replacing `node` with <s>`npx --yes ts-node`</s> `node --import ./scripts/setup-tsnodeimportfixups.mjs`
 
-replacing `node` with `npx --yes ts-node`
+replacing `node <the-file>` with <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100)
 
-see https://typestrong.org/ts-node/docs/ .
+see
+- https://typestrong.org/ts-node/docs/
+- https://github.com/TypeStrong/ts-node/issues/2100 
+- [`./scripts/setup-tsnodeimportfixups.mjs`](./scripts/setup-tsnodeimportfixups.mjs)
+.
 
 ### file [`git-rebase-todos`](./.git/rebase-merge/git-rebase-todo)
 
@@ -102,7 +109,7 @@ this
 is necessary to allow loading the packages natively in Node without needing to "manually first searching, reaching and hiting the 'build' button".
 except for the React-specific stuffs since
 for now they'll only be used for the apps written for Vite or Next anyway;
-use `npx --yes ts-node` to run such src files - see *replacing `node` with `npx --yes ts-node`* above for the intro to that.
+use <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100) to run such src files - see *replacing `node` with `npx --yes ts-node`* above for the intro to that.
 
 #### `studk-util`
 
@@ -120,7 +127,7 @@ in contrast to the general recommendation of avoiding extra 'manually click to b
 a subset of the source files there
 will only be used for apps written for Vite or Next, so
 one should use TypeScript for that ;
-use `npx --yes ts-node` to run such src files.
+use <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100) to run such src files.
 
 #### `studk-demos`
 
@@ -128,10 +135,11 @@ its `package.json` has `script` entry `dev` to run the dev server; if started, i
 you should then see some showcases; they're mostly stuffs building on these packages developed here in this monorepo.
 
 for now
-the source files
-will only be used for the apps written for Vite or Next anyway, so
-one should use TypeScript for that ;
-use `npx --yes ts-node` to run such src files.
+the source files in such tree(s)
+are only meant to be used within the app;
+avoid trying to run those files
+even if you're tempted to use <s>`npx --yes ts-node`</s> `node --import ./scripts/setup-tsnodeimportfixups.mjs` or even `esbuild` -
+presently no guarantees are made abt running those src files standalone!
 
 #### `studpresenters`
 

@@ -51,7 +51,10 @@ import {
 
 ;
 
-import * as projectActualPaths from "./paths1.mjs" ;
+import {
+  projectActualPaths,
+  packageListing,
+} from './moduleListing.mjs'; ;
 
 const {
   baseDirActualPath,
