@@ -313,6 +313,20 @@ export {
   // throt
 } from "lodash-es" ; ;
 
+export const asMentioned = /** @template E @param {() => Generator<E, void, void> } x @return {ReadonlyArray<E> } */ (x) => {
+  return (
+    reiterated(function* () {
+      yield* (
+        new Map((
+          reiterated(x)
+          .map(e => [e, true] )
+        ))
+        .keys()
+      ) ;
+    })
+  ) ;
+} ;
+
 
 
 

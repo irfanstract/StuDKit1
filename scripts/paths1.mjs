@@ -51,29 +51,22 @@ import {
 
 ;
 
-/** @type {(x: string) => import("studk-fwcore-setups/src/util-p.mts").PackageManifest } */
-const loadPackageJson = (pJsonPath) => {
-  const { pJson, } = loadPackageJsonEtc(pJsonPath) ;
-  return pJson ;
-} ;
-
-/** @satisfies {(x: string) => object } */
-const loadPackageJsonEtc = (pJsonPath) => {
-  const pJsonFileRaw = IO.readFileSync(pJsonPath, { encoding: "utf-8", } ) ;
-  const pJson = /** @type {import("studk-fwcore-setups/src/util-p.mts").PackageManifest } */ (JSON.parse(pJsonFileRaw) ) ;
-  return {
-    pJsonPath,
-    pJsonFileRaw,
-    pJson,
-  } ;
-} ;
+import {
+  loadPackageJson ,
+  loadPackageJsonEtc ,
+} from "studk-fwcore-setups/src/packagejson-loading-all.mjs" ;
 
 
 
 export const scriptsDirActualPath = (
-  Path.join(fileURLToPath(import.meta.url), ".." )
+  IO.realpathSync((
+    Path.join(fileURLToPath(import.meta.url), ".." )
+  ))
 ) ;
 
+/**
+ * {@link baseDirActualPath exactly the root of the whole (mono)repo }.
+ */
 export const baseDirActualPath = (
   Path.join(scriptsDirActualPath, ".." )
 ) ;
@@ -86,18 +79,33 @@ export const nodeModulesDirActualPath = (
   Path.join(baseDirActualPath, "node_modules" )
 ) ;
 
-/** @satisfies {() => import("studk-fwcore-setups/src/util-p.mts").PackageManifest } */
+/**
+ * load and parse the `package.json` {@link baseDirActualPath located exactly at root of the whole (mono)repo }.
+ * 
+ * @satisfies {() => import("studk-fwcore-setups/src/util-p.mts").PackageManifest }
+ * 
+ */
 export const getRootPackageManifest = () => {
-  return loadPackageJson(baseDirActualPath) ;
+  return loadPackageJson(getRootPackagePaths().pJsonPath ) ;
 } ;
 
-/** @satisfies {(x: string) => import("studk-fwcore-setups/src/util-p.mts").PackageManifest } */
+/**
+ * load and parse the `package.json` of given package
+ * 
+ * @satisfies {(x: string) => import("studk-fwcore-setups/src/util-p.mts").PackageManifest }
+ * 
+ */
 export const getPackageManifest = (p) => {
   const { pJsonPath, } = getNamedPackagePaths(p) ;
   return loadPackageJson(pJsonPath) ;
 } ;
 
-/** @satisfies {(x: string) => object } */
+/**
+ * compute info(s) abt the paths of the given package
+ * 
+ * @satisfies {(x: string) => object }
+ * 
+ */
 export const getNamedPackagePaths = (p) => {
   const pBasePath = Path.join(nodeModulesDirActualPath, p, ) ;
   const pBaseRealPath = IO.realpathSync(pBasePath) ;
@@ -108,6 +116,19 @@ export const getNamedPackagePaths = (p) => {
     pBaseRealPath ,
     pJsonPath ,
   } ;
+} ;
+
+export const getRootPackagePaths = (
+  () => ({ pJsonPath: Path.join(baseDirActualPath, "package.json"), })
+) ;
+
+export const getRepoOriginGitUrl = () => {
+  const o = (
+    execSync(`git remote get-url origin`, { cwd: baseDirActualPath, encoding: "utf-8" } )
+  ) ;
+  return (
+    o.match(/(\S+)/)?.[1] ?? util.throwTypeError(`result of the 'git remote get-url' is not a valid URL ref`)
+  ) ;
 } ;
 
 
