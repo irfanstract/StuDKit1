@@ -11,18 +11,6 @@ import {
   random,
 } from "lodash-es" ;
 
-/**
- * 
- * @typedef {import("studk-ui/src/fwCore/ewo.ts").XJson.IDictFor<k, v> }
- * @template {string} [k=string]
- * @template {import("studk-ui/src/fwCore/ewo.ts").XJson.IAny} [v=any]
- * 
- */
-/**
- * 
- */
-const XDict = {};
-
 /* `require` is not provided for ESM */
 import {
   createRequire,
@@ -63,27 +51,17 @@ const require = createRequire(import.meta.url) ;
 
 ;
 
-/**
- * 
- * @type {(x: import("studk-fwcore-setups/src/util-p.mts").PackageManifest ) => import("studk-fwcore-setups/src/util-p.mts").PrDependencyDict }
- */
-function getAllDependencies(pMan)
-{
-  // TODO
-  return {
-    ...pMan.dependencies        ,
-    ...pMan.peerDependencies    ,
-    ...(0 ? pMan.optionalDependencies : {}),
-    ...(0 ? pMan.devDependencies      : {}),
-  } ;
-}
+import {
+  getAllDependencies,
+} from './gadp.mjs'; ;
 
 
 
 
-import * as projectActualPaths from "./paths1.mjs" ;
-
-import * as packageListing from "./packageListing.mjs" ;
+import {
+  projectActualPaths,
+  packageListing,
+} from './moduleListing.mjs'; ;
 
 console["info"]((
   {
@@ -130,7 +108,7 @@ if (1)
         version: pMan.version,
         exports: pMan.exports ?? pMan.main ,
         dependencies: (
-          Object.keys(getAllDependencies(pMan) )
+          Object.keys(getAllDependencies(pMan , { includeDev: false, } ) )
         ) ,
         physicalPath: projectActualPaths.getNamedPackagePaths(name).pBasePath ,
       } ;
