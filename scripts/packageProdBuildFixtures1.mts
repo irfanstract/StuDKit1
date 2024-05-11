@@ -184,7 +184,7 @@ namespace prodBuildFixups
     : object
     {
       ;
-      const pMan = projectActualPaths.getPackageManifest(name) ;
+      const pMan = projectActualPaths.getNamedPackageManifest(name) ;
       const { pBaseRealPath, } = projectActualPaths.getNamedPackagePaths(name) ;
       const actualDepies = (
         getPkgDirAllDependedPackages(pBaseRealPath)
@@ -236,6 +236,18 @@ namespace prodBuildFixups
               ) ;
               
             } )
+            /**
+             * close the doors from breakages by
+             * pinning all these packages to their exact version(s), the version(s) we've been living with
+             * .
+             * 
+             */
+            .map(([pkgName, pkgSpcfiedVer]) => (
+              /** @satisfies {[any, any]} */ ([pkgName, (
+                (projectActualPaths.getNamedPackageActualVersion(pkgName) ?? pkgSpcfiedVer)
+                .replace(/^(\^|\~)(?=[01-9])/g, "" )
+              ) ])
+            ))
           ))
         ) ,
         license: 'LGPL-3.0-only',
@@ -255,7 +267,7 @@ namespace prodBuildFixups
   
   export namespace perPackageManScriptsFixups
   {
-    export function getDerived(...[s] : [ReturnType<typeof projectActualPaths.getPackageManifest >["scripts"] & {} ] )
+    export function getDerived(...[s] : [ReturnType<typeof projectActualPaths.getNamedPackageManifest >["scripts"] & {} ] )
     {
       return (
         util.L.omit(s, ...[
