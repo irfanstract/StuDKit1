@@ -102,7 +102,7 @@ if (1)
       name: nm ,
     }) )
     .map(({ name, }) => {
-      const pMan = projectActualPaths.getPackageManifest(name) ;
+      const pMan = projectActualPaths.getNamedPackageManifest(name) ;
       return {
         name: pMan.name ?? name ,
         version: pMan.version,
