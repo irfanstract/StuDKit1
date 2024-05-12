@@ -13,26 +13,52 @@ import {
 describe("Object Interning Test", () => {
   ;
 
-  const XGlobalScopeBuiltinWrapper1 = allocateKeyInternedObjectPool({ recreate: /** @type {(x: String) => { value: Function, } } */ (key) => ({ value: globalThis[key] }) , }) ;
-
-  it(`shall behave as intended`, () => {
+  const XGlobalScopeBuiltin = (() => {
     ;
 
-    assert(XGlobalScopeBuiltinWrapper1.GET("RegExp").value === RegExp ) ;
-    assert(XGlobalScopeBuiltinWrapper1.GET("RegExp") === XGlobalScopeBuiltinWrapper1.GET("RegExp") ) ;
-    assert(XGlobalScopeBuiltinWrapper1.GET("Function").value === Function ) ;
-    assert(XGlobalScopeBuiltinWrapper1.GET("Function") === XGlobalScopeBuiltinWrapper1.GET("Function") ) ;
-    assert(XGlobalScopeBuiltinWrapper1.GET("Function") === XGlobalScopeBuiltinWrapper1.GET("Functi" + "on" ) ) ;
+    const getNamedItem = /** @type {(x: String) => Function } */ (key) => (
+      // @ts-ignore
+      globalThis[key]
+    ) ;
 
-    assert(XGlobalScopeBuiltinWrapper1.GET("Function") !== XGlobalScopeBuiltinWrapper1.GET("Symbol" ) ) ;
+    const {
+      GET: getNamedItemAsBoxed,
+    } = allocateKeyInternedObjectPool({ recreate: /** @type {(x: String) => { value: Function, } } */ (key) => ({ value: getNamedItem(key) , }) , }) ;
+
+    return {
+      getNamedItemAsBoxed,
+      getNamedItem,
+    } ;
+  })() ;
+
+  it(`interning shall behave as intended`, () => {
+    ;
+
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("RegExp") === XGlobalScopeBuiltin.getNamedItemAsBoxed("RegExp") ) ;
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("Function") === XGlobalScopeBuiltin.getNamedItemAsBoxed("Function") ) ;
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("Function") === XGlobalScopeBuiltin.getNamedItemAsBoxed("Functi" + "on" ) ) ;
+
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("Function") !== XGlobalScopeBuiltin.getNamedItemAsBoxed("Symbol" ) ) ;
 
     ;
   } ) ;
 
-  it(`shall behave as intended 03`, () => {
+  it(`constructor shall behave as intended`, () => {
     ;
 
-    assert(XGlobalScopeBuiltinWrapper1.GET("Reg Exp").value === undefined ) ;
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("RegExp").value === RegExp ) ;
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("Function").value === Function ) ;
+
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("Reg Exp").value === undefined ) ;
+
+    ;
+  } ) ;
+
+  it(`'XGlobalScopeBuiltin' shall behave as intended`, () => {
+    ;
+
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("RegExp").value   === XGlobalScopeBuiltin.getNamedItem("RegExp") ) ;
+    assert(XGlobalScopeBuiltin.getNamedItemAsBoxed("Function").value === XGlobalScopeBuiltin.getNamedItem("Function") ) ;
 
     ;
   } ) ;
