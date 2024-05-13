@@ -19,6 +19,8 @@ PrNameOp
 {
   version ?: string ;
   license ?: string ;
+  repository?: { type: string, url : string, } ;
+  description ?: string ;
 }
 
 interface PackageManifest extends
@@ -26,7 +28,7 @@ PrDependencyStagesDict,
 PrScriptsOp
 {}
 
-type PrNameOp = { name?: string ; } ;
+type PrNameOp = { name?: string ; private?: boolean ; } ;
 
 type PrScriptsOp = { scripts?: PrScriptsDict ; } ;
 
@@ -41,6 +43,7 @@ interface PrDependencyStagesDict
   peerDependencies ?: PrDependencyDict ;
   optionalDependencies ?: PrDependencyDict ;
   devDependencies ?: PrDependencyDict ;
+  eslint ?: any ;
 }
 
 interface PrDependencyDict
@@ -52,10 +55,12 @@ interface PackageManifest
 {
   main?: string ;
   exports?: string | PrExportsDict ;
+  activationPoints?: any ;
+  contributes     ?: any ;
 }
 
 interface PrExportsDict {
-  [path: string]: PrExportsPathSpecificDict ;
+  [path: string]: string | PrExportsPathSpecificDict ;
 }
 
 interface PrExportsPathSpecificDict
