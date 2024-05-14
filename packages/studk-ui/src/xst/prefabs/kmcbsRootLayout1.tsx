@@ -181,7 +181,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
         </SingleChildDiv>
       )}
       />
-  )
+  );
 } ;
 
 

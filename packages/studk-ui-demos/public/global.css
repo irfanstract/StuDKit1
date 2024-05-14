@@ -1,0 +1,150 @@
+
+
+
+
+
+
+
+
+
+
+/* @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100..900&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+
+
+
+
+
+
+
+
+
+/* RECOMMENDED PER-COMPONENT DEFAULTS */
+
+/* that's it */
+
+
+
+
+
+
+
+
+h1, h2 {
+  /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-family: 'Inter', Roboto, 'Helvetica Neue', sans-serif ;
+}
+
+/* we deliberately restrict this to "bring attention" elems, not "strong" elems */
+b {
+  /* font-family: var(--font-poppins), var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-family: "Poppins", "Inter", Roboto, 'Helvetica Neue', sans-serif ;
+}
+
+
+
+
+
+
+body {
+  
+  /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-weight: 500;
+}
+
+body {
+  /* font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+  /* font-family: var(--font-outfittt), var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
+  /* font-weight: 530; */
+  letter-spacing: 0.028ex ;
+}
+
+
+
+
+
+
+
+:is(h1, h2, h3, h4, h5, h6)
+{
+  &::before
+  {
+    content: "§";
+    color: rgba(128 128 128 / 0.5 );
+  }
+
+  &:hover::before
+  {
+    color: hsla(217, 100%, 75%, 0.5);
+  }
+
+}
+
+
+
+
+
+
+h1, h2, h3, h4, h5, h6
+{
+
+  position: sticky;
+  top : 0.25em ;
+  offset-block-start : 0.25em ;
+  left: 0.25em ;
+  offset-inline-start: 0.25em ;
+
+}
+
+
+
+
+
+
+
+dialog[open] {
+  position: sticky;
+  position: fixed;
+  inset-block-start: 0;
+}
+
+dialog[open] {
+  border-radius: 0.5em ;
+}
+dialog[open]::backdrop {
+  background: rgba(0 0 0 / 0.5 ) ;
+  backdrop-filter: blur(0.35em) ;
+}
+
+dialog:not([open]) {
+  opacity: 0 ;
+}
+dialog[open] {
+  opacity: 1 ;
+}
+@starting-style {
+  dialog[open] {
+    opacity: 0 ;
+  }
+}
+
+dialog {
+  transition-behavior: allow-discrete ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
