@@ -28,7 +28,7 @@ import {
 
 import "@/appInternalScripts/env" ;
 
-// import "./layout.css" ;
+import "./layout.scss" ;
 
 
 

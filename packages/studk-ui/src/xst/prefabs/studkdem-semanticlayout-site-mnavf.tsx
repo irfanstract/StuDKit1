@@ -101,32 +101,46 @@ const MainAndNavAndFinaleC = (
       ;
       return (
         <div style={{
-          display: "flex",
-          flexDirection: "column",
+          position: "relative",
+          // display: "flex",
+          // flexDirection: "column",
           // backgroundColor: "black",
           // color: "white",
           overflowBlock: "auto",
-          minBlockSize: `100vh`,
-          inlineSize: `100vw`,
+          // minBlockSize: `100vh`,
+          // inlineSize: `100vw`,
           overflowInline: "clip",
           overflowX: "clip",
         }}>
-          <SCD
-          style={{
-            order: 1 ,
-            flex: "1 1 auto",
-            // backgroundColor: "white",
-            // color: "black",
-          }}
-          >
-              { mainComp }
-          </SCD>
-          <SCD style={{ order: 0, position: "sticky", insetBlockStart: 0, backgroundColor: "inherit", fontSize: `80%`, }} >
-              { nav1 }
-          </SCD>
-          <SCD style={{ order: 2 , position: "sticky", insetBlockEnd: 0, backgroundColor: "inherit", fontSize: `80%`, }}>
-              { finale }
-          </SCD>
+          <div style={{
+            // position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            // backgroundColor: "black",
+            // color: "white",
+            // overflowBlock: "auto",
+            minBlockSize: `100vh`,
+            // inlineSize: `100vw`,
+            // overflowInline: "clip",
+            // overflowX: "clip",
+          }}>
+            <SCD
+            style={{
+              order: 1 ,
+              flex: "1 1 auto",
+              // backgroundColor: "white",
+              // color: "black",
+            }}
+            >
+                { mainComp }
+            </SCD>
+            <SCD style={{ order: 0, position: "sticky", insetBlockStart: 0, backgroundColor: "inherit", fontSize: `80%`, }} >
+                { nav1 }
+            </SCD>
+            <SCD style={{ order: 2 , position: "sticky", insetBlockEnd: 0, backgroundColor: "inherit", fontSize: `80%`, zIndex: `50` }}>
+                { finale }
+            </SCD>
+          </div>
         </div>
       ) ;
     }
