@@ -134,10 +134,28 @@ const MainAndNavAndFinaleC = (
             >
                 { mainComp }
             </SCD>
-            <SCD style={{ order: 0, position: "sticky", insetBlockStart: 0, backgroundColor: "inherit", fontSize: `80%`, }} >
+            <SCD
+            className="studk-mnavf-header "
+            style={{
+              order: 0,
+              position: "sticky", insetBlockStart: 0,
+              // backgroundColor: "inherit",
+              // fontSize: `80%`,
+              // zIndex: `var(--layers-headnav)`,
+            }}
+            >
                 { nav1 }
             </SCD>
-            <SCD style={{ order: 2 , position: "sticky", insetBlockEnd: 0, backgroundColor: "inherit", fontSize: `80%`, zIndex: `50` }}>
+            <SCD
+            className="studk-mnavf-footer "
+            style={{
+              order: 2 ,
+              position: "sticky", insetBlockEnd: 0,
+              // backgroundColor: "inherit",
+              // fontSize: `80%`,
+              // zIndex: `var(--layers-footer)`,
+            }}
+            >
                 { finale }
             </SCD>
           </div>
@@ -146,6 +164,8 @@ const MainAndNavAndFinaleC = (
     }
   ))
 ) ;
+
+import "./studkdem-semanticlayout-site-mnavf.scss" ;
 
 export {
   MainAndNavAndFinaleC ,

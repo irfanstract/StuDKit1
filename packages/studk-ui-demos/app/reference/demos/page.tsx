@@ -122,6 +122,55 @@ export default function App()
             </button>
           )}
           />
+          <p>
+            The packages we're developing here in this monorepo
+            are tried out in these demos.
+            The packages we're developing here in this monorepo
+            are brought into usage in these demos.
+            The packages we're developing here in this monorepo
+            are tried out in these demos.
+          </p>
+          <p>
+            The packages we're developing here in this monorepo
+            are tried out in these demos.
+            The packages we're developing here in this monorepo
+            are brought into usage in these demos.
+            The packages we're developing here in this monorepo
+            are tried out in these demos.
+          </p>
+          <details>
+            <p>
+              The packages we're developing here in this monorepo
+              are tried out in these demos.
+              The packages we're developing here in this monorepo
+              are brought into usage in these demos.
+              The packages we're developing here in this monorepo
+              are tried out in these demos.
+            </p>
+            <WithOvcLevelleRefGoodiesC
+            children={({ ref, }) => (
+              <button ref={ref}>
+                paragraph
+              </button>
+            )}
+            />
+            <p>
+              The packages we're developing here in this monorepo
+              are tried out in these demos.
+              The packages we're developing here in this monorepo
+              are brought into usage in these demos.
+              The packages we're developing here in this monorepo
+              are tried out in these demos.
+            </p>
+            <p>
+              The packages we're developing here in this monorepo
+              are tried out in these demos.
+              The packages we're developing here in this monorepo
+              are brought into usage in these demos.
+              The packages we're developing here in this monorepo
+              are tried out in these demos.
+            </p>
+          </details>
         </div>
       ) ,
     })
