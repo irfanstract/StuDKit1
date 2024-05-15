@@ -90,38 +90,90 @@ import {
   useNativeCompPosition,
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
-const OVCO : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
-  function ({ value: e, })
+const useNativeCompPositionSyncRef = (
+  function (...[e, mde] : [IRenderNativeElemOverlaySupported, NCPSR.Subject] )
   {
-    /** `tagName` will always stays the same for its lifetime. */
-    const { tagName, } = e ;
     ;
 
     const ncpRef = React.useRef<HTMLDivElement | null>(null) ;
+
     useIntervalEffect(() => {
       const e1 = ncpRef.current ;
       if (e1) {
         const ncp = getNativeCompPosition(e) ;
-        Object.assign(e1.style, {
-          //
-          top : `${`${ncp.bottomPos }px` } ` , 
-          left: `${`${ncp.pos["x"] }px` } ` , 
-        } ) ;
+        if ((e1.hidden = !(!!ncp) , ncp) )
+        {
+          C :
+          switch (mde) {
+            //
+            case NCPSR.Subject.BOTTOM :
+            {
+              Object.assign(e1.style, {
+                //
+                top : `${`${ncp.bottomPos }px` } ` , 
+                left: `${`${ncp.pos["x"] }px` } ` , 
+              } ) ;
+              break C ;
+            }
+            case NCPSR.Subject.BOUNDINGBOX :
+            {
+              Object.assign(e1.style, {
+                //
+                top : `${`${ncp.pos.y }px` } ` , 
+                left: `${`${ncp.pos["x"] }px` } ` , 
+                height : `${`${ncp.bottomPos - ncp.pos.y }px` } ` , 
+                width : `${`${ncp.rightPos - ncp.pos.x }px` } ` , 
+              } satisfies React.CSSProperties ) ;
+              break C ;
+            }
+          }
+        }
       }
     } , 0.0551 * 1000 , [ncpRef] ) ;
     ;
+
+    return ncpRef ;
+  }
+) ;
+
+namespace NCPSR { ; }
+
+namespace NCPSR
+{
+  ;
+  export enum Subject {
+    BOTTOM = 1 << 1 ,
+    BOUNDINGBOX = 1 << 3 ,
+  }
+}
+
+const OVCO : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
+  function OVCO_IMPL({ value: e, })
+  {
+    ;
+
+    /** `tagName` will always stays the same for its lifetime. */
+    const { tagName, } = e ;
+    ;
+
+    const ncpExplnRef = (
+      useNativeCompPositionSyncRef(e, NCPSR.Subject.BOTTOM )
+    ) ;
+
+    const ncpHiliteRef = (
+      useNativeCompPositionSyncRef(e, NCPSR.Subject.BOUNDINGBOX )
+    ) ;
 
     if (0) {
       return <div /> ;
     }
 
     return (
+      <>
       <div
-      ref={ncpRef}
+      ref={ncpExplnRef}
       style={{
         position: "fixed",
-        // top : `${`${ncp.bottomPos }px` } ` , 
-        // left: `${`${ncp.pos["x"] }px` } ` , 
         background: `black`,
         color: `white`,
         transition: `all 0.205s ease-out` ,
@@ -133,12 +185,28 @@ const OVCO : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySuppor
         value={e}
         />
       </div>
+      <div
+      ref={ncpHiliteRef}
+      // viewBox='0 0 300 300'
+      // preserveAspectRatio="none"
+      style={{
+        position: "fixed",
+        display: "block",
+        border: `0.2ex solid red`,
+        color: `white`,
+        transition: `all 0.205s ease-out` ,
+        // transition: `initial` ,
+        pointerEvents: "none" ,
+      }}
+      children={"\u00A0"}
+      />
+      </>
     ) ;
   }
 ) ;
 
 const OVCO_INNER : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
-  function ({ value: e, })
+  function OVCO_INNER_IMPL({ value: e, })
   {
     /** `tagName` will always stays the same for its lifetime. */
     const { tagName, } = e ;
@@ -368,6 +436,31 @@ const WithOvcLevelleRefGoodiesC: React.JSXElementConstructor<{ children: (ctx: {
     ) ;
   }
 ) ;
+
+// const useOvcLevelleRefGoodies = () => {
+//   ;
+  
+//   const e = (
+//     useOvcLevelleOps()
+//   ) ;
+
+//   const [mainRefEd, mainRef] = useRefState<IRenderNativeElemOverlaySupported>() ;
+
+//   // TODO
+//   const props = (
+//     React.useMemo(() => (
+//       {
+//         ...(
+//           (
+//             e ? { ref: mainRef } : { ref: mainRef }
+//           ) satisfies { ref: React.Ref<IRenderNativeElemOverlaySupported>, }
+//         ) ,
+//       }
+//     ) , [e] )
+//   ) ;
+
+//   return props ;
+// } ;
 
 export {
   WithOverlayHighlightingC,
