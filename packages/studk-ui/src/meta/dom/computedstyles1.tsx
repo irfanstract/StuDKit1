@@ -199,6 +199,12 @@ const NCOP_DAT = (
   } )
 ) ;
 
+type NcpSupportedElem = (
+  Parameters<typeof getNativeCompPosition> extends readonly [infer T, ...(infer T1) ] ?
+  T
+  : never
+) ;
+
 export {
   getNativeCompPosition ,
 } ;
@@ -207,6 +213,12 @@ export {
   /** @deprecated */
   NCOP_DAT ,
 } ;
+
+export type {
+  // /** @deprecated */
+  // NCOP_DAT_ITC ,
+  NcpSupportedElem ,
+} ;;
 
 ;
 
