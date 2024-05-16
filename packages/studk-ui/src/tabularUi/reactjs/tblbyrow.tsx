@@ -68,6 +68,7 @@ import {
 
 import {
   WithOvcLevelleRefGoodiesC,
+  WithOverlayHighlightingC,
   WithOverlaySupportC,
 } from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
 
@@ -171,12 +172,8 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
   perRowCellRenderers ?: never ;
 }> )
 {
-  return ((...[e]: [(ref: React.Ref<HTMLElement | SVGElement> ) => React.ReactElement] ) => (
-    <WithOvcLevelleRefGoodiesC
-    children={({ ref, }) => e(ref) }
-    />
-  ) )((ref) => (
-    <table ref={ref} className='studk-ui-table' >
+  const mainTable = (
+    <table className='studk-ui-table' >
       <thead>
         { renderHead?.render.renderContent() }
       </thead>
@@ -194,7 +191,12 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
         ) }
       </tbody>
     </table>
-  )) ;
+  ) ;
+  return (
+    <WithOverlayHighlightingC
+    children={mainTable}
+    />
+  ) ;
 }
 
 namespace renderTableByRowDtListAndRowRenderer1
