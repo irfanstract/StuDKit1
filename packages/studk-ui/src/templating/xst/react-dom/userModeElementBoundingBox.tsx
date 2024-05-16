@@ -106,10 +106,89 @@ export {
 } ;
 
 
-
 type IRenderNativeElemOverlaySupported = (
   NcpSupportedElem
 ) ;
+
+// TODO
+const ElementHoverHtmlC : React.JSXElementConstructor<(
+  & { e: IRenderNativeElemOverlaySupported, }
+  & (
+    | { s: NCPSR.Subject.BOUNDINGBOX }
+    | { s: NCPSR.Subject.BOTTOM, children: React.ReactNode, }
+  )
+)> = (
+  function ElementHoverHtmlCImpl(props)
+  {
+    ;
+
+    const { e: e, } = props ;
+
+    /** `tagName` will always stays the same for its lifetime. */
+    const { tagName, } = e ;
+    ;
+
+    const boxRef = (
+      useNativeCompPositionSyncRef(e, props.s)
+    ) ;
+
+    switch (props.s) {
+      case NCPSR.Subject.BOTTOM:
+        {
+          const { children, } = props ;
+          return (
+            <>
+            <div
+            ref={boxRef}
+            style={{
+              position: "fixed",
+              background: `black`,
+              color: `white`,
+              transition: `all 0.205s ease-out` ,
+              // transition: `initial` ,
+              fontWeight: `550` ,
+            }}
+            >
+              <div
+              style={{
+                zoom: `82%` ,
+              }}
+              >
+                { children }
+              </div>
+            </div>
+            </>
+          ) ;
+        }
+
+      case NCPSR.Subject.BOUNDINGBOX:
+        // TODO
+        return (
+          <>
+          <div
+          ref={boxRef}
+          // viewBox='0 0 300 300'
+          // preserveAspectRatio="none"
+          style={{
+            position: "fixed",
+            display: "block",
+            border: `0.2ex solid red`,
+            color: `white`,
+            transition: `all 0.205s ease-out` ,
+            // transition: `initial` ,
+            pointerEvents: "none" ,
+          }}
+          children={"\u00A0"}
+          />
+          </>
+        ) ;
+    }
+  }
+) ;
+
+;
+
+
 
 const ElementTypeHoverAllHtmlC : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
   function ElementTypeHoverAllHtmlCImpl({ value: e, })
@@ -120,55 +199,58 @@ const ElementTypeHoverAllHtmlC : React.JSXElementConstructor<{ value: IRenderNat
     const { tagName, } = e ;
     ;
 
-    const ncpExplnRef = (
-      useNativeCompPositionSyncRef(e, NCPSR.Subject.BOTTOM )
-    ) ;
-
-    const ncpHiliteRef = (
-      useNativeCompPositionSyncRef(e, NCPSR.Subject.BOUNDINGBOX )
-    ) ;
-
     if (0) {
       return <div /> ;
     }
 
     return (
       <>
-      <div
-      ref={ncpExplnRef}
-      style={{
-        position: "fixed",
-        background: `black`,
-        color: `white`,
-        transition: `all 0.205s ease-out` ,
-        // transition: `initial` ,
-        fontWeight: `550` ,
-      }}
-      >
-        <div
-        style={{
-          zoom: `82%` ,
-        }}
-        >
-          <ElementTypeAndInfoBoxC
-          value={e}
-          />
-        </div>
-      </div>
-      <div
-      ref={ncpHiliteRef}
-      // viewBox='0 0 300 300'
-      // preserveAspectRatio="none"
-      style={{
-        position: "fixed",
-        display: "block",
-        border: `0.2ex solid red`,
-        color: `white`,
-        transition: `all 0.205s ease-out` ,
-        // transition: `initial` ,
-        pointerEvents: "none" ,
-      }}
-      children={"\u00A0"}
+      <ElementTypeBoundingBoxHtmlC value={e} />
+      <ElementTypeHoveringInfoHtmlC value={e} />
+      </>
+    ) ;
+  }
+) ;
+
+const ElementTypeBoundingBoxHtmlC : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
+  function ElementTypeHoverAllHtmlCImpl({ value: e, })
+  {
+    ;
+
+    /** `tagName` will always stays the same for its lifetime. */
+    const { tagName, } = e ;
+    ;
+
+    return (
+      <>
+      <ElementHoverHtmlC
+      e={e}
+      s={NCPSR.Subject.BOUNDINGBOX}
+      />
+      </>
+    ) ;
+  }
+) ;
+
+const ElementTypeHoveringInfoHtmlC : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
+  function ElementTypeHoverAllHtmlCImpl({ value: e, })
+  {
+    ;
+
+    /** `tagName` will always stays the same for its lifetime. */
+    const { tagName, } = e ;
+    ;
+
+    return (
+      <>
+      <ElementHoverHtmlC
+      e={e}
+      s={NCPSR.Subject.BOTTOM}
+      children={(
+        <ElementTypeAndInfoBoxC
+        value={e}
+        />
+      )}
       />
       </>
     ) ;
@@ -211,6 +293,9 @@ export {
   ElementTypeHoverAllHtmlC as OverlayHtml ,
   /** @deprecated alias of {@link ElementTypeHoverAllHtmlC} */
   ElementTypeHoverAllHtmlC as OVCO ,
+
+  ElementTypeBoundingBoxHtmlC,
+  ElementTypeHoveringInfoHtmlC,
 
   ElementTypeAndInfoBoxC ,
   /** @deprecated see {@link ElementTypeAndInfoBoxC} */
