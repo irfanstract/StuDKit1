@@ -63,17 +63,22 @@ import {
 import * as React from "react" ;
 
 import {
+  describeComponent,
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
+
+import {
   useIntervalEffect ,
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
 } from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
 
+
 import * as ReactDOM from "react-dom" ;
 
 import {
-  describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+  withRef ,
+} from "studk-ui/src/meta/react/withAdHocRefs.tsx" ;
 
 
 
@@ -90,154 +95,17 @@ import {
   useNativeCompPosition,
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
-const useNativeCompPositionSyncRef = (
-  function (...[e, mde] : [IRenderNativeElemOverlaySupported, NCPSR.Subject] )
-  {
-    ;
-
-    const ncpRef = React.useRef<HTMLDivElement | null>(null) ;
-
-    useIntervalEffect(() => {
-      const e1 = ncpRef.current ;
-      if (e1) {
-        const ncp = getNativeCompPosition(e) ;
-        if ((e1.hidden = !(!!ncp) , ncp) )
-        {
-          C :
-          switch (mde) {
-            //
-            case NCPSR.Subject.BOTTOM :
-            {
-              Object.assign(e1.style, {
-                //
-                top : `${`${ncp.bottomPos }px` } ` , 
-                left: `${`${ncp.pos["x"] }px` } ` , 
-              } ) ;
-              break C ;
-            }
-            case NCPSR.Subject.BOUNDINGBOX :
-            {
-              Object.assign(e1.style, {
-                //
-                top : `${`${ncp.pos.y }px` } ` , 
-                left: `${`${ncp.pos["x"] }px` } ` , 
-                height : `${`${ncp.bottomPos - ncp.pos.y }px` } ` , 
-                width : `${`${ncp.rightPos - ncp.pos.x }px` } ` , 
-              } satisfies React.CSSProperties ) ;
-              break C ;
-            }
-          }
-        }
-      }
-    } , 0.0551 * 1000 , [ncpRef] ) ;
-    ;
-
-    return ncpRef ;
-  }
-) ;
-
-namespace NCPSR { ; }
-
-namespace NCPSR
-{
-  ;
-  export enum Subject {
-    BOTTOM = 1 << 1 ,
-    BOUNDINGBOX = 1 << 3 ,
-  }
-}
-
-const OVCO : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
-  function OVCO_IMPL({ value: e, })
-  {
-    ;
-
-    /** `tagName` will always stays the same for its lifetime. */
-    const { tagName, } = e ;
-    ;
-
-    const ncpExplnRef = (
-      useNativeCompPositionSyncRef(e, NCPSR.Subject.BOTTOM )
-    ) ;
-
-    const ncpHiliteRef = (
-      useNativeCompPositionSyncRef(e, NCPSR.Subject.BOUNDINGBOX )
-    ) ;
-
-    if (0) {
-      return <div /> ;
-    }
-
-    return (
-      <>
-      <div
-      ref={ncpExplnRef}
-      style={{
-        position: "fixed",
-        background: `black`,
-        color: `white`,
-        transition: `all 0.205s ease-out` ,
-        // transition: `initial` ,
-        fontWeight: `550` ,
-      }}
-      >
-        <OVCO_INNER
-        value={e}
-        />
-      </div>
-      <div
-      ref={ncpHiliteRef}
-      // viewBox='0 0 300 300'
-      // preserveAspectRatio="none"
-      style={{
-        position: "fixed",
-        display: "block",
-        border: `0.2ex solid red`,
-        color: `white`,
-        transition: `all 0.205s ease-out` ,
-        // transition: `initial` ,
-        pointerEvents: "none" ,
-      }}
-      children={"\u00A0"}
-      />
-      </>
-    ) ;
-  }
-) ;
-
-const OVCO_INNER : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
-  function OVCO_INNER_IMPL({ value: e, })
-  {
-    /** `tagName` will always stays the same for its lifetime. */
-    const { tagName, } = e ;
-    ;
-
-    const ncp = useNativeCompPosition(e , { latencyMillis: 0.58 * 1000 , } ) ;
-    ;
-
-    if (0) {
-      return <div /> ;
-    }
-
-    return (
-      ncp ?
-      (
-        <div
-        style={{
-        }}
-        >
-          <p>
-            Element <code>{ `${tagName}` }</code> {}
-            positioned at <code>{ JSON.stringify(ncp.pos ) }</code> {}
-          </p>
-        </div>
-      )
-      : <></>
-    ) ;
-  }
-) ;
+import {
+  useNativeCompPositionSyncRef,
+  NCPSR,
+  OVCO ,
+  OVCO_INNER ,
+} from 'studk-ui/src/templating/xst/react-dom/userModeElementBoundingBox.tsx'; ;
 
 export {
+  /**
+   * @deprecated import from `studk-ui/src/meta/react-dom/computedstyles1.tsx` directly
+   */
   useNativeCompPosition,
 } ;
 
@@ -354,7 +222,9 @@ interface IRenderNativeElemOverlays {
   (x: HTMLElement | SVGElement): React.ReactElement ;
 }
 type IRenderNativeElemOverlaySupported = (
-  Parameters<IRenderNativeElemOverlays>[0]
+  IRenderNativeElemOverlays extends ((t: infer T, ...a: infer rest) => any ) ?
+  T
+  : never
 ) ;
 
 
@@ -391,12 +261,19 @@ const WithOverlaySupportC: React.JSXElementConstructor<React.PropsWithChildren >
   }
 ) ;
 
-const WithOverlayHighlightingC: React.JSXElementConstructor<React.PropsWithChildren > = (
+const WithOverlayHighlightingC: (
+  React.JSXElementConstructor<{ children: React.ReactElement, } >
+) = (
   function WithOverlayHighlightingComp({ children, })
   {
     return (
       <WithOvcLevelleGoodiesC
-      children={({ ref1, }) => children }
+      children={({ ref1, }) => {
+        return (
+          withRef(ref1, children)
+        ) ;
+        return children ;
+      } }
       />
     ) ;
   }
