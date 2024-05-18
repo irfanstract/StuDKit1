@@ -73,7 +73,13 @@ const destructureElement = (
       React.JSXElementConstructor<any>
       | string
     ) ,
-    const propsT extends React.ReactElement<{ ref ?: React.Ref<refEdElemT>, children ?: any, }, tagNameT >["props"] ,
+    const propsT extends (
+      React.ReactElement<{ ref ?: (
+        tagNameT extends (keyof JSX.IntrinsicElements) ?
+        React.ElementRef<tagNameT>
+        : React.Ref<refEdElemT>
+      ), children ?: any, }, tagNameT >["props"]
+    ) ,
     const refEdElemT = never ,
   >(...[srcE ] : (
     ArgsWithOptions<[original: React.ReactElement<propsT, tagNameT>, ], {} >
@@ -115,7 +121,7 @@ const withRef: (
   function withRefElemImpl<const tagNameT extends (
     keyof JSX.IntrinsicElements
   )>(...[intendedRef, srcE ] : (
-    ArgsWithOptions<[IntrinsicElementRef<tagNameT> , original: React.ReactElement, ], {} >
+    ArgsWithOptions<[IntrinsicElementRef<tagNameT> , original: React.ReactElement<any, tagNameT>, ], {} >
   ) )
   : React.ReactElement
   {
@@ -133,7 +139,7 @@ const withRef: (
       return (
         React.createElement(type, {
           key,
-          ref: existingRef ?? intendedRef,
+          ref: combineRefs(intendedRef, existingRef),
           ...otherProps,
         }, children )
       ) ;
@@ -154,6 +160,33 @@ const withRef: (
     return srcE ;
   }
 ) ;
+
+const combineRefs: {
+  <tagNameT extends keyof JSX.IntrinsicElements>(...[intendedRef, existingRef] : (
+    ArgsWithOptions<(
+      | [...[ IntrinsicElementRef<tagNameT> ] , original?: IntrinsicElementRef<tagNameT>, ]
+      | [...[ IntrinsicElementRef<tagNameT>? ] , original: IntrinsicElementRef<tagNameT>, ]
+    ), {} >
+  )): IntrinsicElementRef<tagNameT> ;
+
+  <tagNameT extends keyof JSX.IntrinsicElements>(...[intendedRef, existingRef] : (
+    ArgsWithOptions<[...[ IntrinsicElementRef<tagNameT> ? ] , original?: IntrinsicElementRef<tagNameT>, ], {} >
+  )): IntrinsicElementRef<tagNameT> | undefined ;
+
+} = (
+  // ArgsWithOptions<[IntrinsicElementRef<tagNameT> , original: React.ReactElement<any, tagNameT>, ], {} >
+  function <tagNameT extends keyof JSX.IntrinsicElements>(...[intendedRef, existingRef] : (
+    ArgsWithOptions<[...[ IntrinsicElementRef<tagNameT> ? ] , original?: IntrinsicElementRef<tagNameT>, ], {} >
+  ))
+  {
+    return (
+      // existingRef ?? intendedRef
+      intendedRef ?? existingRef
+    ) ;
+  }
+) ;
+
+
 
 /**
  * test the strict sig check
