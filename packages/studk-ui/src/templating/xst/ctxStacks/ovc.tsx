@@ -96,10 +96,14 @@ import {
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
 import {
-  useNativeCompPositionSyncRef,
+  useNativeCompPositionSyncRef ,
   NCPSR,
+} from 'studk-ui/src/templating/xst/react-dom/userModeElementHovers1.tsx'; ;
+
+import {
   OVCO ,
-  OVCO_INNER ,
+  OVCO_INNER, 
+  ElementTypeBoundingBoxHtmlC,
 } from 'studk-ui/src/templating/xst/react-dom/userModeElementBoundingBox.tsx'; ;
 
 export {
@@ -122,6 +126,7 @@ const ovc = (
 ) ;
 
 import {
+  ElementHoveringHtmlC,
   ovcbMid ,
 } from 'studk-ui/src/templating/xst/ovcbMid.tsx';
 
@@ -133,42 +138,42 @@ class OvcLevelleOps
   )
   {}
 
-  renderNativeElemOverlays: IRenderNativeElemOverlays = (
-    // TODO
-    (e ) => {
-      return (
-        this.renderInAbsSpace(this.renderNativeElemTypeInfoOverlay(e) )
-      ) ;
-    }
-  ) ;
+  // renderNativeElemOverlays: IRenderNativeElemOverlays = (
+  //   // TODO
+  //   (e ) => {
+  //     return (
+  //       this.renderInAbsSpace(this.renderNativeElemTypeInfoOverlay(e) )
+  //     ) ;
+  //   }
+  // ) ;
   
-  renderNativeElemTypeInfoOverlay : (
-    (e: HTMLElement | SVGElement) => React.ReactElement
-  ) = (
-    // TODO
-    (e: Element) => {
-      if (1) {
-        CNC: {
-          if (e instanceof HTMLElement || e instanceof SVGElement)
-          {
-            if (0) {
-              break CNC ;
-            }
-            return (
-              <OVCO
-              value={e }
-              />
-            ) ;
-          }
-        }
-        return (
-          <></>
-        ) ;
-      }
+  // renderNativeElemTypeInfoOverlay : (
+  //   (e: HTMLElement | SVGElement) => React.ReactElement
+  // ) = (
+  //   // TODO
+  //   (e: Element) => {
+  //     if (1) {
+  //       CNC: {
+  //         if (e instanceof HTMLElement || e instanceof SVGElement)
+  //         {
+  //           if (0) {
+  //             break CNC ;
+  //           }
+  //           return (
+  //             <OVCO
+  //             value={e }
+  //             />
+  //           ) ;
+  //         }
+  //       }
+  //       return (
+  //         <></>
+  //       ) ;
+  //     }
 
-      return util.throwTypeError(`element [${e.namespaceURI}]${e.tagName}`) ;
-    }
-  ) ;
+  //     return util.throwTypeError(`element [${e.namespaceURI}]${e.tagName}`) ;
+  //   }
+  // ) ;
 
   static get1(...[{ renderExterned, }]: ArgsWithOptions<[], { renderExterned: OvcLevelleOps.IRenderExterned , }>)
   {
@@ -267,10 +272,10 @@ const WithElementBoundingBoxHighlightingC = (
 
       return (
         <WithOvcLevelleGoodiesC
-        children={({ mainRef: ref1, renderNativeElemTypeInfoOverlay, }) => {
+        children={({ asSpclFinalElement, renderNativeElemTypeInfoOverlay, }) => {
           return (
             <>
-              { withRef(ref1, children) }
+              { asSpclFinalElement(children) }
               { renderNativeElemTypeInfoOverlay() }
             </>
           ) ;
@@ -365,20 +370,64 @@ const useOvcLevelleGoodies = () => {
 
   return (() => {
     return {
-      ...(
+      ...((
         (e && mainRefEd) ? {
           renderNativeElemTypeInfoOverlay: () => {
             ;
             return (
-              e && (1 && (mainRefEd && e.renderNativeElemOverlays(mainRefEd) ) )
+              (((
+                e.renderInAbsSpace((
+                  <OVCO value={mainRefEd} />
+                ))
+              ) ) )
+            ) ;
+          } ,
+          renderNativeElemBoundingBoxOverlay: () => {
+            ;
+            return (
+              (
+                e.renderInAbsSpace((
+                  <ElementTypeBoundingBoxHtmlC value={mainRefEd} />
+                ))
+              )
+            ) ;
+          } ,
+          renderNativeElemBoundingBoxSpc: (...[prps] : (
+            ArgsWithOptions<[], (
+              React.ComponentProps<typeof ElementHoveringHtmlC> extends infer T ? (
+                T extends any ? Omit<T, "e"> : never
+              ) : never
+            ) >
+          ) ) => {
+            ;
+            return (
+              (
+                e.renderInAbsSpace((
+                  <ElementHoveringHtmlC
+                  {...({
+                    e: mainRefEd,
+                    ...prps
+                  } as const)}
+                  />
+                ))
+              )
             ) ;
           } ,
         } : {
-          renderNativeElemTypeInfoOverlay: () => null
+          renderNativeElemTypeInfoOverlay: () => null ,
+          renderNativeElemBoundingBoxOverlay: () => null ,
+          renderNativeElemBoundingBoxSpc: () => null ,
         }
-      ) ,
+      ) satisfies {
+        renderNativeElemTypeInfoOverlay   : () => any ,
+        renderNativeElemBoundingBoxOverlay: () => any ,
+        renderNativeElemBoundingBoxSpc    : (...a: any ) => any ,
+      }) ,
       /** @deprecated temporary work-around */
       mainRef ,
+      asSpclFinalElement: (children: React.ReactElement) => (
+        withRef(mainRef, children)
+      ) ,
     } as const ;
   })() ;
 } ;
@@ -392,6 +441,10 @@ export {
 
   /** @deprecated */
   WithOvcLevelleRefGoodiesC ,
+} ;
+
+export {
+  NCPSR ,
 } ;
 
 

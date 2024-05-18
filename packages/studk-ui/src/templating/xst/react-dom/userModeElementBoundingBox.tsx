@@ -216,6 +216,8 @@ export {
 
   ElementTypeBoundingBoxHtmlC,
   ElementTypeHoveringInfoHtmlC,
+  /** @deprecated */
+  ElementHoveringHtmlC,
 
   ElementTypeAndInfoBoxC ,
   /** @deprecated see {@link ElementTypeAndInfoBoxC} */
