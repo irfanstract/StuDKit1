@@ -113,17 +113,23 @@ export {
 
 
 
+;
+
 const ovc = (
   React.createContext<OvcLevelleOps | null>((
     null
   ) )
 ) ;
 
+import {
+  ovcbMid ,
+} from 'studk-ui/src/templating/xst/ovcbMid.tsx';
+
 class OvcLevelleOps
 {
 
   protected constructor(
-    public readonly renderExterned: OvcLevelleOps.IRenderExterned ,
+    public readonly renderInAbsSpace: OvcLevelleOps.IRenderExterned ,
   )
   {}
 
@@ -131,46 +137,35 @@ class OvcLevelleOps
     // TODO
     (e ) => {
       return (
-        this.renderExterned(this.renderNativeElemInfoBox(e) )
+        this.renderInAbsSpace(this.renderNativeElemTypeInfoOverlay(e) )
       ) ;
     }
   ) ;
   
-  renderNativeElemInfoBox : (
+  renderNativeElemTypeInfoOverlay : (
     (e: HTMLElement | SVGElement) => React.ReactElement
   ) = (
     // TODO
     (e: Element) => {
-      if (1)
-      {
-        if (0)
-        {
-          if (e instanceof HTMLElement) {
-            return <React.Fragment /> ;
-          }
-          if (e instanceof SVGElement) {
-            return <React.Fragment /> ;
-          }
-        }
-        {
-          CNC: {
-            if (e instanceof HTMLElement || e instanceof SVGElement)
-            {
-              if (0) {
-                break CNC ;
-              }
-              return (
-                <OVCO
-                value={e }
-                />
-              ) ;
+      if (1) {
+        CNC: {
+          if (e instanceof HTMLElement || e instanceof SVGElement)
+          {
+            if (0) {
+              break CNC ;
             }
+            return (
+              <OVCO
+              value={e }
+              />
+            ) ;
           }
-          return (
-            <></>
-          ) ;
         }
+        return (
+          <></>
+        ) ;
       }
+
       return util.throwTypeError(`element [${e.namespaceURI}]${e.tagName}`) ;
     }
   ) ;
@@ -182,18 +177,19 @@ class OvcLevelleOps
     ) ;
   }
 
-  static get01() {
-    return this.get1({
-      renderExterned: e => (
-        // TODO
-        ReactDOM.createPortal(e, OVCB.getMainNode() )
-      ) ,
-    }) ;
-  }
-
 }
 namespace OvcLevelleOps
 {
+
+  export const getPreferred = util.L.once(() => {
+    //
+    return OvcLevelleOps.get1({
+      renderExterned: e => (
+        // TODO
+        ovcbMid.renderInAbsoluteSpace(e)
+      ) ,
+    }) ;
+  }) ;
 
   // TODO
   export const noOpInstance = (
@@ -227,18 +223,6 @@ type IRenderNativeElemOverlaySupported = (
   : never
 ) ;
 
-
-
-export {
-  //
-} ;
-export type {
-  IRenderNativeElemOverlays ,
-  IRenderNativeElemOverlaySupported ,
-} ;
-
-
-
 const useOvcLevelleOps = () => (
   React.useContext(ovc)
 ) ;
@@ -251,7 +235,7 @@ const WithOverlaySupportC: React.JSXElementConstructor<React.PropsWithChildren >
   function WithOverlaySupportComp({ children, })
   {
     const cv = useOvcLevelleOps() ;
-    const o = React.useMemo(() => (cv ?? OvcLevelleOps.get01() ) , [cv,] ) ;
+    const o = React.useMemo(() => (cv ?? OvcLevelleOps.getPreferred() ) , [cv,] ) ;
     return (
       <OvcPvdC
       children={children }
@@ -261,86 +245,148 @@ const WithOverlaySupportC: React.JSXElementConstructor<React.PropsWithChildren >
   }
 ) ;
 
-const WithOverlayHighlightingC: (
-  React.JSXElementConstructor<{ children: React.ReactElement, } >
-) = (
-  function WithOverlayHighlightingComp({ children, })
-  {
-    return (
-      <WithOvcLevelleGoodiesC
-      children={({ ref1, }) => {
-        return (
-          withRef(ref1, children)
-        ) ;
-        return children ;
-      } }
-      />
-    ) ;
-  }
-) ;
+;
 
-const WithOvcLevelleGoodiesC: React.JSXElementConstructor<{ children: (ctx: { ref1: React.Ref<IRenderNativeElemOverlaySupported>, } ) => React.ReactNode, } > = (
-  function WithOverlayMcrComp({ children, })
-  {
-    return (
-      <WithOvcLevelleRefGoodiesC children={({ ref, }) => (
-        children({ ref1: ref, }, )
-      )} />
-    ) ;
-  }
-) ;
 
-const WithOvcLevelleRefGoodiesC: React.JSXElementConstructor<{ children: (ctx: { ref: React.Ref<IRenderNativeElemOverlaySupported>, } ) => React.ReactNode, } > = (
-  function WithOverlayMcrComp({ children, })
-  {
-    const e = (
-      useOvcLevelleOps()
-    ) ;
-
-    const [mainRefEd, mainRef] = useRefState<IRenderNativeElemOverlaySupported>() ;
-
-    // TODO
-    const props = (
-      React.useMemo(() => ((
-        e ? { ref: mainRef } : { ref: mainRef }
-      ) satisfies (Parameters<typeof children>[0] ) ) , [e] )
-    ) ;
-    return (
-      <>
-        { children(props) }
-        { e && (1 && (mainRefEd && e.renderNativeElemOverlays(mainRefEd) ) ) }
-      </>
-    ) ;
-  }
-) ;
-
-// const useOvcLevelleRefGoodies = () => {
-//   ;
-  
-//   const e = (
-//     useOvcLevelleOps()
-//   ) ;
-
-//   const [mainRefEd, mainRef] = useRefState<IRenderNativeElemOverlaySupported>() ;
-
-//   // TODO
-//   const props = (
-//     React.useMemo(() => (
-//       {
-//         ...(
-//           (
-//             e ? { ref: mainRef } : { ref: mainRef }
-//           ) satisfies { ref: React.Ref<IRenderNativeElemOverlaySupported>, }
-//         ) ,
-//       }
-//     ) , [e] )
-//   ) ;
-
-//   return props ;
-// } ;
 
 export {
-  WithOverlayHighlightingC,
+  //
+} ;
+export type {
+  IRenderNativeElemOverlays ,
+  IRenderNativeElemOverlaySupported ,
+} ;
+
+
+
+const WithElementBoundingBoxHighlightingC = (
+  describeComponent((
+    function WithOverlayHighlightingComp({ children, } : { children: React.ReactElement, })
+    {
+      ;
+
+      return (
+        <WithOvcLevelleGoodiesC
+        children={({ mainRef: ref1, renderNativeElemTypeInfoOverlay, }) => {
+          return (
+            <>
+              { withRef(ref1, children) }
+              { renderNativeElemTypeInfoOverlay() }
+            </>
+          ) ;
+          return children ;
+        } }
+        />
+      ) ;
+    }
+  ))
+) ;
+
+/**
+ * TODO/TBD/WIP
+ * 
+ * 
+ */
+const WithOvcLevelleGoodiesC = (
+  function WithOverlayMcrComp({ children, } : { children: (ctx: ReturnType<typeof useOvcLevelleGoodies> ) => React.ReactNode, } )
+  {
+    const props = useOvcLevelleGoodies() ;
+
+    return (
+      <>{ children(props, ) }</>
+    ) ;
+  }
+) ;
+
+const WithOvcLevelleRefGoodiesC = (
+  describeComponent((
+    function WithOverlayMcrComp({ children, } : { children: (ctx: ReturnType<typeof useOvcLevelleRefGoodies> ) => React.ReactNode, } )
+    {
+      const props = useOvcLevelleRefGoodies() ;
+
+      return (
+        <>{ children(props, ) }</>
+      ) ;
+    }
+  ))
+) ;
+
+const useOvcLevelleRefGoodies = () => {
+  ;
+  
+  const e = (
+    useOvcLevelleOps()
+  ) ;
+
+  const [mainRefEd, mainRef] = useRefState<IRenderNativeElemOverlaySupported>() ;
+
+  // TODO
+  const props = (
+    React.useMemo(() => (
+      {
+        ...(
+          (
+            e ?
+            { e, }
+            : { e, }
+          )
+        ) ,
+        ...(
+          (
+            mainRefEd ?
+            { ref: mainRef, refEd: mainRefEd, }
+            :
+            { ref: mainRef, refEd: mainRefEd, }
+          )
+        ) ,
+      } as const
+    ) , [e, mainRefEd, mainRef,] )
+  ) ;
+
+  return props ;
+} ;
+
+/**
+ * TODO/TBD/WIP
+ * 
+ * @deprecated
+ * 
+ */
+const useOvcLevelleGoodies = () => {
+  ;
+  
+  const props = useOvcLevelleRefGoodies() ;
+
+  const {
+    e ,
+    refEd: mainRefEd ,
+    ref: mainRef ,
+  } = props ;
+
+  return (() => {
+    return {
+      ...(
+        (e && mainRefEd) ? {
+          renderNativeElemTypeInfoOverlay: () => {
+            ;
+            return (
+              e && (1 && (mainRefEd && e.renderNativeElemOverlays(mainRefEd) ) )
+            ) ;
+          } ,
+        } : {
+          renderNativeElemTypeInfoOverlay: () => null
+        }
+      ) ,
+      /** @deprecated temporary work-around */
+      mainRef ,
+    } as const ;
+  })() ;
+} ;
+
+export {
+  /** @deprecated alias of {@link WithElementBoundingBoxHighlightingC} */
+  WithElementBoundingBoxHighlightingC as WithOverlayHighlightingC,
+  WithElementBoundingBoxHighlightingC ,
   WithOvcLevelleGoodiesC,
   WithOverlaySupportC ,
 

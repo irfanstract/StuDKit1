@@ -96,103 +96,30 @@ import type {
 } from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
 
 export {
-  // /** @deprecated */
   useNativeCompPositionSyncRef ,
-  // /** @deprecated */
+  /** @deprecated make the import direct to the source. */
   NCPSR ,
 } ;
 
 
 
-type IRenderNativeElemOverlaySupported = (
-  NcpSupportedElem
-) ;
+import {
+  IRenderNativeElemOverlaySupported ,
+  ElementHoveringHtmlC ,
+} from 'studk-ui/src/templating/xst/ovcbMid.tsx';
+
 
 export type {
+  /** @deprecated */
   IRenderNativeElemOverlaySupported ,
 } ;
 
 
-// TODO
-const ElementHoverHtmlC : React.JSXElementConstructor<(
-  & { e: IRenderNativeElemOverlaySupported, }
-  & (
-    | { s: NCPSR.Subject.BOUNDINGBOX, children?: never, }
-    | { s: NCPSR.Subject.BOUNDINGBOX, children: React.ReactElement, }
-    | { s: NCPSR.Subject.BOTTOM, children: React.ReactNode, }
-  )
-)> = (
-  function ElementHoverHtmlCImpl(props)
-  {
-    ;
-
-    const { e: e, } = props ;
-
-    /** `tagName` will always stays the same for its lifetime. */
-    const { tagName, } = e ;
-    ;
-
-    const boxRef = (
-      useNativeCompPositionSyncRef(e, props.s)
-    ) ;
-
-    switch (props.s) {
-      case NCPSR.Subject.BOTTOM:
-        {
-          const { children, } = props ;
-          return (
-            <>
-            <div
-            ref={boxRef}
-            style={{
-              position: "fixed",
-              background: `black`,
-              color: `white`,
-              transition: `all 0.205s ease-out` ,
-              // transition: `initial` ,
-              fontWeight: `550` ,
-            }}
-            >
-              <div
-              style={{
-                zoom: `82%` ,
-              }}
-              >
-                { children }
-              </div>
-            </div>
-            </>
-          ) ;
-        }
-
-      case NCPSR.Subject.BOUNDINGBOX:
-        // TODO
-        const { children = "\u00A0", } = props ;
-        return (
-          <>
-          <div
-          ref={boxRef}
-          // viewBox='0 0 300 300'
-          // preserveAspectRatio="none"
-          style={{
-            position: "fixed",
-            display: "block",
-            border: `0.2ex solid red`,
-            color: `white`,
-            transition: `all 0.205s ease-out` ,
-            // transition: `initial` ,
-            pointerEvents: "none" ,
-          }}
-          children={children}
-          />
-          </>
-        ) ;
-    }
-  }
-) ;
+;
 
 export {
-  ElementHoverHtmlC ,
+  /** @deprecated */
+  ElementHoveringHtmlC ,
 } ;
 
 ;
