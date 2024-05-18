@@ -89,19 +89,12 @@ import {
 import {
   useNativeCompPositionSyncRef ,
   NCPSR ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
-
-import type {
-  NcpSupportedElem ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
-
-import type {
-  // IRenderNativeElemOverlaySupported ,
-  // IRenderNativeElemOverlays ,
-} from "studk-ui/src/templating/xst/ctxStacks/ovc" ;
+} from "./userModeElementHovers1.tsx" ;
 
 export {
+  /** @deprecated */
   useNativeCompPositionSyncRef ,
+  /** @deprecated */
   NCPSR ,
 } ;
 
@@ -110,15 +103,15 @@ export {
 
 import {
   IRenderNativeElemOverlaySupported ,
-  ElementHoverHtmlC ,
+  ElementHoveringHtmlC ,
 } from "studk-ui/src/templating/xst/react-dom/userModeElementHovers1.tsx" ;
 
 ;
 
 
 
-const ElementTypeHoverAllHtmlC : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
-  function ElementTypeHoverAllHtmlCImpl({ value: e, })
+const ElementTypeHoveringAllHtmlC : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
+  function ElementTypeHoveringAllHtmlCImpl({ value: e, })
   {
     ;
 
@@ -140,7 +133,7 @@ const ElementTypeHoverAllHtmlC : React.JSXElementConstructor<{ value: IRenderNat
 ) ;
 
 const ElementTypeBoundingBoxHtmlC : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
-  function ElementTypeHoverAllHtmlCImpl({ value: e, })
+  function ElementTypeHoveringAllHtmlCImpl({ value: e, })
   {
     ;
 
@@ -150,7 +143,7 @@ const ElementTypeBoundingBoxHtmlC : React.JSXElementConstructor<{ value: IRender
 
     return (
       <>
-      <ElementHoverHtmlC
+      <ElementHoveringHtmlC
       e={e}
       s={NCPSR.Subject.BOUNDINGBOX}
       />
@@ -160,7 +153,7 @@ const ElementTypeBoundingBoxHtmlC : React.JSXElementConstructor<{ value: IRender
 ) ;
 
 const ElementTypeHoveringInfoHtmlC : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
-  function ElementTypeHoverAllHtmlCImpl({ value: e, })
+  function ElementTypeHoveringAllHtmlCImpl({ value: e, })
   {
     ;
 
@@ -170,7 +163,7 @@ const ElementTypeHoveringInfoHtmlC : React.JSXElementConstructor<{ value: IRende
 
     return (
       <>
-      <ElementHoverHtmlC
+      <ElementHoveringHtmlC
       e={e}
       s={NCPSR.Subject.BOTTOM}
       children={(
@@ -217,9 +210,9 @@ const ElementTypeAndInfoBoxC : React.JSXElementConstructor<{ value: IRenderNativ
 ) ;
 
 export {
-  ElementTypeHoverAllHtmlC as OverlayHtml ,
-  /** @deprecated alias of {@link ElementTypeHoverAllHtmlC} */
-  ElementTypeHoverAllHtmlC as OVCO ,
+  ElementTypeHoveringAllHtmlC as OverlayHtml ,
+  /** @deprecated alias of {@link ElementTypeHoveringAllHtmlC} */
+  ElementTypeHoveringAllHtmlC as OVCO ,
 
   ElementTypeBoundingBoxHtmlC,
   ElementTypeHoveringInfoHtmlC,
