@@ -95,7 +95,7 @@ import {
 } from "studk-ui/src/meta/dom/computedstyles1.tsx" ;
 
 const useNativeCompPosition = (
-  function (...[x, opts = {}] : ArgsWithOptions<[HTMLElement | SVGElement], { latencyMillis ?: number ; }> )
+  function (...[x, opts = {}] : ArgsWithOptions<[(HTMLElement | SVGElement) | null], { latencyMillis ?: number ; }> )
   {
     const { latencyMillis = 500, } = opts ;
 
@@ -105,16 +105,79 @@ const useNativeCompPosition = (
       {
 
         return (
-          getNativeCompPosition(x)
+          x && getNativeCompPosition(x)
         ) ;
       } , { latencyMillis, }, )
     ) ;
   }
 ) ;
 
+const useIsNativeCompMatchedBy = (
+  function (...[x, sel, opts = {}] : ArgsWithOptions<[Element | null, selector: string], { latencyMillis ?: number ; }> )
+  {
+    const { latencyMillis = 500, } = opts ;
+
+    return (
+      //
+      useIntervalScan(() =>
+      {
+
+        return (
+          x && (x).matches(sel)
+        ) ;
+      } , { latencyMillis, }, )
+    ) ;
+  }
+) ;
+
+// TODO
+const useIsNativeCompHoveredOrFocused = (
+  function (...[x,  opts = {}] : ArgsWithOptions<[(HTMLElement | SVGElement) | null, ], { }> )
+  : UserToElementActivityState
+  {
+    const { } = opts ;
+
+    return (
+      //
+      React.useSyncExternalStore<UserToElementActivityState>((
+        React.useCallback(notify1 => {
+          const sC = new AbortController() ;
+          if (x)
+          {
+            const l = () => notify1() ;
+            x.addEventListener("pointerenter", l, { signal: sC.signal, } ) ;
+            x.addEventListener("pointerleave", l, { signal: sC.signal, } ) ;
+            x.addEventListener("focusin" , l, { signal: sC.signal, } ) ;
+            x.addEventListener("focusout", l, { signal: sC.signal, } ) ;
+          }
+          return () => {
+            sC.abort() ;
+          } ;
+        }, [x] )
+      ), () =>
+      {
+
+        return (
+          0
+          | (x && x.matches(":focus-within") ? UserToElementActivityState.FOCUSED : 0 )
+          | (x && x.matches(":hover"       ) ? UserToElementActivityState.HOVERED : 0 )
+        ) ;
+      } , () => (0 as UserToElementActivityState) )
+    ) ;
+  }
+) ;
+
+enum UserToElementActivityState {
+  FOCUSED = 1 << 7 ,
+  HOVERED = 1 << 1 ,
+}
+
 export {
   useNativeCompPosition ,
   getNativeCompPosition ,
+  useIsNativeCompMatchedBy ,
+  useIsNativeCompHoveredOrFocused ,
+  UserToElementActivityState ,
 } ;
 
 
