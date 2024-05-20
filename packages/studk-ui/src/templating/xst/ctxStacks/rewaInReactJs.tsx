@@ -63,10 +63,36 @@ import {
 
 ;
 
+import {
+  getLiveAudioNodeCtx ,
+} from "./rewa.tsx" ;
+
+function useLiveAudioNodeCtxRefState()
+: (
+  /* discourage calling it more than once */
+  (
+    | (readonly [null, React.Dispatch<InputEvent | PointerEvent>] )
+    | (readonly [AudioContext, (...s: never) => unknown ] )
+  )
+)
+{
+  const [s, activate] = (
+    React.useReducer<React.Reducer<ReturnType<typeof getLiveAudioNodeCtx> | null , InputEvent | PointerEvent > >((...[x, e] ) => (
+      /* be prepared being called more than once */
+      x
+      ?? getLiveAudioNodeCtx(e)
+    ), null )
+  ) ;
+  return [s, activate] as const ;
+}
+
 export {
-  /** @deprecated import directly from `ctxStacks/ovcb.tsx` */
-  OVCB ,
-} from 'studk-ui/src/templating/xst/ctxStacks/ovcb.tsx' ;
+  useLiveAudioNodeCtxRefState ,
+  getLiveAudioNodeCtx ,
+} ;
+
+
+
 
 
 
