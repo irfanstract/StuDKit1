@@ -87,9 +87,28 @@ import {
 
 import grandPiano from "studk-audio-pipeline-encore/src/xst/reWaLive/stdSamples/grandPiano.tsx" ;
 
+function createPreferredDest(...[ctx]: [BaseAudioContext])
+: AudioNode
+{
+  ;
+  const nd0 = ctx.destination ;
+
+  const nd1 = new GainNode(ctx) ;
+  nd1.connect(nd0);
+
+  const nd2 = new DelayNode(ctx, { delayTime: 0.05 } ) ;
+  const nd3 = new GainNode(ctx, { gain: 2 ** -3 } ) ;
+  nd2.connect(nd3) ;
+
+  nd1.connect(nd2) ;
+  nd3.connect(nd1) ;
+
+  return nd1 ;
+}
+
 function emitBeep(...[aCtx]: [BaseAudioContext])
 {
-  const nd0 = aCtx.destination ;
+  const nd0 = createPreferredDest(aCtx) ;
   
   const nd1 = new GainNode(aCtx, { gain: 2 ** -3 } ) ;
   nd1.connect(nd0) ;
@@ -99,11 +118,11 @@ function emitBeep(...[aCtx]: [BaseAudioContext])
   nd2.stop(aCtx.currentTime + 0.5 ) ;
 }
 
-function emitGrandPianoDang(...[aCtx]: [BaseAudioContext])
+function emitGrandPianoDang(...[aCtx, i]: [BaseAudioContext, i: number])
 {
-  const nd0 = aCtx.destination ;
+  const nd0 = createPreferredDest(aCtx) ;
   
-  grandPiano.playOn(nd0, { amp: 2 ** -3, } ) ;
+  grandPiano.playOn(nd0, { amp: 2 ** -3, f: ((i: number) => ((2 ** (i / 12) ) * 220 ))(i), duration: 20, } ) ;
 }
 
 function renderASec(...[aCtx]: [BaseAudioContext])
@@ -118,9 +137,32 @@ function renderASec(...[aCtx]: [BaseAudioContext])
         <Button onClick={(e) => { emitBeep(aCtx) ; } }>
           Beep
         </Button>
-        <Button onClick={(e) => { emitGrandPianoDang(aCtx) ; } }>
+      </p>
+      <p>
+        <Span onClick={(e) => { emitGrandPianoDang(aCtx, 12) ; } }>
           Grand Piano Dang
-        </Button>
+        </Span>
+        <span
+        style={{
+          display: "grid",
+          gridTemplate: `"a s d f g h z x c v b n" ` ,
+        }}
+        >
+          { (
+            util.range(-12, 69)
+            .map(i => (
+              <React.Fragment
+              key={`key ${i}` }
+              children={(
+                <Button onClick={(e) => { emitGrandPianoDang(aCtx, -24 + i) ; } }>
+                  {i} {}
+                  (<code>{(["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab"] as const)[(120000 + i) % 12 ] }</code>)
+                </Button>
+              )}
+              />
+            ))
+          ) }
+        </span>
       </p>
     </div>
   ) ;

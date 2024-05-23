@@ -32,7 +32,11 @@ import {
   createInterningSubclass ,
   TIMEOUT ,
 } from "studk-ui/src/fwCore/utility-functions-rewa.ts" ;
+import type {
+  AllOrNever1 ,
+} from 'studk-fwcore-setups/src/util-eawo.mts'; ;
 
+export type * from 'studk-fwcore-setups/src/util-eawo.mts'; ;
 export {
   util ,
   random ,
@@ -42,10 +46,7 @@ export {
   TIMEOUT ,
 } from "studk-ui/src/fwCore/utility-functions-rewa.ts" ;
 
-export type {
-  ArgsWithOptions ,
-  ArgsGetOptions ,
-} from "studk-ui/src/fwCore/utility-functions-rewa.ts" ;
+export type * from "studk-fwcore-setups/src/util-eawo.mts" ;
 
 ;
 
@@ -56,6 +57,132 @@ export type {
 
 
 ;
+
+type ToAudioNodePlaybackCallEvt<ctxT extends BaseAudioContext> = (
+  ReturnType<typeof newToAudioNodePlaybackCallEvt<ctxT> >
+) ;
+
+const newToAudioNodePlaybackCallEvt = (
+  function<ctxT extends BaseAudioContext> (...[nd0, { amp = 2 ** -3, f: cf = 440 , duration: intendedDuration = null, }] : (
+    ArgsWithOptions<[AudioNode & { readonly context: ctxT, }], { amp: number , f ?: number, duration ?: number | null, } >
+  ))
+  {
+    const { context, } = nd0 ;
+
+    return {
+      nd0 ,
+      amp ,
+      cf ,
+      context ,
+      intendedDuration ,
+    } as const ;
+  }
+) ;
+
+export const describeWOnDestNodeDispatchBasedMuso = (
+  //
+  function <ctxT extends BaseAudioContext, PLDR extends { closeAt(t: number): void ; } >(...[opts] : (
+    ArgsWithOptions<[], {
+      handlePEvImpl: (e: {
+        //
+        cf: number ,
+        context: ctxT ,
+        nd1: AudioNode ,
+      }) => PLDR ,
+    }>
+  ) )
+  {
+    const {
+      handlePEvImpl: handlePEvImpl1 ,
+    } = opts ;
+
+    const handlePEvImpl = (
+      function (...[e]: [ToAudioNodePlaybackCallEvt<ctxT>])
+      {
+        const {
+          amp ,
+          cf ,
+          context ,
+          nd0 ,
+        } = e ;
+        
+        const nd1 = new GainNode(context, { gain: amp, } ) ;
+        nd1.connect(nd0) ;
+
+        return (
+          handlePEvImpl1({
+            context ,
+            nd1 ,
+            cf ,
+          })
+        ) ;
+      }
+    ) ;
+
+    return (
+      describeWOnDestNodeDispatchBasedMusoImpl({
+        handlePEvImpl ,
+      })
+    ) ;
+  }
+) ;
+
+const describeWOnDestNodeDispatchBasedMusoImpl = (
+  function <ctxT extends BaseAudioContext, PLDR extends { closeAt(t: number): void ; } >(...[opts] : (
+    ArgsWithOptions<[], {
+      handlePEvImpl: (e: ToAudioNodePlaybackCallEvt<ctxT>) => PLDR ,
+    }>
+  ) )
+  {
+    const { handlePEvImpl, } = opts ;
+
+    ;
+    const playOn = (
+      function (...args : (
+        Parameters<typeof newToAudioNodePlaybackCallEvt<ctxT> >
+      ) )
+      {
+        const evt = newToAudioNodePlaybackCallEvt(...args) ;
+        const cl = (
+          handlePEvImpl(evt)
+        ) ;
+        return (
+          cl.closeAt(evt.context.currentTime + (evt.intendedDuration ?? (1 + 0.5) ) )
+        ) ;
+      }
+    ) ;
+
+    return {
+      playOn ,
+      /** @deprecated */
+      handlePEvImpl ,
+    } as const ;
+  }
+) ;
+
+export function createReverbOnDestNode(...[nd0, { dl, gn, } = { dl: 0.05, gn: 2 ** -3, }]: (
+  ArgsWithOptions<[AudioNode], AllOrNever1<{ dl: number, gn: number , }> >
+))
+: AudioNode
+{
+  ;
+
+  const ctx = nd0.context ;
+
+  const nd1 = new GainNode(ctx) ;
+  nd1.connect(nd0);
+
+  const nd2 = new DelayNode(ctx, { delayTime: dl } ) ;
+  const nd3 = new GainNode(ctx, { gain: gn } ) ;
+  nd2.connect(nd3) ;
+
+  nd1.connect(nd2) ;
+  nd3.connect(nd1) ;
+
+  return nd1 ;
+}
+
+
 
 export type KWpWaveTable = (
   | PeriodicWave
@@ -118,35 +245,36 @@ export const describeWpwBasedMuso = (
       util.memoize(instantiateImpl, ctx => ctx )
     ) ;
 
-    const playOn = (
-      function (...[nd0, { amp = 2 ** -3, f: cf = 440 , }] : (
-        ArgsWithOptions<[AudioNode & { readonly context: ctxT, }], { amp: number , f ?: number, } >
-      ) )
-      {
-        const { context, } = nd0 ;
+    return (
+      describeWOnDestNodeDispatchBasedMuso({
+        handlePEvImpl: (e) =>
+        {
+          const {
+            cf ,
+            context ,
+            nd1 ,
+          } = e ;
 
-        const nd1 = new GainNode(context, { gain: amp, } ) ;
-        nd1.connect(nd0) ;
-
-        const nd2 = ((): AudioScheduledSourceNode => {
-          const s = getSampleForCtx(context) ;
-          return kNewAudioSampledlikeSrcNode(context, s, { f: cf, } ) ;
-        })() ;
-        nd2.connect(nd1) ;
-
-        nd2.start(context.currentTime) ;
-        nd2.stop(context.currentTime + 0.5 ) ;
-
-        return nd2 ;
-      }
+          const nd2 = ((): AudioScheduledSourceNode => {
+            const s = getSampleForCtx(context) ;
+            return kNewAudioSampledlikeSrcNode(context, s, { f: cf, } ) ;
+          })() ;
+          nd2.connect(nd1) ;
+  
+          nd2.start(context.currentTime) ;
+  
+          return {
+            closeAt: (t: number) => {
+              nd2.stop(t ) ;
+            } ,
+          } ;
+        } ,
+      })
     ) ;
-
-    return {
-      getSampleForCtx ,
-      playOn ,
-    } as const ;
   }
 ) ;
+
+
 
 export const getLog2Of = Math.log2 ;
 
