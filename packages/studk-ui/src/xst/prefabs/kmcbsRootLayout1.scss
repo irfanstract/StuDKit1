@@ -12,7 +12,51 @@
 
 
 
+@layer defaults {
 
+  .studk-kmcbsrootmnvf-navdiv,
+  .studk-kmcbsrootmnvf-footerdiv {
+    backdrop-filter: blur(0.75em) ;
+    //
+  }
+
+  .studk-kmcbsrootmnvf-navdiv {
+    font-weight: 650;
+  }
+  
+  .studk-kmcbsrootmnvf-footerdiv {
+    font-weight: 650;
+  }
+  
+  .studk-kmcbsrootmnvf-navdiv,
+  .studk-kmcbsrootmnvf-footerdiv {
+    background: black;
+    color: white;
+    //
+  }
+
+  @media print {
+    .studk-kmcbsrootmnvf-navdiv,
+    .studk-kmcbsrootmnvf-footerdiv {
+      background: white;
+      color: black;
+      //
+    }
+  }
+
+  @media print {
+    .studk-kmcbsrootmnvf-navdiv {
+      display: none !important;
+    }
+  }
+
+  @media screen {
+    //
+    .studk-kmcbsrootmnvf-navdiv.studk-kmcbsrootmnvf-of-version1p1 {
+      background: rgba($color: #000000, $alpha: 0.6);
+    }
+  }
+}
 
 
 
