@@ -236,7 +236,7 @@ export const PicturingBlockC = (
 export const BackgroundedAdvBlockC = (
   describeComponent(function BcAdvBlockCImpl({ children, ico: icoApplet, } : PbcPropsImpl< React.ReactElement> ) {
     return (
-      <MspStackingC>
+      <MspStackingC className="studk-printexactmode">
         <div>
           { icoApplet }
         </div>
@@ -255,7 +255,7 @@ export const BackgroundedAdvBlockC = (
 export const PicturingAdvBlockC = (
   describeComponent(function PicturingAdvBlockCImpl({ children, ico: icoApplet, } : PbcPropsImpl<React.ReactElement> ) {
     return (
-      <MspStackingC>
+      <MspStackingC className="studk-printexactmode">
         <div>
           { icoApplet }
         </div>

@@ -125,9 +125,10 @@ const MainAndNavAndFinaleC = (
             // overflowX: "clip",
           }}>
             <SCD
+            className="studk-mnavf-maindiv "
             style={{
-              order: 1 ,
               flex: "1 1 auto",
+              // order: 1 ,
               // backgroundColor: "white",
               // color: "black",
             }}
@@ -137,8 +138,8 @@ const MainAndNavAndFinaleC = (
             <SCD
             className="studk-mnavf-header "
             style={{
-              order: 0,
-              position: "sticky", insetBlockStart: 0,
+              // order: 0,
+              // position: "sticky", insetBlockStart: 0,
               // backgroundColor: "inherit",
               // fontSize: `80%`,
               // zIndex: `var(--layers-headnav)`,
@@ -149,8 +150,8 @@ const MainAndNavAndFinaleC = (
             <SCD
             className="studk-mnavf-footer "
             style={{
-              order: 2 ,
-              position: "sticky", insetBlockEnd: 0,
+              // order: 2 ,
+              // position: "sticky", insetBlockEnd: 0,
               // backgroundColor: "inherit",
               // fontSize: `80%`,
               // zIndex: `var(--layers-footer)`,

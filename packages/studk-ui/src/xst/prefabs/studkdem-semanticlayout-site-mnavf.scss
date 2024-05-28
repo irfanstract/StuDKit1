@@ -12,17 +12,59 @@
 
 
 
-.studk-mnavf-header {
-  z-index: var(--layers-headnav) ;
-  font-size: 80% ;
-  background-color: "inherit" ;
-}
+@layer defaults {
+  //
 
-.studk-mnavf-footer {
-  z-index: var(--layers-footer) ;
-  font-size: 80% ;
-  zoom: 85%;
-  background-color: "inherit" ;
+  /* */
+
+  .studk-mnavf-header {
+    z-index: var(--layers-headnav) ;
+    font-size: 80% ;
+    background-color: "inherit" ;
+  }
+  
+  .studk-mnavf-footer {
+    z-index: var(--layers-footer) ;
+    font-size: 80% ;
+    zoom: 85%;
+    background-color: "inherit" ;
+  }
+  
+  :is(.studk-mnavf-header, .studk-mnavf-footer) {
+    position: sticky;
+  }
+
+  /* */
+
+  .studk-mnavf-maindiv {
+    order: 1;
+    // flex: 1 1 auto ;
+  }
+
+  .studk-mnavf-header {
+    order: 0;
+  }
+  @media screen {
+    .studk-mnavf-header {
+      position: sticky;
+      inset-block-start: 0;
+    }
+  }
+
+  .studk-mnavf-footer {
+    order: 2;
+  }
+  @media screen {
+    .studk-mnavf-footer {
+      position: sticky;
+      inset-block-end: 0;
+    }
+  }
+  
+  :root:has(.nextjs-toast-errors) :is(.studk-mnavf-header , .studk-mnavf-footer ) {
+    opacity: 0.25 !important;
+  }
+
 }
 
 

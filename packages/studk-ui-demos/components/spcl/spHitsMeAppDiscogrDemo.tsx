@@ -115,18 +115,58 @@ export const DiscogrDemoC = (
             <p>Discography Really Matters</p>
 
             <figure>
-              <BackgroundedAdvBlockC
-              ico={(
-                <div />
-              )}
-              children={(
-                <MspPhrasalBlockC>
-                  <p>
-                    Phrasal
-                  </p>
-                </MspPhrasalBlockC>
-              )}
-              />
+              { SPHMEA.renderSpclResized((
+                <BackgroundedAdvBlockC
+                ico={(
+                  describeSvgApplet({ viewBox: `0 0 300 300`, }, (
+                    <g
+                    style={{
+                      filter: `contrast(57.25%) `,
+                      opacity: 0.95 ,
+                    }}
+                    />
+                  ))
+                )}
+                children={(
+                  <MspPhrasalBlockC>
+                    <p>
+                      Phrasal
+                    </p>
+                  </MspPhrasalBlockC>
+                )}
+                />
+              )) }
+            </figure>
+
+            <figure>
+              { SPHMEA.renderSpclResized((
+                <BackgroundedAdvBlockC
+                ico={(
+                  describeSvgApplet({ viewBox: `0 0 300 300`, }, (
+                    <g
+                    style={{
+                      filter: `contrast(57.25%) `,
+                      opacity: 0.95 ,
+                    }}
+                    />
+                  ))
+                )}
+                children={(
+                  <MspPhrasalBlockC>
+                    <p>
+                      <span
+                      style={{
+                        display: "table-cell" ,
+                        inlineSize: `80em` ,
+                      }}
+                      >
+                        &nbsp;
+                      </span>
+                    </p>
+                  </MspPhrasalBlockC>
+                )}
+                />
+              )) }
             </figure>
             
             { SPHMEA.SUMMERDISCO.renderedFigure }
@@ -134,6 +174,8 @@ export const DiscogrDemoC = (
             { SPHMEA.CHILLING_EUR_BIENVENUE.renderedFigure }
 
             { SPHMEA.CHILLING_EUR_BIENVENUE.renderedFigure }
+            
+            { SPHMEA.DANCEANDRAPGENRECO.renderedFigure }
 
           </div>
         ) ,

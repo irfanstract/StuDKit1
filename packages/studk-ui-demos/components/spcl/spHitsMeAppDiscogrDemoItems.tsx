@@ -89,8 +89,11 @@ import {
 } from 'studk-ui/src/xst/svgd.tsx'; ;
 
 import {
-  describeCallbackAssignedStyleProps ,
-} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
+  describeByCssStringStyleProps,
+  describeCallbackAssignedStyleProps, 
+  withCssStringApplied,
+  withPresentationalGoodiesApplied,
+} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd-adv.tsx'; ;
 
 import {
   getGsSharpenFltUrl,
@@ -100,6 +103,21 @@ import {
 
 export namespace SPHMEA
 {
+  export function renderSpclResized(...[srcE]: [ React.ReactElement])
+  {
+    return (
+      <div
+      style={{
+        display: "table-cell",
+        inlineSize: `39ex` ,
+        blockSize : `39ex` ,
+        // contain : `size` ,
+      }}
+      children={srcE}
+      />
+    ) ;
+  }
+
   function describeSpcl(...[render]: [() => React.ReactElement])
   {
     const C = util.L.once(render) ;
@@ -107,14 +125,7 @@ export namespace SPHMEA
       <C />
     ) ;
     const renderedResizedApplet = (
-      <div
-      style={{
-        display: "table-cell",
-        inlineSize: `39ex` ,
-        blockSize : `39ex` ,
-      }}
-      children={renderedUnresizedApplet}
-      />
+      renderSpclResized(renderedUnresizedApplet)
     ) ;
     const renderedFigure = (
       <figure
@@ -128,6 +139,46 @@ export namespace SPHMEA
       renderedFigure ,
     } as const ;
   }
+  
+  export const SUMMERDISCO = (
+    describeSpcl(() => (
+      <BackgroundedAdvBlockC
+      ico={(
+        describeSvgApplet({ viewBox: `0 0 300 300`, }, (
+          <g
+          style={{
+            filter: `contrast(57.25%) `,
+            opacity: 0.95 ,
+          }}
+          >
+          </g>
+        ))
+      )}
+      children={(
+        <MspPhrasalBlockC>
+          <studk-spmea-phrasalblock className="" style={{}}>
+            <div
+            className=""
+            style={(
+              describeCallbackAssignedStyleProps(c => {
+                c.fontFamily = `'Segoe Script', cursive, Times, serif` ;
+                c.fontWeight = 400 ;
+              })
+            )}
+            >
+              <XH>
+                Piero <br/>
+                Pirupa <br/>
+                Time
+                🌺
+              </XH>
+            </div>
+          </studk-spmea-phrasalblock>
+        </MspPhrasalBlockC>
+      )}
+      />
+    ))
+  ) ;
 
   export const CHILLING_EUR_BIENVENUE = (
     describeSpcl(() => (
@@ -137,6 +188,7 @@ export namespace SPHMEA
           <g
           style={{
             filter: `url("${getGsSharpenFltUrl() }") `,
+            transform: `translate(-2px, -2px) scale(1.01) `,
             ...({ ["--c"]: 5, }),
           }}
           >
@@ -178,7 +230,7 @@ export namespace SPHMEA
     ))
   ) ;
   
-  export const SUMMERDISCO = (
+  export const DANCEANDRAPGENRECO = (
     describeSpcl(() => (
       <BackgroundedAdvBlockC
       ico={(
@@ -191,7 +243,7 @@ export namespace SPHMEA
           >
             <image
             {...{ width: 300, height: 300 }}
-            // href={vbvImgUrl.src }
+            href={kzwImg.src }
             />
           </g>
         ))
@@ -199,22 +251,42 @@ export namespace SPHMEA
       children={(
         <MspPhrasalBlockC>
           <studk-spmea-phrasalblock className="" style={{}}>
-            <div
-            className=""
-            style={(
-              describeCallbackAssignedStyleProps(c => {
-                c.fontFamily = `'Segoe Script', cursive, Times, serif` ;
-                c.fontWeight = 400 ;
-              })
-            )}
-            >
+            { withPresentationalGoodiesApplied({ style: `font-family: 'Inter', sans-serif ; text-transform: uppercase; font-weight: 570;`, }, (
+              //
               <XH>
-                Piero <br/>
-                Pirupa <br/>
-                Time
-                🌺
-              </XH>
-            </div>
+              { withPresentationalGoodiesApplied({
+                style: `
+                  font-size: 85%;
+                  font-family: 'Poppins', system-ui 
+                ` ,
+              }, (
+              <span>
+                <span>
+                  EDM
+                </span>
+                <span>
+                  Dance
+                </span>
+              </span>
+              ) ) } {}
+              <span>
+                n'
+              </span> {}
+              { withPresentationalGoodiesApplied({
+                //
+                style: `
+                font-family: 'Segoe Script', cursive , sans-serif ;
+              ` ,
+              }, (
+              <span>
+                Rap
+              </span>
+              )) } {}
+              <span>
+                Music
+              </span> {}
+            </XH>
+            ) ) }
           </studk-spmea-phrasalblock>
         </MspPhrasalBlockC>
       )}

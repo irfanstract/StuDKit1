@@ -88,7 +88,7 @@ export { /** @deprecated */ getSvgFilterAsCssFilterUrlFast as getSvgFilterBySvml
 
 export const getGsSharpenFltUrl = (
   util.memoize((
-    function getGsSharpenFltUrlImpl(...[{ rad = 1.125 , intensity = 3.25, } = {}] : (
+    function getGsSharpenFltUrlImpl(...[{ rad = 0.8925 , intensity = 5.25, } = {}] : (
       ArgsWithOptions<[], (
         & { rad ?: number }
         & { intensity ?: number }
