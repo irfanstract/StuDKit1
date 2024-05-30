@@ -236,18 +236,22 @@ export const PicturingBlockC = (
 export const BackgroundedAdvBlockC = (
   describeComponent(function BcAdvBlockCImpl({ children, ico: icoApplet, } : PbcPropsImpl< React.ReactElement> ) {
     return (
-      <MspStackingC className="studk-printexactmode">
-        <div>
-          { icoApplet }
-        </div>
-        <studk-spmea-msptextcolumn
-        style={{
-          backdropFilter: `blur(0.1ex)` ,
-          textAlign: `center`,
-        }}
-        children={children}
-        />
-      </MspStackingC>
+      <studk-card
+      children={(
+        <MspStackingC className="studk-printexactmode">
+          <div>
+            { icoApplet }
+          </div>
+          <studk-spmea-msptextcolumn
+          style={{
+            backdropFilter: `blur(0.1ex)` ,
+            textAlign: `center`,
+          }}
+          children={children}
+          />
+        </MspStackingC>
+      )}
+      />
     ) ;
   } )
 ) ;
@@ -255,17 +259,21 @@ export const BackgroundedAdvBlockC = (
 export const PicturingAdvBlockC = (
   describeComponent(function PicturingAdvBlockCImpl({ children, ico: icoApplet, } : PbcPropsImpl<React.ReactElement> ) {
     return (
-      <MspStackingC className="studk-printexactmode">
-        <div>
-          { icoApplet }
-        </div>
-        <studk-spmea-msptextcolumn
-        style={{
-          justifyContent: "end" ,
-        }}
-        children={children}
-        />
-      </MspStackingC>
+      <studk-card
+      children={(
+        <MspStackingC className="studk-printexactmode">
+          <div>
+            { icoApplet }
+          </div>
+          <studk-spmea-msptextcolumn
+          style={{
+            justifyContent: "end" ,
+          }}
+          children={children}
+          />
+        </MspStackingC>
+      )}
+      />
     ) ;
   } )
 ) ;

@@ -114,6 +114,9 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
     )
   ) ;
   const version = versionArg ?? "1.1";
+  const asClsVerTag = (
+    `studk-kmcbsrootmnvf-of-version${String(version).replace(/\./g, "p") }`
+  );
   const footerSecContents = (
     <menu>
       <span>
@@ -150,7 +153,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
           return (
             //
             <div
-            className="arbrd-d1 studk-kmcbsrootmnvf-main "
+            className={`arbrd-d1 studk-kmcbsrootmnvf-main ${asClsVerTag}`}
             style={{
               //
             }}
@@ -162,9 +165,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
       )}
       nav1={(
         <SingleChildDiv
-        className={`studk-kmcbsrootmnvf-aside studk-kmcbsrootmnvf-navdiv ${(
-          `studk-kmcbsrootmnvf-of-version${String(version).replace(/\./g, "p") }`
-        )} `}
+        className={`studk-kmcbsrootmnvf-aside studk-kmcbsrootmnvf-navdiv ${asClsVerTag} `}
         style={{
         }}
         >
@@ -175,7 +176,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
       )}
       finale={(
         <SingleChildDiv
-        className={`studk-kmcbsrootmnvf-aside studk-kmcbsrootmnvf-footerdiv `}
+        className={`studk-kmcbsrootmnvf-aside studk-kmcbsrootmnvf-footerdiv ${asClsVerTag} `}
         style={{
           //
         }}
