@@ -12,8 +12,12 @@
 
 
 
-@layer defaults {
+@layer kmcbsrootlayoutdefaults01, kmcbsrootlayoutdefaults02, kmcbsrootlayoutdefaults03, defaults ;
 
+@layer kmcbsrootlayoutdefaults02
+{
+  //
+  
   .studk-kmcbsrootmnvf-navdiv,
   .studk-kmcbsrootmnvf-footerdiv {
     backdrop-filter: blur(0.75em) ;
@@ -52,10 +56,50 @@
 
   @media screen {
     //
-    .studk-kmcbsrootmnvf-navdiv.studk-kmcbsrootmnvf-of-version1p1 {
-      background: rgba($color: #000000, $alpha: 0.6);
+    .studk-kmcbsrootmnvf-navdiv.studk-kmcbsrootmnvf-of-version1p1
+    {
+      &:not(:is(:focus-within, :hover ) ):not(:root:has(:is(.studk-kmcbsrootmnvf-navdiv, .studk-kmcbsrootmnvf-footerdiv, h1):is(:focus-within, :hover ) ) * ) {
+        //
+        background: rgba($color: #000000, $alpha: 0.35);
+      }
     }
   }
+
+}
+
+@layer kmcbsrootlayoutdefaults03
+{
+  //
+  
+  .studk-kmcbsrootmnvf-navdiv {
+    zoom: 85%;
+  }
+  .studk-kmcbsrootmnvf-footerdiv {
+    zoom: 85%;
+  }
+
+  .studk-kmcbsrootmnvf-footerdiv {
+    filter: none;
+  }
+  @media screen {
+    :is(.studk-kmcbsrootmnvf-footerdiv, .studk-kmcbsrootmnvf-navdiv)
+    {
+      &:not(:is(:focus-within, :hover ) ):not(:root:has(:is(.studk-kmcbsrootmnvf-navdiv, .studk-kmcbsrootmnvf-footerdiv, h1):is(:focus-within, :hover ) ) * )
+      {
+        //
+        opacity: 0.25;
+        &:is(.studk-kmcbsrootmnvf-navdiv) {
+          opacity: 0.425;
+        }
+        filter: blur(0.1em);
+      }
+    }
+    .studk-kmcbsrootmnvf-footerdiv:not(:is(:focus-within, :hover ) ) {
+    }
+  }
+}
+
+@layer defaults {
 
   :root:has(.nextjs-toast-errors) :is(.studk-kmcbsrootmnvf-navdiv, .studk-kmcbsrootmnvf-footerdiv) {
     opacity: 0.25 !important;
