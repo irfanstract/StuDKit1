@@ -28,11 +28,6 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
@@ -43,7 +38,7 @@ import type {
 
 import type {
   ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui/src/fwCore/linearValues.ts'; ;
 
 type OptionalSingleLineWhiteSpace = (
   OLSW
