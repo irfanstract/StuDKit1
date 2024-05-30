@@ -1,5 +1,5 @@
 {
-  "extends": "../../scripts/tsEnabledSampleProjects/customTsNodePackage/tsconfig.json",
+  "extends": "../../tsconfig.json" ,
 
   "compilerOptions": {
     
@@ -10,8 +10,9 @@
     /* https://stackoverflow.com/a/61513685 */
     "rootDir": "src" ,
     "outDir": "dist",
+    "checkJs": true,
 
-    "declaration": false,
+    // "declaration": false,
 
   },
   

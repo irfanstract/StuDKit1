@@ -3,20 +3,46 @@
 
 
 export {
-  kebabCase,
-  camelCase ,
-  lowerCase,
-  upperCase,
-  snakeCase,
+
+  /* CALL-THROTTLING */
   throttle ,
   memoize,
   once,
   debounce ,
   // DebouncedFunc,
   // DebounceSettings,
+
+  /* IDENTITY-FNC AND STRUCTURED-CLONE FNCS */
+  identity ,
   clone ,
   cloneDeep ,
   cloneDeepWith ,
+
+  /* STRING CASE-FLIPPING */
+  kebabCase,
+  camelCase ,
+  lowerCase,
+  upperCase,
+  snakeCase,
+
+  uniq ,
+  uniqBy ,
+  uniqWith ,
+  without,
+  difference ,
+  differenceBy ,
+  differenceWith ,
+  intersection ,
+  intersectionBy ,
+  intersectionWith ,
+  union ,
+  unionBy ,
+  unionWith ,
+  pick ,
+  pickBy ,
+  omit ,
+  omitBy ,
+
 } from "lodash-es" ;
 
 // export { default as add } from "./add.js";
