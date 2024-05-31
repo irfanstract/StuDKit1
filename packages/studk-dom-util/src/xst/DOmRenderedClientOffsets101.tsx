@@ -237,8 +237,8 @@ export {
 } ;
 
 export type {
-  // /** @deprecated */
-  // NCOP_DAT_ITC ,
+  /** @deprecated */
+  NCOP_DAT_ITC ,
   NcpSupportedElem ,
 } ;;
 
