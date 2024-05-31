@@ -136,7 +136,10 @@ const cssStringLinesConcat = (
 ) ;
 
 export {
-  cssStringLinesConcat ,
+  /**
+   * @deprecated switch to `getCallbackAssignedCssProps` followed by `Object.assign(nd.style, sd1)`.
+   */
+  cssStringLinesConcat as cssStringLinesConcat ,
 } ;
 
 

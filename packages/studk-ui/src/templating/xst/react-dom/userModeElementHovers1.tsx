@@ -82,8 +82,8 @@ import {
 ;
 
 import {
-  getNativeCompPosition,
-  useNativeCompPosition,
+  doNativeCompDisplayedOffsetsAnalysis,
+  useNativeCompDisplayedOffsetsAnalysis,
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
 import {

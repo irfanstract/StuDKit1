@@ -91,8 +91,8 @@ import {
 
 import {
   analyseNativeElemtClientOffsets,
-  NCOP_DAT ,
-} from "studk-ui/src/meta/dom/computedstyles1.tsx" ;
+  // NCOP_DAT ,
+} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101.tsx" ;
 
 const useNativeCompPosition = (
   function (...[x, opts = {}] : ArgsWithOptions<[(HTMLElement | SVGElement) | null], { latencyMillis ?: number ; }> )
@@ -173,8 +173,8 @@ enum UserToElementActivityState {
 }
 
 export {
-  useNativeCompPosition ,
-  analyseNativeElemtClientOffsets as getNativeCompPosition ,
+  useNativeCompPosition as useNativeCompDisplayedOffsetsAnalysis ,
+  analyseNativeElemtClientOffsets as doNativeCompDisplayedOffsetsAnalysis ,
   useIsNativeCompMatchedBy ,
   useIsNativeCompHoveredOrFocused ,
   UserToElementActivityState ,
