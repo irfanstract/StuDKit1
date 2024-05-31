@@ -90,7 +90,7 @@ import {
 } from '#currentPkg/src/templating/xst/ovcb.tsx';
 
 import {
-  getNativeCompPosition,
+  analyseNativeElemtClientOffsets,
   NCOP_DAT ,
 } from "studk-ui/src/meta/dom/computedstyles1.tsx" ;
 
@@ -105,7 +105,7 @@ const useNativeCompPosition = (
       {
 
         return (
-          x && getNativeCompPosition(x)
+          x && analyseNativeElemtClientOffsets(x)
         ) ;
       } , { latencyMillis, }, )
     ) ;
@@ -174,7 +174,7 @@ enum UserToElementActivityState {
 
 export {
   useNativeCompPosition ,
-  getNativeCompPosition ,
+  analyseNativeElemtClientOffsets as getNativeCompPosition ,
   useIsNativeCompMatchedBy ,
   useIsNativeCompHoveredOrFocused ,
   UserToElementActivityState ,
