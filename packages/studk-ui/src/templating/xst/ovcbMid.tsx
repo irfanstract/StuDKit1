@@ -122,17 +122,17 @@ export { ovcbMid, } ;
 import {
   doNativeCompDisplayedOffsetsAnalysis,
   useNativeCompDisplayedOffsetsAnalysis,
-} from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
+} from "studk-ui-core/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import type {
   //
   NcpSupportedElem ,
-} from "studk-ui/src/meta/dom/computedstyles1.tsx" ;
+} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101.tsx" ;
 
 import {
   useExistingNativeCompBoundingBoxViaRef ,
   NCPSR ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
+} from "studk-ui-core/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 type IRenderNativeElemOverlaySupported = (
   NcpSupportedElem
