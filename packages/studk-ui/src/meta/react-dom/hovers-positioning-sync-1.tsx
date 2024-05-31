@@ -78,8 +78,8 @@ import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 ;
 
 import {
-  getNativeCompPosition,
-  useNativeCompPosition,
+  doNativeCompDisplayedOffsetsAnalysis,
+  useNativeCompDisplayedOffsetsAnalysis,
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
 import type {
@@ -98,7 +98,7 @@ const useExistingNativeCompBoundingBoxViaRef = (
     useIntervalEffect(() => {
       const e1 = ncpRef.current ;
       if (e1) {
-        const ncp = getNativeCompPosition(e) ;
+        const ncp = doNativeCompDisplayedOffsetsAnalysis(e) ;
         if ((e1.hidden = !(!!ncp) , ncp) )
         {
           C :
