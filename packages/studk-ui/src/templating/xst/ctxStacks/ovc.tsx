@@ -92,9 +92,9 @@ import {
 
 import {
   UserToElementActivityState,
-  getNativeCompPosition,
+  doNativeCompDisplayedOffsetsAnalysis,
   useIsNativeCompHoveredOrFocused,
-  useNativeCompPosition,
+  useNativeCompDisplayedOffsetsAnalysis,
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
 import {
@@ -112,7 +112,7 @@ export {
   /**
    * @deprecated import from `studk-ui/src/meta/react-dom/computedstyles1.tsx` directly
    */
-  useNativeCompPosition,
+  useNativeCompDisplayedOffsetsAnalysis as useNativeCompPosition,
 } ;
 
 ;
