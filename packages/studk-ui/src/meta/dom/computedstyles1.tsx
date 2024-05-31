@@ -125,9 +125,9 @@ const getEffectiveZoom: { (x: Element): number ; } = (
 ) ;
 
 export {
-  isNativeElementNotHidden ,
+  isNativeElementNotHidden as isNativeElementNotHidden ,
   isDescendantOfOrItselfEffectivelyDisplayNone ,
-  getEffectiveZoom ,
+  getEffectiveZoom as getEffectiveZoom ,
 } ;
 
 
@@ -229,8 +229,8 @@ const getMouseEvtPosition = (
 
 
 export {
-  getNativeCompPosition ,
-  getMouseEvtPosition ,
+  getNativeCompPosition as analyseNativeElemtClientOffsets ,
+  getMouseEvtPosition as getMouseEvtClientOffset ,
 } ;
 
 export {
