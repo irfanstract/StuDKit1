@@ -20,8 +20,6 @@
 
 
 
-;
-
 export * from "studk-ui-core/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 
