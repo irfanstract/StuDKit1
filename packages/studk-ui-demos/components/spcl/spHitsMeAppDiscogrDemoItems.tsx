@@ -80,6 +80,7 @@ import {
   PicturingAdvBlockC ,
   describeUrlIcoApplet, 
   describeSvgApplet,
+  describeViewboxedSvgApplet ,
   XH,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-textblocks-b.tsx'; ;
 
@@ -99,6 +100,10 @@ import {
   getGsSharpenFltUrl,
   getSvgFilterAsCssFilterUrlFast ,
 } from 'studk-ui/src/xst/cssFilterUrl.tsx'; ;
+
+import {
+  ImgListC ,
+} from "studk-ui-encore/src/ShowBizUi/ImgListUi.tsx" ;
 
 
 export namespace SPHMEA
@@ -144,7 +149,7 @@ export namespace SPHMEA
     describeSpcl(() => (
       <BackgroundedAdvBlockC
       ico={(
-        describeSvgApplet({ viewBox: `0 0 300 300`, }, (
+        describeViewboxedSvgApplet({ viewBox: `0 0 300 300`, }, (
           <g
           style={{
             filter: `contrast(57.25%) `,
@@ -184,7 +189,7 @@ export namespace SPHMEA
     describeSpcl(() => (
       <PicturingAdvBlockC
       ico={(
-        describeSvgApplet({ viewBox: `0 0 300 300`, }, (
+        describeViewboxedSvgApplet({ viewBox: `0 0 300 300`, }, (
           <g
           style={{
             filter: `url("${getGsSharpenFltUrl() }") `,
@@ -230,11 +235,74 @@ export namespace SPHMEA
     ))
   ) ;
   
+  export const MULTIGENRE1 = (
+    describeSpcl(() => (
+      <PicturingAdvBlockC
+      ico={(
+        <div
+        style={{
+          minHeight: `20em` ,
+          maxHeight: `20em` ,
+        }}
+        >
+        <ImgListC
+        >
+          <li>
+            <img
+            src={vbvImg.src }
+            />
+          </li>
+          <li>
+            <img
+            src={kzwImg.src }
+            />
+          </li>
+          <li>
+            <img
+            src={vbvImg.src }
+            />
+          </li>
+          <li>
+            <img
+            src={kzwImg.src }
+            />
+          </li>
+        </ImgListC>
+        </div>
+      )}
+      children={(
+        <MspPhrasalBlockC>
+          <studk-spmea-phrasalblock className="" style={{}}>
+            <div
+            className=""
+            style={(
+              describeCallbackAssignedStyleProps(c => {
+                // c.fontFamily = `Georgia, 'Times New Roman', Times, serif` ;
+                // c.fontWeight = 400 ;
+                // c.textTransform = "lowercase" ;
+                // c.textAlign = "start" ;
+              })
+            )}
+            >
+              <XH>
+                <span style={{ fontSize: `95%`, }} >
+                  Chill &amp; Deep
+                </span>
+                <br/>
+              </XH>
+            </div>
+          </studk-spmea-phrasalblock>
+        </MspPhrasalBlockC>
+      )}
+      />
+    ))
+  ) ;
+  
   export const DANCEANDRAPGENRECO = (
     describeSpcl(() => (
       <BackgroundedAdvBlockC
       ico={(
-        describeSvgApplet({ viewBox: `0 0 300 300`, }, (
+        describeViewboxedSvgApplet({ viewBox: `0 0 300 300`, }, (
           <g
           style={{
             filter: `contrast(57.25%) `,

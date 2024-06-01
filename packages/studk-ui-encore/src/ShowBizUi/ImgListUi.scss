@@ -1,0 +1,36 @@
+
+
+
+
+
+
+
+
+@layer defaults {
+  //
+
+  :is(ul, ol ).studk-sbzi-imglistu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    & > li {
+      flex: 0 0 auto;
+      width:  12ex;
+      height: 12ex;
+    }
+
+    & > li {
+      // max-block-size: 7em ;
+      contain: content;
+      // display: grid;
+      display: flex;
+    }
+  }
+}
+
+
+
+
+
+
+

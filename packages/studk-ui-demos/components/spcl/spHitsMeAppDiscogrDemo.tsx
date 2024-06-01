@@ -176,6 +176,8 @@ export const DiscogrDemoC = (
             { SPHMEA.CHILLING_EUR_BIENVENUE.renderedFigure }
             
             { SPHMEA.DANCEANDRAPGENRECO.renderedFigure }
+            
+            { SPHMEA.MULTIGENRE1.renderedFigure }
 
           </div>
         ) ,

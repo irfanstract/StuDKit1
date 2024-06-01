@@ -31,11 +31,21 @@
     --version-later-than-1p1: 1 ;
   }
   
+  .studk-kmcbsrootmnvf-whole.studk-kmcbsrootmnvf-of-version1p125 {
+    --version-later-than-1p0  : 1 ;
+    --version-later-than-1p1  : 1 ;
+    --version-later-than-1p125: 1 ;
+  }
+  
 }
 
 @layer kmcbsrootlayoutdefaults02
 {
   //
+
+  .studk-kmcbsrootmnvf-whole {
+    contain: layout;
+  }
 
   .studk-kmcbsrootmnvf-navdiv,
   .studk-kmcbsrootmnvf-footerdiv {
@@ -56,6 +66,23 @@
     background: black;
     color: white;
     //
+  }
+
+  .studk-kmcbsrootmnvf-navdiv,
+  .studk-kmcbsrootmnvf-footerdiv {
+    border: 0.05em solid black ;
+  }
+
+  @container studk-kmcbsrootmnvf style(--version-later-than-1p125: 1) {
+    //
+    .studk-kmcbsrootmnvf-navdiv,
+    .studk-kmcbsrootmnvf-footerdiv {
+      background: transparent;
+      // backdrop-filter: ;
+      color: black;
+      //
+      border: none;
+    }
   }
 
   @media print {

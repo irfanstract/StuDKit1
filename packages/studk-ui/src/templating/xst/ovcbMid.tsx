@@ -78,7 +78,7 @@ import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   withRef ,
-} from "studk-ui/src/meta/react/withAdHocRefs.tsx" ;
+} from "studk-ui-core/src/reactjs/helpers/withAdHocRefs.tsx" ;
 
 
 
