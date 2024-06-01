@@ -135,7 +135,7 @@ const MainAndNavAndFinaleC = (
             // overflowX: "clip",
           }}>
             <SCD
-            className="studk-mnavf-maindiv "
+            className="studk-mnavf-maindiv studk-mnavf-maindiv1 "
             style={{
               flex: "1 1 auto",
               // order: 1 ,
