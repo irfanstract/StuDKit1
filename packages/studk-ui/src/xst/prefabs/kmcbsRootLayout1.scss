@@ -139,10 +139,15 @@
       {
 
         &:is(:focus-within, :hover) ,
-        :is(:root:has(
-          :is(.studk-mnavf-header, .studk-mnavf-footer)
-          :is(:focus-within, :hover)
-        ) & ) ,
+        :is(
+          :root:has(
+            :is(.studk-mnavf-header, .studk-mnavf-footer)
+            :is(:focus-within, :hover)
+          ) & ,
+          /* touch-based devices (eg smartphones) doesn't have mouse/cursor/pointer, so we need to hold breath */
+          :not(:root:is(:focus-within, :hover ) * ):is(.studk-kmcbsrootmnvf-navdiv),
+          #-----e
+        ) ,
         :is(:root:has(:is(h1):is(:focus-within, :hover) ) &:is(.studk-kmcbsrootmnvf-navdiv) ) ,
         #-----e
         {
@@ -157,6 +162,9 @@
 
   }
 
+}
+
+@layer kmcbsrootlayoutdefaults033 {
 }
 
 @layer kmcbsrootlayoutdefaults03
@@ -178,10 +186,10 @@
     @media screen {
       :is(.studk-kmcbsrootmnvf-footerdiv, .studk-kmcbsrootmnvf-navdiv)
       {
-        &:not(:is(:focus-within, :hover ) ):not(:root:has(:is(.studk-mnavf-header, .studk-mnavf-footer, h1):is(:focus-within, :hover ) ) * )
+        &:not(:is(:focus-within, :hover ) ):not(:is(/* touch-based devices (eg smartphones) doesn't have mouse/cursor/pointer, so we need to hold breath */ :not(:root:is(:focus-within, :hover ) * ):is(.studk-kmcbsrootmnvf-navdiv ), :root:has(:is(.studk-mnavf-header, .studk-mnavf-footer, h1):is(:focus-within, :hover ) ) * ) )
         {
           //
-          opacity: 0.25;
+          opacity: 0.27;
           &:is(.studk-kmcbsrootmnvf-navdiv) {
             opacity: 0.425;
           }

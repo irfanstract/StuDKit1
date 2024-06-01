@@ -52,15 +52,20 @@ import * as React from "react" ;
 
 
 import {
+  describeComponent,
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
+
+import {
+  Button ,
+  Span ,
+} from 'studk-ui/src/xst/dbc.tsx'; ;
+
+import {
   pagesConventions,
   dynamicComponent,
   AppLink,
   Image,
 } from "@/appInternalScripts/appPagesConvention"; ;
-
-import {
-  describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 import {
   useIntervalEffect ,
@@ -90,6 +95,31 @@ export default function App()
         <div>
           <p>
             Long Text Doc With Graphical Overlays
+          </p>
+          <nav>
+            <Button onClick={() => {}}>
+              some things
+            </Button>
+            <Button onClick={"data:text/javascript,void"}>
+              some JS
+            </Button>
+            <Button onClick={null}>
+              no-op
+            </Button>
+            <Button onClick={false}>
+              whoop
+            </Button>
+          </nav>
+          <p>
+            <span>
+              <Span onClick={"data:text/javascript,text"}>Short Text Doc</Span>
+              and
+              <Span onClick={() => {} }>Long Text Doc</Span>
+            </span> {}
+            With {}
+            <Span onClick={false}>
+            Graphical Overlays
+            </Span>
           </p>
           { 0 && <LDCWGOC /> }
           { 0 && (
