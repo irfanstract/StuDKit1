@@ -87,12 +87,13 @@ export const ImgListC = (
     const c1 = (
       React.Children.toArray(c0)
     ) ;
+    const XOL : ("ul" | "ol") = "ol" ;
     return (
-      <ul className="studk-sbzi-imglistu ">
+      <XOL className="studk-sbzi-imglistu ">
         { (
           c1
         ) }
-      </ul>
+      </XOL>
     ) ;
   } )
 ) ;
