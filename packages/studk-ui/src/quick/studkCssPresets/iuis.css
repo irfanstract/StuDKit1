@@ -199,7 +199,17 @@ button:not(.studk-ui-dbc-subsntcspan)
 button:not(.studk-ui-dbc-subsntcspan) {
 }
 
-.studk-ui-pageoverall-main:not(:focus-within, :hover) .studk-ui-dbc-standalonespan:is(button, a ) {
+:is(
+  :is(
+    .studk-ui-pageoverall-main,
+    .studk-kmcbsrootmnvf-navdiv,
+    .studk-kmcbsrootmnvf-footerdiv,
+    #----e
+  ):not(:focus-within, :hover) * ,
+  :root:not(:focus-within, :hover) * ,
+  #----e
+):is(.studk-ui-dbc-standalonespan:is(button, a ) )
+{
   opacity: 0.18;
 
   &:is(:disabled) {
@@ -271,11 +281,14 @@ h1 {
 
 @layer defaults {
   
-  body {
+  :has(.studk-ui-pageoverall-main, .studk-mnavf-maindiv ) {
     user-select: none;
-  }
-  .studk-ui-pageoverall-main {
-    user-select: text;
+    .studk-ui-pageoverall-main {
+      user-select: text;
+    }
+    .studk-mnavf-maindiv {
+      user-select: text;
+    }
   }
 
 }
