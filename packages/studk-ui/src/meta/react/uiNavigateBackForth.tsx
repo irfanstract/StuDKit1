@@ -60,7 +60,7 @@ export const NavigateBackButton = (
 export const NavigateForwardButton = (
   describeComponent(function NavFwdBtnC() {
     return (
-      <button
+      <Button
       children="->>"
       onClick={() => history.forward() }
       />
