@@ -47,14 +47,16 @@
 
 @layer defaults {
   
-  img {
+  :is(img, svg) {
     border-radius: 2%;
+  }
+  :is(img) {
     filter: blur(0.5px);
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   }
 
-  img {
+  figure > :not(figcaption) {
     border: 0.20em solid black ;
   }
 
@@ -208,12 +210,23 @@ button:not(.studk-ui-dbc-subsntcspan) {
   ):not(:focus-within, :hover) * ,
   :root:not(:focus-within, :hover) * ,
   #----e
-):is(.studk-ui-dbc-standalonespan:is(button, a ) )
+):is(.studk-ui-dbc-standalonespan )
 {
-  opacity: 0.18;
 
-  &:is(:disabled) {
-    opacity: 0;
+  &:is(button, a ) {
+    /* opacity: 0.18; */
+
+    /* &:is(:disabled) { */
+      /* opacity: 0; */
+    /* } */
+
+  }
+
+  & {
+    background: transparent !important;
+    color: transparent !important;
+    & > * { visibility: hidden; }
+    border: 0.05ex dashed black;
   }
 }
 
@@ -223,6 +236,12 @@ button:not(.studk-ui-dbc-subsntcspan) {
 }
 button:is(.studk-ui-dbc-subsntcspan) {
   font-size: 95% ;
+}
+
+@media print {
+  .studk-ui-dbc-standalonespan:is(button, a ) {
+    display: none !important;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
