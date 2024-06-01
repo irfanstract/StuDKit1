@@ -26,14 +26,18 @@ import {
 console["log"](`[uiNavigateBackForth.tsx] init`) ;
 
 
+
+
+
+
 import {
   describeComponent ,
 } from "#currentPkg/src/meta/react/dhc.tsx" ;
 
-
-
-
-
+import {
+  Span ,
+  Button ,
+} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 import * as React from "react" ;
 
@@ -45,7 +49,7 @@ import * as React from "react" ;
 export const NavigateBackButton = (
   describeComponent(function NavBackButtonC() {
     return (
-      <button
+      <Button
       children="Back"
       onClick={() => history.back() }
       />
