@@ -75,6 +75,41 @@ namespace OVCB
       GMN_IMPL()
     ) ;
   }
+  
+  const GMN_CSS_IMPL = (
+    util.L.once(() => {
+      ;
+      // return (
+      //   document.querySelector("#studk-ui-ovcb-main")!
+      // ) ;
+      {
+        const nd = document.createElement("style") ;
+        document.head.appendChild(nd) ;
+        nd.textContent = (
+          `
+          studk-global-overlay {
+            position: fixed ;
+            top: 0 ;
+            left: 0 ;
+            width: 100vw ;
+            height: 100vh ;
+            overflow: hidden ;
+            overflow: clip ;
+            pointer-events: none ;
+            --o: 0 ;
+            opacity: var(--o) ;
+          }
+          @media screen {
+            studk-global-overlay {
+              --o: 1 ;
+            }
+          }
+          `
+        ) ;
+        return {} as const ;
+      }
+    })
+  ) ;
 
   const GMN_IMPL = (
     util.L.once(() => {
@@ -83,18 +118,19 @@ namespace OVCB
       //   document.querySelector("#studk-ui-ovcb-main")!
       // ) ;
       {
-        const nd = document.createElement("div") ;
+        GMN_CSS_IMPL() ;
+        const nd = document.createElement("studk-global-overlay") ;
         document.body.appendChild(nd) ;
         Object.assign(nd.style, (
           describeCallbackAssignedStyleProps((s) => {
-            s.position = "fixed" ;
-            s.top = 0 ;
-            s.left = 0 ;
-            s.width = `100vw` ;
-            s.height = `100vh` ;
-            s.overflow = "hidden" ;
-            s.overflow = "clip" ;
-            s.pointerEvents = "none" ;
+            // s.position = "fixed" ;
+            // s.top = 0 ;
+            // s.left = 0 ;
+            // s.width = `100vw` ;
+            // s.height = `100vh` ;
+            // s.overflow = "hidden" ;
+            // s.overflow = "clip" ;
+            // s.pointerEvents = "none" ;
           })
         ) ) ;
         return nd ;
