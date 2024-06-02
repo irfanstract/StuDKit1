@@ -98,6 +98,18 @@ export const ImgListC = (
   } )
 ) ;
 
+export const describeUrlImgListCItemContents = (
+  function (...[src, { alt: altText, } ]: [string, { alt: NonNullable<JSX.IntrinsicElements["img"]["alt"]>, } ])
+  {
+    return (
+      <img
+      alt={altText }
+      src={src }
+      />
+    ) ;
+  }
+) ;
+
 import "studk-ui-encore/src/ShowBizUi/ImgListUi.scss" ;
 
 

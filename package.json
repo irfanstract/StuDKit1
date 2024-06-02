@@ -90,6 +90,10 @@
   "dependencies": {
   }
   ,
+  "overrides": {
+   "immutable": "^4.1.0"
+  }
+  ,
   "workspaces": [
      "packages/*"
   ]

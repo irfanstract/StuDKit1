@@ -30,7 +30,10 @@
   "include": [
     "src" ,
   ],
-  // "exclude": [
-  //   "src/**/*" ,
-  // ],
+  "exclude": [
+    // "src/**/*" ,
+    // "../../node_modules/@types/draft-js/node_modules/**/*" ,
+    // "../../node_modules/@types/draft-js/node_modules/immutable/**/*" ,
+    // "../../node_modules/@types/draft-js/**/*" ,
+  ],
 }
