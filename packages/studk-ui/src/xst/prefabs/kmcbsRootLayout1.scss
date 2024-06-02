@@ -44,7 +44,11 @@
   //
 
   .studk-kmcbsrootmnvf-whole {
-    contain: layout;
+    /*
+     * can't safely do `contain: layout;` right here, as
+     * _currently_ the overlays/hover/popup/lens infrastructure relies on CSS `z-index`
+     */
+    // contain: layout;
   }
 
   .studk-kmcbsrootmnvf-navdiv,
