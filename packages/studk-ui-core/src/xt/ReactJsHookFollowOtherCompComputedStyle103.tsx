@@ -75,7 +75,7 @@ import type {
 } from "studk-dom-util/src/xst/DOmRenderedClientOffsets101" ;
 
 const useExistingNativeCompBoundingBoxViaRef = (
-  function (...[syncReferee, syncedGraphicalBoundsRel = NCPSR.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
+  function (...[syncReferee, syncedGraphicalBoundsRel = ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
   : React.Ref<HTMLDivElement>
   {
     ;
@@ -91,7 +91,7 @@ const useExistingNativeCompBoundingBoxViaRef = (
           C :
           switch (syncedGraphicalBoundsRel) {
             //
-            case NCPSR.Subject.BOTTOM :
+            case ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOTTOM :
             {
               Object.assign(e1.style, {
                 //
@@ -100,7 +100,7 @@ const useExistingNativeCompBoundingBoxViaRef = (
               } ) ;
               break C ;
             }
-            case NCPSR.Subject.BOUNDINGBOX :
+            case ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX :
             {
               Object.assign(e1.style, {
                 //
@@ -130,6 +130,7 @@ namespace ToNativeDomElementSyncing
     ;
     export enum Subject {
       BOTTOM = 1 << 1 ,
+      // BEFORE = 1 << 2 ,
       BOUNDINGBOX = 1 << 3 ,
     }
   }
@@ -138,12 +139,14 @@ namespace ToNativeDomElementSyncing
 
 /** @deprecated alias of {@link ToNativeDomElementSyncing.GraphicalBoundsSyncing} */
 import NCPSR = ToNativeDomElementSyncing.GraphicalBoundsSyncing ;
+/** @deprecated alias of {@link ToNativeDomElementSyncing.GraphicalBoundsSyncing} */
+import NCPSRI = ToNativeDomElementSyncing.GraphicalBoundsSyncing ;
 
 export {
   useExistingNativeCompBoundingBoxViaRef ,
   /** @deprecated alias of {@link useExistingNativeCompBoundingBoxViaRef} */
   useExistingNativeCompBoundingBoxViaRef as useNativeCompPositionSyncRef ,
-  NCPSR ,
+  NCPSRI as NCPSR ,
   ToNativeDomElementSyncing ,
 } ;
 
