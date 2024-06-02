@@ -88,6 +88,8 @@ import {
 
 ;
 
+import { SpclCoreC, } from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
+
 export const TimeDomainedImgListFigureC = (
   describeComponent((
     function TimeDomainedImgListFigureCImpl({} : {}) {
@@ -106,7 +108,17 @@ export const TimeDomainedImgListFigureC = (
 
 export const TimeDomainedImgListSpanC = (
   describeComponent((
-    function TimeDomainedImgListSpanCImpl({} : {}) {
+    function TimeDomainedImgListSpanCImpl({} : {})
+    {
+      ;
+      
+      const horizonConfig = React.useMemo(() => ({
+        range: {
+          startPos: -5 ,
+          endPos: 5 ,
+        } ,
+      }) , [] ) ;
+
       const tdSnpMap = (
         util.Immutable.Range(0, T_BY_HMS(0, 45, 3 ) , 7.5 )
         .toMap().mapEntries(([, pTStamp]) => {
@@ -127,16 +139,12 @@ export const TimeDomainedImgListSpanC = (
           ) ;
         } )
       ) ;
+
       return (
         <div className='studk-sequemi-tlwalkthruinlinecomp'>
-          <ul>
-            <li>
-              t=
-            </li>
-            <li>
-              t=
-            </li>
-          </ul>
+          <SpclCoreC
+          horizonConfig={horizonConfig}
+          />
         </div>
       ) ;
     }
