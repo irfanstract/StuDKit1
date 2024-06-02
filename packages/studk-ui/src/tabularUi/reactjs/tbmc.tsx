@@ -80,11 +80,6 @@ import {
 
 
 
-/* can't use `const TbmcModelState = ... ... ;` */
-import TbmcModelState = TbmcKnsBasedModelState ;
-
-export { TbmcModelState , } ;
-
 import {
   TbmcKnsBasedModelState ,
 } from 'studk-ui/src/tabularUi/tbmc-knsb.tsx' ;
@@ -98,23 +93,26 @@ export {
 
 
 
-export { SCC as SpclCoreC, } ;
-
 import {
+  TbmcModelState,
   TbmcBreakthruColumnsRendering ,
   getSuggestedSccMastPlotter ,
 } from 'studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx' ;
 
+export { TbmcModelState , } ;
+
 export {} ;
 
-interface ScCProps {
-  horizonConfig: {
-    range: ContinuousLinearRange ,
-  } ,
+export { SCC as SpclCoreC, } ;
+
+export interface ScCProps {
+  horizonConfig: ScCHorizonConfigPropsDesc ,
   value?: TbmcModelState ,
 }
 
-const SCC = (
+export interface ScCHorizonConfigPropsDesc extends Extract<TbmcHc, any> {}
+
+export const SCC = (
   describeComponent(function TimeTableMC({
     horizonConfig ,
     value: valueArg ,
@@ -128,88 +126,10 @@ const SCC = (
   })
 ) ;
 
-const TbmcKnbC = (
-  describeComponent(function KnBasedTimeTableMC({
-    horizonConfig ,
-    value: valueArg ,
-  } : {
-    //
-  horizonConfig: {
-    range: ContinuousLinearRange ,
-  } ,
-  value?: TbmcKnsBasedModelState ,
-  } ) {
-    ;
-
-    const {
-      effectiveWindowSeq: hoSegmentDescs ,
-      renderPerChannelPlotAsUnitApplet ,
-      renderPerChannelPlotAsWrInlineContent ,
-    } = (
-      TbmcBreakthruColumnsRendering.describeSuggestedConfig1({ horizonConfig, })
-    ) ;
-
-    const chnlDataList = (
-      valueArg?.layerStates ??
-      mkArray(function* () {
-        for (const i of util.range(0, 10) ) {
-          yield { kind: "X", id: `chnl-${i}`, } satisfies TbmcModelState.KnLayerStateOpsImpl ;
-        }
-      } )
-    ) satisfies TbmcModelState["layerStates"] ;
-
-    {
-        ;
-        
-        const mainTable = (
-          renderTableByRowDtListAndColumnList(chnlDataList , {
-
-            getRowHash: (v, i) => `item ${i}-th`
-            ,
-
-            perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
-              yield {
-                renderHead: () => <i children={`name`} /> ,
-                renderContent: (v) => <code children={`${v.id}`} /> ,
-                id: `itemKind`,
-              } ;
-
-              yield {
-                renderHead: () => <i children={`kind letter`} /> ,
-                renderContent: (v) => <code children={`${v.kind}`} /> ,
-                id: `itemKind`,
-              } ;
-
-              for (const msd of hoSegmentDescs)
-              {
-                const { srcSpan, id: colId, } = msd ;
-                yield {
-                  id: `Horizon Segment ${colId}`,
-                  classNames: ['studk-ui-tbmc-timewatchcolumncell'],
-                  renderHead: () => (
-                    <span>
-                      { `(Hor ${`${srcSpan.startPos} to ${srcSpan.endPos}` })` }
-                    </span>
-                  ) ,
-                  renderContent: (v) => (
-                    renderPerChannelPlotAsWrInlineContent(v, msd )
-                  )
-                  ,
-                } ;
-              }
-            } )
-            ,
-
-          } )
-        ) ;
-
-        return (
-          mainTable
-        ) ;
-    }
-    ;
-  } )
-) ;
+import {
+  TbmcKnbC ,
+  TbmcHc ,
+} from 'studk-ui/src/tabularUi/reactjs/tbmc-knbc.tsx' ;
 
 
 

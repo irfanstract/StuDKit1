@@ -175,24 +175,45 @@ const ElementHoveringHtmlC : React.JSXElementConstructor<(
               // transition: `initial` ,
             }}
             >
-              <div
-              ref={boxRef}
-              style={{
-                //
-                background: `black`,
-                color: `white`,
-                fontWeight: `550` ,
-                zoom: `82%` ,
-              }}
-              >
-                <div
-                style={{
-                  //
-                }}
-                >
-                  { children }
-                </div>
-              </div>
+              { (function () {
+                const c = (
+                  <div
+                  style={{
+                    //
+                    fontWeight: `550` ,
+                    zoom: `82%` ,
+                  }}
+                  >
+                    { children }
+                  </div>
+                ) ;
+
+                if (0)
+                {
+                  return (
+                    <div
+                    ref={boxRef}
+                    style={{
+                      //
+                      background: `black`,
+                      color: `white`,
+                    }}
+                    >
+                      { c }
+                    </div>
+                  ) ;
+                }
+                {
+                  return (
+                    <studk-spmea-phrasalblock
+                    ref={boxRef}
+                    children={(
+                      c
+                    ) }
+                    />
+                  ) ;
+                }
+              })() }
             </div>
             </>
           ) ;
