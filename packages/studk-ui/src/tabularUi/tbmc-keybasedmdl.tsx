@@ -27,6 +27,12 @@ import type {
 } from 'studk-ui/src/fwCore/ewo.ts'; ;
 
 import type {
+  EffectiveParameters,
+  PartializedPartially,
+  RequiredPartially,
+} from 'studk-fwcore-setups/src/util-eawo.mjs';
+
+import type {
   ContinuousLinearRange ,
 } from 'studk-ui/src/fwCore/linearValues.ts'; ;
 
@@ -85,27 +91,46 @@ import {
 
 
 
-class TbmcKnsBasedModelState extends Object
-{
-  readonly isTbmcKnsBasedModelState !: true ;
+interface TbmcKybmGenericKeySet<out T> extends Extract<(util.Immutable.Set<T>), any>
+{}
 
-  static getCmnInstance(...[{ layerStates, }] : ArgsWithOptions<[], {
+
+
+
+export type TbmcKybmKeySet = (
+  EffectiveParameters<TbmcAppliedKeySetCons>[0]
+) ;
+interface TbmcAppliedKeySetCons extends Extract<(x: (
+  | TbmcKybmGenericKeySet<symbol>
+  | TbmcKybmGenericKeySet<number>
+  | TbmcKybmGenericKeySet<string>
+)) => void, any>
+{}
+
+class TbmcKeyBasedModelState extends Object
+{
+  readonly isTbmcKeyBasedModelState !: true ;
+
+  static getCmnInstance(...[opts] : ArgsWithOptions<[], {
     //
-    layerStates: (
-      ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
+    layerKeys: (
+      TbmcKybmKeySet
     ) ,
   }>) {
-    return new TbmcKnsBasedModelState(layerStates) ;
+    const { layerKeys, } = opts ;
+    return new TbmcKeyBasedModelState(layerKeys) ;
   }
 
-  protected constructor(public layerStates: (
-    ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
+  protected constructor(public layerKeys: (
+    (
+      TbmcKybmKeySet
+    )
   ) )
   { super() ; }
 }
-namespace TbmcKnsBasedModelState { ; }
+namespace TbmcKeyBasedModelState { ; }
 
-namespace TbmcKnsBasedModelState
+namespace TbmcKeyBasedModelState
 {
   export class LayerStateOps
   {
@@ -114,15 +139,15 @@ namespace TbmcKnsBasedModelState
     protected constructor() {}
   }
 
-  export class KnLayerStateOpsImpl extends LayerStateOps
-  {
-    declare readonly kind: "X" ;
-    protected constructor() { super() ; }
-  }
+  // export class KnLayerStateOpsImpl extends LayerStateOps
+  // {
+  //   declare readonly kind: "X" ;
+  //   protected constructor() { super() ; }
+  // }
 
 }
 
-namespace TbmcKnsBasedModelState
+namespace TbmcKeyBasedModelState
 {
 
   /**
@@ -132,13 +157,15 @@ namespace TbmcKnsBasedModelState
   export const getDemoInstance = (
     function () {
       return (
-        TbmcKnsBasedModelState.getCmnInstance({
-          layerStates: (
-            util.reiterated(function* (): Generator<TbmcKnsBasedModelState.LayerStateOps> {
-              for (const i of util.range(0, 3) ) {
-                yield { id: `chnl ${i}`, kind: "XLayer", } ;
-              }
-            } )
+        TbmcKeyBasedModelState.getCmnInstance({
+          layerKeys: (
+            util.Immutable.Set((
+              util.reiterated(function* () {
+                for (const i of util.range(0, 3) ) {
+                  yield `chnl ${i}` ;
+                }
+              } )
+            ))
           ) ,
         })
       ) ;
@@ -147,7 +174,7 @@ namespace TbmcKnsBasedModelState
 
 }
 
-export { TbmcKnsBasedModelState , } ;
+export { TbmcKeyBasedModelState , } ;
 
 ;
 

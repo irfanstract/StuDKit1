@@ -105,6 +105,119 @@ import {
 
 
 
+;
+
+const renderAsSpeciallyHighlighted = (
+  function (...[{} = {}, { body, tip, } ] : (
+    ArgsWithOptions<(
+      ArgsWithOptions<[], {}>
+    ), {
+      body: React.ReactElement ,
+      tip?: React.ReactElement ,
+    }>
+  ))
+  {
+    return (
+      <WithOvcLevelleGoodiesC
+      children={({ asSpclFinalElement, renderNativeElemBoundingBoxSpc, utcs, }) => (
+        //
+        <>
+        { asSpclFinalElement((body )) }
+        { (utcs || null ) && (
+          <>
+          { (
+            renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOUNDINGBOX, children: (
+              (function () {
+                return (
+                  <></>
+                ) ;
+              } )()
+            ) })
+          ) }
+          { (
+            renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOTTOM, children: (
+              (function () {
+                const c = (
+                  tip
+                ) ;
+  
+                if (0)
+                {
+                  return (
+                    <div
+                    style={{
+                      background: `black`,
+                      color: `white`,
+                    }}
+                    >
+                    { c }
+                    </div>
+                  ) ;
+                }
+                {
+                  return (
+                    <studk-spmea-phrasalblock
+                    style={{
+                    }}
+                    children={c}
+                    />
+                  ) ;
+                }
+              } )()
+            ) })
+          ) }
+          </>
+        ) }
+        </>
+      ) }
+      />
+    ) ;
+  }
+) ;
+
+const renderFromSpclUnitInlinePlot = (
+  function (...[{} = {}, { body, tip, } ] : (
+    ArgsWithOptions<(
+      ArgsWithOptions<[], {}>
+    ), {
+      body: React.ReactElement ,
+      tip?: React.ReactElement ,
+    }>
+  ))
+  {
+    return (
+      renderAsSpeciallyHighlighted(undefined, {
+        //
+        tip: (
+          tip
+        ),
+        body: (
+          <span
+          children={(
+            body
+          )}
+          style={(
+            describeCallbackAssignedStyleProps(function (s) {
+              s.inlineSize = `7em` ;
+              // s.blockSize = `100%` ;
+              s.minBlockSize = `1.70em` ;
+              s.display = "grid" ;
+              // s.margin = `0.7ex` ;
+              s.overflow = "hidden" ;
+              s.overflow = "clip" ;
+              s.paddingBlock = `0.66ex` ;
+            })
+          )}
+          />
+        ) ,
+      })
+    ) ;
+  }
+) ;
+
+
+
+
 /* can't use `const TbmcModelState = ... ... ;` */
 import TbmcModelState = TbmcKnsBasedModelState ;
 
@@ -137,7 +250,7 @@ namespace TbmcBreakthruColumnsRendering
     }
   ) >)
   {
-    return describeSuggestedConfig11({
+    return describeSuggestedConfig11Impl({
       horizonConfig: {
         range: horizonConfig.range
         ,
@@ -148,7 +261,7 @@ namespace TbmcBreakthruColumnsRendering
     })
   }
 
-  function describeSuggestedConfig11(...[
+  function describeSuggestedConfig11Impl(...[
     {
       horizonConfig,
     } ,
@@ -157,7 +270,7 @@ namespace TbmcBreakthruColumnsRendering
       horizonConfig: {
         range: ContinuousLinearRange
         ,
-        samplingConfig: describeSuggestedConfig11.PartitionedSamplingConfigOps ,
+        samplingConfig: describeSuggestedConfig11Impl.PartitionedSamplingConfigOps ,
       } ,
     }
   ) >)
@@ -167,7 +280,7 @@ namespace TbmcBreakthruColumnsRendering
     const segmenterConfig = (() => {
       ;
       const effectiveWindowSeq = (
-        util.range(horizonConfig.range.startPos, horizonConfig.range.endPos + 0.01, horizonConfig.samplingConfig.perWindowSpan )
+        util.range(0, horizonConfig.range.endPos + 0.01, horizonConfig.samplingConfig.perWindowSpan )
         .map(p => ({
           id: (
             // TODO
@@ -175,7 +288,12 @@ namespace TbmcBreakthruColumnsRendering
           ) ,
           srcSpan: { startPos: p, endPos: p + horizonConfig.samplingConfig.perWindowSpan, } satisfies ContinuousLinearRange
           ,
-        }) satisfies describeSuggestedConfig11.EWindowSpan )
+        }) satisfies describeSuggestedConfig11Impl.EWindowSpan )
+        .filter(e => (
+          (horizonConfig.range.startPos < e.srcSpan.endPos)
+          ||
+          (e.srcSpan.startPos < horizonConfig.range.endPos)
+        ))
       ) ;
       return {
         effectiveWindowSeq ,
@@ -190,83 +308,19 @@ namespace TbmcBreakthruColumnsRendering
 
     const renderPerChannelPlotAsWrInlineContent = (...args: Parameters<typeof renderPerChannelPlotAsUnitApplet>) => {
       ;
-      return (
-        <WithOvcLevelleGoodiesC
-        children={({ asSpclFinalElement, renderNativeElemBoundingBoxSpc, utcs, }) => (
-          //
-          <>
-          { asSpclFinalElement((
-            <span
-            children={(
-              renderPerChannelPlotAsUnitApplet(...args )
-            )}
-            style={(
-              describeCallbackAssignedStyleProps(function (s) {
-                s.inlineSize = `7em` ;
-                // s.blockSize = `100%` ;
-                s.minBlockSize = `1.70em` ;
-                s.display = "grid" ;
-                // s.margin = `0.7ex` ;
-                s.overflow = "hidden" ;
-                s.overflow = "clip" ;
-                s.paddingBlock = `0.66ex` ;
-              })
-            )}
-            />
-          )) }
-          { (utcs || null ) && (
-            <>
-            { (
-              renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOUNDINGBOX, children: (
-                (function () {
-                  return (
-                    <></>
-                  ) ;
-                } )()
-              ) })
-            ) }
-            { (
-              renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOTTOM, children: (
-                (function () {
-                  const c = (
-                    <div>
-                    <p>
-                      Stream Slice
-                    </p>
-                    </div>
-                  ) ;
-
-                  if (0)
-                  {
-                    return (
-                      <div
-                      style={{
-                        background: `black`,
-                        color: `white`,
-                      }}
-                      >
-                      { c }
-                      </div>
-                    ) ;
-                  }
-                  {
-                    return (
-                      <studk-spmea-phrasalblock
-                      style={{
-                      }}
-                      children={c}
-                      />
-                    ) ;
-                  }
-                } )()
-              ) })
-            ) }
-            </>
-          ) }
-          </>
-        ) }
-        />
-      ) ;
+      return renderFromSpclUnitInlinePlot(undefined, {
+        //
+        tip: (
+          <div>
+          <p>
+            Segmentual Stream Slice
+          </p>
+          </div>
+        ),
+        body: (
+          renderPerChannelPlotAsUnitApplet(...args )
+        ) ,
+      }) ;
     } ;
 
     return {
@@ -277,9 +331,9 @@ namespace TbmcBreakthruColumnsRendering
     } as const ;
   }
 
-  namespace describeSuggestedConfig11 { ; }
+  namespace describeSuggestedConfig11Impl { ; }
   
-  namespace describeSuggestedConfig11
+  namespace describeSuggestedConfig11Impl
   {
     export interface PartitionedSamplingConfigOps
     {
@@ -290,6 +344,8 @@ namespace TbmcBreakthruColumnsRendering
     {}
       
   }
+
+  export import describeSuggestedConfig11 = describeSuggestedConfig11Impl ;
 
   export type EWS = (
     ReadonlyArray<{
