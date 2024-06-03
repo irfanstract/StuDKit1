@@ -188,16 +188,35 @@ export const TbmcKnbC: {
                   id: `Horizon Segment ${colId}`,
                   classNames: ['studk-ui-tbmc-timewatchcolumncell'],
                   renderHead: () => (
-                    <span>
-                      Spn
-                      <span>
-                        (
-                          <EllapsedTValueC value={srcSpan.startPos} maxUnit='hours' />
-                          to
-                          <EllapsedTValueC value={srcSpan.endPos} maxUnit='hours' />
-                        )
-                      </span>
-                    </span>
+                    <div
+                    data-t-start={srcSpan.startPos }
+                    data-t-end={srcSpan.endPos }
+                    style={{
+                      inlineSize: `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ,
+                      contain: `layout`,
+                      ...({
+                        ["--t-start"]: `attr(data-t-start)` ,
+                        ["--t-end"  ]: `attr(data-t-end  )` ,
+                        ["--sc"]: 1 ,
+                      }),
+                    }}
+                    >
+                      <p
+                      style={{
+                        // display: `inline-block` ,
+                        fontSize: `75%` ,
+                      }}
+                      >
+                        Spn
+                        <span>
+                          (
+                            <EllapsedTValueC value={srcSpan.startPos} maxUnit='hours' /> {}
+                            to {}
+                            <EllapsedTValueC value={srcSpan.endPos} maxUnit='hours' /> {}
+                          )
+                        </span>
+                      </p>
+                    </div>
                   ) ,
                   renderContent: (v) => (
                     <div
