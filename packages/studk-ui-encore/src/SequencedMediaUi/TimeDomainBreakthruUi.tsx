@@ -94,23 +94,40 @@ import {
   TbmcKnsBasedModelState,
 } from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
 
+import {
+  ScdC ,
+  useDebouncedScdState1 ,
+} from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
+
 export const TimeDomainedImgListFigureC = (
   describeComponent((
-    function TimeDomainedImgListFigureCImpl({} : {}) {
+    function TimeDomainedImgListFigureCImpl({} : {})
+    {
+      ;
+
+      const [lsce, { setLsce, setLsceDebcd, }] = useDebouncedScdState1() ;
+
+      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
+        computeDefaultHorizonConfig()
+      ) , [] ) ;
+
       return (
         <div className='studk-sequemi-tlwalkthruappcomp'>
           <p>
             Time-domain plot of <code>movie.mp4</code>
           </p>
-          <div
-          style={{
-            contain: "layout" ,
-            overflow: "auto" ,
-          }}
-          >
-          <TimeDomainedImgListSpC
+          <ScdC
+          children={(
+            <TimeDomainedImgListSpC
+            hc={horizonConfig }
+            />
+          )}
+          cv={lsce.x }
+          onScroll={e => { setLsceDebcd(e.newVals) ; } }
           />
-          </div>
+          <p>
+            Scrolled at <code>{ JSON.stringify(lsce) }</code>
+          </p>
         </div>
       ) ;
     }
@@ -134,16 +151,14 @@ export const TimeDomainedImgListSpanC = (
 
 export const TimeDomainedImgListSpC = (
   describeComponent((
-    function TimeDomainedImgListSpCImpl({} : {})
+    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg } : { hc ?: ScCHorizonConfigPropsDesc, })
     {
       ;
       
-      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => ({
-        range: {
-          startPos: T_BY_HMS(0, 0, -15) ,
-          endPos: T_BY_HMS(0, 45, 30) ,
-        } ,
-      }) , [] ) ;
+      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
+        horizonConfigArg ??
+        computeDefaultHorizonConfig()
+      ) , [horizonConfigArg] ) ;
 
       const ls = (
         React.useMemo((): TbmcKnsBasedModelState => {
@@ -192,6 +207,15 @@ export const TimeDomainedImgListSpC = (
       ) ;
     }
   ))
+) ;
+
+const computeDefaultHorizonConfig = (
+  (): ScCHorizonConfigPropsDesc => ({
+    range: {
+      startPos: T_BY_HMS(0, 0, -15) ,
+      endPos: T_BY_HMS(0, 45, 30) ,
+    } ,
+  })
 ) ;
 
 import "studk-ui-encore/src/SequencedMediaUi/tmdc.scss" ;

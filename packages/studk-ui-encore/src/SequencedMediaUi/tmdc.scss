@@ -12,6 +12,31 @@
 
 
 
+@layer defaults
+{
+  //
+  
+  .studk-sequemi-tlwalkthruinlinecomp {
+    min-block-size: 45vh;
+  }
+}
+
+// TODO
+@property --t-start {
+  syntax: "<number> | auto";
+  inherits: true;
+  initial-value: auto;
+}
+@property --t-end {
+  syntax: "<number> | auto";
+  inherits: true;
+  initial-value: auto;
+}
+@property --sc {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
 
 
 
