@@ -161,6 +161,39 @@ export const TbmcKnbC: {
 
     {
         ;
+
+        const renderTSegLabel : React.FC<{ msd: (typeof hoSegmentDescs)[number], }> = (
+          function ({ msd, }) {
+            ;
+            const { srcSpan, id: colId, } = msd ;
+            return (
+              <p
+              style={{
+                // display: `inline-block` ,
+                fontSize: `75%` ,
+              }}
+              >
+                Spn
+                <span>
+                  (
+                    <EllapsedTValueC value={srcSpan.startPos} maxUnit='hours' /> {}
+                    to {}
+                    <EllapsedTValueC value={srcSpan.endPos} maxUnit='hours' /> {}
+                  )
+                </span>
+              </p>
+            ) ;
+          }
+        ) ;
+
+        const renderChPlotSeg : React.FC<{ v: (typeof chnlDataList)[number], msd: (typeof hoSegmentDescs)[number], }> = (
+          function ({ v, msd, })
+          {
+            return (
+              renderPerChannelPlotAsWrInlineContent(v, msd )
+            ) ;
+          }
+        ) ;
         
         const mainTable = (
           renderTableByRowDtListAndColumnList(chnlDataList , {
@@ -201,21 +234,7 @@ export const TbmcKnbC: {
                       }),
                     }}
                     >
-                      <p
-                      style={{
-                        // display: `inline-block` ,
-                        fontSize: `75%` ,
-                      }}
-                      >
-                        Spn
-                        <span>
-                          (
-                            <EllapsedTValueC value={srcSpan.startPos} maxUnit='hours' /> {}
-                            to {}
-                            <EllapsedTValueC value={srcSpan.endPos} maxUnit='hours' /> {}
-                          )
-                        </span>
-                      </p>
+                      { renderTSegLabel({ msd, }) }
                     </div>
                   ) ,
                   renderContent: (v) => (
@@ -227,7 +246,7 @@ export const TbmcKnbC: {
                       inlineSize: `100%`,
                     }}
                     >
-                      { renderPerChannelPlotAsWrInlineContent(v, msd ) }
+                      { renderChPlotSeg({ v, msd, } ) }
                     </div>
                   )
                   ,
