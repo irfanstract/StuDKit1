@@ -20,7 +20,7 @@
 
 
 
-export * from "studk-ui-core/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
+export * from "studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 
 
