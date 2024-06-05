@@ -67,6 +67,10 @@ import {
 } from '#currentPkg/src/meta/react/dbc.tsx'; ;
 
 import {
+  EnhancedTableC ,
+} from "studk-ui/src/tabularUi/reactjs/tblenh.tsx" ;
+
+import {
   WithOvcLevelleRefGoodiesC,
   WithOverlayHighlightingC,
   WithOverlaySupportC,
@@ -173,7 +177,7 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
 }> )
 {
   const mainTable = (
-    <table className='studk-ui-table' >
+    <EnhancedTableC className='studk-ui-table' >
       <thead>
         { renderHead?.render.renderContent() }
       </thead>
@@ -190,7 +194,7 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
           ) )
         ) }
       </tbody>
-    </table>
+    </EnhancedTableC>
   ) ;
   return (
   <WithOverlayHighlightingC
@@ -314,6 +318,56 @@ namespace renderTableByRowDtListAndColumnList
   {
     return [...d() ] ;
   }
+}
+
+namespace renderTableByRowDtListAndColumnList
+{
+  /**
+   * 
+   * @deprecated this is a WIP/TODO.
+   */
+  export const renderAsTransposed = (
+    function renderTableByRowDtListAndColumnListTransposedImpl<const T extends object | true | false | null>(...[
+      dat ,
+      { perRowCellRenderers: prcr, getRowHash: iRh , } ,
+    ] : (
+      Parameters<typeof renderTableByRowDtListAndColumnList<(
+        T
+      )> >
+    ) )
+    {
+      return (
+        renderTableByRowDtListAndColumnList(prcr, {
+          //
+          
+          getRowHash: (v, i) => `item ${i}-th`
+          ,
+
+          perRowCellRenderers: (
+            renderTableByRowDtListAndColumnList.generateColumns(function* () {
+              // yield {
+              //   id: iRh() ,
+              // } ;
+              for (const [aRowI, rv] of dat.entries() )
+              {
+                yield {
+                  id: (
+                    iRh(rv, aRowI) ?? `row ${aRowI}`
+                  ),
+                  renderContent: (colD, aColIdx) => (
+                    colD.renderContent(rv, aColIdx)
+                  ) ,
+                  renderHead: () => (
+                    <span>(...)</span>
+                  ) ,
+                } ;
+              }
+            } )
+          ) ,
+        } )
+      ) ;
+    }
+  ) ;
 }
 
 // #currentPkg/src/fwCore/ewo.ts
