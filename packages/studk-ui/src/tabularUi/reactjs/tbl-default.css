@@ -16,7 +16,7 @@
   border-collapse: collapse;
 }
 
-.studk-ui-table > :is(tbody, thead) > tr > td {
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
   padding: 0.25em ;
   padding-block: 0.45em ;
   border: 0.05em solid currentColor;
@@ -27,7 +27,7 @@
 .studk-ui-table > :is(tbody, thead) > tr {
   min-block-size : 3em;
 }
-.studk-ui-table > :is(tbody, thead) > tr > td {
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
   min-inline-size: 3em;
 }
 
@@ -35,7 +35,7 @@
   zoom: 82.367%;
 }
 
-.studk-ui-table > :is(tbody, thead) > tr > td {
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
   /* backdrop-filter: blur(0.25em) ; */
   color: black;
   background: rgba(255 255 255 / 0.815);
@@ -49,6 +49,20 @@
 .studk-ui-tblbyrow-rtdcl-row-h {
   position: sticky;
   inset-inline-start: 0;
+}
+
+.studk-ui-table
+{
+  :is(
+    & > thead > tr > :is(td, th),
+    & > :is(tbody, thead) > tr:is(:nth-child(1) ) > :is(td, th) ,
+    & > :is(tbody, thead) > tr > :is(td, th):is(:nth-child(1) ) ,
+    #---e
+  ) {
+    position: sticky;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+  }
 }
 
 }
@@ -68,15 +82,21 @@
   initial-value: inherit;
 }
 
-@layer defaults {
+@layer tstdedefaults, defaults ;
+
+@layer tstdedefaults {
   /* // */
 
   table.studk-enhancedtableelement {
-    writing-mode: var(--table-cell-orientation, inherit);
+    writing-mode: var(--table-cell-orientation, inherit) !important ;
     & :is(th, td) {
       writing-mode: var(--ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval) ;
     }
   }
+
+  /* table.studk-enhancedtableelement { */
+    /* --table-cell-orientation: horizontal-tb ; */
+  /* } */
 }
 
 
