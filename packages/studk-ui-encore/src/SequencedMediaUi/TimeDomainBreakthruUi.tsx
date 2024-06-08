@@ -101,7 +101,40 @@ import {
 
 export const TimeDomainedImgListFigureC = (
   describeComponent((
-    function TimeDomainedImgListFigureCImpl({} : {})
+    function TimeDomainedImgListFigureCBiggerImpl(props : {})
+    {
+      ;
+
+      return (
+        ((
+          (...[e] : [React.ReactElement]) => {
+            if (0)
+            {
+              e = (
+                <WithCtxtuallyOverridenScdSProvC
+                value={(
+                  describeSsva({ getSFromPt: pt => ({ x: 100, y: 100 }) , getPtFromS: pt => pt })
+                )}
+                children={e}
+                />
+              ) ;
+            }
+            return e ;
+          }
+        ))((
+          <TimeDomainedImgListFigureC11
+          {...props}
+          />
+        ))
+      ) ;
+    }
+  ))
+) ;
+
+// TODO
+const TimeDomainedImgListFigureC11 = (
+  describeComponent((
+    function TimeDomainedImgListFigureCInnerImpl({} : {})
     {
       ;
 
@@ -116,6 +149,11 @@ export const TimeDomainedImgListFigureC = (
           <p>
             Time-domain plot of <code>movie.mp4</code>
           </p>
+          { ((
+            (...[e] : [React.ReactElement]) => {
+              return e ;
+            }
+          ))((
           <ScdC
           children={(
             <TimeDomainedImgListSpC
@@ -125,6 +163,7 @@ export const TimeDomainedImgListFigureC = (
           {...{ orientCv: "horizontal", cv: lsce.x, crossCv: lsce.y, }}
           onScroll={e => { setLsceDebcd(e.newVals) ; } }
           />
+          )) }
           <p>
             Scrolled at <code>{ JSON.stringify(lsce) }</code>
           </p>
@@ -213,10 +252,19 @@ const computeDefaultHorizonConfig = (
   (): ScCHorizonConfigPropsDesc => ({
     range: {
       startPos: T_BY_HMS(0, 0, -15) ,
-      endPos: T_BY_HMS(0, 45, 30) ,
+      endPos: (
+        1 ?
+        T_BY_HMS(0, 5, 30)
+        : T_BY_HMS(0, 45, 30)
+      ) ,
     } ,
   })
 ) ;
+
+import {
+  WithCtxtuallyOverridenScdSProvC,
+  describeSsva ,
+} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
 import "studk-ui-encore/src/SequencedMediaUi/tmdc.scss" ;
 
