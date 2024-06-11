@@ -71,18 +71,28 @@
 
 
 
+//
+
+@layer tstdedefaults, defaults ;
+
 /* for some reason, doing this `@property` led to higher CPU usage throughout usage */
 // @property --ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval {
 //   syntax: "*";
 //   inherits: true ;
 // }
-@property --table-cell-orientation {
-  syntax: "*";
-  inherits: true;
-  initial-value: inherit;
-}
 
-@layer tstdedefaults, defaults ;
+/* disabled for now; for some reason this `@property` breaks what's already working */
+// @property --table-cell-orientation {
+//   syntax: "*";
+//   inherits: true;
+//   // initial-value: inherit;
+// }
+@layer tstdedefaults {
+  //
+  table.studk-enhancedtableelement {
+    // --table-cell-orientation: inherit ;
+  }
+}
 
 @layer tstdedefaults {
   /* // */
