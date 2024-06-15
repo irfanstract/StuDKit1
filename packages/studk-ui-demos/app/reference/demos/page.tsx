@@ -121,15 +121,20 @@ export default function App()
             Graphical Overlays
             </Span>
           </p>
-          { 0 && <LDCWGOC /> }
-          { 0 && (
+          { null && <LDCWGOC /> }
+          { null && (
             <AudioNodeBeepDemo />
           ) }
-          { (
+          { true && (
             <DiscogrDemoC />
           ) }
-          <TimeDomainedImgListFigureC
-          />
+          { true && (
+            <I3DDemoC />
+          ) }
+          { null && (
+            <TimeDomainedImgListFigureC
+            />
+          ) }
           <div>
             <div style={{ blockSize: `50vh`, border: `1px solid blue`, }} >
               &nbsp;
@@ -153,6 +158,10 @@ function TbmcDemo()
   return <TbmcDemoImpl /> ;
   return <div /> ;
 }
+
+import {
+  I3DDemoC ,
+} from "studk-ui-encore/src/StI3dPresenters/I3DDemoC.tsx" ;
 
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
