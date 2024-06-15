@@ -4,7 +4,16 @@
 
 
 
-import { util, } from "typexpe-commons/src/common_sv.mjs";
+import {
+  util,
+} from 'typexpe-commons/src/common_sv.mjs';
+
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
 
 
 
@@ -75,15 +84,21 @@ function xBall(...[
   pos,
   r = 0.35,
   { grnInDeg = 22.5, } = {} ,
-] : [
-  ...[
-    pos: Point3D,
-    r ?: number,
-  ] ,
-  opts ?: {
-    grnInDeg ?: number ,
-  } ,
-]){
+] : (
+  ArgsWithOptions<[
+    ...[
+      pos: Point3D,
+      r ?: number,
+    ] ,
+  ], (
+    & {
+      /**
+       * the granularity, in degrees, to use when plotting the curves as polygons
+       */
+      grnInDeg ?: number ,
+    }
+  )>
+)){
   return (
     new I3D.PolygonallyMarkedNodeUnitGraph([
       ...(
@@ -107,14 +122,22 @@ function xEquilateralPolygon(...[
   md = "xConY" ,
   r,
   { granularityInDegrees, } ,
-] : [
-  pos: Point3D,
-  ...[
-    md?: I3D.CartesOrthoFaceAngle ,
-  ] ,
-  r : number,
-  options: { granularityInDegrees: number, } ,
-]){
+] : (
+  ArgsWithOptions<[
+    pos: Point3D,
+    ...[
+      md?: I3D.CartesOrthoFaceAngle ,
+    ] ,
+    r : number,
+  ], (
+    & {
+      /**
+       * the per-sector (uniform) width, in degrees
+       */
+      granularityInDegrees: number,
+    }
+  ) >
+)){
   return (
     new I3D.PolygonallyMarkedNodeUnitGraph((
       [...util.reiterable(function* () {
