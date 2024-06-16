@@ -107,15 +107,48 @@ export abstract class NodeUnitGraph
 export class PolygonallyMarkedNodeUnitGraph
 extends NodeUnitGraph
 {
+  static byPointsAndFill(...[pts, fill]: (
+    [points: readonly Point3D[], fill ?: string]
+  ) )
+  : PolygonallyMarkedNodeUnitGraph
+  {
+    return PolygonallyMarkedNodeUnitGraph.byContoursAndFill([{ points: pts, }], fill) ;
+  }
+
+  // TODO
+  static byContoursAndFill(...args: (
+    [readonly PmngPerContourDesc[], fill ?: string]
+  ) )
+  : PolygonallyMarkedNodeUnitGraph
+  {
+    const [ctours, fill] = args;
+    return new PolygonallyMarkedNodeUnitGraph(ctours, fill) ;
+  }
+
+  /**
+   * @deprecated
+   */
+  private readonly ctrs!: readonly PmngPerContourDesc[] ;
+
+  /**
+   * @deprecated
+   */
   constructor(
-    public readonly points: readonly Point3D[] ,
+    ctrsArg: readonly PmngPerContourDesc[] ,
     public readonly fill  ?: string ,
   )
-  { super() ; }
+  { super() ; this.ctrs = ctrsArg ; }
 
+  getContours()
+  : readonly PmngPerContourDesc[]
+  {
+    return this.ctrs ;
+  }
+
+  // TODO
   toDebugSnippet()
   {
-    const { points, } = this ;
+    const { points, } = { points: this.ctrs.flatMap(ctour => ctour.points ) } ;
     return util.stringLinesConcat(function* () {
       yield `points:` ;
       for (const [i, p] of points.entries() ) {
@@ -125,6 +158,9 @@ extends NodeUnitGraph
     } ) ;
   }
 }
+
+interface PmngPerContourDesc
+{ readonly points: readonly Point3D[] ; }
 
 
 
