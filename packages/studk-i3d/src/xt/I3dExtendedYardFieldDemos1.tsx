@@ -206,7 +206,7 @@ const xI3dExtendedYardStarFieldGraphDemo = (
   function ()
   {
     return (
-      new IndividuallyMarkedNodeList([
+      IndividuallyMarkedNodeList.byEachOptionalEnugBasedLayerGraph([
         ...util.reiterable(function* () {
           const sp = (
             [...util.reiterable(function* () {
