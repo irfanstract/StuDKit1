@@ -66,7 +66,7 @@ import {
  * we instead allow items each to be `null` to mean "null element"
  * 
  */
-export class IndividuallyMarkedNodeList
+export class IndividuallyMarkedPointList
 extends Object
 {
   //
@@ -85,21 +85,45 @@ extends Object
   /**
    * @deprecated
    */
-  static byEachOptionalEnugBasedLayerGraph(...[graphs]: [graphs: readonly (NodeUnitGraph | null)[]] )
-  : IndividuallyMarkedNodeList
+  static byEachOptionalEnugBasedLayerGraph: {
+    (graphs: readonly (NodeWithUnitGraph | null)[]): IndividuallyMarkedPointList ;
+    /** @deprecated */
+    (graphs: readonly ((NodeWithUnitGraph | NodeUnitGraph) | null)[]): IndividuallyMarkedPointList ;
+
+  } = function (...[graphs] )
+  : IndividuallyMarkedPointList
   {
     return (
-      new IndividuallyMarkedNodeList(graphs, true)
+      new IndividuallyMarkedPointList(graphs, true)
     ) ;
-  }
+  } ;
 
   /**
    * @deprecated
    */
   private constructor(
-    public posAll: readonly (NodeUnitGraph | null)[],
+    posAll: readonly ((NodeWithUnitGraph | NodeUnitGraph) | null)[],
     unsafe: true = util.throwTypeError(`illegal constructor access`) )
-  { super() ; }
+  { super() ; this.posAll = posAll ; }
+
+  /** @deprecated */
+  posAll!: readonly ((NodeWithUnitGraph | NodeUnitGraph) | null)[] ;
+
+  toPmnugArray()
+  {
+    return (
+      this.posAll
+      .map((e): (NodeUnitGraph | null) => {
+        if (e instanceof NodeWithUnitGraph) {
+          if (e instanceof PolygonallyMarkedPointWithUnitGraph) {
+            return e.toPmnug() ;
+          }
+          return util.throwTypeError(`unsupported ${(NodeWithUnitGraph.name ?? "NWUG")}: ${e } `) ;
+        }
+        return e ;
+      })
+    ) ;
+  }
   
   toDebugSnippet()
   {
@@ -111,8 +135,9 @@ extends Object
         yield (
           util.indent((
             (() => {
-              if (p instanceof PolygonallyMarkedNodeUnitGraph) {
-                return p.toDebugSnippet() ;
+              if (p instanceof PolygonallyMarkedPointWithUnitGraph) {
+                // return p.toDebugSnippet() ;
+                return `{ ... ... }` ;
               }
               return `???` ;
             })()
@@ -124,8 +149,102 @@ extends Object
   }
 }
 
+export {
+  /** @deprecated alias of {@link IndividuallyMarkedPointList} */
+  IndividuallyMarkedPointList as IndividuallyMarkedNodeList,
+} ;
+
+
+
+export abstract class NodeWithUnitGraph
+{
+  protected was(it: NodeWithUnitGraph) {}
+  
+  public abstract readonly pos : Point3D ;
+  public abstract readonly nodeUnitGraph : NodeUnitGraph ;
+  
+  protected expectPmnug() : PolygonallyMarkedNodeUnitGraph
+  {
+    const { nodeUnitGraph, } = this ;
+    if (nodeUnitGraph instanceof PolygonallyMarkedNodeUnitGraph)
+    {
+      return nodeUnitGraph ;
+    }
+    return util.throwTypeError(`unsupported nodeUnitGraph: ${nodeUnitGraph }`) ;
+  }
+
+} 
+
+/**
+ * {@link NodeWithUnitGraph} being a polygonal graphic.
+ * 
+ * 
+ */
+export class PolygonallyMarkedPointWithUnitGraph
+extends NodeWithUnitGraph
+{
+
+  static ["by"](...[pos, ndUnitGraph] : [pos: Point3D, nodeUnitGraph: PolygonallyMarkedPointWithUnitGraph["nodeUnitGraph"]])
+  {
+    return (
+      new PolygonallyMarkedPointWithUnitGraph(pos, ndUnitGraph)
+    ) ;
+  }
+  
+  /**
+   * 
+   */
+  private constructor(
+    public readonly pos : Point3D ,
+    public readonly nodeUnitGraph : PolygonallyMarkedNodeUnitGraph ,
+  )
+  { super() ; }
+
+  protected expectPmnug() : PolygonallyMarkedNodeUnitGraph
+  {
+    return this.nodeUnitGraph ;
+  }
+
+  toPmnug()
+  {
+    return (
+      this.expectPmnug()
+      .toTranslated(this.pos )
+    ) ;
+  }
+
+  getContours()
+  : readonly PmngPerContourDesc[]
+  {
+    return (
+      this.toPmnug()
+      .getContours()
+    ) ;
+  }
+
+  // TODO
+  // toDebugSnippet()
+  // {
+  //   const { points, } = { points: this.ctrs.flatMap(ctour => ctour.points ) } ;
+  //   return util.stringLinesConcat(function* () {
+  //     yield `points:` ;
+  //     for (const [i, p] of points.entries() ) {
+  //       yield `${i}. ${JSON.stringify(p satisfies Point3D ) } ` ;
+  //     }
+  //     yield `end of points` ;
+  //   } ) ;
+  // }
+}
+
+// interface PmngPerContourDesc
+// { readonly points: readonly Point3D[] ; }
+
+
+
 export abstract class NodeUnitGraph
-{}
+{
+  protected was(it: NodeUnitGraph) {}
+}
 
 /**
  * {@link NodeUnitGraph} being a polygonal graphic.
@@ -139,7 +258,7 @@ extends NodeUnitGraph
   ) )
   : PolygonallyMarkedNodeUnitGraph
   {
-    return PolygonallyMarkedNodeUnitGraph.byContoursAndFill([{ points: pts, }], fill) ;
+    return PolygonallyMarkedNodeUnitGraph.byContoursAndFill([PmngPerContourDesc.byPointArray(pts)], fill) ;
   }
 
   // TODO
@@ -153,18 +272,41 @@ extends NodeUnitGraph
   }
 
   /**
-   * @deprecated
-   */
-  private readonly ctrs!: readonly PmngPerContourDesc[] ;
-
-  /**
-   * @deprecated
+   * 
    */
   constructor(
     ctrsArg: readonly PmngPerContourDesc[] ,
     public readonly fill  ?: string ,
   )
   { super() ; this.ctrs = ctrsArg ; }
+  
+  // TODO
+  toLinearTransformed(...[tvec] : [Matrix4])
+  {
+    return (
+      PolygonallyMarkedNodeUnitGraph.byContoursAndFill((
+        this.getContours()
+        .map(c => (
+          c.toLinearTransformed(tvec)
+        ) )
+      ) , this.fill )
+    ) ;
+  }
+  
+  toTranslated(...[mvVec1] : [Point3D])
+  // : ReturnType<this["toLinearTransformed"]>
+  {
+    return (
+      this.toLinearTransformed((
+        linTrFromTranslateCoord3Matr(mvVec1)
+      ))
+    ) ;
+  }
+
+  /**
+   * @deprecated
+   */
+  private readonly ctrs!: readonly PmngPerContourDesc[] ;
 
   getContours()
   : readonly PmngPerContourDesc[]
@@ -186,8 +328,52 @@ extends NodeUnitGraph
   }
 }
 
-interface PmngPerContourDesc
-{ readonly points: readonly Point3D[] ; }
+// interface PmngPerContourDesc
+// { readonly points: readonly Point3D[] ; }
+
+class PmngPerContourDesc
+{
+  protected was (x: PmngPerContourDesc) {}
+
+  static byPointArray(...[pts]: [points: readonly Point3D[] ] )
+  {
+    return (
+      new PmngPerContourDesc(pts)
+    ) ;
+  }
+
+  private constructor(public readonly points: readonly Point3D[] )
+  {}
+
+  toTranslated(...[mvVec1] : [Point3D])
+  // : ReturnType<this["toLinearTransformed"]>
+  {
+    return (
+      this.toLinearTransformed((
+        linTrFromTranslateCoord3Matr(mvVec1)
+      ))
+    ) ;
+  }
+  
+  toLinearTransformed(...[tvec] : [Matrix4])
+  {
+    return (
+      PmngPerContourDesc.byPointArray((
+        this.points
+        .map((pt) => (
+          linTrTransformedPosition3DMat((
+            tvec
+          ), pt)
+        ))
+      ))
+    ) ;
+  }
+}
+
+export {
+  /** @deprecated this is a WIP/TBD. */
+  PmngPerContourDesc ,
+} ;
 
 
 
