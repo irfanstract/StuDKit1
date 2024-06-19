@@ -212,11 +212,17 @@ const xI3dExtendedYardStarFieldGraphDemo = (
       IndividuallyMarkedNodeList.byEachOptionalEnugBasedLayerGraph([
         ...util.reiterable(function* () {
           const sp = (
-            [...util.reiterable(function* () {
-              let range = 6;
-              for (let i = -range; i <= range; i += 2)
-              { yield i ; }
-            } ) ]
+            ((...[{ range, spacing = 2 , }] : ArgsWithOptions<[], { range: number, spacing?: number, }> ) => (
+              util.reiterated(function* () {
+                for (let i = -(
+                  util.Immutable.Range(0, Math.abs(range) + 0.05, Math.abs(spacing) )
+                  .max()
+                  ??
+                  0
+                ); i <= range; i += spacing)
+                { yield i ; }
+              } )
+            ))({ range: 7.5, })
           ) ;
           const pts = (
             [...util.reiterable(function* () {
