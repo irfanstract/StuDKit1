@@ -137,6 +137,7 @@ const UnivoComp = (
     function UnivoCompImpl({
       viewPickRect1 ,
       children: contents ,
+      style: styleProp,
       ...etProps
     } : (
       & React.SVGAttributes<SVGSVGElement>
@@ -150,8 +151,13 @@ const UnivoComp = (
           viewPickRect1
           .toSvgViewBoxAttrValueString()
         )}
+        style={{
+          background: "black",
+          ...(styleProp)
+        }}
         {...etProps}
         >
+          { null && (
           <path
           d={(
             UnivoAspectRectBox.fromRAndAsp(1.5 * viewPickRect1.r, viewPickRect1.asp )
@@ -159,6 +165,7 @@ const UnivoComp = (
           ) }
           fill="black"
           />
+          ) }
           <g
           children={(
             <React.Suspense
@@ -188,7 +195,9 @@ const UnivoComp = (
 import {
   IndividuallyMarkedNodeList ,
   NodeUnitGraph ,
-  PolygonallyMarkedNodeUnitGraph ,
+  NodeWithUnitGraph,
+  PolygonallyMarkedNodeUnitGraph, 
+  PolygonallyMarkedPointWithUnitGraph,
 } from "studk-i3d/src/xt/IndividuallyGMarkedNodeListEnug1.tsx" ;
 
 // I3DFullSceneFigureDisplay --> IndividuallyMarkedNodeListEnugFullMeshPerspChartC
@@ -202,8 +211,6 @@ export const IndividuallyMarkedNodeListEnugFullSceneUnitAppletC = (
     })
     {
       ;
-
-      const scsc = ((): number => 17 )() ;
 
       const finalPersp = (() => {
         let persp: Matrix4 = (
@@ -239,13 +246,13 @@ export const IndividuallyMarkedNodeListEnugFullSceneUnitAppletC = (
       return (() => {
         ;
         const viewPickRect1 = (
-          (() => {
+          ((...[{ scsc }]: ArgsWithOptions<[], { scsc: number, } > ) => {
             const r = (50 / 17) * scsc ;
             const asp = 2.25 ;
             return (
               UnivoAspectRectBox.fromRAndAsp(r, asp)
             ) ;
-          } )()
+          } )({ scsc: 13.5, })
         ) ;
       
         return (
@@ -257,7 +264,7 @@ export const IndividuallyMarkedNodeListEnugFullSceneUnitAppletC = (
               <IndividuallyMarkedNodeListEnugFullMeshPerspG
               perspective={finalPersp}
               content={contDfrd}
-              sc={scsc}
+              sc={17}
               />
               </g>
             )
@@ -313,29 +320,36 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
 
       // TODO
       function describeJsxRenderedContour(...[itemKey, ndUnit] : (
-        ArgsWithOptions<[key: string, v: NodeUnitGraph ], {}>
+        ArgsWithOptions<[key: string, v: NodeUnitGraph | NodeWithUnitGraph ], {}>
       ) )
       {
         ;
         
-        if (ndUnit instanceof PolygonallyMarkedNodeUnitGraph)
-          {
-            return (
-              describeJsxRenderedPmng(itemKey, ndUnit)
-            ) ;
-          }
-  
-          /* it's not supported. */
+        if ((
+          ndUnit instanceof PolygonallyMarkedNodeUnitGraph
+          ||
+          ndUnit instanceof PolygonallyMarkedPointWithUnitGraph
+        ))
+        {
           return (
-            <React.Fragment key={itemKey} >
-              <g />
-            </React.Fragment>
+            describeJsxRenderedPmng(itemKey, ndUnit)
           ) ;
+        }
+
+        /* it's not supported. */
+        return (
+          <React.Fragment key={itemKey} >
+            <g />
+          </React.Fragment>
+        ) ;
       }
     
       // TODO
       function describeJsxRenderedPmng(...[ikArg, ndUnit] : (
-        ArgsWithOptions<[key: string, v: PolygonallyMarkedNodeUnitGraph ], {}>
+        ArgsWithOptions<[key: string, v: (
+          | PolygonallyMarkedNodeUnitGraph
+          | PolygonallyMarkedPointWithUnitGraph
+        ) ], {}>
       ) )
       {
         ;
@@ -439,7 +453,15 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
                 // />
                 <SimplePtListBasedPolygonC
                 pts={pts}
-                fill={ndUnit.fill }
+                fill={(() => {
+                  if (ndUnit instanceof NodeUnitGraph) {
+                    return ndUnit.fill ;
+                  }
+                  if (ndUnit instanceof NodeWithUnitGraph) {
+                    return ndUnit.nodeUnitGraph.fill ;
+                  }
+                  return ;
+                })() }
                 />
               ) : null
             ) ;
@@ -450,7 +472,16 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
                 // zDepth: ndUnit.points[0]?.z ,
               }, (
                 <g>
-                <title>{ `${ikArg}-${contourIdx}` }</title>
+                <title>{ (function () {
+                  const ident = `${ikArg}-${contourIdx}` ;
+                  if (ndUnit instanceof NodeWithUnitGraph) {
+                    return `${ident} (pos: ${(
+                      ((...[{ x, y, z, }] : [x: Point3D]) => `{ ${x.toFixed(2)}, ${y.toFixed(2)}, ${z.toFixed(2)} }` )
+                      (ndUnit.pos)
+                    )} )` ;
+                  }
+                  return ident ;
+                })() }</title>
                 { ctgr }
                 </g>
               ) )
@@ -464,7 +495,7 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
       if (cont instanceof IndividuallyMarkedNodeList )
       {
         const renderedContours = (
-          cont.toPmnugArray()
+          cont.posAll
           .map((ndUnit, contourI) => {
             ;
       
