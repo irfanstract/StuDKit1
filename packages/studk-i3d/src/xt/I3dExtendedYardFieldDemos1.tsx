@@ -54,7 +54,8 @@ import {
 import {
   IndividuallyMarkedNodeList ,
   NodeUnitGraph ,
-  PolygonallyMarkedNodeUnitGraph ,
+  PolygonallyMarkedNodeUnitGraph,
+  PolygonallyMarkedPointWithUnitGraph ,
 } from "studk-i3d/src/xt/IndividuallyGMarkedNodeListEnug1.tsx" ;
 
 import {
@@ -107,20 +108,22 @@ function xBall(...[
   )>
 )){
   return (
-    PolygonallyMarkedNodeUnitGraph.byContoursAndFill([
-      ...(
-        xEquilateralPolygon(pos, "xConY", r, { granularityInDegrees: grnInDeg, } )
-        .getContours()
-      ) ,
-      ...(
-        xEquilateralPolygon(pos, "yConZUnisigned", r, { granularityInDegrees: grnInDeg, } )
-        .getContours()
-      ) ,
-      ...(
-        xEquilateralPolygon(pos, "xConZ", r, { granularityInDegrees: grnInDeg, } )
-        .getContours()
-      ) ,
-    ])
+    PolygonallyMarkedPointWithUnitGraph.by(pos, (
+      PolygonallyMarkedNodeUnitGraph.byContoursAndFill([
+        ...(
+          xEquilateralPolygon(pos, "xConY", r, { granularityInDegrees: grnInDeg, } )
+          .getContours()
+        ) ,
+        ...(
+          xEquilateralPolygon(pos, "yConZUnisigned", r, { granularityInDegrees: grnInDeg, } )
+          .getContours()
+        ) ,
+        ...(
+          xEquilateralPolygon(pos, "xConZ", r, { granularityInDegrees: grnInDeg, } )
+          .getContours()
+        ) ,
+      ])
+    ))
   ) ;
 } ;
 
@@ -146,27 +149,27 @@ function xEquilateralPolygon(...[
   ) >
 )){
   return (
-    PolygonallyMarkedNodeUnitGraph.byPointsAndFill((
-      [...util.reiterable(function* () {
-        ;
-        for (const a of (
-          util.range(0, 360 + (granularityInDegrees / 8 ), granularityInDegrees )
-          .map(v => Angle.ByDegrees(v) )
-        ) )
-        {
+    PolygonallyMarkedPointWithUnitGraph.by(nodeAnchPos, (
+      PolygonallyMarkedNodeUnitGraph.byPointsAndFill((
+        [...util.reiterable(function* () {
           ;
-          yield (() => {
-            const mvVec1 = (
-              linTrTransformedPosition3DMat(describeCartesOrthoRotationFwd(md, a), (
-                ({ x: -r, y:  0   , z: 0, })
-              ) )
-            ) ;
-            return linTrTransformedPosition3DMat((
-              linTrFromTranslateCoord3Matr(mvVec1)
-            ), nodeAnchPos) ;
-          })() ;
-        }
-      }) ]
+          for (const a of (
+            util.range(0, 360 + (granularityInDegrees / 8 ), granularityInDegrees )
+            .map(v => Angle.ByDegrees(v) )
+          ) )
+          {
+            ;
+            yield (() => {
+              const mvVec1 = (
+                linTrTransformedPosition3DMat(describeCartesOrthoRotationFwd(md, a), (
+                  ({ x: -r, y:  0   , z: 0, })
+                ) )
+              ) ;
+              return mvVec1 ;
+            })() ;
+          }
+        }) ]
+      ))
     ))
   ) ;
 } ;
