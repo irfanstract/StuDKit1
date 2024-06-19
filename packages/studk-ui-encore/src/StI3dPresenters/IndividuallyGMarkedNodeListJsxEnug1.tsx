@@ -464,7 +464,7 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
       if (cont instanceof IndividuallyMarkedNodeList )
       {
         const renderedContours = (
-          cont.posAll
+          cont.toPmnugArray()
           .map((ndUnit, contourI) => {
             ;
       
