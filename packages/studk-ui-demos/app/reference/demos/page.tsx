@@ -132,9 +132,21 @@ export default function App()
             <ThreeReactJsDemoC />
           ) }
           { true && (
-            <I3DDemoC />
+            <ThreeReactJsNavigaDemoC />
           ) }
-          { null && (
+          { ((e: React.ReactElement) => {
+            return null ;
+          } )((
+            <I3DDemoC />
+          )) }
+          { ((e: React.ReactElement) => {
+            e = (
+              <AsResettibleBlockC
+              children={e}
+              />
+            ) ;
+            return e ;
+          } )(
             <TimeDomainedImgListFigureC
             />
           ) }
@@ -151,6 +163,49 @@ export default function App()
     })
   ) ;
 } ;
+
+const AsResettibleBlockC = (
+  function AsResettibleBlockCImpl({ children, } : React.PropsWithChildren)
+  {
+    const [c, setC] = (
+      React.useState<number>(1)
+    ) ;
+    const runIncrButtonAction = (
+      function () {
+        setC(c => c + 1) ;
+      }
+    ) ;
+    const resetBtn = (
+      <button
+      type="button"
+      children={`Reset`}
+      onClick={e => runIncrButtonAction() }
+      />
+    ) ;
+    return (
+      <React.Fragment
+      key={c}
+      children={(
+        <div
+        style={{
+          display: "flex",
+          flexDirection: "column-reverse",
+        }}
+        >
+          <div>
+          { children }
+          </div>
+          <div>
+          <p>
+            { resetBtn }
+          </p>
+          </div>
+        </div>
+      )}
+      />
+    ) ;
+  }
+) ;
 
 import LDCWGOC from "@/components/spcl/longTextDocWithGraphicalOverlaysDemo"; ;
 
@@ -169,6 +224,10 @@ import {
 import {
   ThreeReactJsDemoC,
 } from "studk-ui-encore/src/ThreeReactJsUi/trdemo.tsx" ;
+
+import {
+  ThreeReactJsNavigaDemoC,
+} from "studk-ui-encore/src/ThreeReactJsUi/trnavigade" ;
 
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
