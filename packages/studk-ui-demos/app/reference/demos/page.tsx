@@ -128,6 +128,8 @@ export default function App()
           { (
             <DiscogrDemoC />
           ) }
+          <TimeDomainedImgListFigureC
+          />
         </div>
       ) ,
     })
@@ -159,6 +161,10 @@ function DiscogrDemoC() {
     <DiscogrDemoImpl />
   ) ;
 }
+
+import {
+  TimeDomainedImgListFigureC ,
+} from "studk-ui-encore/src/SequencedMediaUi/TimeDomainBreakthruUi.tsx" ;
 
 
 
