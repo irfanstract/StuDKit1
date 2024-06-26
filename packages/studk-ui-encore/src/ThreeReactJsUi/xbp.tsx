@@ -73,7 +73,7 @@ import {
 export const ByCoordTupleArrayGeometryC = (
   describeComponent((
     function XbpImpl(props0 : (
-      & { coords: (readonly [number, number, number])[], }
+      & { coords: readonly (readonly [number, number, number])[], }
       & Omit<ThreeElements["primitive"], "coords">
     ))
     {
