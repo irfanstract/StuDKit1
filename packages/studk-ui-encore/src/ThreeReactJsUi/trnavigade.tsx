@@ -211,7 +211,54 @@ const LoceC = function LoceCImpl(props: {}) {
       <meshStandardMaterial color={'gray'} />
       </mesh>
       ) }
-      { (<OBJMC
+      <group>
+        <mesh>
+          <ByCoordTupleArrayGeometryC
+          coords={(
+            POLYLINE_AS_TRIANGLES([
+              //
+              [52996, 2499.905, 153035] ,
+              [53005, 2499.905, 153035] ,
+              [53005, 2499.905, 152923] ,
+              [52994, 2499.905, 152923] ,
+            ] , { close: true, })
+          )}
+          attach="geometry"
+          />
+          <meshStandardMaterial color={'gray'} />
+        </mesh>
+        <mesh>
+          <ByCoordTupleArrayGeometryC
+          coords={(
+            POLYLINE_AS_TRIANGLES([
+              //
+              [53005, 2499.905, 153035] ,
+              [53096, 2499.905, 153035] ,
+              [53094, 2499.905, 152923] ,
+              [53005, 2499.905, 152923] ,
+            ] , { close: true, })
+          )}
+          attach="geometry"
+          />
+          <meshStandardMaterial color={'green'} />
+        </mesh>
+        <mesh>
+          <ByCoordTupleArrayGeometryC
+          coords={(
+            POLYLINE_AS_TRIANGLES([
+              //
+              [52005, 2499.905, 153035] ,
+              [52996, 2499.905, 153035] ,
+              [52994, 2499.905, 152923] ,
+              [52005, 2499.905, 152923] ,
+            ] , { close: true, })
+          )}
+          attach="geometry"
+          />
+          <meshStandardMaterial color={'green'} />
+        </mesh>
+      </group>
+      { null && (<OBJMC
         key={2}
         code={(
           formatByPreSymbsKeyedPointDictMeshObjFile1(({ newSpclUniqueKey, }) => {
