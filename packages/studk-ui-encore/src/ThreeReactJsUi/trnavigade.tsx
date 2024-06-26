@@ -61,17 +61,29 @@ import {
 } from '@react-three/fiber'
 
 import {
+  animated ,
+} from '@react-spring/three'
+
+import {
+  useAnimatedTuple3 ,
+} from 'studk-ui-core-ovcstack/src/main/rspr3d.tsx'
+
+import {
   ByCoordTupleArrayGeometryC ,
-} from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx" ;
+} from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx" 
 
 import {
   POLYLINE_AS_TRIANGLES ,
-} from "studk-ui-encore/src/ThreeReactJsUi/MeshPrimitives.ts" ;
+} from "studk-ui-encore/src/ThreeReactJsUi/MeshPrimitives.ts"
 
 import {
   ExemplaryOBJMC, 
   OBJMC,
-} from "studk-ui-encore/src/ThreeReactJsUi/MeshFromEnc.tsx" ;
+} from "studk-ui-encore/src/ThreeReactJsUi/MeshFromEnc.tsx"
+
+import {
+  XTrC ,
+} from "studk-ui-encore/src/ThreeReactJsUi/trc.tsx"
 
 
 
@@ -131,6 +143,12 @@ const LoceC = function LoceCImpl(props: {}) {
           >
           <primitive object={mg} attach="geometry" />
           <meshStandardMaterial color={'brown'} />
+        </mesh>
+        <mesh
+          position={[-5.7, 0, 0]}
+          >
+          <primitive object={mg} attach="geometry" />
+          <meshStandardMaterial color={'blue'} />
         </mesh>
       </group>
 
@@ -246,147 +264,13 @@ export const ThreeReactJsNavigaDemoC = (
     {
       ;
 
-      const [camPropv, ] = (
-        React.useState<Extract<React.ComponentProps<typeof Canvas>["camera"] , {}> >(() => {
-          return {
-            fov: 75,
-            near: 0.1, far: 1000,
-            /**
-             * NOTE:
-             * this is not quite `position`  like it seems -
-             * this effectively doesn't seem like regular, common `position`
-             * 
-             */
-            position: (
-              [0, 0, 5.9]
-            ),
-          } ;
-        })
-      ) ;
-      
-      /**
-       * to substitute `camera.position` which didn't seem to behave as expected.
-       */
-      const [{ camPos: camPosv, }, update1 ] = (
-        React.useState<{ readonly camPos: readonly [number, number, number], } >(() => {
-          return {
-            camPos: [53000, 2501, 152995],
-          } as const ;
-        })
-      ) ;
-
-      const c = (
-        <Canvas
-        /**
-         * by default
-         * `<Canvas>`(s) constantly redraw at SRR (Screen Refresh-Rate) irrespective of whether there's actually any changes,
-         * so
-         * we're tempted to set `frameloop="demand"`
-         * 
-         */
-        frameloop='demand'
-        camera={camPropv}
-        >
-        { (
-          ((e: React.ReactElement) => {
-            // e = (
-            //   <group
-            //   matrixAutoUpdate={false} /* https://threejs.org/docs/#manual/en/introduction/Matrix-transformations */
-            //   matrix={[
-            //     0.7, -0.7, 0, 0 ,
-            //     0.7,  0.7, 0, 0 ,
-            //     0  ,  0  , 1, 0 ,
-            //     0  ,  0  , 0, 1 ,
-            //   ]}
-            //   >
-            //     { e }
-            //   </group>
-            // )
-            // e = (
-            //   <group
-            //   position={[53000, 3000, 153000]}
-            //   >
-            //     { e }
-            //   </group>
-            // )
-            // e = (
-            //   <group
-            //   position={[0, 0, 5]}
-            //   >
-            //     { e }
-            //   </group>
-            // )
-            e = (
-              <group
-              position={[-camPosv[0], -camPosv[1], -camPosv[2]]}
-              >
-                { e }
-              </group>
-            )
-            e = (
-              <React.Suspense
-              children={e}
-              fallback={null}
-              />
-            )
-            return e
-          } )(
-            <>
-            <ambientLight intensity={Math.PI / 2} />
-            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
-            <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-            <LoceC  />
-            </>
-          )
-        ) }
-        </Canvas>
-      )
-
-      const runCamShiftAction = function (...[v] : [value: number]) {
-        update1(({ camPos: [x0, y0, z0,], ...etp }) => ({
-          ...etp,
-          camPos: [x0, y0, z0 + v ] ,
-        }) )
-      }
-      const renderCamShiftBtn1 = function (...[v] : [value: number]) {
-        return (
-          <Button
-          children={`SHFT ${v}`}
-          onClick={() => (
-            runCamShiftAction(-v)
-          ) }
-          />
-        )
-      }
-
-      const mBtns = (
-        <nav>
-          <p>
-            { renderCamShiftBtn1(-7.5) }
-            { renderCamShiftBtn1(-1.5) }
-            { renderCamShiftBtn1( 1.5) }
-            { renderCamShiftBtn1( 7.5) }
-          </p>
-          <p>
-            Viewer Position: <code>{ `x=${camPosv[0] } z=${camPosv[2] } y=${camPosv[1]}` }</code>
-          </p>
-        </nav>
-      )
-
       return (
-        <div>
-        <div
-        className=''
-        children={c}
-        style={{
-          display: "flex",
-          blockSize: `calc(min(50vh, 75vw) )`,
-        }}
-        />
-        <div>
-          { mBtns }
-        </div>
-        </div>
+        <XTrC>
+        <ambientLight intensity={Math.PI / 2} />
+        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
+        <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
+        <LoceC  />
+        </XTrC>
       )
     }
   ))
