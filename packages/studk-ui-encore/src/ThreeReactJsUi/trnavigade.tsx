@@ -85,6 +85,10 @@ import {
   XTrC ,
 } from "studk-ui-encore/src/ThreeReactJsUi/trc.tsx"
 
+import {
+  G_VEF_OBJFILE ,
+} from "studk-ui-encore/src/ThreeReactJsUi/MeshPrimitivesAsObjFile.ts"
+
 
 
 
@@ -208,49 +212,95 @@ const LoceC = function LoceCImpl(props: {}) {
       { (<OBJMC
         key={2}
         code={(
-          util.stringLinesConcat(function* ()
-          {
-            yield ;
-            yield `# ThreeJS's ObjLoader (apparently) always assign MeshPhongMaterial irrespective of what's in the OBJ file; ` ;
-            yield `# .` ;
-            yield `# in ThreeJS, coord 4 to 6 effectively (as effect of the chosen Material) dictates the annotated vertex's diffuse color ; ` ;
-            yield `# a caveat is that the values are not the usual 0...25, but instead 'p'(s) (ie 0...1) .` ;
-            yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L534 ` ;
-            yield ;
-            yield `# at least ThreeJS refuses to Add Object(s) unless we've begin with Directive(s) 'g' or 'o'. `;
-            yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L54` ;
-            yield `# ThreeJS refuses to display faces whose dir-ity is opposite to expected, so `;
-            yield `# we need to work-around it by Double Definition With Opposite Direction. `
-            yield ;
-            yield ;
-            yield ;
-            yield ;
-            yield `v   52998        2499.905 153100     0.49 0.50 0.50  ` ;
-            yield `v         53002  2499.905 153100     0.49 0.50 0.50  ` ;
-            yield `v   52995        2499.905 152923     0.53 0.55 0.55  ` ;
-            yield `v         53002  2499.905 152923     0.53 0.55 0.55  ` ;
-            yield `v   52998        2499.905 152860     0.49 0.50 0.50  ` ;
-            yield `v         53002  2499.905 152860     0.49 0.50 0.50  ` ;
-            yield `v   52998        2499.905 152815     0.55 0.57 0.57  ` ;
-            yield `v         53002  2499.905 152815     0.55 0.57 0.57  ` ;
-            yield `v   52998        2499.905 152715     0.50 0.50 0.50  ` ;
-            yield `v         53002  2499.905 152715     0.50 0.50 0.50  ` ;
-            yield ;
-            yield `# at least ThreeJS refuses to Add Object(s) unless we've begin with any these Directive. `;
-            yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L54` ;
-            yield `# ThreeJS refuses to display faces whose dir-ity is opposite to expected, so `;
-            yield `# we need to work-around it by Double Definition With Opposite Direction. `;
-            yield `o oa9b30aa816d19270 `;
-            yield `f  1  2  4  3` ;
-            yield `f  2  1  3  4` ;
-            yield `f  4  3  5  6` ;
-            yield `f  3  4  6  5` ;
-            yield `f  5  6  8  7` ;
-            yield `f  6  5  7  8` ;
-            yield ;
+          // util.stringLinesConcat(function* ()
+          // {
+          //   yield ;
+          //   yield `# ThreeJS's ObjLoader (apparently) always assign MeshPhongMaterial irrespective of what's in the OBJ file; ` ;
+          //   yield `# .` ;
+          //   yield `# in ThreeJS, coord 4 to 6 effectively (as effect of the chosen Material) dictates the annotated vertex's diffuse color ; ` ;
+          //   yield `# a caveat is that the values are not the usual 0...25, but instead 'p'(s) (ie 0...1) .` ;
+          //   yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L534 ` ;
+          //   yield ;
+          //   yield `# at least ThreeJS refuses to Add Object(s) unless we've begin with Directive(s) 'g' or 'o'. `;
+          //   yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L54` ;
+          //   yield `# ThreeJS refuses to display faces whose dir-ity is opposite to expected, so `;
+          //   yield `# we need to work-around it by Double Definition With Opposite Direction. `
+          //   yield ;
+          //   yield ;
+          //   yield ;
+          //   yield ;
+          //   yield `v   52998        2499.905 153100     0.49 0.50 0.50  ` ;
+          //   yield `v         53002  2499.905 153100     0.49 0.50 0.50  ` ;
+          //   yield `v   52995        2499.905 152923     0.53 0.55 0.55  ` ;
+          //   yield `v         53002  2499.905 152923     0.53 0.55 0.55  ` ;
+          //   yield `v   52998        2499.905 152860     0.49 0.50 0.50  ` ;
+          //   yield `v         53002  2499.905 152860     0.49 0.50 0.50  ` ;
+          //   yield `v   52998        2499.905 152815     0.55 0.57 0.57  ` ;
+          //   yield `v         53002  2499.905 152815     0.55 0.57 0.57  ` ;
+          //   yield `v   52998        2499.905 152715     0.50 0.50 0.50  ` ;
+          //   yield `v         53002  2499.905 152715     0.50 0.50 0.50  ` ;
+          //   yield ;
+          //   yield `# at least ThreeJS refuses to Add Object(s) unless we've begin with any these Directive. `;
+          //   yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L54` ;
+          //   yield `# ThreeJS refuses to display faces whose dir-ity is opposite to expected, so `;
+          //   yield `# we need to work-around it by Double Definition With Opposite Direction. `;
+          //   yield `o oa9b30aa816d19270 `;
+          //   yield `f  1  2  4  3` ;
+          //   yield `f  2  1  3  4` ;
+          //   yield `f  4  3  5  6` ;
+          //   yield `f  3  4  6  5` ;
+          //   yield `f  5  6  8  7` ;
+          //   yield `f  6  5  7  8` ;
+          //   yield ;
+          //
+          //   ;
+          // } )
+          G_VEF_OBJFILE({
+            pt201Rd1SdA  : ` 52998                2499.905 153100     0.49 0.50 0.50  ` ,
+            pt201Rd1SdB  : `       53002          2499.905 153100     0.49 0.50 0.50  ` ,
+            pt201Rd1GrB  : `       53002          2499.905 153100     0.49 0.90 0.50  ` ,
+            pt201Rd1GrC  : `               53096  2499.905 153100     0.49 0.90 0.50  ` ,
+            pt202Rd1SdA  : ` 52995                2499.905 152923     0.53 0.55 0.55  ` ,
+            pt202Rd1SdB  : `       53002          2499.905 152923     0.53 0.55 0.55  ` ,
+            pt202Rd1GrB  : `       53002          2499.905 152923     0.49 0.90 0.50  ` ,
+            pt202Rd1GrC  : `               53096  2499.905 153923     0.49 0.90 0.50  ` ,
+            pt203Rd1SdA  : ` 52998                2499.905 152860     0.49 0.50 0.50  ` ,
+            pt203Rd1SdB  : `       53002          2499.905 152860     0.49 0.50 0.50  ` ,
+            pt204Rd1SdA  : ` 52998                2499.905 152815     0.55 0.57 0.57  ` ,
+            pt204Rd1SdB  : `       53002          2499.905 152815     0.55 0.57 0.57  ` ,
+            pt205Rd1SdA  : ` 52998                2499.905 152715     0.50 0.50 0.50  ` ,
+            pt205Rd1SdB  : `       53002          2499.905 152715     0.50 0.50 0.50  ` ,
+          } , { mapVtxDataToString: c => c } , (
+            ({ cornerPtIds, }) => {
+              /**
+               * at least ThreeJS refuses to Add Object(s) unless we've begin with any these Directive.
+               * https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L54
+               * ThreeJS refuses to display faces whose dir-ity is opposite to expected, so
+               * we need to work-around it by Double Definition With Opposite Direction.
+               */
+              return [
+                { ptIds: [
+                  cornerPtIds.pt201Rd1SdA,
+                  cornerPtIds.pt201Rd1SdB ,
+                  cornerPtIds.pt202Rd1SdB ,
+                  cornerPtIds.pt202Rd1SdA ,
+                ] } ,
+                { ptIds: [
+                  cornerPtIds.pt201Rd1GrB,
+                  cornerPtIds.pt201Rd1GrC ,
+                  cornerPtIds.pt202Rd1GrC ,
+                  cornerPtIds.pt202Rd1GrB ,
+                ] } ,
 
-            ;
-          } )
+                { ptIds: [
+                  cornerPtIds.pt202Rd1SdA,
+                  cornerPtIds.pt202Rd1SdB ,
+                  cornerPtIds.pt203Rd1SdB ,
+                  cornerPtIds.pt203Rd1SdA ,
+                ] } ,
+              ] ;
+            }
+          ) )
         )}
         />)}
 
@@ -265,12 +315,35 @@ export const ThreeReactJsNavigaDemoC = (
       ;
 
       return (
+        <div>
         <XTrC>
         <ambientLight intensity={Math.PI / 2} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
         <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
         <LoceC  />
         </XTrC>
+        <div>
+          {null && (<pre>
+            { (
+              G_VEF_OBJFILE({
+                pt001: ` 0 0 3 ` ,
+                pt002: ` 3 0 0 ` ,
+                pt003: ` 2 0 0 ` ,
+                pt004: ` 0 0 2 ` ,
+                pt005: ` 0 0 1 ` ,
+              } , {
+                mapVtxDataToString: (vle) => (vle) ,
+              } , ({ cornerPtIds: vtcDict, }) => {
+                return (
+                  [
+                    { ptIds: [vtcDict.pt002, vtcDict.pt003, ] } ,
+                  ]
+                ) ;
+              } )
+            ) }
+          </pre>)}
+        </div>
+        </div>
       )
     }
   ))
