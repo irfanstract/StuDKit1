@@ -85,14 +85,15 @@ const XTrC = (
   describeComponent((
     function XTrCImpl({
       children ,
-    } : React.PropsWithChildren)
+      initialCamPos = [52999.5, 2501, 152995] ,
+    } : React.PropsWithChildren<{ initialCamPos ?: readonly [number, number, number], }>)
     {
       ;
 
       const [camPropv, ] = (
         React.useState<Extract<React.ComponentProps<typeof Canvas>["camera"] , {}> >(() => {
           return {
-            fov: 75,
+            fov:  10.95,
             near: 0.1, far: 1000,
             /**
              * NOTE:
@@ -113,7 +114,7 @@ const XTrC = (
       const [{ camPos: camPosv, }, update1 ] = (
         React.useState<{ readonly camPos: readonly [number, number, number], } >(() => {
           return {
-            camPos: [52999.5, 2501, 152995],
+            camPos: initialCamPos,
           } as const ;
         })
       ) ;
@@ -199,17 +200,35 @@ const XTrC = (
       }
 
       const mBtns = (
+        <div>
         <nav>
-          <p>
-            { renderCamShiftBtn1(-7.5) }
-            { renderCamShiftBtn1(-1.5) }
-            { renderCamShiftBtn1( 1.5) }
-            { renderCamShiftBtn1( 7.5) }
+          <p
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "nowrap",
+          }}
+          >
+            { renderCamShiftBtn1(-22.5) }
+            { renderCamShiftBtn1(-12.5) }
+            { renderCamShiftBtn1(- 7.5) }
+            { renderCamShiftBtn1(- 2.5) }
+            <br />
+            { renderCamShiftBtn1(  2.5) }
+            { renderCamShiftBtn1(  7.5) }
+            { renderCamShiftBtn1( 12.5) }
+            { renderCamShiftBtn1( 22.5) }
+            <br />
           </p>
           <p>
-            Viewer Position: <code>{ `x=${camPosv[0] } z=${camPosv[2] } y=${camPosv[1]}` }</code>
+            { renderCamShiftBtn1(-37.5) }
+            { renderCamShiftBtn1( 37.5) }
           </p>
         </nav>
+        <p>
+          Viewer Position: <code>{ `x=${camPosv[0] } z=${camPosv[2] } y=${camPosv[1]}` }</code>
+        </p>
+        </div>
       )
 
       return (
