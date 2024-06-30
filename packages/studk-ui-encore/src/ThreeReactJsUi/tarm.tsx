@@ -72,6 +72,13 @@ import {
   ByCoordTupleArrayGeometryC ,
 } from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx" 
 
+import {
+  Box ,
+} from "studk-ui-encore/src/ThreeReactJsUi/trdemo.tsx"
+
+import * as POE1 from "studk-ui-encore/src/ThreeReactJsUi/PolygonalOrthoExpansion1.tsx"
+
+
 
 
 
@@ -79,37 +86,9 @@ import {
 /* https://docs.pmnd.rs/react-three-fiber/api/canvas#tree-shaking */
 import 'three'
 
-function Box(props: ThreeElements['mesh']) {
-  /** manual call to `invalidate()` is necessary since the enclosing `<R3F.Canvas>` could have set `frameloop` to `"demand"`. */
-  const tr = useThree()
-  const meshRef = useRef<THREE.Mesh>(null!)
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-  useFrame((state, delta) => {
-    if (active || hovered) {
-      meshRef.current.rotation.x += delta
-      tr.invalidate()
-    }
-  })
-  return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}
-
-export { Box, }
-
-export const ThreeReactJsDemoC = (
+export const TArmsDemoC = (
   describeComponent((
-    function ThreeJsDemoCImpl() {
+    function TArmsDemoCImpl() {
 
       const [camPropv, ] = (
         React.useState<Extract<React.ComponentProps<typeof Canvas>["camera"] , {}> >(() => {
@@ -134,6 +113,14 @@ export const ThreeReactJsDemoC = (
         })
       )
 
+      const ambientLights = (
+        <>
+        <ambientLight intensity={Math.PI / 2} />
+        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
+        <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
+        </>
+      )
+
       const c1 = (
         <Canvas
         /**
@@ -153,27 +140,11 @@ export const ThreeReactJsDemoC = (
                 { e }
               </group>
             )
-            e = (
-              <group
-              matrixAutoUpdate={false} /* https://threejs.org/docs/#manual/en/introduction/Matrix-transformations */
-              matrix={[
-                0.7, -0.7, 0, 0 ,
-                0.7,  0.7, 0, 0 ,
-                0  ,  0  , 1, 0 ,
-                0  ,  0  , 0, 1 ,
-              ]}
-              >
-                { e }
-              </group>
-            )
             return e
           } )(
             <>
-            <ambientLight intensity={Math.PI / 2} />
-            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
-            <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-            <Box position={[-1.2, 0, 0]} />
-            <Box position={[1.2, 0, 0]} />
+            { ambientLights }
+            <PReformableTriangularC />
             </>
           )
         ) }
@@ -202,10 +173,8 @@ export const ThreeReactJsDemoC = (
             return e
           } )(
             <>
-            <ambientLight intensity={Math.PI / 2} />
-            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
-            <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-            <PEdgeC />
+            { ambientLights }
+            <PEdgesC />
             </>
           )
         ) }
@@ -222,6 +191,7 @@ export const ThreeReactJsDemoC = (
             style={{
               display: "flex",
               blockSize: `calc(min(50vh, 75vw) )`,
+              contain: `layout size`,
             }}
             />
           )
@@ -229,7 +199,15 @@ export const ThreeReactJsDemoC = (
       )
 
       return (
-        <div>
+        <div
+        style={{
+          display: "grid",
+          gridTemplate: `
+          "c1 c2"
+          "c3 c4"
+          `,
+        }}
+        >
           { renderSpclCont(c1) }
           { renderSpclCont(c2) }
         </div>
@@ -238,7 +216,25 @@ export const ThreeReactJsDemoC = (
   ))
 )
 
-export const PEdgeC = (() => {
+// import {
+//   Matrix3,
+//   Matrix4,
+//   matrixAssign,
+// } from 'studk-simulations-commons/src/LinearMap1.mjs'
+// import {
+//   LinTrCoords3,
+//   linTrFromTranslateCoord3Matr, 
+//   linTrTransformedPosition3DMat,
+// } from "studk-video-fwcore/src/LinearTransforms.mjs"
+
+import {
+  XRescatterablePointsReact ,
+} from "studk-ui-encore/src/StI3dPresenters/rescatterableptx.tsx"
+
+const {
+  PReformableTriangularC ,
+  PEdgesC ,
+} = (() => {
   const SpclCtrlPointC = (
     describeThreeJsObjComponent((
       function CtrlPointCImpl({ position: positionArg, ...etProps } : { position: readonly [number, number, number], } )
@@ -262,30 +258,39 @@ export const PEdgeC = (() => {
       }
     ))
   )
-  return (
-    describeThreeJsObjComponent((
+  return ({
+    //
+
+    PReformableTriangularC : describeThreeJsObjComponent((
       function PEdgeCImpl()
       {
-        const [mKey, scMKey] = (
-          React.useReducer<(x: number) => number>(() => util.L.random(0, 3, true) , 0 )
-        )
-        const [p1Pos, setP1Pos] = React.useState<readonly [number, number, number]>([0, 0, 0])
-        const [p2Pos, setP2Pos] = React.useState<readonly [number, number, number]>([1, 1, 0])
-        const SCATTER_EM = function () {
-          const SPCL_RAND = () => util.L.random(-2.25, 2.25)
-          const newP1Pos = [SPCL_RAND(), SPCL_RAND(), SPCL_RAND() ] as const
-          const newP2Pos = [SPCL_RAND(), SPCL_RAND(), SPCL_RAND() ] as const
-          setP1Pos(() => newP1Pos)
-          setP2Pos(() => newP2Pos)
-          scMKey()
-        }
+
+        const {
+          mKey ,
+          p1Pos ,
+          p2Pos ,
+          p3Pos ,
+          SCATTER_EM ,
+        } = XRescatterablePointsReact.useReScatterableFor3()
+
         return (
           <group
           key={mKey }
           onClick={(event) => SCATTER_EM() }
           >
-              <SpclCtrlPointC position={p1Pos} />
-              <SpclCtrlPointC position={p2Pos} />
+              { (
+                [
+                  p1Pos ,
+                  p2Pos ,
+                  p3Pos ,
+                ]
+                .map((ptPos, i) => (
+                  <SpclCtrlPointC
+                  key={`ctrl pt ${i}`}
+                  position={ptPos}
+                  />
+                ))
+              ) }
               <mesh>
                 <ByCoordTupleArrayGeometryC
                 attach="geometry"
@@ -294,7 +299,7 @@ export const PEdgeC = (() => {
                     const d = [
                       [p1Pos[0], p1Pos[1], -3.8, ] as const ,
                       [p2Pos[0], p2Pos[1], -3.8, ] as const ,
-                      [      -5,       -5, -3.8, ] as const ,
+                      [p3Pos[0], p3Pos[1], -3.8, ] as const ,
                     ]
                     return [...d, ...d.toReversed() ]
                   })() , { close: true, } )
@@ -305,8 +310,74 @@ export const PEdgeC = (() => {
           </group>
         )
       }
-    ))
-  )
+    )) ,
+
+    PEdgesC : describeThreeJsObjComponent((
+      function PEdgeCImpl()
+      {
+
+        const {
+          mKey ,
+          p1Pos ,
+          p2Pos ,
+          p3Pos ,
+          SCATTER_EM ,
+          etc: {
+            p1Mat ,
+            p2Mat ,
+            p3Mat ,
+          } ,
+        } = XRescatterablePointsReact.useReScatterableFor3()
+
+        return (
+          <group
+          key={mKey }
+          onClick={(event) => SCATTER_EM() }
+          >
+              <mesh>
+                <ByCoordTupleArrayGeometryC
+                attach="geometry"
+                coords={(
+                  POLYLINE_AS_TRIANGLES((() => {
+                    const {
+                      strkeRelativePosL ,
+                      strkeRelativePosR ,
+                    } = POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
+                      // p1Pos, p2Pos ,
+                      [p1Pos[0], p1Pos[1], 0] as const ,
+                      [p2Pos[0], p2Pos[1], 0] as const ,
+                    ] , 0.1525 )
+                    const d = [
+                      POE1.PLUS_TWO(p1Pos , strkeRelativePosR ) ,
+                      POE1.PLUS_TWO(p1Pos , strkeRelativePosL ) ,
+                      POE1.PLUS_TWO(p2Pos , strkeRelativePosL ) ,
+                      POE1.PLUS_TWO(p2Pos , strkeRelativePosR ) ,
+                    ]
+                    return [...d, ...d.toReversed() ]
+                  })() , { close: true, } )
+                )}
+                />
+                <meshStandardMaterial color={"blue"} />
+              </mesh>
+              { (
+                [
+                  p1Pos ,
+                  p2Pos ,
+                  p3Pos ,
+                ]
+                .map((ptPos, i) => (
+                  <SpclCtrlPointC
+                  key={`ctrl pt ${i}`}
+                  position={ptPos}
+                  />
+                ))
+              ) }
+          </group>
+        )
+      }
+    )) ,
+
+  } as const)
 })()
 
 
