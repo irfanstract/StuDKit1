@@ -72,9 +72,84 @@ import {
   ByCoordTupleArrayGeometryC ,
 } from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx" 
 
-import {
-  Box ,
-} from "studk-ui-encore/src/ThreeReactJsUi/trdemo.tsx"
+const Box = (
+  describeComponent((
+    function BoxCImpl(props0: ThreeElements['mesh']) {
+      const {
+        position,
+        ...props
+      } = props0 ;
+
+      return (
+        <HovAcIbleC
+        position={position }
+
+        children={(...[{ hovered, active, }] ) => (
+          <group
+          >
+          <mesh
+            {...props}
+            >
+            <boxGeometry args={[1, 1, 1]} />
+            { (
+              // <meshStandardMaterial color={hovered ? 'yellow' : 'orange'} />
+              hovered ?
+              <meshStandardMaterial color={"yellow"} />
+              : <meshStandardMaterial color={"orange"} />
+            ) }
+          </mesh>
+          </group>
+        ) }
+
+        />
+      )
+    }
+  ))
+)
+
+const HovAcIbleC = (
+  describeComponent((
+    function HovAcIbleCImpl(props0: (
+      & {
+        children: (...[{ hovered, active, }] : ArgsWithOptions<[], (
+          & { hovered : boolean, }
+          & { active : boolean, }
+        )>) => (React.ReactElement | null) ,
+      }
+      & Partial<Pick<ThreeElements["mesh"], "position" > >
+    )) {
+      const {
+        children: renderContent ,
+        position ,
+        ...props
+      } = props0
+
+      /** manual call to `invalidate()` is necessary since the enclosing `<R3F.Canvas>` could have set `frameloop` to `"demand"`. */
+      const tr = useThree()
+      const meshRef = useRef<THREE.Group>(null!)
+      const [hovered, setHover] = useState(false)
+      const [active, setActive] = useState(false)
+      useFrame((state, delta) => {
+        if (active || hovered) {
+          meshRef.current.rotation.x += delta
+          tr.invalidate()
+        }
+      })
+      return (
+        <group
+        ref={meshRef}
+        onClick={(event) => setActive(!active)}
+        onPointerOver={(event) => setHover(true)}
+        onPointerOut={(event) => setHover(false)}
+        scale={active ? 1.5 : 1}
+        position={position}
+        >
+          { renderContent({ hovered, active, }) }
+        </group>
+      )
+    }
+  ))
+)
 
 import * as POE1 from "studk-ui-encore/src/ThreeReactJsUi/PolygonalOrthoExpansion1.tsx"
 
@@ -153,6 +228,7 @@ export const TArmsDemoC = (
 
       const c2 = (
         <Canvas
+        key={3}
         /**
          * to avoid constant continuous redraw which drains battery
          * we're tempted to assign `frameloop="demand"`
@@ -315,27 +391,14 @@ const {
     PEdgesC : describeThreeJsObjComponent((
       function PEdgeCImpl()
       {
-
-        const {
-          mKey ,
-          p1Pos ,
-          p2Pos ,
-          p3Pos ,
-          SCATTER_EM ,
-          etc: {
-            p1Mat ,
-            p2Mat ,
-            p3Mat ,
-          } ,
-        } = XRescatterablePointsReact.useReScatterableFor3()
-
-        return (
-          <group
-          key={mKey }
-          onClick={(event) => SCATTER_EM() }
-          >
+        ;
+        const drawCtrlPoint = (
+          function (...[[p1Pos, p2Pos]] : [readonly [POE1.PTCOORD3D, POE1.PTCOORD3D] ] )
+          {
+            return (
               <mesh>
                 <ByCoordTupleArrayGeometryC
+                key={2}
                 attach="geometry"
                 coords={(
                   POLYLINE_AS_TRIANGLES((() => {
@@ -359,6 +422,31 @@ const {
                 />
                 <meshStandardMaterial color={"blue"} />
               </mesh>
+            )
+          }
+        )
+
+        {
+
+        const {
+          mKey ,
+          p1Pos ,
+          p2Pos ,
+          p3Pos ,
+          SCATTER_EM ,
+          etc: {
+            p1Mat ,
+            p2Mat ,
+            p3Mat ,
+          } ,
+        } = XRescatterablePointsReact.useReScatterableFor3()
+
+        const mainG = (
+          <group
+          onClick={(event) => SCATTER_EM() }
+          >
+              { drawCtrlPoint([p1Pos, p2Pos]) }
+              { drawCtrlPoint([p2Pos, p3Pos]) }
               { (
                 [
                   p1Pos ,
@@ -374,6 +462,13 @@ const {
               ) }
           </group>
         )
+        return (
+          <React.Fragment
+          key={mKey }
+          children={mainG }
+          />
+        )
+        ;}
       }
     )) ,
 
