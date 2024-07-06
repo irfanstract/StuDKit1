@@ -38,11 +38,11 @@ export function describeComponent<Props extends {}>(...[a] : [(...args: [props?:
 
 
 
-export function getSpaceSeparatedClassNameList(s: () => Iterable<string> ) : string ;
-export function getSpaceSeparatedClassNameList(s: () => Iterable<string> )
+export function getSpaceSeparatedClassNameList(s: SSCN_OR_FUNCTION<Iterable<string> > ) : string ;
+export function getSpaceSeparatedClassNameList(s: SSCN_OR_FUNCTION<Iterable<string> > )
 {
   const s1 = (
-    [...s() ]
+    [...(typeof s === "function" ? s : (() => s ) )() ]
   ) ;
   return (
     s1
@@ -57,6 +57,8 @@ export {
   /** @deprecated this is alias of {@link getSpaceSeparatedClassNameList}. */
   getSpaceSeparatedClassNameList as mkClasses ,
 } ;
+
+type SSCN_OR_FUNCTION<R> = R | (() => R) ;
 
 
 
