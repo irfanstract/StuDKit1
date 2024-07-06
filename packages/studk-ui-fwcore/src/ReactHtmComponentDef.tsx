@@ -4,6 +4,7 @@
 
 
 
+
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -28,19 +29,11 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
-  ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+  ArgsWithOptions, 
+  Extend,
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 
 
@@ -49,36 +42,30 @@ import type {
 
 import * as React from "react" ;
 
-import {
-  describeComponent,
-} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
-
-
-
-
-
-;
-
-abstract class OverlCtxOps
-{}
-
-export { OverlCtxOps } ;
+import * as DEC from "studk-ui-componentdefinition/src/dec.tsx" ;
 
 
 
 
 import {
-  WithOverlayHighlightingC,
-  WithOvcLevelleGoodiesC,
-  WithOverlaySupportC ,
-  IRenderNativeElemOverlaySupported ,
-  IRenderNativeElemOverlays,
-} from 'studk-ui/src/templating/xst/ctxStacks/ovc.tsx';
+  describeComponent ,
+} from "studk-ui-fwcore/src/ReactComponentDef.tsx" ;
 
-WithOverlayHighlightingC ;
+export const describeHtmlComponent = (
+  describeComponent
+) ;
 
 
 
+/**
+ * space-separated class-name list,
+ * very important as the only reasonable manner thru which CSS files can do their things
+ * .
+ * 
+ */
+export const getSpaceSeparatedClassNameList = (
+  DEC.getSpaceSeparatedClassNameList
+) ;
 
 
 
