@@ -72,6 +72,12 @@ import {
   ByCoordTupleArrayGeometryC ,
 } from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx" 
 
+import {
+  sprungThreeElements,
+  useThreeJsSpring,
+  SupposeControlledForcedConstantRedrawC,
+} from 'studk-ui-encore/src/ThreeReactJsUi/TrA.tsx';
+
 const Box = (
   describeComponent((
     function BoxCImpl(props0: ThreeElements['mesh']) {
@@ -188,6 +194,9 @@ export const TArmsDemoC = (
         })
       )
 
+      const [spnA, setSpnA] = React.useState<number>(() => 0 )
+      const { scale: spnAAnimated, } = useThreeJsSpring({ scale: spnA, })
+
       const ambientLights = (
         <>
         <ambientLight intensity={Math.PI / 2} />
@@ -209,6 +218,12 @@ export const TArmsDemoC = (
         { (
           ((e: React.ReactElement) => {
             e = (
+              <sprungThreeElements.group
+              rotation-y={spnAAnimated }
+              children={e}
+              />
+            )
+            e = (
               <group
               scale={2 ** -2.5}
               >
@@ -223,6 +238,11 @@ export const TArmsDemoC = (
             </>
           )
         ) }
+        <SupposeControlledForcedConstantRedrawC
+        isInTopicallyNeglectibleState={(
+          () => (spnAAnimated.isAnimating === false )
+        ) }
+        />
         </Canvas>
       )
 
@@ -240,12 +260,25 @@ export const TArmsDemoC = (
         { (
           ((e: React.ReactElement) => {
             e = (
+              <sprungThreeElements.group
+              rotation-y={spnAAnimated }
+              children={e}
+              />
+            )
+            e = (
               <group
               scale={2 ** -2.5}
               >
                 { e }
               </group>
             )
+            // e = (
+            //   <group
+            //   children={e}
+            //   onPointerDown={e => setSpnA(() => Math.PI ) }
+            //   onPointerUp={e => setSpnA(() => 0.00 ) }
+            //   />
+            // )
             return e
           } )(
             <>
@@ -254,6 +287,11 @@ export const TArmsDemoC = (
             </>
           )
         ) }
+        <SupposeControlledForcedConstantRedrawC
+        isInTopicallyNeglectibleState={(
+          () => (spnAAnimated.isAnimating === false )
+        ) }
+        />
         </Canvas>
       )
 
@@ -274,7 +312,7 @@ export const TArmsDemoC = (
         }
       )
 
-      return (
+      const demoItems = (
         <div
         style={{
           display: "grid",
@@ -286,6 +324,35 @@ export const TArmsDemoC = (
         >
           { renderSpclCont(c1) }
           { renderSpclCont(c2) }
+        </div>
+      )
+      
+      return (
+        <div
+        // style={{
+        //   display: "grid",
+        //   gridTemplate: `
+        //   "c1 c2"
+        //   "c3 c4"
+        //   `,
+        // }}
+        >
+          { demoItems }
+          <nav>
+            <Button
+            onClick={e => { setSpnA(v0 => (v0 + (0.225 * Math.PI ) ) ) }}
+            >
+              Rotate
+            </Button>
+            <Button
+            onClick={e => {
+              setSpnA(v0 => ((2 * Math.PI) + (v0 % (2 * Math.PI ) ) ) ) ;
+              setSpnA(0 ) ;
+            }}
+            >
+              Reset Rotation
+            </Button>
+          </nav>
         </div>
       )
     }
@@ -373,10 +440,10 @@ const {
                 coords={(
                   POLYLINE_AS_TRIANGLES((() => {
                     const d = [
-                      [p1Pos[0], p1Pos[1], -3.8, ] as const ,
-                      [p2Pos[0], p2Pos[1], -3.8, ] as const ,
-                      [p3Pos[0], p3Pos[1], -3.8, ] as const ,
-                    ]
+                      p1Pos ,
+                      p2Pos ,
+                      p3Pos ,
+                    ] satisfies POE1.PTCOORD3D[]
                     return [...d, ...d.toReversed() ]
                   })() , { close: true, } )
                 )}
@@ -398,29 +465,30 @@ const {
             return (
               <mesh>
                 <ByCoordTupleArrayGeometryC
-                key={2}
+                key={3}
                 attach="geometry"
                 coords={(
-                  POLYLINE_AS_TRIANGLES((() => {
-                    const {
-                      strkeRelativePosL ,
-                      strkeRelativePosR ,
-                    } = POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
-                      // p1Pos, p2Pos ,
-                      [p1Pos[0], p1Pos[1], 0] as const ,
-                      [p2Pos[0], p2Pos[1], 0] as const ,
-                    ] , 0.1525 )
-                    const d = [
-                      POE1.PLUS_TWO(p1Pos , strkeRelativePosR ) ,
-                      POE1.PLUS_TWO(p1Pos , strkeRelativePosL ) ,
-                      POE1.PLUS_TWO(p2Pos , strkeRelativePosL ) ,
-                      POE1.PLUS_TWO(p2Pos , strkeRelativePosR ) ,
-                    ]
-                    return [...d, ...d.toReversed() ]
-                  })() , { close: true, } )
+                  // POLYLINE_AS_TRIANGLES((() => {
+                  //   const {
+                  //     strkeRelativePosL ,
+                  //     strkeRelativePosR ,
+                  //   } = POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
+                  //     // p1Pos, p2Pos ,
+                  //     [p1Pos[0], p1Pos[1], 0] as const ,
+                  //     [p2Pos[0], p2Pos[1], 0] as const ,
+                  //   ] , 0.1525 )
+                  //   const d = [
+                  //     POE1.PLUS_TWO(p1Pos , strkeRelativePosR ) ,
+                  //     POE1.PLUS_TWO(p1Pos , strkeRelativePosL ) ,
+                  //     POE1.PLUS_TWO(p2Pos , strkeRelativePosL ) ,
+                  //     POE1.PLUS_TWO(p2Pos , strkeRelativePosR ) ,
+                  //   ]
+                  //   return [...d, ...d.toReversed() ]
+                  // })() , { close: true, } )
+                  LINE_STROKED([p1Pos, p2Pos] , { strokeWidth: [0.2025, 0.2725], } )
                 )}
                 />
-                <meshStandardMaterial color={"blue"} />
+                <meshStandardMaterial color={"#FFC0C0"} />
               </mesh>
             )
           }
@@ -474,6 +542,8 @@ const {
 
   } as const)
 })()
+
+import { LINE_STROKED, } from 'studk-ui-encore/src/ThreeReactJsUi/PolygonalOrthoExpansionEncore.tsx';
 
 
 
