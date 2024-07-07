@@ -96,15 +96,25 @@ export const APPLY_NRMMAT_STRAIGHT = (
  * applies the NRM Matrix, for brush-edge offset.
  * 
  */
-export const APPLY_NRMMAT_BRUSHEDGE_OFFSET = (
-  function (...[ptMatr, strokeWidth] : (
+export const APPLY_NRMMAT_BRUSHEDGE_OFFSET = (() => {
+  ;
+  function APPLY_NRMMAT_BRUSHEDGE_OFFSET_IMPL(...args : (
     ArgsWithOptions<[dirAndShearScale: NrmMat4, strokeWidth: number], (
-      & {}
+      & { quadrantIndex ?: 0 | 1 | 2 | 3 , }
     )>
   ))
   {
+    const [ptMatr, strokeWidth, { quadrantIndex = 0 , } = {}] = args
+
     const p = (
-      linTrTransformedPosition3DMat(ptMatr, { z: 0, x: 0, y: strokeWidth, } )
+      linTrTransformedPosition3DMat(ptMatr, ((): Point3D => {
+        switch (quadrantIndex) {
+          case 0: return { z: 0, x: 0, y:  strokeWidth, }
+          case 2: return { z: 0, x: 0, y: -strokeWidth, } 
+          case 1: return { y: 0, x: 0, z:  strokeWidth, }
+          case 3: return { y: 0, x: 0, z: -strokeWidth, }
+        }
+      } )() )
     )
     return [
       p.x,
@@ -112,7 +122,8 @@ export const APPLY_NRMMAT_BRUSHEDGE_OFFSET = (
       p.z ,
     ] as const
   }
-)
+  return APPLY_NRMMAT_BRUSHEDGE_OFFSET_IMPL
+})()
 
 export const WITHOUT_TRANSLATION = (
   function (...[mtr0] : [Matrix4])
