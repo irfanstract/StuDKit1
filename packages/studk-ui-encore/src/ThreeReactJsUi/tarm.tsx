@@ -392,7 +392,7 @@ const {
       function PEdgeCImpl()
       {
         ;
-        const drawCtrlPoint = (
+        const renderFeaturedKeyDriveSegment1 = (
           function (...[[p1Pos, p2Pos]] : [readonly [POE1.PTCOORD3D, POE1.PTCOORD3D] ] )
           {
             return (
@@ -445,8 +445,8 @@ const {
           <group
           onClick={(event) => SCATTER_EM() }
           >
-              { drawCtrlPoint([p1Pos, p2Pos]) }
-              { drawCtrlPoint([p2Pos, p3Pos]) }
+              { renderFeaturedKeyDriveSegment1([p1Pos, p2Pos]) }
+              { renderFeaturedKeyDriveSegment1([p2Pos, p3Pos]) }
               { (
                 [
                   p1Pos ,
