@@ -93,15 +93,15 @@ export const APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO = (
     const alongDir = (
       DIRECTION_BETWEEN_TWO(p0, p2)
     )
-    const strkeRelativePosL = (
-      APPLY_NRMMAT_BRUSHEDGE_OFFSET(alongDir, strokeWidth, )
-    )
-    const strkeRelativePosR = (
-      APPLY_NRMMAT_BRUSHEDGE_OFFSET(alongDir, -strokeWidth, )
-    )
+    const strkeRelativePosL = APPLY_NRMMAT_BRUSHEDGE_OFFSET(alongDir, strokeWidth, { quadrantIndex: 0, } )
+    const strkeRelativePosE = APPLY_NRMMAT_BRUSHEDGE_OFFSET(alongDir, strokeWidth, { quadrantIndex: 1, } )
+    const strkeRelativePosR = APPLY_NRMMAT_BRUSHEDGE_OFFSET(alongDir, strokeWidth, { quadrantIndex: 2, } )
+    const strkeRelativePosB = APPLY_NRMMAT_BRUSHEDGE_OFFSET(alongDir, strokeWidth, { quadrantIndex: 3, } )
     return {
       strkeRelativePosL ,
+      strkeRelativePosE ,
       strkeRelativePosR ,
+      strkeRelativePosB ,
     } as const
   }
 )
