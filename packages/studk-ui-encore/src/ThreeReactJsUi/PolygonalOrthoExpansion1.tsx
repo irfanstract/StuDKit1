@@ -49,7 +49,7 @@ import * as POE from "studk-ui-encore/src/StI3dPresenters/PolygonalOrthoExpansio
 import {
   FROM_THRREJSMATRIXOBJ_4 ,
   TO_THRREJSMATRIXOBJ_4 ,
-} from "studk-ui-encore/src/ThreeReactJsUi/ToThreeJsMatrixObj.ts"
+} from "studk-ui-fwcore/src/i3d/ToThreeJsMatrixObj.ts"
 
 import {
   NrmMat4 ,
