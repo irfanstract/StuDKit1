@@ -28,7 +28,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'
+} from 'studk-fwcore/src/util/C1.ts'
 
 import {
   Matrix3,
@@ -48,7 +48,7 @@ import * as THREE from 'three'
 import {
   FROM_THRREJSMATRIXOBJ_4 ,
   TO_THRREJSMATRIXOBJ_4 ,
-} from "studk-ui-encore/src/ThreeReactJsUi/ToThreeJsMatrixObj.ts"
+} from "studk-ui-fwcore/src/i3d/ToThreeJsMatrixObj.ts"
 
 
 
