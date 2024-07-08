@@ -29,6 +29,7 @@
     { "path": "../../packages/studk-simulations-commons", } ,
     { "path": "../../packages/studk-fwcore/tsconfig.build.json", } ,
     { "path": "../../packages/studk-ui-coreinteractivitymodels", } ,
+    { "path": "../../packages/studk-video-fwcore", } ,
     { "path": "../../packages/studk-ui-componentdefinition/tsconfig.build.json", } ,
     { "path": "../../packages/studk-dom-util", } ,
     { "path": "../../packages/studk-fbreact-all", } ,
