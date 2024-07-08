@@ -51,6 +51,8 @@ import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'
 
+import { flushSync, } from 'react-dom';
+
 
 import * as THREE from 'three'
 import {
@@ -71,6 +73,10 @@ import {
 import {
   ByCoordTupleArrayGeometryC ,
 } from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx" 
+
+import {
+  LINE_STROKED, 
+} from 'studk-ui-encore/src/ThreeReactJsUi/PolygonalOrthoExpansionEncore.tsx';
 
 import {
   sprungThreeElements,
@@ -170,6 +176,8 @@ import 'three'
 export const TArmsDemoC = (
   describeComponent((
     function TArmsDemoCImpl() {
+
+      const [isTrIng, startTransition] = React.useTransition()
 
       const [camPropv, ] = (
         React.useState<Extract<React.ComponentProps<typeof Canvas>["camera"] , {}> >(() => {
@@ -345,9 +353,21 @@ export const TArmsDemoC = (
               Rotate
             </Button>
             <Button
-            onClick={e => {
-              setSpnA(v0 => ((2 * Math.PI) + (v0 % (2 * Math.PI ) ) ) ) ;
-              setSpnA(0 ) ;
+            onClick={async (e) => {
+              // flushSync(() => {
+              //   setSpnA(v0 => ((-2 * (2 * Math.PI)) + (v0 % (2 * Math.PI ) ) ) ) ;
+              // }) ;
+              // await new Promise<void>(r => requestAnimationFrame(() => r() ) ) ;
+              // setSpnA(0 ) ;
+              setSpnA(v0 => ((-2 * (2 * Math.PI)) + (v0 % (2 * Math.PI ) ) ) ) ;
+              (
+                await new Promise<void>(r => requestAnimationFrame(() => r() ) )
+                ,
+                await new Promise<void>(r => setTimeout(() => r(), 50 ) )
+              ) ;
+              startTransition(() => {
+                setSpnA(0 ) ;
+              }) ;
             }}
             >
               Reset Rotation
@@ -468,23 +488,6 @@ const {
                 key={3}
                 attach="geometry"
                 coords={(
-                  // POLYLINE_AS_TRIANGLES((() => {
-                  //   const {
-                  //     strkeRelativePosL ,
-                  //     strkeRelativePosR ,
-                  //   } = POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
-                  //     // p1Pos, p2Pos ,
-                  //     [p1Pos[0], p1Pos[1], 0] as const ,
-                  //     [p2Pos[0], p2Pos[1], 0] as const ,
-                  //   ] , 0.1525 )
-                  //   const d = [
-                  //     POE1.PLUS_TWO(p1Pos , strkeRelativePosR ) ,
-                  //     POE1.PLUS_TWO(p1Pos , strkeRelativePosL ) ,
-                  //     POE1.PLUS_TWO(p2Pos , strkeRelativePosL ) ,
-                  //     POE1.PLUS_TWO(p2Pos , strkeRelativePosR ) ,
-                  //   ]
-                  //   return [...d, ...d.toReversed() ]
-                  // })() , { close: true, } )
                   LINE_STROKED([p1Pos, p2Pos] , { strokeWidth: [0.2025, 0.2725], } )
                 )}
                 />
@@ -513,8 +516,18 @@ const {
           <group
           onClick={(event) => SCATTER_EM() }
           >
-              { renderFeaturedKeyDriveSegment1([p1Pos, p2Pos]) }
-              { renderFeaturedKeyDriveSegment1([p2Pos, p3Pos]) }
+              <group>
+                { renderFeaturedKeyDriveSegment1([p1Pos, p2Pos]) }
+                <group
+                position={p2Pos}
+                >
+                  <mesh>
+                    <boxGeometry args={[0.5, 0.5, 0.5 ]} />
+                    <meshStandardMaterial color={'#000000'} />
+                  </mesh>
+                </group>
+                { renderFeaturedKeyDriveSegment1([p2Pos, p3Pos]) }
+              </group>
               { (
                 [
                   p1Pos ,
@@ -542,8 +555,6 @@ const {
 
   } as const)
 })()
-
-import { LINE_STROKED, } from 'studk-ui-encore/src/ThreeReactJsUi/PolygonalOrthoExpansionEncore.tsx';
 
 
 
