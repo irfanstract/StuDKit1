@@ -512,21 +512,27 @@ const {
           } ,
         } = XRescatterablePointsReact.useReScatterableFor3()
 
+        const keyDriveG1 = renderFeaturedKeyDriveSegment1([p1Pos, p2Pos])
+        const joiningG1With2 = (
+          <group
+          position={p2Pos}
+          >
+            <mesh>
+              <boxGeometry args={[0.5, 0.5, 0.5 ]} />
+              <meshStandardMaterial color={'#000000'} />
+            </mesh>
+          </group>
+        )
+        const keyDriveG2 = renderFeaturedKeyDriveSegment1([p2Pos, p3Pos])
+
         const mainG = (
           <group
           onClick={(event) => SCATTER_EM() }
           >
               <group>
-                { renderFeaturedKeyDriveSegment1([p1Pos, p2Pos]) }
-                <group
-                position={p2Pos}
-                >
-                  <mesh>
-                    <boxGeometry args={[0.5, 0.5, 0.5 ]} />
-                    <meshStandardMaterial color={'#000000'} />
-                  </mesh>
-                </group>
-                { renderFeaturedKeyDriveSegment1([p2Pos, p3Pos]) }
+                { keyDriveG1 }
+                { joiningG1With2 }
+                { keyDriveG2 }
               </group>
               { (
                 [
