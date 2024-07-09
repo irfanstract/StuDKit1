@@ -31,7 +31,7 @@ import type {
 
 
 
-export const POLYLINE_AS_TRIANGLES = (
+const POLYGON_AS_TRIANGLES = (
   function <const perPtT extends (
     | (readonly [number, number, number])
     // | import("studk-video-fwcore/src/LinearTransforms.mjs").Point3D
@@ -78,6 +78,12 @@ export const POLYLINE_AS_TRIANGLES = (
     }
   }
 )
+
+export {
+  POLYGON_AS_TRIANGLES ,
+  /** @deprecated alias of {@link POLYGON_AS_TRIANGLES} */
+  POLYGON_AS_TRIANGLES as POLYLINE_AS_TRIANGLES ,
+}
 
 
 
