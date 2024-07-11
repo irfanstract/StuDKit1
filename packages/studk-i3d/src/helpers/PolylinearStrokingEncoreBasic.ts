@@ -54,6 +54,10 @@ import * as POE from "studk-i3d/src/xt/PolygonalOrthoExpansionABrueNrmOnXyz.ts"
 
 import * as POE1 from "studk-i3d/src/xt/PolygonalOrthoExpansionABrueNrmOnCoord.ts"
 
+import {
+  APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO ,
+} from "studk-i3d/src/helpers/PolygonalOrthoExpansionOnCoord1.ts"
+
 import type * as THREE from 'three'
 
 import {
@@ -62,11 +66,66 @@ import {
 
 
 
+;
+
+type LINE_STROKING_ARGS = (
+  ArgsWithOptions<[endpts: readonly [POE1.PTCOORD3D, POE1.PTCOORD3D] ], (
+    & { strokeWidth: number | [number, number], }
+  )>
+) ;
+
+export const LINE_STROKED = (
+  function (...args : (
+    LINE_STROKING_ARGS
+  ) )
+  {
+    const {
+      p1Pos ,
+      p2Pos ,
+      asPolygonPtSeq ,
+      strokeWidths ,
+    } = LINE_STROKING_ANALYSIS(...args)
+
+    return (
+      POLYLINE_AS_TRIANGLES((() => {
+
+        return [...asPolygonPtSeq, ...asPolygonPtSeq.toReversed() ]
+      })() , { close: true, } )
+    )
+  }
+)
+
+
+/**
+ * info of a line-or-polyline stroked via {@link LINE_STROKING_ANALYSIS}
+ * 
+ */
+namespace ILineStroked
+{
+  ;
+  
+  /**
+   * info of
+   * a stop (of the line-or-polyline)
+   * at early stroking stage (ie as returned from {@link APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO } )
+   * .
+   * 
+   */
+  export interface EarlyStrokedStageStopDesc
+  {
+    /** info abt the main direction ; eg the point-position */
+    readonly x: POE1.PTCOORD3D,
+
+    /** info abt the cross-direction ; eg the stroke-width, the out-set off-set(s) */
+    readonly c: ReturnType<typeof APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO>,
+
+  }
+
+}
+
 export const LINE_STROKING_ANALYSIS = (
   function (...args : (
-    ArgsWithOptions<[endpts: readonly [POE1.PTCOORD3D, POE1.PTCOORD3D] ], (
-      & { strokeWidth: number | [number, number], }
-    )>
+    LINE_STROKING_ARGS
   ) )
   {
     const [[p1Pos, p2Pos], { strokeWidth: strokeWidthArg, } ] = args
@@ -75,19 +134,38 @@ export const LINE_STROKING_ANALYSIS = (
 
     const poles = [
       { x: p1Pos , c: (
-        POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
+        APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
           p1Pos,
           p2Pos ,
         ] as const , strokeWidths[0] )
       ), } ,
       { x: p2Pos , c: (
-        POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
+        APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
           p1Pos,
           p2Pos ,
         ] as const , strokeWidths[1] )
       ), } ,
-    ] satisfies { x: POE1.PTCOORD3D, c: ReturnType<typeof POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO>, }[]
+    ] satisfies ILineStroked.EarlyStrokedStageStopDesc[]
 
+    const {
+      asPolygonPtSeq ,
+    } = LINESTROKED_APPTS(poles)
+
+    return {
+      p1Pos ,
+      p2Pos ,
+      strokeWidths ,
+      poles ,
+      asPolygonPtSeq ,
+    } as const
+  }
+)
+
+const LINESTROKED_APPTS = (
+  function (...[poles] : [poles: readonly ILineStroked.EarlyStrokedStageStopDesc[] ])
+  {
+    ;
+    
     const d0 = (
       util.reiterated(function * () {
         for (const [e0, e2] of ADJACENT_PAIRS(poles) ) {
@@ -100,7 +178,7 @@ export const LINE_STROKING_ANALYSIS = (
               e => e.strkeRelativePosL,
               e => e.strkeRelativePosB,
               e => e.strkeRelativePosR,
-            ] satisfies ((d: ReturnType<typeof POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO>) => POE1.PTCOORD3D )[] )
+            ] satisfies ((d: ILineStroked.EarlyStrokedStageStopDesc["c"]) => POE1.PTCOORD3D )[] )
           ) )
           {
             yield {
@@ -136,36 +214,23 @@ export const LINE_STROKING_ANALYSIS = (
     )
 
     return {
-      p1Pos ,
-      p2Pos ,
-      strokeWidths ,
-      poles ,
       asPolygonPtSeq ,
     } as const
   }
 )
 
+export {
+  /** @deprecated this is a WIP. */
+  LINESTROKED_APPTS ,
+}
 
-export const LINE_STROKED = (
-  function (...args : (
-    Parameters<typeof LINE_STROKING_ANALYSIS>
-  ) )
-  {
-    const {
-      p1Pos ,
-      p2Pos ,
-      asPolygonPtSeq ,
-      strokeWidths ,
-    } = LINE_STROKING_ANALYSIS(...args)
 
-    return (
-      POLYLINE_AS_TRIANGLES((() => {
+;
 
-        return [...asPolygonPtSeq, ...asPolygonPtSeq.toReversed() ]
-      })() , { close: true, } )
-    )
-  }
-)
+;
+
+
+;
 
 
 

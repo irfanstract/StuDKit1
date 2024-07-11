@@ -306,55 +306,53 @@ import {
   XRescatterablePointsReact ,
 } from "studk-ui-encore/src/StI3dPresenters/rescatterableptx.tsx"
 
-const {
-  PReformableTriangularC ,
-  PEdgesC ,
-} = (() => {
-
-  const SpclCtrlPointC = (
-    describeThreeJsObjComponent((
-      function CtrlPointCImpl({ position: positionArg, ...etProps } : { position: readonly [number, number, number], } )
-      {
-        let e: React.ReactElement = (
-          <Box position={[0, 0, 0]} />
-        )
-        e = (
-          <group scale={2 ** -2} >
-            { e }
-          </group>
-        )
-        e = (
-          <group position={positionArg} >
-            { e }
-          </group>
-        )
-        return (
-          e
-        )
-      }
-    ))
-  )
-
-  const renderCtrlPoints = (
-    function (...[pts] : [readonly POE1.PTCOORD3D[] ] )
+const SpclCtrlPointC = (
+  describeThreeJsObjComponent((
+    function CtrlPointCImpl({ position: positionArg, ...etProps } : { position: readonly [number, number, number], } )
     {
+      let e: React.ReactElement = (
+        <Box position={[0, 0, 0]} />
+      )
+      e = (
+        <group scale={2 ** -2} >
+          { e }
+        </group>
+      )
+      e = (
+        <group position={positionArg} >
+          { e }
+        </group>
+      )
       return (
-        <>
-        { (
-          pts
-          .map((ptPos, i) => (
-            <SpclCtrlPointC
-            key={`ctrl pt ${i}`}
-            position={ptPos}
-            />
-          ))
-        ) }
-        </>
+        e
       )
     }
-  )
+  ))
+)
 
-  return ({
+const renderCtrlPoints = (
+  function (...[pts] : [readonly POE1.PTCOORD3D[] ] )
+  {
+    return (
+      <>
+      { (
+        pts
+        .map((ptPos, i) => (
+          <SpclCtrlPointC
+          key={`ctrl pt ${i}`}
+          position={ptPos}
+          />
+        ))
+      ) }
+      </>
+    )
+  }
+)
+
+const {
+  PReformableTriangularC ,
+} = (() => {
+  return {
     //
 
     PReformableTriangularC : describeThreeJsObjComponent((
@@ -402,27 +400,70 @@ const {
       }
     )) ,
 
+  }
+} )() ;
+
+const {
+  PEdgesC ,
+} = (() => {
+
+  /**
+   * Featured Key Drive Segment
+   */
+  function DSe(props : { readonly [k in keyof { p1Pos, p2Pos } ] -?: POE1.PTCOORD3D } )
+  {
+    const { p1Pos, p2Pos, } = props
+    ;
+    return (
+      <mesh>
+        <ByCoordTupleArrayGeometryC
+        key={3}
+        attach="geometry"
+        coords={(
+          LINE_STROKED([p1Pos, p2Pos] , { strokeWidth: [0.2025, 0.2725], } )
+        )}
+        />
+        <meshStandardMaterial color={"#FFC0C0"} />
+      </mesh>
+    )
+  }
+  /**
+   * Featured Key Drive-Joining Segment
+   */
+  function JSe(props : { readonly [k in keyof { centralPos } ] -?: POE1.PTCOORD3D } )
+  {
+    ;
+    const { centralPos: p2Pos, } = props
+    ;
+    return (
+      <group
+      position={p2Pos}
+      >
+        <mesh>
+          <boxGeometry args={[0.5, 0.5, 0.5 ]} />
+          <meshStandardMaterial color={'#000000'} />
+        </mesh>
+      </group>
+    )
+  }
+
+  return ({
+    //
+
     PEdgesC : describeThreeJsObjComponent((
       function PEdgeCImpl()
       {
         ;
-        const renderFeaturedKeyDriveSegment1 = (
-          function (...[[p1Pos, p2Pos]] : [readonly [POE1.PTCOORD3D, POE1.PTCOORD3D] ] )
-          {
-            return (
-              <mesh>
-                <ByCoordTupleArrayGeometryC
-                key={3}
-                attach="geometry"
-                coords={(
-                  LINE_STROKED([p1Pos, p2Pos] , { strokeWidth: [0.2025, 0.2725], } )
-                )}
-                />
-                <meshStandardMaterial color={"#FFC0C0"} />
-              </mesh>
-            )
-          }
-        )
+        // const renderFeaturedKeyDriveSegment1 = (
+        //   function (...[[p1Pos, p2Pos]] : [readonly [POE1.PTCOORD3D, POE1.PTCOORD3D] ] )
+        //   {
+        //     return (
+        //       <DSe
+        //       {...{ p1Pos, p2Pos, }}
+        //       />
+        //     )
+        //   }
+        // )
 
         {
 
@@ -439,27 +480,67 @@ const {
           } ,
         } = XRescatterablePointsReact.useReScatterableFor3()
 
-        const keyDriveG1 = renderFeaturedKeyDriveSegment1([p1Pos, p2Pos])
-        const joiningG1With2 = (
-          <group
-          position={p2Pos}
-          >
-            <mesh>
-              <boxGeometry args={[0.5, 0.5, 0.5 ]} />
-              <meshStandardMaterial color={'#000000'} />
-            </mesh>
-          </group>
+        const kdg = (
+          (() => {
+            ;
+
+            const keyDriveG1 = (
+              <DSe
+              p1Pos={p1Pos}
+              p2Pos={p2Pos}
+              />
+            )
+            const joiningG1With2 = (
+              <JSe centralPos={p2Pos} />
+            )
+            const keyDriveG2 = (
+              <DSe
+              p1Pos={p2Pos}
+              p2Pos={p3Pos}
+              />
+            )
+    
+            return (
+              <group>
+                { keyDriveG1 }
+                { joiningG1With2 }
+                { keyDriveG2 }
+              </group>
+            )
+
+            // const pts = [
+            //   p1Pos ,
+            //   p2Pos ,
+            //   p3Pos ,
+            //   [-2, -2, -2] as const ,
+            //   [-12, 2.25, 1.5] as const ,
+            // ]
+
+            // interface S0 { i: number, r: React.ReactElement, }
+            // interface S1 { i0: number, i1: number, r: React.ReactElement, }
+
+            // return (
+            //   <group>
+            //   { (
+            //     util.Immutable.Seq((
+            //       util.unfoldConjPro({
+            //         digest: ({ i, } : S0) => (
+            //           0
+            //         ) ,
+            //       })
+            //     ))
+            //   ) }
+            //   </group>
+            // )
+          })()
         )
-        const keyDriveG2 = renderFeaturedKeyDriveSegment1([p2Pos, p3Pos])
 
         const mainG = (
           <group
           onClick={(event) => SCATTER_EM() }
           >
               <group>
-                { keyDriveG1 }
-                { joiningG1With2 }
-                { keyDriveG2 }
+                { kdg }
               </group>
               { (
                 renderCtrlPoints([
