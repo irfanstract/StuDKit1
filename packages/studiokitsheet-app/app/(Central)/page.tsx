@@ -71,23 +71,16 @@ export default function App()
       ) ,
       children: (
         <div>
-          <p>
-            <b>The Studio Kit Sheet Central Studio</b>
-          </p>
-          <p>
-            <i>The Studio Kit Sheet Central Studio</i>
-          </p>
-          <figure>
-            <img
-            alt='main fig'
-            src="/mainfig.svg/"
-            />
-          </figure>
+          { <EvrC /> }
         </div>
       ) ,
     })
   ) ;
 } ;
+
+import {
+  EvrC ,
+} from "@/components/EVR"; ;
 
 
 
