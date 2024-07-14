@@ -19,7 +19,19 @@
   .studk-sequemi-tlwalkthruinlinecomp {
     min-block-size: 45vh;
   }
+
+  .studk-sequemi-tlwalkthruinlinecomp table {
+    // writing-mode: vertical-lr;
+    // & :is(td, th) {
+    //   writing-mode: initial;
+    // }
+    --table-cell-orientation: vertical-lr ;
+  }
 }
+
+
+
+
 
 // TODO
 @property --t-start {
