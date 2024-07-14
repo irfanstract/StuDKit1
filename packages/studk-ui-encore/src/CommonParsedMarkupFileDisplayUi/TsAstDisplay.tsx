@@ -30,13 +30,16 @@ import type {
   Extend,
 } from 'studk-fwcore/src/util/C1.ts'
 
-import { TS, } from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsLib.ts" ;
+import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
 const getNodeTypeLabelTxt = (nd: TS.Node) => (
     `${TS.SyntaxKind[nd.kind] }`
 ) ;
 
-import type * as TsServer from "typescript/lib/tsserver.js" ;
+import {
+  NodeListKcn,
+  getKcn ,
+} from "studk-ts-codeanalysis/src/TsDeriva.ts" ;
 
 
 
@@ -106,12 +109,27 @@ const getSpclDefaultClvMd = () => (
   CLV.forIsTerminaNdFnc()
 ) ;
 
+namespace TsAstDisplayEvents
+{
+  /* extra semi-colon tp work-around `TS(1205)` */ ;
+
+  export interface SelfTotalReplacingChgEventDesc {
+    newValue: TS.Node,
+  }
+
+}
+
+export {
+  /** @deprecated this is a WIP */
+  TsAstDisplayEvents ,
+} ;
+
 export const TsAstDisplayC = (
   describeHtmlComponent((function TsAstDisplayCImpl(props : (
     {
       value: TS.Node ,
       clvMd ?: CLV,
-      onChange ?: (evt: { newValue: TS.Node, }) => void ,
+      onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
     }
   ) )
   {
@@ -172,22 +190,49 @@ export const TsAstDisplayC = (
       }
     })() ;
 
+    const sptdKcn = (
+      getKcn(nd.kind)
+    ) ;
+
     const e = (() => {
       ;
       
       if (clvMd.asDbWhen() ) {
         if (asTerminalMdlNode) {
           const ndSrcTxt = nd.getText() ;
+          const renderAsEnlargedPuncTokenCode = (e0: React.ReactElement) => (
+            <span style={{ display: "inline-block", inlineSize: `4em` }} >
+              <span style={{ textAlign: "center", }} >
+              <span style={{ fontSize: `1.25em`, }}>
+                <span style={{ display: "inline-block", position: "relative", transform: `scale(2.5, 1)`, transformOrigin: `0 0 0` }}>
+                { e0 }
+                </span>
+                </span>
+              </span>
+            </span>
+          ) ;
+          const renderAsEnlargedBracketTokenCode = (e0: React.ReactElement) => (
+            renderAsEnlargedPuncTokenCode((
+              <span style={{ display: "inline-block", position: "relative", transform: `scale(1, 1.25)`, }}>
+              <span style={{ writingMode: "vertical-rl", }} >
+                { withExtraSemanticProperties({ style: { fontFamily: "serif", fontSize: `2em` } } , e0) }
+              </span>
+              </span>
+            ))
+          ) ;
           switch (ndSrcTxt ) {
             // ════
-            case "(" : return <code><>╭━━━━━━╮</></code> ;
-            case ")" : return <code><>╰━━━━━━╯</></code> ;
-            case "[" : return <code><>┏════════┓</></code> ;
-            case "]" : return <code><>┗════════┛</></code> ;
-            case "{" : return <code><>╭════^════╮</></code> ;
-            case "}" : return <code><>╰════v════╯</></code> ;
-            case "<" : return <code><>{ "<   <   <" }</></code> ;
-            case ">" : return <code><>{ ">   >   >" }</></code> ;
+            case "(" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code>   ) ;
+            case ")" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code>   ) ;
+            case "[" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code> ) ;
+            case "]" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code> ) ;
+            case "{" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code>) ;
+            case "}" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code>) ;
+            case "<" : break ; return <code><>{ "<   <   <" }</></code> ;
+            case ">" : break ; return <code><>{ ">   >   >" }</></code> ;
+          }
+          if (TS.isToken(nd) && !ndSrcTxt.match(/\s|\w/) ) {
+            return renderAsEnlargedPuncTokenCode(<code>{ ndSrcTxt }</code>) ;
           }
           if ((
             getNodeTypeLabelTxt(nd).endsWith("Keyword")
@@ -237,12 +282,19 @@ export const TsAstDisplayC = (
               { e1 }
               <div>
               { (
-                (runOnChgHandler && (TS.isExpression(nd) || TS.isStatement(nd) ) )
+                (runOnChgHandler && (sptdKcn ) )
                 &&
                 <Button
                 title='Replace This Expression/Statement With...'
                 children={<>☯</>}
-                onClick={false}
+                onClick={() => {
+                  // const newNd = (() => {
+                  //   if (sptdKcn instanceof NodeListKcn) {
+                  //     return sptdKcn.withReplacedChildren(nd,  ) ;
+                  //   }
+                  //   return nd ;
+                  // })() ;
+                }}
                 />
               ) }
               </div>
