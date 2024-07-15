@@ -52,6 +52,10 @@ import {
 } from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 import {
+  CFaBku ,
+} from "studk-ui-fwcore/src/reactjs/helpers/CFa.tsx" ;
+
+import {
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
 } from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
@@ -95,7 +99,15 @@ export const AccrdListC = (
           <ul
           className='studk-ui-accrdnlc'
           >
-            { children }
+            { (
+              React.Children.toArray(children)
+              .map((e, i) => (
+                <CFaBku
+                key={i}
+                children={e }
+                />
+              ))
+            ) }
           </ul>
         </div>
       ) ;
