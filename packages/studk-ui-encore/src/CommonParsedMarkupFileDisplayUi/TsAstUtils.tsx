@@ -33,7 +33,7 @@ import type {
 
 
 
-import TS from "typescript" ;
+import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
 
 
@@ -70,6 +70,18 @@ export const getSampleTsSourceFile = (
           <cube origin={loc} diameter={d} />
         ) ;
 
+        {
+          "unused string literal" ;
+          if (1) {
+            "unused string literal" ;
+          }
+
+          { 5; 6; 7; }
+          [5, 6, 7] ;
+          
+          [5, 6, 7] as const ;
+        }
+
         `
       ) , {
         languageVersion: TS.ScriptTarget.ES2022,
@@ -80,7 +92,7 @@ export const getSampleTsSourceFile = (
          * 
          */
         true
-      ), TS.ScriptKind.TS )
+      ), TS.ScriptKind.TSX )
     ) ;
     return sf ;
   }
