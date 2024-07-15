@@ -70,6 +70,18 @@ export const getSampleTsSourceFile = (
           <cube origin={loc} diameter={d} />
         ) ;
 
+        {
+          "unused string literal" ;
+          if (1) {
+            "unused string literal" ;
+          }
+
+          { 5; 6; 7; }
+          [5, 6, 7] ;
+          
+          [5, 6, 7] as const ;
+        }
+
         `
       ) , {
         languageVersion: TS.ScriptTarget.ES2022,
