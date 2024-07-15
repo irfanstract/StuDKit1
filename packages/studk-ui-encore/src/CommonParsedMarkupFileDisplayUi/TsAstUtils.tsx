@@ -33,7 +33,7 @@ import type {
 
 
 
-import TS from "typescript" ;
+import { TS, } from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsLib.ts" ;
 
 
 
