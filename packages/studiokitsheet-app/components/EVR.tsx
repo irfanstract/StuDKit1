@@ -38,6 +38,10 @@ import type {
 
 
 
+;
+
+
+
 
 
 
@@ -45,6 +49,23 @@ import type {
 ;
 
 import * as React from "react" ;
+
+const useCLientSideOnly = (
+  () => React.useSyncExternalStore((
+    React.useCallback(() => (() => {} ) , [] )
+  ) , () => true, () => false )
+) ;
+
+const useClientSideOnlyCompute = (
+  function <const R extends true | object > (...[recompute]: [() => R] )
+  {
+    const [s, setS] = React.useState<R | null>(() => null) ;
+    React["useEffect"](() => {
+      setS(v0 => (v0 ?? recompute() ) ) ;
+    }) ;
+    return s ;
+  }
+) ;
 
 
 
@@ -81,11 +102,8 @@ export const EvrC = (
     function EvrCImpl()
     {
 
-      const {
-        value ,
-        err ,
-      } = (
-        React.useMemo((): (
+      const vAndE = (
+        useClientSideOnlyCompute((): (
           | { value: ReturnType<typeof getSampleDocument>, err?: null, }
           | { err: Error, value?: false | null, }
         ) => {
@@ -98,21 +116,36 @@ export const EvrC = (
               value: false ,
             } ;
           }
-        } , [] )
+        } )
       ) ;
 
-      if (value) {
+      if (vAndE) {
         ;
-        return (
-          <EvrCPos value={value} />
-        ) ;
+        const {
+          value ,
+          err ,
+        } = vAndE ;
+  
+        if (value) {
+          ;
+          return (
+            <EvrCPos value={value} />
+          ) ;
+        } else {
+          ;
+  
+          return (
+            <div>
+              <p>Failed To Render Document: <code>{ err.message }</code></p>
+              <pre>{ err.stack ?? "" }</pre>
+            </div>
+          ) ;
+        }
       } else {
         ;
-
         return (
           <div>
-            <p>Failed To Render Document: <code>{ err.message }</code></p>
-            <pre>{ err.stack ?? "" }</pre>
+            <p>Failed To Render Document: The Document Is Not Loaded Yet</p>
           </div>
         ) ;
       }
