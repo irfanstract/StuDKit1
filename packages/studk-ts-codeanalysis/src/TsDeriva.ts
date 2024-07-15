@@ -186,7 +186,19 @@ extends Kcn<SpcficNd>
 
 }
 
-const getKcn = (
+export const getRlKcn = (
+  //
+  function <const Knd extends TS.SyntaxKind >(...[nd]: [TS.Node] )
+  : Kcn<TS.Node> | null
+  {
+
+    return (
+      getKcn(nd.kind)
+    ) ;
+  }
+) ;
+
+export const getKcn = (
   function <const Knd extends TS.SyntaxKind >(...[sk]: [Knd] )
   : Kcn<TS.Node> | null
   {
@@ -214,6 +226,20 @@ const getKcn = (
             TS.factory.createToken(TS.SyntaxKind.EndOfFileToken)
           ) , 0  )
         ))
+      ) ;
+    }
+    
+    if (sk === TS.SyntaxKind.ExpressionStatement) {
+      return (
+        NodeListKcn.of((rcv0, [newNd1, ...excess] ) => {
+          if (newNd1) {
+            return (
+              // TODO
+              TS.factory.createExpressionStatement(newNd1 as TS.Expression )
+            ) ;
+          }
+          return rcv0 ;
+        })
       ) ;
     }
 
@@ -280,13 +306,28 @@ const getKcn = (
       ) ;
     }
 
+    if (sk === TS.SyntaxKind.Identifier) {
+      return (
+        KeywordAlikeKcn.of((spcifier) => {
+          return (
+            TS.factory.createIdentifier(spcifier)
+          ) ;
+        })
+      ) ;
+    }
+    if (sk === TS.SyntaxKind.NumericLiteral) {
+      return (
+        KeywordAlikeKcn.of((spcifier) => {
+          return (
+            TS.factory.createNumericLiteral(spcifier)
+          ) ;
+        })
+      ) ;
+    }
+    
     return null ;
   }
 ) ;
-
-export {
-  getKcn ,
-} ;
 
 ;
 
