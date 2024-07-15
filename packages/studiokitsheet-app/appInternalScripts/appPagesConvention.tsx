@@ -43,14 +43,14 @@ export const describeHtmlComponent = (
   describeComponent
 ) ;
 
-// import dynamicComponent from "next/dynamic";
-const dynamicComponent: (
-  // | (typeof util.L.identity)
-  | (typeof import("next/dynamic").default )
-  | null
-) = (
-  null
-) ;
+import dynamicComponent from "next/dynamic";
+// const dynamicComponent: (
+//   // | (typeof util.L.identity)
+//   | (typeof import("next/dynamic").default )
+//   | null
+// ) = (
+//   null
+// ) ;
 
 export {
   dynamicComponent as dynamicComponent,
