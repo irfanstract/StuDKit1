@@ -26,6 +26,10 @@ export type * from "studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs" ;
 
 export type * from "studk-util/src/utilityTypeDefs/OITF.mjs" ;
 
+
+import type {} from "typexpe-commons/src/ArrayPrototypeIncludes.mts" ;
+
+
 ;
 
 
