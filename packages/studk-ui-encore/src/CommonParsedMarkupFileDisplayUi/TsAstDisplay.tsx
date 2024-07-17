@@ -32,9 +32,10 @@ import type {
 
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
-const getNodeTypeLabelTxt = (nd: TS.Node) => (
-    `${TS.SyntaxKind[nd.kind] }`
-) ;
+import {
+  getNodeTypeLabelTxt ,
+  getNodeChildren ,
+} from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsAstUtils.tsx"
 
 import {
   KeywordAlikeKcn,
@@ -565,7 +566,7 @@ export const TsAstDisplayC = (
 
         const e1 = (
           <div
-          title={`${nodeTypeLabelTxt } - ${JSON.stringify(nd.getText() ) }`}
+          title={`${nodeTypeLabelTxt } `}
           style={{
             zoom: `99%` ,
             border: bord ? `0.05em solid currentcolor` : undefined ,
