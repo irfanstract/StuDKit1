@@ -64,6 +64,14 @@ export {
   getNodeChildren ,
 } ;
 
+import {
+  getRepresentationallyReducedCopyOf ,
+} from "studk-ts-codeanalysis/src/core/TsAstComposableMode.ts" ;
+
+export {
+  getRepresentationallyReducedCopyOf as getRepresentationallyReducedCopyOf ,
+} ;
+
 
 
 
