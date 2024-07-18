@@ -118,8 +118,9 @@ export const EvrC = (
         vAndE ,
         pushRevContent ,
         revertToRevT ,
+        pruneAllRevsList ,
       } = (
-        useRevCsioe<TS.SourceFile >(() => (
+        useRevCsioe<ReturnType<typeof getSampleDocument> >(() => (
           getSampleDocument()
         ))
       ) ;
@@ -135,10 +136,10 @@ export const EvrC = (
           ;
           const {
             revs,
-            lastRevT ,
+            presentlyRevT: presentlyRevT ,
             revParentMap ,
           } = v0 ;
-          const revT = lastRevT ;
+          const revT = presentlyRevT ;
           const runUndoBtnAction = (
             (() => {
               const nextRevT = revParentMap.get(revT) ?? null ;
@@ -151,11 +152,82 @@ export const EvrC = (
               }
             })()
           ) ;
+          const runRedoBtnAction = (
+            (() => {
+              if (v0.withRedo().presentlyRevT === v0.presentlyRevT ) {
+                return false ;
+              }
+              return () => {
+                revertToRevT(v0.withRedo().presentlyRevT ) ;
+              } ;
+            })()
+          ) ;
           const value = (
             revs.get(revT)
           ) ;
           if (value) {
           ;
+          const memub = (
+            revs.valueSeq()
+            /* total length */
+            .map(f => f.text ).join("").length
+          ) ;
+          const revActsPane = (
+            <div>
+              <ul
+              style={{ display: "flex", flexDirection: "row" }}
+              >
+                <li
+                style={{ order: 2, }}
+                >
+                Rev T: {}
+                [<i>{ new Date(revT).toLocaleString() }</i>] {}
+                <i>{ new Date(v0.presentlyRevT ).toLocaleString() }</i> {}
+                </li>
+                <li
+                style={{ order: 1, }}
+                >
+                Parent Rev T: {}
+                <i>{ new Date(v0.withUndo().presentlyRevT ).toLocaleString() }</i>
+                </li>
+                <li
+                style={{ order: 3, }}
+                >
+                Redo Rev T: {}
+                <i>{ new Date(v0.withRedo().presentlyRevT ).toLocaleString() }</i>
+                </li>
+              </ul>
+              <details>
+                <pre style={{}} >
+                  { JSON.stringify({ t: v0.presentlyRevT, u: v0.revParentMap, r: v0.revRedoMap, }, null, 2 ) }
+                </pre>
+              </details>
+              <nav>
+                <Button
+                children={`Undo` }
+                onClick={runUndoBtnAction}
+                />
+                <Button
+                children={`Redo` }
+                onClick={runRedoBtnAction}
+                />
+              </nav>
+              <aside>
+              <p>
+                Estimated Mem Usage (maybe): {}
+                <i>{ ((v: number, s: number) => `${(v / (1024 ** s ) ).toFixed(2) } ${(["B", "KiB", "MiB", "GiB"] as const)[s] ?? "(...)" }` )(memub, 2 ) }</i> {}
+                ; {}
+                Current Rev          : <i>{ new Date(v0.presentlyRevT).toLocaleString() }</i> ; {}
+                Revs          : <i>{ revs.size }</i> ; {}
+                Reachable Revs: { (() => { const rs = v0.getAllReachableRevTs() ; if (0 && (rs.length < 6)) { return <i>{ rs.map(t => new Date(t).toLocaleString() ).join(" and ") }</i> } ; return <i>{ rs.length } items</i> ; })() } ; {}
+                <Button
+                children={`Prune Revs` }
+                onClick={pruneAllRevsList || false }
+                /> {}
+              </p>
+              </aside>
+            </div>
+          ) ;
           return (
             <EvrCPos
             value={value}
@@ -163,22 +235,14 @@ export const EvrC = (
               const { newValue, } = e ;
               if (TS.isSourceFile(newValue) ) {
                 ;
-                pushRevContent(newValue)
+                pushRevContent(newValue, { asBeingWithinHighFrequencyEditSeqce: true, } )
               } else {
                 ;
                 console["warn"](`'newValue' is  arbitrary Node but we can only accept SourceFile(s). ignoring the submitted chg evt, not committing it. `, { newValue, } ) ;
               }
             } }
             revActionsPane={(
-              <div>
-                <p>
-                  Rev T: <i>{ new Date(revT).toLocaleString() }</i>
-                </p>
-                <Button
-                children={`Undo` }
-                onClick={runUndoBtnAction}
-                />
-              </div>
+              revActsPane
             )}
             />
           ) ;
@@ -215,8 +279,9 @@ export const EvrC = (
 const TsAstDisplayCAlt = (
   function TsAstDisplayCAltCImpl(props: React.ComponentProps<typeof TsAstDisplayC>)
   {
-    const astRenderRetryK = (
-      React.useMemo(() => Math.random() , [props.value] )
+    const astRenderRetryK : number | string = (
+      // React.useMemo(() => Math.random() , [props.value] )
+      1
     ) ;
     return (
       <div>
