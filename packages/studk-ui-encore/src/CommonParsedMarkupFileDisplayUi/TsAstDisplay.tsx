@@ -482,6 +482,27 @@ export const TsAstDisplayC = (
     const e = (() => {
       ;
       
+      const selfEditBtnsSec = (
+        <div>
+        { (
+          (runWholeTreeChgHandler || runnTextualEditEvtCb ) ?
+          <Button
+          title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
+          children={<>☯</>}
+          onClick={() => {
+            // const newNd = (() => {
+            //   if (sptdKcn instanceof NodeListKcn) {
+            //     return sptdKcn.withReplacedChildren(nd,  ) ;
+            //   }
+            //   return nd ;
+            // })() ;
+          }}
+          />
+          : <></>
+        ) }
+        </div>
+      ) ;
+
       if (clvMd.asDbWhen() ) {
 
         {
@@ -609,8 +630,13 @@ export const TsAstDisplayC = (
         } )() ;
 
         if (et !== null) {
-          return (
+          const et2 = (
             clvMd.postdecDbwInlinelikeB4(et, {})
+          ) ;
+          return (
+            clvMd.postdecDbwBdB3(et2, {
+              selfEditBtnsSec ,
+            } )
           ) ;
         }
 
@@ -681,27 +707,6 @@ export const TsAstDisplayC = (
             bord ,
             asJsxTag ,
           } , e1C )
-        ) ;
-
-        const selfEditBtnsSec = (
-          <div>
-          { (
-            (runWholeTreeChgHandler || runnTextualEditEvtCb ) ?
-            <Button
-            title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
-            children={<>☯</>}
-            onClick={() => {
-              // const newNd = (() => {
-              //   if (sptdKcn instanceof NodeListKcn) {
-              //     return sptdKcn.withReplacedChildren(nd,  ) ;
-              //   }
-              //   return nd ;
-              // })() ;
-            }}
-            />
-            : <></>
-          ) }
-          </div>
         ) ;
 
         return (
@@ -910,7 +915,7 @@ class CLV
               <div
               style={{
                 display: "flex" ,
-                flexDirection: "column",
+                flexDirection: "column-reverse",
               }}
               >
                 { e1 }
