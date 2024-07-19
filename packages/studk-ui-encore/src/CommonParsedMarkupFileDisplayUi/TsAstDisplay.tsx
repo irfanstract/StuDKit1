@@ -150,7 +150,18 @@ namespace TsAstDisplayEvents
       end: lsAbsoluteEnd ,
     } = lsNd ;
     const existingTxt = (
-      lsNd.getSourceFile().text.slice(lsAbsoluteStart, lsAbsoluteEnd )
+      ((): string => {
+        switch (2 as number) {
+          case 1 :
+            return (
+              lsNd.getSourceFile().text.slice(lsAbsoluteStart, lsAbsoluteEnd )
+            ) ;
+          default :
+            return (
+              lsNd.getText()
+            ) ;
+        }
+      })()
     ) ;
 
     return {
@@ -196,6 +207,14 @@ export const TsAstDisplayC = (
       onChange: runWholeTreeChgHandler ,
       onTextualEditEvt: runnTextualEditEvtCb ,
     } = props ;
+
+    const {
+      autoCommitOnType = false ,
+      noSupressionOfZeroChgEvts = false ,
+    } = ((): {
+      autoCommitOnType ?: boolean ,
+      noSupressionOfZeroChgEvts ?: boolean ,
+    } => ({}) )() ;
 
     ;
     
@@ -511,17 +530,49 @@ export const TsAstDisplayC = (
                 { (() => {
                   if (runnTextualEditEvtCb ) {
                     ;
+                    const {
+                      asBwhfe ,
+                      XInput ,
+                    } = (
+                      ((): { asBwhfe : boolean, XInput : "input" | (typeof SfmInputC) } => {
+                        if (autoCommitOnType) {
+                          return { XInput: "input", asBwhfe: true, } ;
+                        }
+                        return { XInput: SfmInputC, asBwhfe: false, } ;
+                      } )()
+                    ) ;
                     return (
-                      <SfmInputC
+                      <XInput
                       value={nd.getText() }
                       onChange={e0 => {
                         const { value: newTxt, } = e0.target ;
 
                         const e1 = (
-                          TsAstDisplayEvents.describeNdseEdit({ lsNd: nd, newTxt: newTxt, })
+                          TsAstDisplayEvents.describeNdseEdit({
+                            lsNd: nd,
+                            newTxt: newTxt,
+                            asBeingWithinHighFrequencyEditSeqce: asBwhfe ,
+                          })
                         ) ;
 
-                        runnTextualEditEvtCb(e1) ;
+                        const isZeroChg = (
+                          e1.newTxt === e1.existingTxt
+                        ) ;
+
+                        0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
+
+                        if ((
+                          ((): boolean => {
+                            if (noSupressionOfZeroChgEvts) { return true ; }
+
+                            return (!isZeroChg || noSupressionOfZeroChgEvts) || (
+                              console["log"](`newText exactly the same so chg evt should be supressed.`)
+                              , false
+                            ) ;
+                          })()
+                        )) {
+                          runnTextualEditEvtCb(e1) ;
+                        }
 
                         ;
                       } }
@@ -633,9 +684,9 @@ export const TsAstDisplayC = (
         ) ;
 
         const selfEditBtnsSec = (
-          runWholeTreeChgHandler ?
           <div>
           { (
+            (runWholeTreeChgHandler || runnTextualEditEvtCb ) ?
             <Button
             title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
             children={<>☯</>}
@@ -648,9 +699,9 @@ export const TsAstDisplayC = (
               // })() ;
             }}
             />
+            : <></>
           ) }
           </div>
-          : <></>
         ) ;
 
         return (
