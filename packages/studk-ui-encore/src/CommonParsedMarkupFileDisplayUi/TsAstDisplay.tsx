@@ -128,6 +128,7 @@ namespace TsAstDisplayEvents
     // lsAbsoluteEnd ,
     lsNd ,
     newTxt ,
+    asBeingWithinHighFrequencyEditSeqce = true ,
   }] : [(
     {
       // readonly lsAbsoluteStart: number,
@@ -135,6 +136,7 @@ namespace TsAstDisplayEvents
       readonly lsNd: TS.Node ,
       readonly newTxt: string ,
       // readonly existingTxt: string ,
+      readonly asBeingWithinHighFrequencyEditSeqce ?: boolean,
     }
   )] )
   {
@@ -153,6 +155,7 @@ namespace TsAstDisplayEvents
       lsAbsoluteStart ,
       existingTxt ,
       newTxt ,
+      asBeingWithinHighFrequencyEditSeqce ,
     } as const ;
   }
 
