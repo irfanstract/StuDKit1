@@ -402,15 +402,6 @@ export const TsAstDisplayC = (
       }
     ) ;
 
-    const ndCtor = (
-      (Object.getPrototypeOf(nd) as (Object | null ))?.constructor
-    ) ;
-    const nodeTypeLabelTxt = (
-      getNodeTypeLabelTxt(nd)
-      ??
-      `Node Type ${nd.kind }`
-    ) ;
-
     const ncs = (
       useIsClientSide()
     ) ;
@@ -418,10 +409,6 @@ export const TsAstDisplayC = (
     const asTerminalMdlNode = (
       TS.isToken(nd)
       || TS.isLiteralExpression(nd)
-    ) ;
-
-    const sptdKcn = (
-      getRlKcn(nd)
     ) ;
 
     const childListDView = (() => {
@@ -460,17 +447,6 @@ export const TsAstDisplayC = (
           value={ndChildren }
           clvMd={clvMd}
           // srcNd={nd }
-          onChange={runWholeTreeChgHandler && (
-            (sptdKcn instanceof NodeListKcn)
-            ?
-            (({ newValue: newChildrenList, }) => {
-              const newv = (
-                sptdKcn.withReplacedChildren(nd, newChildrenList )
-              ) ;
-              runWholeTreeChgHandler({ newValue: newv }) ;
-            } )
-            : undefined
-          )}
           onTextualEditEvt={runnTextualEditEvtCb}
           />
         ) ;
