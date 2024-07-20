@@ -333,7 +333,7 @@ add into [`package.json`](./package.json) first and then run `npm install` (ie N
 .
 
 ```diff json
-{
+  {
     "devDependencies": {
         "@types/chai": "^4.3.12",
         "@types/minimist": "^1.2.5",
@@ -352,7 +352,7 @@ add into [`package.json`](./package.json) first and then run `npm install` (ie N
         "hereby": "^1.8.9",
         "jsonc-parser": "^3.2.1",
     },
-}
+  }
 ```
 
 ```
