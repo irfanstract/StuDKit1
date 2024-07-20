@@ -114,6 +114,19 @@ import {
 
 // }
 
+interface TsAstDisplayCompCommonProps
+{
+
+  /**
+   * display configuration likely to be exact same unchanged for the whole doc tree.
+   * 
+   */
+  clvMd ?: CLV,
+
+  onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+
+}
+
 const getSpclDefaultClvMd = () => (
   // <p><code>{nodeTypeLabelTxt }</code></p>
   CLV.forIsTerminaNdFnc(undefined, { asDbWhen: () => true, } )
@@ -185,16 +198,29 @@ export {
   TsAstDisplayEvents ,
 } ;
 
-export const TsAstDisplayC = (
-  describeHtmlComponent((function TsAstDisplayCImpl(props : (
-    {
+interface TsNodeUnitDisplayCompProps extends
+TsAstDisplayCompCommonProps
+{
+
       value: TS.Node ,
       clvMd ?: CLV,
 
-      /**  @deprecated consider {@link onTextualEditEvt } instead. */
-      onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
       onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
 
+}
+
+const TsNodeUnitDisplayPrivC = (
+  describeHtmlComponent((function TsAstDisplayCImpl(props : (
+    & TsNodeUnitDisplayCompProps
+    & {
+      /**
+       * {@link onChange}.
+       * *we won't fire this Event ever*;
+       * consider {@link TsNodeUnitDisplayCompProps.onTextualEditEvt } instead.
+       * 
+       * 
+       */
+      onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
     }
   ) )
   {
@@ -204,7 +230,6 @@ export const TsAstDisplayC = (
         // <p><code>{nodeTypeLabelTxt }</code></p>
         getSpclDefaultClvMd()
       ) ,
-      onChange: runWholeTreeChgHandler ,
       onTextualEditEvt: runnTextualEditEvtCb ,
     } = props ;
 
@@ -234,7 +259,7 @@ export const TsAstDisplayC = (
       ))
       {
         return (
-          <TsAstDisplayC
+          <TsNodeUnitDisplayPrivC
           value={e }
           clvMd={clvMd}
           // TODO
@@ -322,7 +347,7 @@ export const TsAstDisplayC = (
                         ) ;
                       }
                       return (
-                        <TsAstDisplayC
+                        <TsNodeUnitDisplayPrivC
                         value={initializer }
                         clvMd={clvMd}
                         // TODO
@@ -443,7 +468,7 @@ export const TsAstDisplayC = (
         ) ;
     
         return (
-          <TsAllChildNodesListDisplayC
+          <TsChildNodeListDisplayC
           value={ndChildren }
           clvMd={clvMd}
           // srcNd={nd }
@@ -461,7 +486,7 @@ export const TsAstDisplayC = (
       const selfEditBtnsSec = (
         <div>
         { (
-          (runWholeTreeChgHandler || runnTextualEditEvtCb ) ?
+          (runnTextualEditEvtCb ) ?
           <Button
           title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
           children={<>☯</>}
@@ -709,6 +734,11 @@ export const TsAstDisplayC = (
     ) ;
   }))
 ) ;
+
+export {
+  TsNodeUnitDisplayPrivC as TsNodeUnitDisplayC ,
+  TsNodeUnitDisplayPrivC as TsAstDisplayC,
+} ;
 
 class CLV
 {
@@ -1070,19 +1100,26 @@ namespace CLV {
 
 }
 
-export const TsAllChildNodesListDisplayC = (
+interface TsChildNodeListDisplayCompProps extends
+TsAstDisplayCompCommonProps
+{
+
+  value: ReadonlyArray<TS.Node>,
+  clvMd ?: CLV,
+
+  /**  @deprecated consider {@link onTextualEditEvt } instead. */
+  onChange?: (evt: { newValue: ReadonlyArray<TS.Node> , changedIndices: readonly number[] }) => void ,
+  onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+
+  // // TODO
+  // /** @deprecated */
+  // srcNd: TS.Node ,
+
+}
+
+const TsChildNodeListDisplayC = (
   describeHtmlComponent((function TsNodeListDisplayCImpl(props : (
-    & { value: ReadonlyArray<TS.Node>, clvMd ?: CLV, }
-    & {
-      /**  @deprecated consider {@link onTextualEditEvt } instead. */
-      onChange?: (evt: { newValue: ReadonlyArray<TS.Node> , changedIndices: readonly number[] }) => void ,
-      onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
-    }
-    & {
-      // // TODO
-      // /** @deprecated */
-      // srcNd: TS.Node ,
-    }
+    TsChildNodeListDisplayCompProps
   ) )
   {
     const {
@@ -1097,7 +1134,7 @@ export const TsAllChildNodesListDisplayC = (
       ndChildren
       .map((nd, i) => {
         return (
-          <TsAstDisplayC
+          <TsNodeUnitDisplayPrivC
           value={nd}
           clvMd={clvMd}
           onChange={runOnChgCbk && (({ newValue, }) => (
@@ -1152,6 +1189,10 @@ export const TsAllChildNodesListDisplayC = (
     }
   }))
 ) ;
+
+export {
+  TsChildNodeListDisplayC as TsAllChildNodesListDisplayC,
+} ;
 
 export const TsSrcFileInfoDisplayC = (
   describeHtmlComponent(function TsSrcFileDisplayCImpl(props : { value: TS.SourceFile } )
