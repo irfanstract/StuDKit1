@@ -65,15 +65,65 @@ __replacing `node <the-file>` with <s>`npx --yes ts-node <the-file>`</s> [`node 
 see *replacing `node` with <s>`npx --yes ts-node`</s> `node --import ./scripts/setup-tsnodeimportfixups.mjs`* below
 for the intro to that.
 
+```diff
+- node <the-file>
++ node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>
+```
+
+__in case u didn't know:__ __[`npx ts-node <main-file>` failed to properly do its thing in Node 20](https://github.com/TypeStrong/ts-node/issues/2100) so
+you'll need to switch to `node --import <aux-path> <main-file>`__:
+
+```diff
++ # see https://github.com/TypeStrong/ts-node/issues/2100
+- npx --yes ts-node <the-file>
++ node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>
+```
+
 also,
 at time of writing,
 NextJS doesn't seem to support the ext(s) `.mts*` and `.cts*` and `.mjsx`.
 avoid using those ext(s) *for the moment*;
 rename those files back to "plain naive" `.ts*`, go back to the associated `package.json` and set `type` to `module`.
 
+-
+  ```diff
+    ▼ main
+      ▼ PrimitiveTypedInputUi
+        - OneLineTxtEd.tsx
+        - DatePicker.tsx
+      ▼ RichTextModelling
+  -     - HtmlDoc.mts
+  +     - HtmlDoc.ts
+  -     - GfmDoc.mts
+  +     - GfmDoc.ts
+  
+  ```
+  
+  ```diff json
+    {
+      ...
+  +   "type": "module,
+      ...
+    }
+  ```
+
 ### replacing `node` with <s>`npx --yes ts-node`</s> `node --import ./scripts/setup-tsnodeimportfixups.mjs`
 
 replacing `node <the-file>` with <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100)
+
+```diff
+- node <the-file>
++ node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>
+```
+
+__worth noting__ __[`npx ts-node <main-file>` failed to properly do its thing in Node 20](https://github.com/TypeStrong/ts-node/issues/2100) so
+you'll need to switch to `node --import <aux-path> <main-file>`__:
+
+```diff
++ # see https://github.com/TypeStrong/ts-node/issues/2100
+- npx --yes ts-node <the-file>
++ node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>
+```
 
 see
 - https://typestrong.org/ts-node/docs/
@@ -363,14 +413,55 @@ npm install
 
 __caveats with (`package.json`'s) `exports`__
 
-see https://github.com/TypeStrong/ts-node/issues/1934#issuecomment-1682786084 for how
-`ts-node` failed to properly handle entries of `exports` using path-selector(s) whose wild-card is not at the end (eg `./src/*.ts`)
+see https://github.com/TypeStrong/ts-node/issues/1934 (focus at https://github.com/TypeStrong/ts-node/issues/1934#issuecomment-1682786084 ) for
+how
+`ts-node` failed to properly handle entries of `exports` using path-selector(s) whose wild-card is not at the end (eg `./src/*.ts`) ,
+forcing me to work-around the issue
+
+```diff json
+  {
+    "exports": {
+
+      "./lib/*"   : "./lib/*",
+
+      "./dist/*"  : "./dist/*",
+
+      "./src/*.ts"      : "./src/*.ts"         ,
+      "./src/*.tsx"     : "./src/*.tsx"        ,
+
++     "./src/*"         : "./src/*"            ,
+
+      "./package.json": "./package.json"
+    },
+  }
+```
 
 ### caveats with `.mts*` and `.cts*` and `.mjsx` extension(s)
 
 __caveats with `.mts*` and `.cts*` and `.mjsx` extension(s)__
 
 At time of writing, NextJS doesn't seem to support those ext(s). avoid using those ext(s) for the moment; use plain `.ts*` instead.
+
+```diff
+  ▼ main
+    ▼ PrimitiveTypedInputUi
+      - OneLineTextEditor.tsx
+      - DatePicker.tsx
+    ▼ RichTextModelling
+-     - HtmlDocStructure.mts
++     - HtmlDocStructure.ts
+-     - GfmDocStructure.mts
++     - GfmDocStructure.ts
+
+```
+
+```diff json
+  {
+    ...
++   "type": "module,
+    ...
+  }
+```
 
 
 
