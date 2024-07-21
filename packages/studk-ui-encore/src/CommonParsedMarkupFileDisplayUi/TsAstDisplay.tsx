@@ -618,64 +618,140 @@ const TsNodeUnitDisplayPrivC = (
             ) ;
           }
 
-          if (TS.isIdentifier(nd) || TS.isLiteralExpression(nd) ) {
+          if (TS.isIdentifier(nd) || (TS.isToken(nd) && TS.isExpression(nd) ) || TS.isLiteralExpression(nd) ) {
+
+            if (runnTextualEditEvtCb ) {
+              ;
+    
+              if (TS.isIdentifier(nd) || TS.isLiteralExpression(nd) ) {
+    
+                const {
+                  asBwhfe ,
+                  XInput ,
+                } = (
+                  (
+                    (() => {
+    
+                      if (autoCommitOnType) {
+                        return {
+                          XInput: "input",
+                          asBwhfe: true,
+                        } ;
+                      }
+      
+                      return {
+                        XInput: SfmInputC,
+                        asBwhfe: false,
+                      } ;
+                    } ) satisfies (() => {
+                      asBwhfe : boolean,
+                      XInput : "input" | (typeof SfmInputC) ,
+                    } )
+                  )()
+                ) ;
+    
+                const [value, { serialize, } ] = (
+                  ((
+                    (() => {
+                      const ndText = nd.getText() ;
+      
+                      if (TS.isStringLiteral(nd) ) {
+                        return [JSON.parse(ndText) as string , { sk: true, stxKind: nd.kind, serialize: e => JSON.stringify(e), } ] ;
+                      }
+
+                      // if (TS.isStringLiteral(nd) ) {
+                      //   return nd.text ;
+                      // }
+
+                      if (TS.isIdentifier(nd) ) {
+                        ;
+                        return [ndText, { sk: true, stxKind: nd.kind, serialize: e => String(e), } ] ;
+                      }
+
+                      return [ndText, { sk: false, stxKind: nd.kind, serialize: e => String(e), } ] ;
+
+                    }) satisfies (() => (
+                      readonly [{} | null, {
+                        /**
+                         * this seemingly unused property {@link sk}
+                         * is to ensure that the inter-associative typings don't break
+                         */
+                        sk: boolean,
+
+                        stxKind: TS.SyntaxKind,
+                        serialize: (v: unknown) => string,
+                      } ]
+                    ))
+                  ))()
+                ) ;
+    
+                const fe = (
+                  <XInput
+    
+                  value={String(value) }
+    
+                  onChange={e0 => {
+                    const { value: newTxt, } = e0.target ;
+    
+                    const e1 = (
+                      TsAstDisplayEvents.describeNdseEdit({
+                        lsNd: nd,
+    
+                        newTxt: (
+                          serialize(newTxt)
+                        ),
+    
+                        asBeingWithinHighFrequencyEditSeqce: (
+                          asBwhfe
+                        ) ,
+    
+                      })
+                    ) ;
+    
+                    const isZeroChg = (
+                      e1.newTxt === e1.existingTxt
+                    ) ;
+    
+                    0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
+    
+                    if ((
+                      (!isZeroChg || noSupressionOfZeroChgEvts)
+                      ||
+                      (
+                        console["log"](`newText exactly the same so chg evt should be supressed.`)
+                        , false
+                      )
+                    )) {
+                      runnTextualEditEvtCb(e1) ;
+                    }
+    
+                    ;
+                  } }
+    
+                  />
+                ) ;
+
+                return (
+                  <span>
+                    <select>
+                      <option>`Numeric`</option>
+                      <option>`String` </option>
+                      <option>`Variable` </option>
+                    </select> {}
+                    { fe } {}
+                  </span>
+                ) ;
+
+              }
+    
+            }
+    
             return (
               <div
               title={`value: ${ndSrcTxt}`}
               >
               <p>
                 { (() => {
-                  if (runnTextualEditEvtCb ) {
-                    ;
-                    const {
-                      asBwhfe ,
-                      XInput ,
-                    } = (
-                      ((): { asBwhfe : boolean, XInput : "input" | (typeof SfmInputC) } => {
-                        if (autoCommitOnType) {
-                          return { XInput: "input", asBwhfe: true, } ;
-                        }
-                        return { XInput: SfmInputC, asBwhfe: false, } ;
-                      } )()
-                    ) ;
-                    return (
-                      <XInput
-                      value={nd.getText() }
-                      onChange={e0 => {
-                        const { value: newTxt, } = e0.target ;
-
-                        const e1 = (
-                          TsAstDisplayEvents.describeNdseEdit({
-                            lsNd: nd,
-                            newTxt: newTxt,
-                            asBeingWithinHighFrequencyEditSeqce: asBwhfe ,
-                          })
-                        ) ;
-
-                        const isZeroChg = (
-                          e1.newTxt === e1.existingTxt
-                        ) ;
-
-                        0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
-
-                        if ((
-                          ((): boolean => {
-                            if (noSupressionOfZeroChgEvts) { return true ; }
-
-                            return (!isZeroChg || noSupressionOfZeroChgEvts) || (
-                              console["log"](`newText exactly the same so chg evt should be supressed.`)
-                              , false
-                            ) ;
-                          })()
-                        )) {
-                          runnTextualEditEvtCb(e1) ;
-                        }
-
-                        ;
-                      } }
-                      />
-                    ) ;
-                  }
                   return (
                     renderNameTokenCodeFigure((
                       <code>{ ndSrcTxt }</code>
