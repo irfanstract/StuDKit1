@@ -221,10 +221,8 @@ TsAstDisplayCompCommonProps
 
 }
 
-const TsNodeUnitDisplayPrivC = (
-  describeHtmlComponent((function TsAstDisplayCImpl(props : (
-    TsNodeUnitDisplayCompPrivProps
-  ) )
+const useTsNodeUnitDisplayPrivCompProps = (
+  function (...[props] : [TsNodeUnitDisplayCompPrivProps] )
   {
     const {
       value: nd,
@@ -252,6 +250,8 @@ const TsNodeUnitDisplayPrivC = (
       renderNameTokenCodeFigure ,
       renderTokenCodeFigure ,
     } = clvMd.rptcf ;
+
+    ;
 
     const renderSubTerm = (
       function (...[e, { onChange, } = null ?? {} ] : (
@@ -437,6 +437,79 @@ const TsNodeUnitDisplayPrivC = (
       TS.isToken(nd)
       || TS.isLiteralExpression(nd)
     ) ;
+
+    return {
+
+      nd ,
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      //
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+      asTerminalMdlNode ,
+
+      //
+
+    } as const ;
+  }
+) ;
+
+const TsNodeUnitDisplayPrivC = (
+  describeHtmlComponent((function TsAstDisplayCImpl(props : (
+    TsNodeUnitDisplayCompPrivProps
+  ) )
+  {
+    const {
+
+      nd ,
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+      asTerminalMdlNode ,
+
+      //
+
+    } = useTsNodeUnitDisplayPrivCompProps(props) ;
+
+    ;
 
     const childListDView = (() => {
       if (!ncs) {
