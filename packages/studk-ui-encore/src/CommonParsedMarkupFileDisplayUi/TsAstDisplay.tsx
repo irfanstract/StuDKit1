@@ -637,6 +637,7 @@ const TsNodeUnitDisplayPrivC = (
           return (
             clvMd.postdecDbwBdB3(et2, {
               selfEditBtnsSec ,
+              nd,
             } )
           ) ;
         }
@@ -712,6 +713,7 @@ const TsNodeUnitDisplayPrivC = (
 
         return (
           clvMd.postdecDbwBdB3(e1, {
+            nd,
             selfEditBtnsSec ,
           } )
         ) ;
@@ -909,8 +911,13 @@ class CLV
       postdecDbwBdB3 = (
         (e1, {
           selfEditBtnsSec ,
+          nd ,
         } ) => {
           ;
+
+          if (nd.kind === TS.SyntaxKind.SyntaxList) {
+            return e1 ;
+          }
 
           return (
             <div
@@ -991,6 +998,7 @@ class CLV
     readonly postdecDbwBdB3: (...args: [
       React.ReactElement ,
       {
+        nd: TS.Node ,
         selfEditBtnsSec?: React.ReactElement ,
       },
     ] ) => React.ReactElement ,
