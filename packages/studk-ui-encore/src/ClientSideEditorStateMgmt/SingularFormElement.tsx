@@ -213,6 +213,12 @@ export const SfmInputC = (
               </strong>
             </p>
           ) }
+          { null && (
+            <p>
+              Given Value      : {} <code>{ JSON.stringify(givenValue    ) }</code>; {}
+              Displayed Value  : {} <code>{ JSON.stringify(displayedValue) }</code>; {}
+            </p>
+          ) }
         </form>
       ) ;
     }
