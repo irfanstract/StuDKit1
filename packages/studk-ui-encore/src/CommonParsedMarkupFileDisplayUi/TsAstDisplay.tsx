@@ -199,6 +199,11 @@ export {
 } ;
 
 interface TsNodeUnitDisplayCompProps extends
+Omit<TsNodeUnitDisplayCompPrivProps , "onChange">
+{
+}
+
+interface TsNodeUnitDisplayCompPrivProps extends
 TsAstDisplayCompCommonProps
 {
 
@@ -206,22 +211,19 @@ TsAstDisplayCompCommonProps
       clvMd ?: CLV,
 
       onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+      /**
+       * {@link onChange}.
+       * *we don't fire this Event anymore*;
+       * consider {@link onTextualEditEvt } instead.
+       * 
+       */
+      onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
 
 }
 
 const TsNodeUnitDisplayPrivC = (
   describeHtmlComponent((function TsAstDisplayCImpl(props : (
-    & TsNodeUnitDisplayCompProps
-    & {
-      /**
-       * {@link onChange}.
-       * *we won't fire this Event ever*;
-       * consider {@link TsNodeUnitDisplayCompProps.onTextualEditEvt } instead.
-       * 
-       * 
-       */
-      onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
-    }
+    TsNodeUnitDisplayCompPrivProps
   ) )
   {
     const {
@@ -737,8 +739,13 @@ const TsNodeUnitDisplayPrivC = (
   }))
 ) ;
 
+export const TsNodeUnitDisplayC: (
+  React.FC<TsNodeUnitDisplayCompProps>
+) = (
+  TsNodeUnitDisplayPrivC
+) ;
+
 export {
-  TsNodeUnitDisplayPrivC as TsNodeUnitDisplayC ,
   TsNodeUnitDisplayPrivC as TsAstDisplayC,
 } ;
 
