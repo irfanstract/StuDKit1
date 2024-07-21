@@ -742,372 +742,6 @@ export {
   TsNodeUnitDisplayPrivC as TsAstDisplayC,
 } ;
 
-class CLV
-{
-
-  static forIsTerminaNdFnc(...args : (
-    ArgsWithOptions<[isTerminalNd ?: (e: TS.Node) => boolean ], {
-      asDbWhen?: () => boolean ,
-    } >
-  )) {
-    const [
-      isTerminalNd = (e) => {
-        if (TS.isSourceFile(e) ) {
-          return false ;
-        }
-        if (TS.isToken(e) || TS.isLiteralExpression(e) ) {
-          return true ;
-        }
-        return false ;
-      } ,
-      {
-        asDbWhen ,
-      } = null ?? {} ,
-    ] = args ;
-
-    return (
-      // <p><code>{nodeTypeLabelTxt }</code></p>
-      CLV.fromGetHeadlineImpl(e => {
-        if (isTerminalNd(e) ) {
-          return (
-            <p>
-              <code>{ e.getText() }</code>
-            </p>
-          ) ;
-        }
-        return (
-          <p>
-            (a Node <code>{ getNodeTypeLabelTxt(e) }</code>)
-          </p>
-        ) ;
-      } , {
-        skipToTerminalDecendantsFor: (e) => (
-          // TS.isToken(e) || TS.isLiteralExpression(e)
-          // true
-          isTerminalNd(e) === false
-        ) ,
-        asDbWhen ,
-      } )
-    )
-  }
-
-  static fromGetHeadlineImpl(...args : (
-    ArgsWithOptions<[getHeadlineImpl: (e: TS.Node) => React.ReactElement] , (
-      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
-      PartializedPartially<(
-        OmitW<CLV,  | `getHeadl${string}`>
-      ) ,(
-        | "asDbWhen"
-        | "postdecDbwBdB1"
-        | "postdecDbwBdB2"
-        | "postdecDbwBdB3"
-        | "skipToTerminalDecendantsFor"
-        | "postdecDbwInlinelikeB4"
-        | "postdecDbwPropertylikeB5"
-        | "rptcf"
-        | "expandCldl"
-        | "postdecMultiNodeView1"
-      ) >
-    )>
-  ) )
-  {
-    const [
-      getHeadlineImpl,
-      prps1 = {} ,
-    ] = args ;
-
-    return (
-      this.fromProps({ getHeadlineImpl, ...(prps1), })
-    ) ;
-  }
-
-  static fromProps(...[props] : (
-    ArgsWithOptions<[] , (
-      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
-      PartializedPartially<(
-        OmitW<CLV, never>
-      ) , (
-        | "asDbWhen"
-        | "postdecDbwBdB1"
-        | "postdecDbwBdB2"
-        | "postdecDbwBdB3"
-        | "skipToTerminalDecendantsFor"
-        | "postdecDbwInlinelikeB4"
-        | "postdecDbwPropertylikeB5"
-        | "rptcf"
-        | "expandCldl"
-        | "postdecMultiNodeView1"
-      ) >
-    )>
-  ) )
-  {
-    const {
-      getHeadlineImpl,
-      asDbWhen = () => false ,
-      skipToTerminalDecendantsFor: skipToTerminalDecendants = (...args) => false,
-
-      postdecDbwBdB1 = (
-        ({
-          asTerminalMdlNode ,
-          nd ,
-          bord ,
-          asJsxTag,
-        }, e1C) => {
-          ;
-          
-          const e1 = (
-            <div
-            title={`${getNodeTypeLabelTxt(nd) } `}
-            style={{
-              zoom: `99%` ,
-              border: bord ? `0.05em solid currentcolor` : undefined ,
-              background: asJsxTag ? `rgba(0 0 0 / 0.25 )` : undefined ,
-              ...((TS.isJsxOpeningElement(nd) ) ? {
-                overflow: "auto" ,
-                maxBlockSize: `9.5em` ,
-              } : {}) ,
-            }}
-            >
-              { e1C }
-            </div>
-          ) ;
-
-          return e1 ;
-        }
-      ) ,
-      postdecDbwBdB2 = (
-        ({
-          asTerminalMdlNode ,
-          nd ,
-          childListDView ,
-        }) => {
-          ;
-          
-          if (asTerminalMdlNode ) {
-            return (
-              <>
-              { getHeadlineImpl(nd) }
-              </>
-            ) ;
-          } else {
-            ;
-            return (
-              <>
-              { (asTerminalMdlNode === false) && (
-                <div
-                style={{
-                  paddingInlineStart: `1.0ex`,
-                  zoom: `95%` ,
-                }}
-                >
-                  { childListDView }
-                </div>
-              ) }
-              </>
-            ) ;
-          }
-        }
-      ),
-      postdecDbwBdB3 = (
-        (e1, {
-          selfEditBtnsSec ,
-          nd ,
-        } ) => {
-          ;
-
-          if (nd.kind === TS.SyntaxKind.SyntaxList) {
-            return e1 ;
-          }
-
-          return (
-            <div
-            style={{
-              // display: "inline-block" ,
-            }}
-            >
-              <div
-              style={{
-                display: "flex" ,
-                flexDirection: "column-reverse",
-              }}
-              >
-                { e1 }
-                { selfEditBtnsSec }
-              </div>
-            </div>
-          ) ;
-        }
-      ) ,
-      postdecDbwInlinelikeB4 = e => e ,
-      postdecDbwPropertylikeB5 = e50 => (
-        e50
-      ) ,
-      rptcf = (
-        CLV.getDfltBlockLevellingRptcf()
-      ) ,
-      
-      expandCldl = (...[children1]) => (
-        CLV.defaultRenderCldlAsHtmList(children1 )
-      ) ,
-      postdecMultiNodeView1 = (cldl) => (
-        <div>
-          { cldl }
-        </div>
-      ) ,
-
-    } = props ;
-
-    return new CLV(
-      getHeadlineImpl ,
-      skipToTerminalDecendants ,
-      asDbWhen ,
-      expandCldl ,
-      postdecMultiNodeView1 ,
-      postdecDbwBdB1 ,
-      postdecDbwBdB2 ,
-      postdecDbwBdB3 ,
-      postdecDbwInlinelikeB4 ,
-      postdecDbwPropertylikeB5 ,
-      rptcf ,
-    ) ;
-  }
-
-  private constructor(
-    //
-    public readonly getHeadlineImpl: (e: TS.Node) => React.ReactElement  ,
-    /**
-     * @deprecated
-     */
-    readonly skipToTerminalDecendantsFor : (e: TS.Node) => boolean ,
-    public readonly asDbWhen : () => boolean ,
-
-    public readonly expandCldl: (...args: [readonly React.ReactElement[] ]) => React.ReactElement ,
-    public readonly postdecMultiNodeView1: (...args: [cldl: React.ReactElement ]) => React.ReactElement ,
-
-    readonly postdecDbwBdB1: (...args: [{
-      asTerminalMdlNode: boolean ,
-      nd: TS.Node ,
-      bord: boolean ,
-      asJsxTag: boolean ,
-    }, React.ReactElement] ) => React.ReactElement ,
-    readonly postdecDbwBdB2: (...ctx: [{
-      asTerminalMdlNode: boolean ,
-      nd: TS.Node ,
-      childListDView: React.ReactElement,
-    }] ) => React.ReactElement ,
-    readonly postdecDbwBdB3: (...args: [
-      React.ReactElement ,
-      {
-        nd: TS.Node ,
-        selfEditBtnsSec?: React.ReactElement ,
-      },
-    ] ) => React.ReactElement ,
-    
-    readonly postdecDbwInlinelikeB4: (...args: [
-      React.ReactElement ,
-      {
-      },
-    ] ) => React.ReactElement ,
-    readonly postdecDbwPropertylikeB5: (...args: [
-      React.ReactElement ,
-      {
-      },
-    ] ) => React.ReactElement ,
-
-    readonly rptcf: CLV.RPTCF ,
-
-  )
-  {}
-}
-
-namespace CLV {
-  ;
-
-  export interface RPTCF
-  {
-    readonly renderPuncTokenCodeFigure   : (e0: React.ReactElement) => React.JSX.Element;
-    readonly renderBracketTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
-    readonly renderKeywordTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
-    readonly renderTokenCodeFigure    : (e0: React.ReactElement) => React.ReactElement;
-    readonly renderNameTokenCodeFigure: (e0: React.ReactElement) => React.ReactElement;
-    // }
-  }
-
-  export function getDfltBlockLevellingRptcf()
-  : RPTCF
-  {
-
-    const renderAsEnlargedPuncTokenCode = (e0: React.ReactElement) => (
-      <span style={{ display: "inline-block", inlineSize: `4em` }} >
-        <span style={{ textAlign: "center", }} >
-        <span style={{ fontSize: `1.25em`, }}>
-          <span style={{ display: "inline-block", position: "relative", transform: `scale(2.5, 1)`, transformOrigin: `0 0 0` }}>
-          { e0 }
-          </span>
-          </span>
-        </span>
-      </span>
-    ) ;
-    const renderAsEnlargedBracketTokenCode = (e0: React.ReactElement) => (
-      renderAsEnlargedPuncTokenCode((
-        <span style={{ display: "inline-block", position: "relative", transform: `scale(1, 1.25)`, }}>
-        <span style={{ writingMode: "vertical-rl", }} >
-          { withExtraSemanticProperties({ style: { fontFamily: "serif", fontSize: `2em` } } , e0) }
-        </span>
-        </span>
-      ))
-    ) ;
-
-    const renderPuncTokenCodeFigure = (e0: React.ReactElement) => (
-      renderAsEnlargedPuncTokenCode(e0)
-    ) ;
-    const renderBracketTokenCodeFigure = (e0: React.ReactElement) => (
-      renderAsEnlargedBracketTokenCode(e0)
-    ) ;
-    const renderKeywordTokenCodeFigure = (e0: React.ReactElement) => (
-      <strong>
-        { e0 }
-      </strong>
-    ) ;
-    const renderTokenCodeFigure = (e0: React.ReactElement) => (
-      e0
-    ) ;
-    const renderNameTokenCodeFigure = (e0: React.ReactElement) => (
-      e0
-    ) ;
-
-    return {
-      renderPuncTokenCodeFigure ,
-      renderBracketTokenCodeFigure ,
-      renderKeywordTokenCodeFigure ,
-      renderTokenCodeFigure ,
-      renderNameTokenCodeFigure ,
-    } satisfies RPTCF ;
-  }
-
-  export const defaultRenderCldlAsHtmList: CLV["expandCldl"] = (
-    (...[children1]) => {
-      ;
-      return (
-        <ul>
-        { (
-          children1
-          .map((nd, i) => (
-            <li
-            key={i }
-            children={(
-              nd
-            )}
-            />
-          ))
-        ) }
-        </ul>
-      ) ;
-    }
-  ) ;
-
-}
-
 interface TsChildNodeListDisplayCompProps extends
 TsAstDisplayCompCommonProps
 {
@@ -1214,6 +848,416 @@ export const TsSrcFileInfoDisplayC = (
     ) ;
   })
 ) ;
+
+class CLV
+{
+
+  static forIsTerminaNdFnc(...args : (
+    ArgsWithOptions<[isTerminalNd ?: (e: TS.Node) => boolean ], {
+      asDbWhen?: () => boolean ,
+    } >
+  )) {
+    const [
+      isTerminalNd = (e) => {
+        if (TS.isSourceFile(e) ) {
+          return false ;
+        }
+        if (TS.isToken(e) || TS.isLiteralExpression(e) ) {
+          return true ;
+        }
+        return false ;
+      } ,
+      {
+        asDbWhen ,
+      } = null ?? {} ,
+    ] = args ;
+
+    return (
+      // <p><code>{nodeTypeLabelTxt }</code></p>
+      CLV.fromGetHeadlineImpl(e => {
+        if (isTerminalNd(e) ) {
+          return (
+            <p>
+              <code>{ e.getText() }</code>
+            </p>
+          ) ;
+        }
+        return (
+          <p>
+            (a Node <code>{ getNodeTypeLabelTxt(e) }</code>)
+          </p>
+        ) ;
+      } , {
+        skipToTerminalDecendantsFor: (e) => (
+          // TS.isToken(e) || TS.isLiteralExpression(e)
+          // true
+          isTerminalNd(e) === false
+        ) ,
+        asDbWhen ,
+      } )
+    )
+  }
+
+  static fromGetHeadlineImpl(...args : (
+    ArgsWithOptions<[getHeadlineImpl: (e: TS.Node) => React.ReactElement] , (
+      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
+      PartializedPartially<(
+        OmitW<CLV,  | `getHeadl${string}`>
+      ) ,(
+
+        | "asDbWhen"
+
+        /* NODE_UNIT */
+
+        | "postdecDbwBdB1"
+        | "postdecDbwBdB2"
+        | "postdecDbwBdB3"
+        | "skipToTerminalDecendantsFor"
+        | "postdecDbwInlinelikeB4"
+        | "postdecDbwPropertylikeB5"
+        | "rptcf"
+
+        /* CHILD_NODE_SEQ */
+
+        | "expandCldl"
+        | "postdecMultiNodeView1"
+
+      ) >
+    )>
+  ) )
+  {
+    const [
+      getHeadlineImpl,
+      prps1 = {} ,
+    ] = args ;
+
+    return (
+      this.fromProps({ getHeadlineImpl, ...(prps1), })
+    ) ;
+  }
+
+  static fromProps(...[props] : (
+    ArgsWithOptions<[] , (
+      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
+      PartializedPartially<(
+        OmitW<CLV, never>
+      ) , (
+
+        | "asDbWhen"
+
+        /* NODE_UNIT */
+
+        | "postdecDbwBdB1"
+        | "postdecDbwBdB2"
+        | "postdecDbwBdB3"
+        | "skipToTerminalDecendantsFor"
+        | "postdecDbwInlinelikeB4"
+        | "postdecDbwPropertylikeB5"
+        | "rptcf"
+
+        /* CHILD_NODE_SEQ */
+
+        | "expandCldl"
+        | "postdecMultiNodeView1"
+
+      ) >
+    )>
+  ) )
+  {
+    const {
+      //
+
+      getHeadlineImpl,
+      asDbWhen = () => false ,
+      skipToTerminalDecendantsFor: skipToTerminalDecendants = (...args) => false,
+
+      /* NODE_UNIT */
+
+      postdecDbwBdB1 = (
+        ({
+          asTerminalMdlNode ,
+          nd ,
+          bord ,
+          asJsxTag,
+        }, e1C) => {
+          ;
+          
+          const e1 = (
+            <div
+            title={`${getNodeTypeLabelTxt(nd) } `}
+            style={{
+
+              zoom: `99%` ,
+              border: bord ? `0.05em solid currentcolor` : undefined ,
+              background: asJsxTag ? `rgba(0 0 0 / 0.25 )` : undefined ,
+
+              ...((TS.isJsxOpeningElement(nd) ) ? {
+                overflow: "auto" ,
+                maxBlockSize: `9.5em` ,
+              } : {}) ,
+
+            }}
+            >
+              { e1C }
+            </div>
+          ) ;
+
+          return e1 ;
+        }
+      ) ,
+      postdecDbwBdB2 = (
+        ({
+          asTerminalMdlNode ,
+          nd ,
+
+          childListDView ,
+
+        }) => {
+          ;
+          
+          if (asTerminalMdlNode ) {
+
+            return (
+              <>
+              { getHeadlineImpl(nd) }
+              </>
+            ) ;
+          } else {
+            ;
+
+            return (
+              <>
+              { (asTerminalMdlNode === false) && (
+                <div
+                style={{
+                  paddingInlineStart: `1.0ex`,
+                  zoom: `95%` ,
+                }}
+                >
+                  { childListDView }
+                </div>
+              ) }
+              </>
+            ) ;
+          }
+        }
+      ),
+      postdecDbwBdB3 = (
+        (e1, {
+          selfEditBtnsSec ,
+          nd ,
+        } ) => {
+          ;
+
+          if (nd.kind === TS.SyntaxKind.SyntaxList) {
+            return e1 ;
+          }
+
+          return (
+            <div
+            style={{
+              // display: "inline-block" ,
+            }}
+            >
+              <div
+              style={{
+                display: "flex" ,
+                flexDirection: "column-reverse",
+              }}
+              >
+                { e1 }
+                { selfEditBtnsSec }
+              </div>
+            </div>
+          ) ;
+        }
+      ) ,
+
+      /* CHILD_NODE_SEQ */
+
+      postdecDbwInlinelikeB4 = e => e ,
+      postdecDbwPropertylikeB5 = e50 => (
+        e50
+      ) ,
+      rptcf = (
+        CLV.getDfltBlockLevellingRptcf()
+      ) ,
+      
+      expandCldl = (...[children1]) => (
+        CLV.defaultRenderCldlAsHtmList(children1 )
+      ) ,
+      postdecMultiNodeView1 = (cldl) => (
+        <div>
+          { cldl }
+        </div>
+      ) ,
+
+    } = props ;
+
+    return new CLV(
+      //
+
+      getHeadlineImpl ,
+      skipToTerminalDecendants ,
+      asDbWhen ,
+
+      expandCldl ,
+      postdecMultiNodeView1 ,
+
+      postdecDbwBdB1 ,
+      postdecDbwBdB2 ,
+      postdecDbwBdB3 ,
+      postdecDbwInlinelikeB4 ,
+      postdecDbwPropertylikeB5 ,
+      rptcf ,
+
+    ) ;
+  }
+
+  private constructor(
+    //
+
+    public readonly getHeadlineImpl: (e: TS.Node) => React.ReactElement  ,
+
+    /**
+     * @deprecated
+     */
+    readonly skipToTerminalDecendantsFor : (e: TS.Node) => boolean ,
+    public readonly asDbWhen : () => boolean ,
+
+    /* CHILD NODE SEQ */
+
+    public readonly expandCldl: (...args: [readonly React.ReactElement[] ]) => React.ReactElement ,
+    public readonly postdecMultiNodeView1: (...args: [cldl: React.ReactElement ]) => React.ReactElement ,
+
+    /* NODE_UNIT */
+
+    readonly postdecDbwBdB1: (...args: [{
+      asTerminalMdlNode: boolean ,
+      nd: TS.Node ,
+      bord: boolean ,
+      asJsxTag: boolean ,
+    }, React.ReactElement] ) => React.ReactElement ,
+
+    readonly postdecDbwBdB2: (...ctx: [{
+      asTerminalMdlNode: boolean ,
+      nd: TS.Node ,
+      childListDView: React.ReactElement,
+    }] ) => React.ReactElement ,
+
+    readonly postdecDbwBdB3: (...args: [
+      React.ReactElement ,
+      {
+        nd: TS.Node ,
+        selfEditBtnsSec?: React.ReactElement ,
+      },
+    ] ) => React.ReactElement ,
+    
+    readonly postdecDbwInlinelikeB4: (...args: [
+      React.ReactElement ,
+      {
+      },
+    ] ) => React.ReactElement ,
+
+    readonly postdecDbwPropertylikeB5: (...args: [
+      React.ReactElement ,
+      {
+      },
+    ] ) => React.ReactElement ,
+
+    readonly rptcf: CLV.RPTCF ,
+
+  )
+  {}
+}
+
+namespace CLV {
+  ;
+
+  export interface RPTCF
+  {
+    readonly renderPuncTokenCodeFigure   : (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderBracketTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderKeywordTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderTokenCodeFigure    : (e0: React.ReactElement) => React.ReactElement;
+    readonly renderNameTokenCodeFigure: (e0: React.ReactElement) => React.ReactElement;
+    // }
+  }
+
+  export function getDfltBlockLevellingRptcf()
+  : RPTCF
+  {
+
+    const renderAsEnlargedPuncTokenCode = (e0: React.ReactElement) => (
+      <span style={{ display: "inline-block", inlineSize: `4em` }} >
+        <span style={{ textAlign: "center", }} >
+        <span style={{ fontSize: `1.25em`, }}>
+          <span style={{ display: "inline-block", position: "relative", transform: `scale(2.5, 1)`, transformOrigin: `0 0 0` }}>
+          { e0 }
+          </span>
+          </span>
+        </span>
+      </span>
+    ) ;
+    const renderAsEnlargedBracketTokenCode = (e0: React.ReactElement) => (
+      renderAsEnlargedPuncTokenCode((
+        <span style={{ display: "inline-block", position: "relative", transform: `scale(1, 1.25)`, }}>
+        <span style={{ writingMode: "vertical-rl", }} >
+          { withExtraSemanticProperties({ style: { fontFamily: "serif", fontSize: `2em` } } , e0) }
+        </span>
+        </span>
+      ))
+    ) ;
+
+    const renderPuncTokenCodeFigure = (e0: React.ReactElement) => (
+      renderAsEnlargedPuncTokenCode(e0)
+    ) ;
+    const renderBracketTokenCodeFigure = (e0: React.ReactElement) => (
+      renderAsEnlargedBracketTokenCode(e0)
+    ) ;
+    const renderKeywordTokenCodeFigure = (e0: React.ReactElement) => (
+      <strong>
+        { e0 }
+      </strong>
+    ) ;
+    const renderTokenCodeFigure = (e0: React.ReactElement) => (
+      e0
+    ) ;
+    const renderNameTokenCodeFigure = (e0: React.ReactElement) => (
+      e0
+    ) ;
+
+    return {
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+    } satisfies RPTCF ;
+  }
+
+  export const defaultRenderCldlAsHtmList: CLV["expandCldl"] = (
+    (...[children1]) => {
+      ;
+      return (
+        <ul>
+        { (
+          children1
+          .map((nd, i) => (
+            <li
+            key={i }
+            children={(
+              nd
+            )}
+            />
+          ))
+        ) }
+        </ul>
+      ) ;
+    }
+  ) ;
+
+}
 
 import "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/tsd.scss" ;
 
