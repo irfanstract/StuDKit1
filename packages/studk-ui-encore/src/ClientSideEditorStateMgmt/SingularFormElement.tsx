@@ -117,18 +117,19 @@ export const SfmInputC = (
       type XV = Required<JSX.IntrinsicElements["input"]>["value"] ;
 
       const [{
-        hasUnsavedChgs ,
         displayedValue = givenValue ,
+        hasUnsavedChgs: shallPretendTheresUnsavedChgs = (
+          !(displayedValue === givenValue)
+        ) ,
       }, remt0] = (() => {
         interface SOps {
-          hasUnsavedChgs: boolean,
+          hasUnsavedChgs?: boolean,
           displayedValue ?: XV ,
         }
         return (
           React.useReducer<(x: SOps, e: { type: "remt", } | { type: "edit", newTotalValue: XV, }) => SOps>((x, e ) => {
             if (e.type === "remt") {
               return {
-                hasUnsavedChgs: false,
               } ;
             }
             if (e.type === "edit") {
@@ -140,7 +141,6 @@ export const SfmInputC = (
             }
             return x ;
           } , {
-            hasUnsavedChgs: false,
           } )
         ) ;
       })() ;
@@ -201,7 +201,7 @@ export const SfmInputC = (
             </React.Fragment>
             </label>
           </p>
-          { hasUnsavedChgs && (
+          { shallPretendTheresUnsavedChgs && (
             <p>
               <strong>
               has uncommitted chgs; press 'enter' to commit
