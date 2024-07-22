@@ -117,12 +117,10 @@ export const SfmInputC = (
       type XV = Required<JSX.IntrinsicElements["input"]>["value"] ;
 
       const [{
-        remtKey ,
         hasUnsavedChgs ,
         displayedValue = givenValue ,
       }, remt0] = (() => {
         interface SOps {
-          remtKey: number,
           hasUnsavedChgs: boolean,
           displayedValue ?: XV ,
         }
@@ -130,7 +128,6 @@ export const SfmInputC = (
           React.useReducer<(x: SOps, e: { type: "remt", } | { type: "edit", newTotalValue: XV, }) => SOps>((x, e ) => {
             if (e.type === "remt") {
               return {
-                remtKey: x.remtKey + 1,
                 hasUnsavedChgs: false,
               } ;
             }
@@ -143,7 +140,6 @@ export const SfmInputC = (
             }
             return x ;
           } , {
-            remtKey: 1,
             hasUnsavedChgs: false,
           } )
         ) ;
@@ -181,7 +177,6 @@ export const SfmInputC = (
           <p>
             <label>
             <React.Fragment
-            key={remtKey}
             >
             <input
             ref={iRef}
