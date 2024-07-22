@@ -112,26 +112,37 @@ export const SfmInputC = (
       } = props ;
 
       const iRef = React.useRef<HTMLInputElement>(null) ;
+
       const fRef = React.useRef<HTMLFormElement>(null) ;
 
       type XV = Required<JSX.IntrinsicElements["input"]>["value"] ;
 
-      const [{
-        displayedValue = givenValue ,
-        hasUnsavedChgs: shallPretendTheresUnsavedChgs = (
-          !(displayedValue === givenValue)
-        ) ,
-      }, remt0] = (() => {
+      const [
+        {
+          displayedValue = givenValue ,
+          hasUnsavedChgs: shallPretendTheresUnsavedChgs = (
+            !(displayedValue === givenValue)
+          ) ,
+        },
+        remt0 ,
+      ] = (() => {
+
         interface SOps {
           hasUnsavedChgs?: boolean,
           displayedValue ?: XV ,
         }
+
         return (
-          React.useReducer<(x: SOps, e: { type: "remt", } | { type: "edit", newTotalValue: XV, }) => SOps>((x, e ) => {
+          React.useReducer<(x: SOps, e: (
+            | { type: "remt", }
+            | { type: "edit", newTotalValue: XV, }
+          )) => SOps>((x, e ) => {
+
             if (e.type === "remt") {
               return {
               } ;
             }
+
             if (e.type === "edit") {
               return {
                 ...x,
@@ -139,12 +150,15 @@ export const SfmInputC = (
                 displayedValue: e.newTotalValue,
               } ;
             }
+
             return x ;
           } , {
           } )
         ) ;
+
       })() ;
-      const remt = () => (
+
+      const clear1 = () => (
         remt0({ type: "remt", })
       ) ;
 
@@ -153,7 +167,7 @@ export const SfmInputC = (
           ;
           const ie = iRef.current! ;
           runOnChgCb({ target: ie , }) ;
-          remt() ;
+          clear1() ;
         }
       ) ;
 
@@ -171,7 +185,7 @@ export const SfmInputC = (
           if (1) {
             submitAndClear() ;
           }
-          remt() ;
+          clear1() ;
         }}
         >
           <p>
