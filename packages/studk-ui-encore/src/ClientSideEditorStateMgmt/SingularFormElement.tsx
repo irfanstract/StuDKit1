@@ -96,12 +96,36 @@ Pick<JSX.IntrinsicElements["input"], "type" | "checked" | "step" | "spellCheck">
 Extract<{ value?: string, }, any >
 {}
 
+interface SfmInputCProps extends Extract<(
+  (
+    // JSX.IntrinsicElements
+    & { onChange: React.Dispatch<{ target: Pick<HTMLInputElement, "value">, }> , }
+    & XIiSpcficProps
+  )
+), unknown>
+{}
+
 export const SfmInputC = (
   describeHtmlComponent((
     function SfmInputCImpl(props : (
-      // JSX.IntrinsicElements
-      & { onChange: React.Dispatch<{ target: Pick<HTMLInputElement, "value">, }> , }
-      & XIiSpcficProps
+      SfmInputCProps
+    ) )
+    {
+      const {
+        encoreMidSizedElemt ,
+      } = (
+        useSfmInputCProps(props)
+      ) ;
+
+      return encoreMidSizedElemt ;
+    }
+  ))
+) ;
+
+const useSfmInputCProps = (
+  ((
+    function (props : (
+      SfmInputCProps
     ) )
     {
       const {
@@ -169,47 +193,65 @@ export const SfmInputC = (
         }
       ) ;
 
-      return (
-        <form
-        onSubmit={e => {
-          e.preventDefault() ;
+      const coreElemt = (
+        <input
+        key={(
+          toComponentMountKey(givenValue)
+        ) }
+        type={itype}
+        // defaultValue={value }
+        value={displayedValue}
+        spellCheck={spellCheck}
+        checked={checked}
+        step={stepv}
+        onChange={e0 => {
+          const { value: newTxt, } = e0.target ;
 
-          submitAndClear() ;
+          // TODO
+          remt0({ type: "edit", newTotalValue: newTxt, }) ;
 
-        }}
-        onBlur={async (e) => {
-          await new Promise<void>(R => setTimeout(R, 0.1 * 1000 ) ) ;
-          if (1) {
+          ;
+        } }
+        />
+      ) ;
+
+      const coreElemtL = (
+        <label>
+        <React.Fragment
+        >
+        { coreElemt }
+        </React.Fragment>
+        </label>
+      ) ;
+
+      const {
+        onSubmit: handleFormSubmitEvt ,
+        onBlur: handleFormFocusOutEvt ,
+      } = (
+        {
+          onSubmit: e => {
+            e.preventDefault() ;
+  
             submitAndClear() ;
-          }
-          clear1() ;
-        }}
+  
+          } ,
+          onBlur: async (e) => {
+            await new Promise<void>(R => setTimeout(R, 0.1 * 1000 ) ) ;
+            if (1) {
+              submitAndClear() ;
+            }
+            clear1() ;
+          } ,
+        } satisfies JSX.IntrinsicElements["form"]
+      ) ;
+
+      const encoreMidSizedElemt = (
+        <form
+        onSubmit={handleFormSubmitEvt}
+        onBlur={handleFormFocusOutEvt}
         >
           <p>
-            <label>
-            <React.Fragment
-            >
-            <input
-            key={(
-              toComponentMountKey(givenValue)
-            ) }
-            type={itype}
-            // defaultValue={value }
-            value={displayedValue}
-            spellCheck={spellCheck}
-            checked={checked}
-            step={stepv}
-            onChange={e0 => {
-              const { value: newTxt, } = e0.target ;
-
-              // TODO
-              remt0({ type: "edit", newTotalValue: newTxt, }) ;
-
-              ;
-            } }
-            />
-            </React.Fragment>
-            </label>
+            { coreElemtL }
           </p>
           { shallPretendTheresUnsavedChgs && (
             <p>
@@ -226,6 +268,11 @@ export const SfmInputC = (
           ) }
         </form>
       ) ;
+
+      return {
+        coreElemt ,
+        encoreMidSizedElemt ,
+      } as const ;
     }
   ))
 ) ;
