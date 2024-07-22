@@ -91,14 +91,16 @@ import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
-interface XIiSpcficProps extends Pick<JSX.IntrinsicElements["input"], "type" | "value" | "checked" | "step" | "spellCheck">
+interface XIiSpcficProps extends
+Pick<JSX.IntrinsicElements["input"], "type" | "checked" | "step" | "spellCheck">,
+Extract<{ value?: string, }, any >
 {}
 
 export const SfmInputC = (
   describeHtmlComponent((
     function SfmInputCImpl(props : (
       // JSX.IntrinsicElements
-      & { onChange: React.Dispatch<{ target: HTMLInputElement, }> , }
+      & { onChange: React.Dispatch<{ target: Pick<HTMLInputElement, "value">, }> , }
       & XIiSpcficProps
     ) )
     {
@@ -111,11 +113,7 @@ export const SfmInputC = (
         onChange: runOnChgCb ,
       } = props ;
 
-      const iRef = React.useRef<HTMLInputElement>(null) ;
-
-      const fRef = React.useRef<HTMLFormElement>(null) ;
-
-      type XV = Required<JSX.IntrinsicElements["input"]>["value"] ;
+      type XV = Required<XIiSpcficProps>["value"] ;
 
       const [
         {
@@ -165,15 +163,14 @@ export const SfmInputC = (
       const submitAndClear = (
         function () {
           ;
-          const ie = iRef.current! ;
-          runOnChgCb({ target: ie , }) ;
+          const ie = (displayedValue || displayedValue === "") ? { value: displayedValue, } : (Object(displayedValue), null) ;
+          ie && runOnChgCb({ target: ie , }) ;
           clear1() ;
         }
       ) ;
 
       return (
         <form
-        ref={fRef}
         onSubmit={e => {
           e.preventDefault() ;
 
@@ -193,7 +190,6 @@ export const SfmInputC = (
             <React.Fragment
             >
             <input
-            ref={iRef}
             key={(
               toComponentMountKey(givenValue)
             ) }
