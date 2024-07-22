@@ -40,6 +40,18 @@ import {
   getNodeChildren ,
 } from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsAstUtils.tsx"
 
+const getAllNodes = (
+  function (nd: TS.Node): readonly TS.Node[]
+  {
+    return util.reiterated(function * () {
+      yield nd ;
+      for (const childNd of nd.getChildren() ) {
+        yield* getAllNodes(childNd) ;
+      }
+    }) ;
+  }
+) ;
+
 import {
   KeywordAlikeKcn,
   NodeListKcn,
@@ -258,11 +270,13 @@ TsAstDisplayCompCommonProps
 
 }
 
-const useTsNodeUnitDisplayPrivCompProps = (
-  function (...[props] : [TsNodeUnitDisplayCompPrivProps] )
+// TODO/WIP
+/* worth reading https://github.com/microsoft/TypeScript/issues/46915 since we need it a lot here */
+const useTsNodeTreeDisplayPrivCompProps = (
+  function (...[props] : [OmitW<TsNodeUnitDisplayCompPrivProps, "nd" >] )
   {
+
     const {
-      value: nd,
       clvMd = (
         // <p><code>{nodeTypeLabelTxt }</code></p>
         getSpclDefaultClvMd()
@@ -271,11 +285,15 @@ const useTsNodeUnitDisplayPrivCompProps = (
     } = props ;
 
     const {
-      autoCommitOnType = false ,
       noSupressionOfZeroChgEvts = false ,
     } = ((): {
-      autoCommitOnType ?: boolean ,
       noSupressionOfZeroChgEvts ?: boolean ,
+    } => ({}) )() ;
+
+    const {
+      autoCommitOnType = false ,
+    } = ((): {
+      autoCommitOnType ?: boolean ,
     } => ({}) )() ;
 
     ;
@@ -470,6 +488,79 @@ const useTsNodeUnitDisplayPrivCompProps = (
       useIsClientSide()
     ) ;
 
+    ;
+
+    return {
+      //
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      //
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+
+      //
+
+      //
+
+    } as const ;
+  }
+) ;
+
+const useTsNodeUnitDisplayPrivCompProps = (
+  function (...[props] : [TsNodeUnitDisplayCompPrivProps] )
+  {
+
+    const {
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+
+      //
+
+    } = useTsNodeTreeDisplayPrivCompProps(props) ;
+
+    const {
+      value: nd,
+    } = props ;
+
     const asTerminalMdlNode = (
       TS.isToken(nd)
       || TS.isLiteralExpression(nd)
@@ -548,6 +639,33 @@ const TsNodeUnitDisplayPrivC = (
 
     ;
 
+    const describeSpclTextualEditEvt1 = (
+      function (...[{ newTxt, asBeingWithinHighFrequencyEditSeqce: asBwhfe, }] : (
+        ArgsWithOptions<[], {
+          // readonly lsNd: TS.Node;
+          readonly newTxt: string;
+          readonly asBeingWithinHighFrequencyEditSeqce: boolean;
+      }>
+      ))
+      {
+        // TODO
+        return (
+          TsAstDisplayEvents.describeNdseEdit({
+            lsNd: nd,
+
+            newTxt: (
+              newTxt
+            ),
+
+            asBeingWithinHighFrequencyEditSeqce: (
+              asBwhfe
+            ) ,
+
+          })
+        ) ;
+      }
+    ) ;
+
     const processTextualEditEvtCb1 = (
       (runnTextualEditEvtCb)
       &&
@@ -581,7 +699,7 @@ const TsNodeUnitDisplayPrivC = (
         if (processTextualEditEvtCb1 ) {
           ;
 
-          const sE = (
+          const classSwitchElem = (
             (() => {
 
               interface SpclOptionItemOp
@@ -664,6 +782,10 @@ const TsNodeUnitDisplayPrivC = (
 
           if (TS.isIdentifier(nd) || TS.isLiteralExpression(nd) ) {
 
+            const [value, { serialize, } ] = (
+              TS_TOKENNODE_VALUANDSERIALIZE(nd)
+            ) ;
+
             const {
               asBwhfe ,
               XInput ,
@@ -689,11 +811,11 @@ const TsNodeUnitDisplayPrivC = (
               )()
             ) ;
 
-            const [value, { serialize, } ] = (
+            void (
               TS_TOKENNODE_VALUANDSERIALIZE(nd)
             ) ;
 
-            const fe = (
+            const keyTypedInputElem = (
               <XInput
 
               value={String(value) }
@@ -724,10 +846,106 @@ const TsNodeUnitDisplayPrivC = (
               />
             ) ;
 
+            const primaryInputElem = (
+              keyTypedInputElem
+            ) ;
+
+            const upperSecondaryInputElem = (
+              (() => {
+
+                if (TS.isIdentifier(nd) ) {
+
+                  const srcfle = nd.getSourceFile() ;
+
+                  const suggstsLs = (
+
+                    util.reiterated(function* () {
+                      yield* (
+                        getAllNodes(srcfle)
+                        .flatMap(nd => TS.isIdentifier(nd) ? [nd] : [] )
+                        .map(nd => nd.text )
+                      ) ;
+                      yield* (
+                        Object.keys(globalThis)
+                        .filter(nm => nm.match(/^[a-z]/) )
+                      ) ;
+                    })
+
+                    .toSorted()
+
+                    .toSorted((a, b) => (a.length - b.length ) )
+
+                    .map(value => { const score = (
+                      value.match(/(^(webkit|moz)|(page|webkit|moz)(\w*))/i) ? 5000 :
+                      (value.match(/^on(?![e])/) ) ? 700 :
+                      value.match(/((pointer|mouse)(up|down|wheel|move|enter|leave|out))/i) ? 500 :
+                      0
+                    ) ; return { value, score, } ; } ).toSorted((a, b) => (a.score - b.score) ).map(({ value, }) => value )
+
+                  ) ;
+
+                  const value = nd.text ;
+
+                  return (
+                    <span>
+                      <select
+                      value={value}
+                      style={{
+                        fontFamily: "monospace",
+                      }}
+                      // size={3 }
+                      onChange={e0 => {
+                        const { value: selectedId, } = e0.target ;
+                        const cde = (
+                          selectedId
+                        ) ;
+                        // TODO
+                        console["log"]({ cde, }) ;
+                        cde && (
+                          processTextualEditEvtCb1((
+                            TsAstDisplayEvents.describeNdseEdit({
+                              lsNd: nd,
+          
+                              newTxt: (
+                                cde
+                              ),
+          
+                              asBeingWithinHighFrequencyEditSeqce: (
+                                false
+                              ) ,
+          
+                            })
+                          ))
+                        ) ;
+                      }}
+                      >
+                        { (
+                          util.Immutable.OrderedSet(suggstsLs)
+                          .map(optVle => (
+                            <option
+                            key={optVle}
+                            value={optVle}
+                            children={(
+                              // <code>{ optVle }</code>
+                              optVle
+                            ) }
+                            />
+                          ) )
+                        ) }
+                      </select>
+                    </span>
+                  ) ;
+                }
+
+                return <></> ;
+              })()
+            ) ;
+
             return (
               <span>
-                { sE }
-                { fe }
+                { classSwitchElem }
+                { primaryInputElem }
+                { upperSecondaryInputElem }
               </span>
             ) ;
 
