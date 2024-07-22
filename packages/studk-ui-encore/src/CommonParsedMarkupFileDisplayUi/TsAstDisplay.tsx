@@ -33,6 +33,10 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts'
 
+type ConstrainedNoNullAssert<T0> = (
+  <T1 extends T0>(x: T1) => asserts x is NonNullable<T1>
+) ;
+
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
 import {
@@ -284,6 +288,11 @@ const useTsNodeTreeDisplayPrivCompProps = (
       onTextualEditEvt: runnTextualEditEvtCb ,
     } = props ;
 
+    /* aliased condition variable */
+    const hasTextualEditReceiver = (
+      !!runnTextualEditEvtCb
+    ) ;
+
     const {
       noSupressionOfZeroChgEvts = false ,
     } = ((): {
@@ -490,10 +499,90 @@ const useTsNodeTreeDisplayPrivCompProps = (
 
     ;
 
+    const processTextualEditEvtCb1 = (
+      (runnTextualEditEvtCb)
+      &&
+      ((e1: ReturnType<typeof TsAstDisplayEvents.describeNdseEdit>) => {
+        ;
+
+        const isZeroChg = (
+          e1.newTxt === e1.existingTxt
+        ) ;
+
+        0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
+
+        if ((
+          (!isZeroChg || noSupressionOfZeroChgEvts)
+          ||
+          (
+            console["log"](`newText exactly the same so chg evt should be supressed.`)
+            , false
+          )
+        )) {
+          runnTextualEditEvtCb(e1) ;
+        }
+
+      } )
+    ) ;
+
+    if (runnTextualEditEvtCb) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+    
+    if (hasTextualEditReceiver) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+    
+    if (processTextualEditEvtCb1) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+
     return {
       //
 
       clvMd,
+      // ...(
+      //   hasTextualEditReceiver ?
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, }
+      //   :
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, }
+      // ) ,
+      // ...(
+      //   (
+      //     // (hasTextualEditReceiver || !!processTextualEditEvtCb1)
+      //     runnTextualEditEvtCb
+      //   ) ?
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, processTextualEditEvtCb1, }
+      //   :
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, processTextualEditEvtCb1, }
+      // ) ,
       runnTextualEditEvtCb ,
 
       autoCommitOnType ,
