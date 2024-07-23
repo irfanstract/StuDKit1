@@ -13,6 +13,14 @@
 	"devDependencies": {
 	}
   ,
+	"exports": {
+
+		"./src/*": "./src/*",
+		"./public/userspace/UrlBasedCssNecessity*": "./src/userspace/UrlBasedCssNecessity*.tsx",
+
+    "./package.json": "./package.json"
+	}
+  ,
 	"imports": {
 		"#currentPkg/*": "./*"
 	}
