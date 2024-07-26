@@ -79,7 +79,7 @@ import {
 
 // import {
 //   OVCB, 
-// } from '#currentPkg/src/templating/xst/ovcb.tsx';
+// } from 'studk-ui/src/templating/xst/ovcb.tsx';
 
 import {
   UserToElementActivityState,
