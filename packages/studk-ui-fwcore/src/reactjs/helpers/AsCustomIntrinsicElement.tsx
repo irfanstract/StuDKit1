@@ -28,6 +28,7 @@ import {
 import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
+  EitherPropertyOf, 
   Extend,
   OmitCase,
   OmitW,
@@ -66,14 +67,128 @@ namespace DCIE {
 export namespace ReactJsBasedCustomIntrinsicElement {
   ;
 
-  export interface SpclWithRenderFncCaseProps<actualProps extends {} = any > extends
+  export namespace SpclPropNamesMapper {
+    ;
+
+    // TODO
+    export const fromMdlSpacePropKeyNames = (
+      function <const tgNm extends (keyof JSX.IntrinsicElements), actualProps extends JSX.IntrinsicElements[tgNm] >(...[mdlSpacePropKeyNames] : (
+        ArgsWithOptions<[mdlSpacePropKeyNames: readonly (keyof actualProps & string)[] ], {}>
+      ) )
+      {
+
+        const userSpacePropKnmp = (
+
+          mdlSpacePropKeyNames
+  
+          .map(mdlSpaceKey => {
+  
+            const {
+              userSpaceKey ,
+              camelCasedEName ,
+            } = (
+              ((): { userSpaceKey: string, camelCasedEName?: string } => {
+  
+                switch (mdlSpaceKey) {
+                  case "className"      : return { userSpaceKey: "class" , } ;
+                  case "htmlFor"        : return { userSpaceKey: "for"   , } ;
+                }
+  
+                for (const [nme = null ] of util.iterateNonNull(mdlSpaceKey.match(/^on((?=[A-Z])\w+)/) ) ) {
+                  // TODO
+                  if (nme !== null) {
+                    return {
+                      userSpaceKey: nme.toLowerCase() ,
+                      camelCasedEName: nme ,
+                    } ;
+                  }
+                }
+  
+                return (
+                  {
+                    userSpaceKey: util.L.kebabCase(mdlSpaceKey) ,
+                  }
+                ) ;
+              })()
+            ) ;
+  
+            return {
+              mdlSpaceKey ,
+              userSpaceKey ,
+              camelCasedEName ,
+            } as const ;
+          } )
+  
+        ) ;
+    
+        const userSpacePropKeyNames = (
+          userSpacePropKnmp
+          .map(({ userSpaceKey, }) => (
+            userSpaceKey
+          ) )
+        ) ;
+    
+        return {
+          mdlSpacePropKeyNames ,
+          userSpacePropKeyNames ,
+          userSpacePropKnmp ,
+        } as const ;
+      }
+    ) ;
+
+    ;
+  }
+
+  type MdlSpacePropKeyNameMappingConfiguringProps<actualProps extends {} = any > = (
+    EitherPropertyOf<{
+      readonly mdlSpacePropKeyNames?: readonly ((keyof actualProps) & string)[] ;
+      readonly mdlSpacePropKeyNameMapper?: ReturnType<typeof SpclPropNamesMapper.fromMdlSpacePropKeyNames> ;
+    }>
+  ) ;
+
+  export namespace SpclPropNamesMapper {
+    ;
+
+    export const fromDefnrProps1 = (
+      function <const tgNm extends (keyof JSX.IntrinsicElements), actualProps extends JSX.IntrinsicElements[tgNm] >(...args : (
+        ArgsWithOptions<[ ], MdlSpacePropKeyNameMappingConfiguringProps<actualProps> >
+      ) )
+      {
+        const [
+          {
+            mdlSpacePropKeyNames : mspknArg,
+            mdlSpacePropKeyNameMapper: mspknmpprArg ,
+          } = null ?? {} ,
+        ] = args ;
+
+        return (
+          mspknmpprArg
+          ||
+          SpclPropNamesMapper.fromMdlSpacePropKeyNames(mspknArg ?? [] )
+        ) ;
+      }
+    ) ;
+
+    ;
+  }
+
+  interface SpclWithRenderFncCasePropsFixed<actualProps extends {} = any > extends
   Extract<(
     & DCIE.ProgrammaticItcBaseClassChoiceProps
     & DCIE.SdrModeRelatedProps
   ) , unknown>
   {
-    readonly mdlSpacePropKeyNames: readonly ((keyof actualProps) & string)[] ;
+    // readonly mdlSpacePropKeyNames?: readonly ((keyof actualProps) & string)[] ;
+    // readonly mdlSpacePropKeyNameMapper?: ReturnType<typeof SpclPropNamesMapper.fromMdlSpacePropKeyNames> ;
   }
+
+  export type SpclWithRenderFncCaseProps<actualProps extends {} = any > = (
+    & SpclWithRenderFncCasePropsFixed<actualProps>
+    & MdlSpacePropKeyNameMappingConfiguringProps<actualProps>
+    & {
+      // readonly mdlSpacePropKeyNames: readonly ((keyof actualProps) & string)[] ;
+    }
+  ) ;
 
   export const defineWithRender = (
     function <const tgNm extends (keyof JSX.IntrinsicElements), actualProps extends JSX.IntrinsicElements[tgNm] >(...a : (
@@ -92,66 +207,82 @@ export namespace ReactJsBasedCustomIntrinsicElement {
         {
           supc = HTMLElement ,
           sdr = ("open" satisfies ShadowRootMode) ,
-          mdlSpacePropKeyNames = [] ,
-        } = {},
+          ...otherOpts
+        },
       ] = null ?? a ;
 
-      const userSpacePropKnmp = (
-
-        mdlSpacePropKeyNames
-
-        .map(mdlSpaceKey => {
-
-          const {
-            userSpaceKey ,
-            camelCasedEName ,
-          } = (
-            ((): { userSpaceKey: string, camelCasedEName?: string } => {
-
-              switch (mdlSpaceKey) {
-                case "className"      : return { userSpaceKey: "class" , } ;
-                case "htmlFor"        : return { userSpaceKey: "for"   , } ;
-              }
-
-              for (const [nme = null ] of util.iterateNonNull(mdlSpaceKey.match(/^on((?=[A-Z])\w+)/) ) ) {
-                // TODO
-                if (nme !== null) {
-                  return {
-                    userSpaceKey: nme.toLowerCase() ,
-                    camelCasedEName: nme ,
-                  } ;
-                }
-              }
-
-              return (
-                {
-                  userSpaceKey: util.L.kebabCase(mdlSpaceKey) ,
-                }
-              ) ;
-            })()
-          ) ;
-
-          return {
-            mdlSpaceKey ,
-            userSpaceKey ,
-            camelCasedEName ,
-          } as const ;
-        } )
-
+      const {
+        mdlSpacePropKeyNames ,
+        userSpacePropKnmp ,
+        userSpacePropKeyNames ,
+      } = (
+        SpclPropNamesMapper.fromDefnrProps1(otherOpts)
       ) ;
+
+      /**
+       * we can only do `customElements.define(... ...)` with given `name` at-most once, so
+       * we'll need to make the resulting programmatic-itc `class { ... ... }` reconfigurable.
+       * 
+       */
+      ;
+
+      function extractAsProps(...[e] : [mainMountedElem: Element])
+      : actualProps
+      {
+        ;
+
+        interface EvmpOps {
+          readonly mdlSpaceKey: (keyof actualProps & string) | "children" ;
+          readonly userSpaceKey: string;
+          readonly value: (object | string) | null;
+        }
+
+        const m2 = (
+          util.reiterated<EvmpOps>(function* () {
+
+            yield* (
+              userSpacePropKnmp
+
+              .filter(({ mdlSpaceKey, }) => !(mdlSpaceKey === "children") )
+              .map(({ mdlSpaceKey, userSpaceKey, }) => {
+
+                const vle = e.getAttribute(userSpaceKey) ;
+
+                return {
+                  mdlSpaceKey,
+                  userSpaceKey,
+                  value: vle,
+                } satisfies EvmpOps ;
+              } )
+
+            ) ;
+
+            yield {
+              mdlSpaceKey: "children",
+              userSpaceKey: "children",
+              value: <slot />,
+            } satisfies EvmpOps ;
+
+          })
+        ) ;
+
+        const o3 = (
+          util.Immutable.Map((
+            m2
+            .map(({ mdlSpaceKey, value, }) => [ mdlSpaceKey, value ] as const )
+          ))
+          .toObject()
+        ) ;
+
+        return (
+          o3 as actualProps
+        ) ;
+
+      }
+
+      const mainProgrammticItc = (
   
-      const userSpacePropKeyNames = (
-        userSpacePropKnmp
-        .map(({ userSpaceKey, }) => (
-          userSpaceKey
-        ) )
-      ) ;
-  
-      globalThis.customElements.define ;
-  
-      globalThis.customElements.define(tgName, (
-  
-        class extends supc {
+        class extends (HTMLElement as CustomElementConstructor) {
           //
 
           r !: RDC.Root ;
@@ -173,53 +304,8 @@ export namespace ReactJsBasedCustomIntrinsicElement {
           // TODO
           
           private getAsProps() : actualProps {
-            const e = this; 
-
-            interface EvmpOps {
-              readonly mdlSpaceKey: (keyof actualProps & string) | "children" ;
-              readonly userSpaceKey: string;
-              readonly value: (object | string) | null;
-            }
-
-            const m2 = (
-              util.reiterated<EvmpOps>(function* () {
-
-                yield* (
-                  userSpacePropKnmp
-
-                  .filter(({ mdlSpaceKey, }) => !(mdlSpaceKey === "children") )
-                  .map(({ mdlSpaceKey, userSpaceKey, }) => {
-
-                    const vle = e.getAttribute(userSpaceKey) ;
-
-                    return {
-                      mdlSpaceKey,
-                      userSpaceKey,
-                      value: vle,
-                    } satisfies EvmpOps ;
-                  } )
-
-                ) ;
-
-                yield {
-                  mdlSpaceKey: "children",
-                  userSpaceKey: "children",
-                  value: <slot />,
-                } satisfies EvmpOps ;
-
-              })
-            ) ;
-
-            const o3 = (
-              util.Immutable.Map((
-                m2
-                .map(({ mdlSpaceKey, value, }) => [ mdlSpaceKey, value ] as const )
-              ))
-              .toObject()
-            ) ;
-
             return (
-              o3 as actualProps
+              extractAsProps(this)
             ) ;
           }
 
@@ -251,7 +337,42 @@ export namespace ReactJsBasedCustomIntrinsicElement {
   
         }
   
-      )) ;
+      ) ;
+
+      void (
+        (
+          Object.getPrototypeOf((
+            mainProgrammticItc.prototype
+          ) )
+          ===
+          supc.prototype
+        )
+        ||
+        (
+          (
+            Object.getPrototypeOf(mainProgrammticItc.prototype)
+            !==
+            HTMLElement.prototype
+          ) && console["warn"](`custom element '${tgName }' had to be redefined.`)
+          ,
+          Object.setPrototypeOf((
+            mainProgrammticItc.prototype
+          ) , (
+            supc.prototype
+          ) )
+        )
+      ) ;
+
+      globalThis.customElements.define ;
+  
+      // TODO
+      void (
+        (document.createElement(tgName).constructor === HTMLUnknownElement )
+        &&
+        globalThis.customElements.define(tgName, (
+          mainProgrammticItc
+        ))
+      ) ;
   
       return tgName ;
     }
