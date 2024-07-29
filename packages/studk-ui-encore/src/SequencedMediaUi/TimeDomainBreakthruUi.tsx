@@ -166,6 +166,7 @@ interface TimeDomainedMultiChnlInspectiveFigureCProps
 /**
  * 
  * @deprecated this is a WIP.
+ * 
  */
 export const TimeDomainedImgListSpanC = (
   describeHtmlComponent((
@@ -178,9 +179,25 @@ export const TimeDomainedImgListSpanC = (
   ))
 ) ;
 
+/**
+ * 
+ * @deprecated this is a WIP.
+ * 
+ */
+export const TimeDomainedMultiChnlInspectiveSpanC = (
+  describeHtmlComponent((
+    //
+    function TimeDomainedMultiChnlInspectiveSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
+
 export const TimeDomainedMultiChnlInspectiveFigureC = (
   describeHtmlComponent((
-    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
+    function TimeDomainedMultiChnlInspectiveFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
 
@@ -202,7 +219,7 @@ export const TimeDomainedMultiChnlInspectiveFigureC = (
 // TODO
 const TimeDomainedMultiChnlInspectiveFigureC11 = (
   describeHtmlComponent((
-    function TimeDomainedImgListFigureCInnerImpl({
+    function TimeDomainedMultiChnlInspectiveFigureCInnerImpl({
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
       } = {} ,
@@ -246,7 +263,7 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
               return e ;
             }
           ))((
-            <TimeDomainedImgListSpC
+            <TimeDomainedMultiChnlInspectiveSpC
             hc={horizonConfig }
             mainPlotter={mainPlotter ?? getSpclDefaultMainPlotter() }
             />
@@ -274,9 +291,25 @@ const getSpclDefaultMainPlotter = (
   ))
 ) ;
 
+/**
+ * WIP/TBD
+ * 
+ * @deprecated
+ * 
+ */
 export const TimeDomainedImgListSpC = (
   describeHtmlComponent((
-    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
+    function TimeDomainedImgListSpCImpl()
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
+
+export const TimeDomainedMultiChnlInspectiveSpC = (
+  describeHtmlComponent((
+    function TimeDomainedMultiChnlInspectiveSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
     {
       ;
       
