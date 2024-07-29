@@ -315,6 +315,7 @@ export const TbmcKnbC: {
                     </p>
                   </div>
                 ) ,
+                asRowHeader: true,
               } ;
 
               yield {
@@ -333,6 +334,7 @@ export const TbmcKnbC: {
                     </p>
                   </div>
                 ) ,
+                asRowHeader: true,
               } ;
 
               for (const ddsd of ddsds)
