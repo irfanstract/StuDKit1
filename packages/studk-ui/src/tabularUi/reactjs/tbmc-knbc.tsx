@@ -109,6 +109,8 @@ interface TbmcKnbCPropsImpl extends Extract<{
     primaryStreamPlotter ?: SccMastPlotter.RegularAppletifyingInstance ,
   } ,
 
+  rowHeadCollDescs?: readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps>[] ,
+
 }, any>
 {}
 
@@ -136,6 +138,8 @@ const useTbmcKnbCProps = (
       horizonConfig ,
 
       value: valueArg = getTbmcKnbDefaultSpecimen() ,
+
+      rowHeadCollDescs : rhcdArg ,
 
       mainPlotters: {
         primaryStreamPlotter = getSuggestedSccMastPlotter() ,
@@ -222,6 +226,7 @@ const useTbmcKnbCProps = (
         horizonConfig,
         segmenterConfig,
         valueArg ,
+        rhcdArg,
         /** {@link segmenterConfig.effectiveWindowSeq} */
         directionalDomainWindowDescs: ddsds ,
         renderPerChannelPlotAsUnitApplet ,
@@ -249,6 +254,7 @@ export const TbmcKnbC: {
     const {
       horizonConfig,
       valueArg ,
+      rhcdArg,
       directionalDomainWindowDescs: ddsds ,
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
@@ -284,6 +290,49 @@ export const TbmcKnbC: {
             ) ;
           }
         ) ;
+
+        const rowHeadCollDescs = (
+          rhcdArg
+          ??
+          util.reiterated<(
+            renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps >
+          ) >(function* () {
+            ;
+
+            // ⬆️⬇️☯️
+
+            yield {
+              id: `itemident`,
+              renderHead: () => <i children={`name`} /> ,
+              renderContent: (v) => (
+                <div
+                style={{
+                  minInlineSize: `12ex`,
+                }}
+                >
+                  <p>
+                    <i children={v.id} />
+                  </p>
+                </div>
+              ) ,
+              asRowHeader: true,
+            } ;
+
+            yield {
+              id: `itemkind`,
+              renderHead: () => <i children={`kind letter`} /> ,
+              renderContent: (v) => (
+                <div>
+                  <p>
+                    <code children={`${v.kind}`} />
+                  </p>
+                </div>
+              ) ,
+              asRowHeader: true,
+            } ;
+
+          })
+        ) ;
   
         const mainTable = (
           renderTableByRowDtListAndColumnList.renderAsTransposed(chnlDataList , {
@@ -293,49 +342,7 @@ export const TbmcKnbC: {
 
             perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
 
-              yield {
-                id: `itemident`,
-                renderHead: () => <i children={`name`} /> ,
-                renderContent: (v) => (
-                  <div>
-                    <p>
-                      <i children={v.id} />
-                    </p>
-                    <p>
-                      <ButtonC
-                      title={`Move Up`}
-                      children={`Up`}
-                      onClick={false }
-                      />
-                      <ButtonC
-                      title={`Move Down`}
-                      children={`DOwn`}
-                      onClick={false }
-                      />
-                    </p>
-                  </div>
-                ) ,
-                asRowHeader: true,
-              } ;
-
-              yield {
-                id: `itemkind`,
-                renderHead: () => <i children={`kind letter`} /> ,
-                renderContent: (v) => (
-                  <div>
-                    <p>
-                      <code children={`${v.kind}`} />
-                    </p>
-                    <p>
-                      <ButtonC
-                      children={`Change Kind`}
-                      onClick={false }
-                      />
-                    </p>
-                  </div>
-                ) ,
-                asRowHeader: true,
-              } ;
+              yield* rowHeadCollDescs ;
 
               for (const ddsd of ddsds)
               {
