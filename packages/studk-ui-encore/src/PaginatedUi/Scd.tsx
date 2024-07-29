@@ -273,11 +273,35 @@ const ScdSubC = (
           }}
           >
             { ((e: React.ReactElement) => {
+              ;
+              const dbg = 1 ;
+              if ((
+                dbg
+              ))
+              {
+                e = (
+                  <div
+                  className='studk-paginatedui-scdc-paginroot-d302'
+                  children={e}
+                  />
+                ) ;
+              }
               if (1)
               {
                 e = (
                   <scdDivRefCtx.Provider
                   value={divRef}
+                  children={e}
+                  />
+                ) ;
+              }
+              if ((
+                dbg
+              ))
+              {
+                e = (
+                  <div
+                  className='studk-paginatedui-scdc-paginroot-d301'
                   children={e}
                   />
                 ) ;
