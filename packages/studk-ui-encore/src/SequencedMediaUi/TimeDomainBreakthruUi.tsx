@@ -667,9 +667,7 @@ export const WithSpclisedScdOverrides1C = (
 ) ;
 
 import {
-  useSpclisedScdStateValues1 ,
   SpclScrollHandler ,
-  getSpclScrollHandleRefCtxStack ,
   useSpclisedScdPeer, 
   useCtxExplicitSpclisedScdStateValues1,
   useCtxExplicitSpclisedScdPeer,
@@ -677,14 +675,12 @@ import {
 
 import {
   ScdC ,
-  useDebouncedScdState1, 
   useDebouncedScdStateWrapper1,
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
   WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
-  getScdSProvCtxStack ,
   useCtxtualScdProv,
   type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
