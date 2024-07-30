@@ -25,39 +25,38 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
-
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts' ;
 
-
-
-
-
-
-import * as React from "react" ;
 
 
 
 
 
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+  React ,
+  toComponentMountKey,
+  describeComponent ,
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  ButtonC,
+  Span ,
+  describeCallbackAssignedStyleProps ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
-
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 // import Link from "next/link" ;
 
@@ -91,13 +90,11 @@ import {
 
 import {
   ScdC ,
-  useDebouncedScdState1, 
   useDebouncedScdStateWrapper1,
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
-  useCtxtualisedScdPoiState1, 
-  useCtxtualisedScdState1,
+  // useCtxtualisedScdState1,
   // useDebouncedScdStateWrapper1A ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
 
@@ -290,32 +287,8 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
   })
 ) ;
 
-/**
- * 
- * @deprecated this is a WIP/TBD
- */
-export const useSpclisedScdStateValues1 = (
-  function () {
-    ;
-    const [ , { poi , setPoi, statDerivable, }] = useCtxtualisedScdState1() ;
-    const [lsce, { setLsce, setLsceDebcd, }] = (
-      useDebouncedScdStateWrapper1(poi, setPoi)
-    ) ;
-    return {
-      poi ,
-      setPoi ,
-      statDerivable ,
-      lsce ,
-      setLsce ,
-      setLsceDebcd ,
-    } as const ;
-  }
-) ;
-
 import {
-  WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
-  getScdSProvCtxStack ,
   type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
