@@ -56,7 +56,7 @@ namespace DOmClientBoundingRect {
         & { }
       ) >
     ) )
-    : OmitW<DOMRect, "toJSON">
+    : XDomRect
     {
 
       const r = (
@@ -72,13 +72,14 @@ namespace DOmClientBoundingRect {
   export interface EligibleElement extends Element {}
 
   export const getFrom = (
-    function (...[e, { } = {}] : (
+    function (...[e, { rescale = true, } = {}] : (
       ArgsWithOptions<[main: EligibleElement,] , (
         & {
-          // rescale ?: boolean ,
+          rescale ?: boolean ,
         }
       ) >
     ) )
+    : XDomRect
     {
 
       const r = (
@@ -87,11 +88,31 @@ namespace DOmClientBoundingRect {
 
       r.left ;
 
-      return r ;
+      const s = (
+        rescale ? getEffectiveZoom(e) : 1
+      ) ;
+
+      return {
+        left: s * r.left,
+        x   : s * r.left,
+        top: s * r.top,
+        y  : s * r.top,
+
+        height: s * r.height,
+        width: s * r.width ,
+        bottom: s * r.bottom ,
+        right : s * r.right  ,
+      } satisfies Partial<XDomRect > ;
     }
   ) ;
 
+  interface XDomRect extends OmitW<DOMRect, "toJSON"> {}
+
 }
+
+import {
+  getEffectiveZoom ,
+} from "studk-ui-fwcore/src/dom/helpers/DOmOnScreenPropertiesOfElementEfz.ts" ;
 
 export {
   DOmClientBoundingRect as DOmClientBoundingRect ,
