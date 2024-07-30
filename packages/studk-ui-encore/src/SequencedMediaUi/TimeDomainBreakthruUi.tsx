@@ -25,9 +25,15 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts' ;
 
 const T_BY_HMS = (
   function (...[hn, mn, sn] : [...values: [Array<any>["length"], Array<any>["length"], Array<any>["length"]] ])
@@ -36,31 +42,24 @@ const T_BY_HMS = (
   }
 ) ;
 
-import type {
-  ArgsGetOptions ,
-  ArgsWithOptions, 
-  Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
-
-
-
-
-
-
-import * as React from "react" ;
 
 
 
 
 
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
-
-import {
+  React ,
+  toComponentMountKey,
+  describeComponent ,
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  ButtonC,
+  Span ,
+  describeCallbackAssignedStyleProps ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -70,12 +69,6 @@ import {
   SingleChildDiv,
 } from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
-import {
-  Button ,
-  ButtonC,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
-
 // import Link from "next/link" ;
 
 import {
@@ -83,17 +76,8 @@ import {
 } from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
 
 import {
-  describeCallbackAssignedStyleProps,
-} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
-
-import { renderTableByRowDtListAndColumnList, } from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx';
-
-const GET_CLIENTOFFSET_OF = (
-  (e: Element) => ({
-    x: e.getBoundingClientRect().left,
-    y: e.getBoundingClientRect().top,
-  })
-) ;
+  renderTableByRowDtListAndColumnList,
+} from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx';
 
 
 
