@@ -21,10 +21,6 @@
 
 
 
-import {
-  util,
-} from 'typexpe-commons/src/common_sv.mjs';
-
 const throwDetailedAssertionError = (
   function (s: Record<string, unknown>)
   {
@@ -35,40 +31,37 @@ const throwDetailedAssertionError = (
 ) ;
 
 import {
-  random,
-} from "lodash-es" ;
+  util,
+} from 'typexpe-commons/src/common_sv.mjs';
 
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts' ;
 
-
-
-
-
-
-import * as React from "react" ;
 
 
 
 
 
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
-
-import {
-  describeHeadlinedArticle ,
-} from 'studk-ui/src/meta/react/dhc.tsx'; ;
-
-import {
+  React ,
+  toComponentMountKey,
+  describeComponent ,
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+  mkClasses ,
+  withExtraSemanticProperties,
   Button ,
+  ButtonC,
   Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
-
-// import Link from "next/link" ;
+  describeCallbackAssignedStyleProps ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   getFullDocBodySrcBasedSvgDataUrl,
@@ -105,22 +98,17 @@ import {
 import {
   ScdC ,
   scdDivRefCtx,
-  useDebouncedScdState1, 
   useDebouncedScdStateWrapper1,
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
-  useCtxtualisedScdPoiState1, 
-  useCtxtualisedScdState1,
   useScdState1Tupled,
   // useDebouncedScdStateWrapper1A ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
 
 import {
-  WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
   getScdSProvCtxStack ,
-  useCtxtualScdProv,
   type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
@@ -322,31 +310,6 @@ export const useCtxExplicitSpclisedScdPeer = (
         // csDivRef,
       ] )
     ) ;
-  }
-) ;
-
-/**
- * 
- * {@link useSpclisedScdStateValues1}
- * 
- * 
- * @deprecated
- * this is a WIP/TBD.
- * instead, expand into (in sequence) {@link useCtxtualScdProv} and {@link useCtxExplicitSpclisedScdStateValues1}
- * 
- */
-export const useSpclisedScdStateValues1 = (
-  function () {
-    ;
-
-    const scprov = (
-      useCtxtualScdProv()
-    ) ;
-
-    return (
-      useCtxExplicitSpclisedScdStateValues1(scprov)
-    ) ;
-
   }
 ) ;
 
