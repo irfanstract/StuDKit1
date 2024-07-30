@@ -561,11 +561,32 @@ const WithSsc1DInner = (
                   }}
                   >
                   { (
-                  <pre style={{ whiteSpace: "pre-wrap", }}>
-                    { ((e: any) => JSON.stringify(e) )({
-                      s: statDerivable.s, pos: statDerivable.pos,
-                      clsn: (statDerivable.rootNd as (Element | null))?.className ?? `(no root nd)` ,
-                    }) }
+                  <pre
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    fontSize: `75%`,
+                  }}
+                  >
+                    { (
+                      ((e: any) => JSON.stringify(e) )({
+
+                        s: statDerivable.s,
+                        pos: statDerivable.pos,
+                        poi,
+
+                        hostNd: (
+                          (() => {
+                            const rootNd = (
+                              statDerivable.rootNd as (Element | null)
+                            ) ;
+                            return (
+                              rootNd ? (rootNd.className ?? `Element <(no class name) >`) : `(no root nd)`
+                            ) ;
+                          })()
+                        ) ,
+
+                      })
+                    ) }
                   </pre>
                   ) }
                   </div>
