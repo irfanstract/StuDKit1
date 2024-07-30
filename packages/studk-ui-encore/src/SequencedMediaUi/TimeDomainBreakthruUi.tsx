@@ -497,6 +497,13 @@ const WithSsc1DInner = (
         useCtxtualScdProv()
       ) ;
 
+      const scprovAlt = (
+        useCtxExplicitSpclisedScdPeer(scprov0, {
+          ctxtuSpclScrollHandler0: null ,
+          csDivRef: null,
+        } )
+      ) ;
+
       const {
         poi ,
         setPoi ,
@@ -506,7 +513,8 @@ const WithSsc1DInner = (
         setLsceDebcd ,
       } = (
         useCtxExplicitSpclisedScdStateValues1((
-          scprov0
+          // scprov0
+          scprovAlt
         ))
       ) ;
 
