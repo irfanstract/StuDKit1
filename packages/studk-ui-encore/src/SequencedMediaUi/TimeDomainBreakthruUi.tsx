@@ -97,18 +97,6 @@ import {
   SccMastPlotter ,
 } from "studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx" ;
 
-import {
-  ScdC ,
-  useDebouncedScdState1, 
-  useDebouncedScdStateWrapper1,
-} from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
-
-import {
-  useCtxtualisedScdPoiState1, 
-  useCtxtualisedScdState1,
-  // useDebouncedScdStateWrapper1A ,
-} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
-
 // TODO
 /**
  * 
@@ -666,13 +654,22 @@ import {
   useSpclisedScdStateValues1 ,
   SpclScrollHandler ,
   getSpclScrollHandleRefCtxStack ,
-  useSpclisedScdPeer ,
+  useSpclisedScdPeer, 
+  useCtxExplicitSpclisedScdStateValues1,
+  useCtxExplicitSpclisedScdPeer,
 } from "studk-ui-encore/src/SequencedMediaUi/TdbScd.tsx" ;
+
+import {
+  ScdC ,
+  useDebouncedScdState1, 
+  useDebouncedScdStateWrapper1,
+} from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
   WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
   getScdSProvCtxStack ,
+  useCtxtualScdProv,
   type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
