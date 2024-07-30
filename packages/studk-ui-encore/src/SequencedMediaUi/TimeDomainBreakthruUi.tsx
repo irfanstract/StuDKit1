@@ -493,6 +493,10 @@ const WithSsc1DInner = (
     {
       ;
 
+      const scprov0 = (
+        useCtxtualScdProv()
+      ) ;
+
       const {
         poi ,
         setPoi ,
@@ -500,7 +504,11 @@ const WithSsc1DInner = (
         lsce ,
         setLsce ,
         setLsceDebcd ,
-      } = useSpclisedScdStateValues1() ;
+      } = (
+        useCtxExplicitSpclisedScdStateValues1((
+          scprov0
+        ))
+      ) ;
 
       return (
         ((
