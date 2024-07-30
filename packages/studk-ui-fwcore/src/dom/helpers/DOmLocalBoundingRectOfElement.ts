@@ -55,6 +55,30 @@ namespace DOmLocalClientBoundingRect {
         & { referenceDiv: EligibleElem, }
       ) >
     ) ) => ({
+      x: (DOmClientBoundingRect.getFrom(mainDiv).left) - ((DOmClientBoundingRect.getFrom(referenceDiv).left) ) ,
+      y: (DOmClientBoundingRect.getFrom(mainDiv).top ) - ((DOmClientBoundingRect.getFrom(referenceDiv).top ) ) ,
+    })
+  ) ;
+
+  export interface EligibleElem extends DOmClientBoundingRect.EligibleElement {}
+
+}
+
+/**
+ * TODO/WIP
+ * 
+ * @deprecated this is a WIP
+ * 
+ */
+namespace DOmPerViewportClientBoundingRect {
+  ;
+  
+  export const getFrom = (
+    (...[mainDiv, { referenceDiv, }] : (
+      ArgsWithOptions<[mainDiv: EligibleElem,] , (
+        & { referenceDiv: EligibleElem, }
+      ) >
+    ) ) => ({
       x: (DOmClientBoundingRect.getFrom(mainDiv).left) - ((DOmClientBoundingRect.getFrom(referenceDiv).left) + -(referenceDiv.scrollLeft) ) ,
       y: (DOmClientBoundingRect.getFrom(mainDiv).top ) - ((DOmClientBoundingRect.getFrom(referenceDiv).top ) + -(referenceDiv.scrollTop ) ) ,
     })
@@ -66,6 +90,8 @@ namespace DOmLocalClientBoundingRect {
 
 export {
   DOmLocalClientBoundingRect,
+  /** @deprecated this is a WIP */
+  DOmPerViewportClientBoundingRect ,
 } ;
 
 
