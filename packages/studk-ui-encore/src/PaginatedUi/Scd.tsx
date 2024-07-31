@@ -284,7 +284,7 @@ const ScdSubC = (
       & React.PropsWithChildren
       & AllOrNever1<{ cv : number, crossCv: number, } & { orientCv : "inherit" | "horizontal" | "vertical" }>
       & Pick<JSX.IntrinsicElements["div"] , "hidden" | "style" >
-      & { onScroll?: (evtInfo: ScrollingEvt) => void ; }
+      & { onScroll?: SpclOnScrollHandler ; }
       /* INTERNAL OBLIGATORY VARS */
       // & { divRef: React.MutableRefObject<HTMLDivElement | null>, }
       /* DEBUG VARS */
@@ -402,6 +402,30 @@ const ScdSubC = (
   ))
 ) ;
 
+export interface SpclOnScrollHandler
+{
+
+  /**
+   * {@link SpclOnScrollHandler}
+   * 
+   * since the likely scenario is that
+   * there'll be no attempt to transform/adjust/scale the vector across the coord_space(s),
+   * we instead
+   * pre-transform them before propagating them up
+   * 
+   */
+  (evtInfo: ScrollingEvt): void ;
+
+}
+
+/**
+ * {@link scdDivRefCtx}
+ * 
+ * 
+ * @deprecated
+ * this is part of those not-scalable solution
+ * 
+ */
 const scdDivRefCtx = (
   React.createContext<{ mainDRef: React.RefObject<HTMLDivElement | null>, }["mainDRef"] | null>(null)
 ) ;
