@@ -143,6 +143,17 @@ export {
 
 export * from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
+export * from "studk-ui-fwcore/src/dom/helpers/DOmOnScreenBoundingRectOfElement.ts" ;
+export * from "studk-ui-fwcore/src/dom/helpers/DOmLocalBoundingRectOfElement.ts" ;
+
+export {
+  getEffectiveZoom ,
+  analyseNativeElemtClientOffsets ,
+  getMouseEvtClientOffset ,
+  isDescendantOfOrItselfEffectivelyDisplayNone ,
+  isNativeElementNotHidden ,
+} from "studk-ui-fwcore/src/dom/helpers/DOmOnScreenPropertiesOfElementEfz.ts" ;
+
 
 
 
