@@ -46,7 +46,11 @@ namespace ReactSetStateActionHelpers {
   ;
 
   export function asDigestFnc<S , >(f0: React.SetStateAction<S>)
-  : ((x0: S) => S)
+  : (
+    S extends ((...a: any) => any ) ?
+    Function
+    : ((x0: S) => S)
+  )
   {
     return (
       asDigestFnc1(f0)
@@ -54,7 +58,11 @@ namespace ReactSetStateActionHelpers {
   }
 
   export function asDigestFnc1<SA, const S0 extends SA , const S2 extends SA >(f0: S2 | ((x0: SA ) => S2 ))
-  : ((x0: S0 | SA ) => S2)
+  : (
+    S2 extends ((...a: any) => any ) ?
+    Function
+    : ((x0: S0 | SA ) => S2)
+  )
   {
     return (
       (typeof f0 === "function") ? f0 : (() => f0 )
