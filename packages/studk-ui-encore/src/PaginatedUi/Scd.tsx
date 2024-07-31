@@ -165,7 +165,9 @@ const useScdApplyFromProp = (
 
     useIntervalEffect(() => {
       ;
+
       const { current: dv, } = divRef ;
+
       if (dv) {
         const eMg = getEffectiveZoom(dv) ;
         void (() => {
@@ -181,6 +183,7 @@ const useScdApplyFromProp = (
           }
         })() ;
       }
+
     } , 1.7 * 1000 , [divRef, cv1Ref, cvCrsRef]) ;
 
   }
