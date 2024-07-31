@@ -97,8 +97,8 @@ import {
  * 
  */
 const useScdState1 = (
-  function (...args : (
-    ArgsWithOptions<[provider: ScdStateProvCtx] , {
+  function <St extends {}>(...args : (
+    ArgsWithOptions<[provider: ScdStateProvCtx<St>] , {
       getIdOf?: (e: ScdStateDerivable) => (NonNullable<unknown> | null ) ,
     } >
   ) ) {
@@ -154,7 +154,7 @@ export type ScdsPoint2D = { x: number, y: number } ;
  * 
  */
 const useScdState1Tupled = (
-  function (...args: Parameters<typeof useScdState1> )
+  function <St extends {}>(...args: Parameters<typeof useScdState1<St> > )
   {
     const {
       //
