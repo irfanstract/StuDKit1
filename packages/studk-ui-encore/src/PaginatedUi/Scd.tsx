@@ -53,43 +53,31 @@ type ProperOmit<T extends {}, xk extends keyof any> = (
 
 
 
-import * as React from "react" ;
-
-
-
-
-
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
-
-import {
+  React ,
+  toComponentMountKey,
+  ReactSetStateActionHelpers,
+  describeComponent ,
   describeHtmlComponent,
-  getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+  getSpaceSeparatedClassNameList ,
+  describeCallbackAssignedStyleProps ,
+  Button ,
+  Span ,
+  SingleChildDiv, 
+  RequiredComponentProps,
+  ComponentProps,
+  withExtraSemanticProperties,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
-
-import {
-  SingleChildDiv,
-} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
-
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 // import Link from "next/link" ;
 
 import {
   getFullDocBodySrcBasedSvgDataUrl,
 } from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
-
-import {
-  describeCallbackAssignedStyleProps,
-} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
 
 
@@ -151,19 +139,117 @@ export const ScdC = (
   ))
 ) ;
 
-const ScdSubC = (
-  describeHtmlComponent((
-    function ScdCSubImpl({
+const useScdApplyFromProp = (
+  // cv1Ref.current = ctrlVal1 ;
+  // cvCrsRef.current = ctrlValCrs ;
+
+  function (...[divRef, { ctrlVal1, ctrlValCrs, orientCv, } ] : (
+    ArgsWithOptions<[React.RefObject<HTMLElement | null > , ] , {
+      //
+      ctrlVal1: number,
+      ctrlValCrs: number,
+      orientCv: RequiredComponentProps<typeof ScdSubC>["orientCv"] ,
+    }>
+  ) )
+  {
+
+    const cv1Ref = (
+      React.useRef<number>(0)
+    ) ;
+    const cvCrsRef = (
+      React.useRef<number>(0)
+    ) ;
+    cv1Ref.current = ctrlVal1 ;
+    cvCrsRef.current = ctrlValCrs ;
+
+    useIntervalEffect(() => {
+      ;
+      const { current: dv, } = divRef ;
+      if (dv) {
+        void (() => {
+          switch (orientCv) {
+            case "horizontal":
+              dv.scrollLeft = cv1Ref.current ;
+              dv.scrollTop = cvCrsRef.current ;
+              return ;
+            case "vertical":
+              dv.scrollTop = cv1Ref.current ;
+              dv.scrollLeft = cvCrsRef.current ;
+              return ;
+          }
+        })() ;
+      }
+    } , 1.7 * 1000 , [divRef, cv1Ref, cvCrsRef]) ;
+
+  }
+) ;
+
+const useScdSubCProps = (
+  function (props: ComponentProps<typeof ScdSubC> )
+  {
+    ;
+
+    const {
       children,
+
       cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
       crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
       orientCv = "vertical",
       onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
-      style: styl,
       // divRef,
       ctrlVarsDebug: shallCtrlVarsDebug = false,
-      ...otherProps
-    } : (
+      style: styl,
+
+      ...unhandledProps
+    } = props ;
+
+    const divRef = (
+      React.useRef<HTMLDivElement | null>(null)
+    ) ;
+
+    useScdApplyFromProp(divRef , {
+      ctrlVal1 ,
+      ctrlValCrs ,
+      orientCv ,
+    } ) ;
+
+    const debugP = (
+      <div>
+        { shallCtrlVarsDebug ? (
+          <pre style={{ whiteSpace: `pre-wrap`, }}>
+            { JSON.stringify((
+              React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
+            )) }
+          </pre>
+        ) : null }
+      </div>
+    ) ;
+
+    return {
+      children ,
+
+      ctrlVal1 ,
+      ctrlValCrs ,
+      orientCv ,
+      runOnScroll ,
+
+      shallCtrlVarsDebug ,
+      styl ,
+
+      divRef ,
+
+      debugP ,
+
+      unhandledProps ,
+      props ,
+
+    } as const ;
+  }
+) ;
+
+const ScdSubC = (
+  describeHtmlComponent((
+    function ScdCSubImpl(props : (
       & React.PropsWithChildren
       & AllOrNever1<{ cv : number, crossCv: number, } & { orientCv : "inherit" | "horizontal" | "vertical" }>
       & Pick<JSX.IntrinsicElements["div"] , "hidden" | "style" >
@@ -173,38 +259,30 @@ const ScdSubC = (
       /* DEBUG VARS */
       & { ctrlVarsDebug ?: boolean ; }
     ))
+    : React.ReactNode
     {
-      const divRef = (
-        React.useRef<HTMLDivElement | null>(null)
-      ) ;
 
-      const cv1Ref = (
-        React.useRef<number>(0)
+      const {
+        children ,
+  
+        ctrlVal1 ,
+        ctrlValCrs ,
+        orientCv ,
+        runOnScroll ,
+  
+        shallCtrlVarsDebug ,
+        styl ,
+  
+        divRef ,
+  
+        debugP ,
+  
+        unhandledProps: otherProps ,
+        // props ,
+  
+      } = (
+        useScdSubCProps(props)
       ) ;
-      const cvCrsRef = (
-        React.useRef<number>(0)
-      ) ;
-      cv1Ref.current = ctrlVal1 ;
-      cvCrsRef.current = ctrlValCrs ;
-
-      useIntervalEffect(() => {
-        ;
-        const { current: dv, } = divRef ;
-        if (dv) {
-          void (() => {
-            switch (orientCv) {
-              case "horizontal":
-                dv.scrollLeft = cv1Ref.current ;
-                dv.scrollTop = cvCrsRef.current ;
-                return ;
-              case "vertical":
-                dv.scrollTop = cv1Ref.current ;
-                dv.scrollLeft = cvCrsRef.current ;
-                return ;
-            }
-          })() ;
-        }
-      } , 1.7 * 1000 , [divRef, cv1Ref, cvCrsRef]) ;
 
       const applyInputEvt = (
         function (e : React.UIEvent<HTMLDivElement>)
@@ -215,18 +293,6 @@ const ScdSubC = (
         }
       ) ;
 
-      const debugP = (
-        <div>
-          { shallCtrlVarsDebug ? (
-            <pre style={{ whiteSpace: `pre-wrap`, }}>
-              { JSON.stringify((
-                React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
-              )) }
-            </pre>
-          ) : null }
-        </div>
-      ) ;
-
       // TODO
       const withSpclNecessaryCtxOverrides = (
         (...[e] : [React.ReactElement]) => {
@@ -234,9 +300,8 @@ const ScdSubC = (
         }
       ) ;
 
-      return (
+      const mE = (
         <div
-        className='studk-paginatedui-scdc-wholediv '
         style={{
           ...styl ,
         }}
@@ -260,11 +325,35 @@ const ScdSubC = (
           }}
           >
             { ((e: React.ReactElement) => {
+              ;
+              const dbg = 1 ;
+              if ((
+                dbg
+              ))
+              {
+                e = (
+                  <div
+                  className='studk-paginatedui-scdc-paginroot-d302'
+                  children={e}
+                  />
+                ) ;
+              }
               if (1)
               {
                 e = (
                   <scdDivRefCtx.Provider
                   value={divRef}
+                  children={e}
+                  />
+                ) ;
+              }
+              if ((
+                dbg
+              ))
+              {
+                e = (
+                  <div
+                  className='studk-paginatedui-scdc-paginroot-d301'
                   children={e}
                   />
                 ) ;
@@ -276,6 +365,14 @@ const ScdSubC = (
           </>
         )}
         />
+      ) ;
+
+      return (
+        withExtraSemanticProperties({
+          classNames: ["studk-paginatedui-scdc-wholediv"] ,
+        } , (
+          mE
+        ) )
       ) ;
     }
   ))
