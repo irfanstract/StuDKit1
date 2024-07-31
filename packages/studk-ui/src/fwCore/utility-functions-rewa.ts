@@ -28,19 +28,24 @@ import {
   random,
 } from "lodash-es" ;
 
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'
+
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-
-import type {
-  ArgsGetOptions ,
-  ArgsWithOptions ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs'; ;
 
 import {
   allocateKeyInternedObjectPool ,
@@ -78,7 +83,7 @@ export {
   mkArray ,
 } ;
 
-export type * from 'studk-ui/src/fwCore/ewo.ts'; ;
+export type * from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 export type {
   ContinuousLinearRange ,
