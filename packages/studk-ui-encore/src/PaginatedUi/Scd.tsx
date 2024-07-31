@@ -67,7 +67,8 @@ import {
   RequiredComponentProps,
   ComponentProps,
   withExtraSemanticProperties,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+  getEffectiveZoom,
+} from 'studk-ui-fwcore/src/util/ReactDomBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -166,15 +167,16 @@ const useScdApplyFromProp = (
       ;
       const { current: dv, } = divRef ;
       if (dv) {
+        const eMg = getEffectiveZoom(dv) ;
         void (() => {
           switch (orientCv) {
             case "horizontal":
-              dv.scrollLeft = cv1Ref.current ;
-              dv.scrollTop = cvCrsRef.current ;
+              dv.scrollLeft = (1 / eMg) * cv1Ref.current ;
+              dv.scrollTop  = (1 / eMg) * cvCrsRef.current ;
               return ;
             case "vertical":
-              dv.scrollTop = cv1Ref.current ;
-              dv.scrollLeft = cvCrsRef.current ;
+              dv.scrollTop  = (1 / eMg) * cv1Ref.current ;
+              dv.scrollLeft = (1 / eMg) * cvCrsRef.current ;
               return ;
           }
         })() ;
@@ -213,6 +215,33 @@ const useScdSubCProps = (
       orientCv ,
     } ) ;
 
+    const applyInputEvt = (
+
+      function (e : React.UIEvent<HTMLDivElement>)
+      {
+
+        const dv = divRef.current ;
+
+        if (dv) {
+          ;
+
+          const y0 = dv.scrollTop ; ;
+          const x0 = dv.scrollLeft ; ;
+          const eS = getEffectiveZoom(dv) ;
+
+          return (
+            runOnScroll({
+              target: dv,
+              newVals: {
+                x: eS * x0,
+                y: eS * y0,
+              } ,
+            })
+          ) ;
+        }
+      }
+    ) ;
+
     const debugP = (
       <div>
         { shallCtrlVarsDebug ? (
@@ -237,6 +266,8 @@ const useScdSubCProps = (
       styl ,
 
       divRef ,
+
+      applyInputEvt ,
 
       debugP ,
 
@@ -274,6 +305,8 @@ const ScdSubC = (
         styl ,
   
         divRef ,
+
+        applyInputEvt ,
   
         debugP ,
   
@@ -282,15 +315,6 @@ const ScdSubC = (
   
       } = (
         useScdSubCProps(props)
-      ) ;
-
-      const applyInputEvt = (
-        function (e : React.UIEvent<HTMLDivElement>)
-        {
-          const y = e.currentTarget.scrollTop ; ;
-          const x = e.currentTarget.scrollLeft ; ;
-          runOnScroll({ target: e.currentTarget, newVals: { x, y, } , }) ;
-        }
       ) ;
 
       // TODO
