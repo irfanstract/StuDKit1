@@ -605,22 +605,25 @@ const WithSsc1DInner = (
                   style={{
                     position: "relative",
                     overflow: "auto",
-                    blockSize: `5em`,
+                    blockSize: `13.5em`,
                   }}
                   >
                   { (
                   <pre
                   style={{
                     whiteSpace: "pre-wrap",
-                    fontSize: `75%`,
+                    fontSize: `6px`,
                   }}
                   >
                     { (
                       ((e: any) => JSON.stringify(e, null, 2 ) )({
 
-                        s: statDerivable.s,
+                        // s: statDerivable.s,
+                        rnk: statDerivable.s.rnk,
                         origiinalPos: statDerivable.originalPosArg ,
                         pos1: statDerivable.pos,
+                        altPos1: (statDerivable.s.etc ?? {}).sO,
+                        coords: statDerivable.s.etc,
                         poi,
 
                         hostNd: (
