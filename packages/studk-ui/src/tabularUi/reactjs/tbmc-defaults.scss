@@ -30,7 +30,7 @@ table:has(.studk-ui-tbmc-timewatchcolumncell) {
 }
 
 :is(tbody, thead) > * > td {
-  z-index: 10;
+  // z-index: 10;
 }
 
 tbody > * > td.studk-ui-tbmc-timewatchcolumncell + .studk-ui-tbmc-timewatchcolumncell {
