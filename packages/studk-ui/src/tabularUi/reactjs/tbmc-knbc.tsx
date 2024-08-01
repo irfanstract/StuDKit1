@@ -411,9 +411,62 @@ export namespace TbmcKnbCDisplayed
    * 
    * @deprecated
    */
-  export function searchSegmentDisplayNodes<Mpe>(...[root = document, { flatTranslate: flm, }]: ArgsWithOptions<[host ?: Element | Document], { flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) }> ) {
+  export function searchSegmentDisplayNodes<Mpe>(...args: (
+    ArgsWithOptions<[host ?: Element | Document], {
+      flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) ,
+    }>
+  ) )
+  {
+    const [
+      root0 = document,
+      {
+        flatTranslate: flm,
+      },
+    ] = args ;
+
+    const root = (
+      (function (): Element {
+        if ("matches" in root0) {
+          return root0 ;
+        }
+        if ("documentElement" in root0) {
+          return root0.documentElement ;
+        }
+        return (
+          util.throwTypeError()
+        ) ;
+      } )()
+    ) ;
+
     return (
-      Array.from(root.querySelectorAll(`.studk-sequemi-tlwalkthruappcomp :is(tr)[data-src-row-id^=plotsegment]`) )
+
+      // TODO
+      (
+        (function () {
+
+          const s0 = (
+            // `.studk-sequemi-tlwalkthruappcomp`
+            `* `
+          );
+          const s1 = `:is(tr)[data-src-row-id^=plotsegment]`;
+
+          return (
+            root.matches(s0) ?
+            (
+              Array.from((
+                root.querySelectorAll(`:is(${s1 })`)
+              ) )
+            )
+            :
+            (
+              Array.from((
+                root.querySelectorAll(`:is(${s0 }) :is(${s1 })`)
+              ) )
+            )
+          ) ;
+        })()
+      )
+
       .flatMap(e => {
         return (
           flm(S_EHE1(e) )
