@@ -113,6 +113,7 @@ import {
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
 import {
+  ASVN,
   TbmcKnbSpclScrollHandler ,
   getPreferredSpclisedTbmcKnbSpclScrollHandler, 
   getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor,
@@ -196,17 +197,43 @@ export const useSpclisedScdPeer = (
 export const useCtxExplicitSpclisedScdPeer = (
   function (...[
     ctxtuScdHandler0 ,
-    { ctxtuSpclScrollHandler0, csDivRef, } ,
+    { ctxtuSpclScrollHandler0, csDivRef, viwportRef, } ,
   ] : (
     ArgsWithOptions<[ScdStateProvCtx ] , {
       ctxtuSpclScrollHandler0: SpclScrollHandler | null ,
       csDivRef: React.RefObject<HTMLDivElement | null> | null ,
+      viwportRef?: React.RefObject<HTMLDivElement | null> | null ,
     }>
   ) )
   {
 
+    // const {
+    //   //
+    //   csDiv1 ,
+    //   viewportDiv1 ,
+    // } = (
+    //   useIntervalScan((
+    //     React.useCallback(() => (
+    //       {
+    //         csDiv1: csDivRef?.current ?? null ,
+    //         viewportDiv1: viwportRef?.current ?? null ,
+    //       } as const
+    //     ) , [csDivRef, viwportRef, ] )
+    //   ) , {
+    //     latencyMillis: 0.125 * 1000 ,
+    //     getFallbackValue: () => null ,
+    //   } )
+    //   ??
+    //   {}
+    // ) ;
     const csDiv1 = (
       useIntervalScan(() => (csDivRef?.current ?? null) , {
+        latencyMillis: 0.125 * 1000 ,
+        getFallbackValue: () => null ,
+      } )
+    ) ;
+    const viewportDiv1 = (
+      useIntervalScan(() => (viwportRef?.current ?? null) , {
         latencyMillis: 0.125 * 1000 ,
         getFallbackValue: () => null ,
       } )
@@ -214,18 +241,43 @@ export const useCtxExplicitSpclisedScdPeer = (
 
     // TODO
     const ctxtuSpclScrollHandler = (
+
       React.useMemo(() => {
+
         if (ctxtuSpclScrollHandler0) {
           return ctxtuSpclScrollHandler0 ;
         }
-        if (csDiv1) {
-          return getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor(csDiv1) ;
+
+        const mainBaseE = (
+          (csDiv1 ?? null )
+          ??
+          ((typeof document !== "undefined") ? document.documentElement : null )
+        ) ;
+
+        if (mainBaseE) {
+
+          const asvn = (
+            (mainBaseE && viewportDiv1 ) ?
+            ASVN({
+              assumedPositionalParentNode: mainBaseE ,
+              assumedViewportNode: viewportDiv1 ,
+            })
+            : null
+          ) ;
+
+          return (
+            getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor(mainBaseE , {
+              aSVn: (asvn ?? undefined) ,
+            } )
+          ) ;
         }
-        if (typeof document !== "undefined") {
-          return getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor(csDiv1 ?? document.documentElement) ;
-        }
+
         return null ;
-      } , [ctxtuSpclScrollHandler0, csDiv1,] )
+      } , [
+        ctxtuSpclScrollHandler0,
+        csDiv1,
+        viewportDiv1,
+      ] )
     ) ;
 
     return (
@@ -240,25 +292,36 @@ export const useCtxExplicitSpclisedScdPeer = (
               | false
             ) {
 
-              const e = ctxtuSpclScrollHandler.searchDisplayedSegs({
-                pt: pt0,
-                searchScope: csDiv1,
-              }) ;
+              /**
+               * note:
+               * return on the first found one.
+               * 
+               */
+              for (const r of (
 
-              for (const dsc of e ) {
-                const {
-                  startT ,
-                  rnk ,
-                } = dsc ;
-                // const  ;
-                return ({
-                  dsc ,
-                  rnk,
-                  startT ,
-                  debug1: {
-                    // csDivRef ,
-                  } ,
-                } as const) ;
+                ctxtuSpclScrollHandler.searchDisplayedSegs({
+                  pt: pt0,
+                  searchScope: csDiv1,
+                }) 
+
+                .map((dsc, i) => {
+
+                  ;
+
+                  // const  ;
+                  return ({
+                    dsc ,
+                    ...(dsc) ,
+                    // rnk,
+                    // startT ,
+                    debug1: {
+                      // csDivRef ,
+                    } ,
+                  } as const) ;
+                } )
+
+              ) ) {
+                return r ;
               }
 
               {
