@@ -497,10 +497,22 @@ const WithSsc1DInner = (
         useCtxtualScdProv()
       ) ;
 
+      const atLevelDivRef1 = (
+        React.useRef<HTMLDivElement>(null)
+      ) ;
+      const viewportDivRef1 = (
+        React.useRef<HTMLDivElement>(null)
+      ) ;
+
       const scprovAlt = (
         useCtxExplicitSpclisedScdPeer(scprov0, {
           ctxtuSpclScrollHandler0: null ,
-          csDivRef: null,
+          csDivRef: (
+            atLevelDivRef1
+          ),
+          viwportRef: (
+            viewportDivRef1
+          ) ,
         } )
       ) ;
 
@@ -533,6 +545,22 @@ const WithSsc1DInner = (
                 ) ;
               }
               e = (
+                <div
+                ref={atLevelDivRef1}
+                // className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                children={e}
+                />
+              ) ;
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner02'
+                  children={e}
+                  />
+                ) ;
+              }
+              e = (
                 <ScdC
                 children={(
                   e
@@ -540,6 +568,22 @@ const WithSsc1DInner = (
                 {...{ orientCv: "horizontal", cv: lsce.x, crossCv: lsce.y, }}
                 onScroll={e => { setLsceDebcd(e.newVals) ; } }
                 // ctrlVarsDebug
+                />
+              ) ;
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                  children={e}
+                  />
+                ) ;
+              }
+              e = (
+                <div
+                ref={viewportDivRef1}
+                // className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                children={e}
                 />
               ) ;
               if (TBMC_SCDNEXTINGDEBUG)
@@ -572,10 +616,11 @@ const WithSsc1DInner = (
                   }}
                   >
                     { (
-                      ((e: any) => JSON.stringify(e) )({
+                      ((e: any) => JSON.stringify(e, null, 2 ) )({
 
                         s: statDerivable.s,
-                        pos: statDerivable.pos,
+                        origiinalPos: statDerivable.originalPosArg ,
+                        pos1: statDerivable.pos,
                         poi,
 
                         hostNd: (
