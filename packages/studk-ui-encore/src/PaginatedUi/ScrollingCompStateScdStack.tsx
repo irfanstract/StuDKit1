@@ -211,6 +211,7 @@ const describeSsva = (
       readonly rootNd: typeof rootNode,
       readonly s: S ,
       readonly pos: SsvaPoint2D ,
+      readonly originalPosArg: SsvaPoint2D ,
       readonly insteadForPos: (ctx: { pos: SsvaPoint2D, }) => DfoReturnedOps ,
     }
 
@@ -224,6 +225,7 @@ const describeSsva = (
         const nrmsedPos = getPtFromS(s) ;
         return {
           rootNd: rootNode,
+          originalPosArg: posArg,
           pos: nrmsedPos,
           s ,
           insteadForPos: ({ pos, }) => DERIVED_FOR({ pos, }) ,
