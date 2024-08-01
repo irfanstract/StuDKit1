@@ -25,6 +25,15 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
+const throwDetailedAssertionError = (
+  function (s: Record<string, unknown>)
+  {
+    return (
+      util.throwAssertionError(`assertion failed for ${JSON.stringify(s) }`)
+    ) ;
+  }
+) ;
+
 import {
   random,
 } from "lodash-es" ;
@@ -103,8 +112,17 @@ import {
 import {
   useCtxtualisedScdPoiState1, 
   useCtxtualisedScdState1,
+  useScdState1Tupled,
   // useDebouncedScdStateWrapper1A ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
+
+import {
+  WithCtxtuallyOverridenScdSProvC,
+  describeSsva ,
+  getScdSProvCtxStack ,
+  useCtxtualScdProv,
+  type ScdStateProvCtx ,
+} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
 import {
   TbmcKnbSpclScrollHandler ,
@@ -112,9 +130,23 @@ import {
   getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor,
 } from "studk-ui-encore/src/SequencedMediaUi/TbmcKnbcScd.tsx" ;
 
+/**
+ * 
+ * WIP
+ * 
+ * @deprecated
+ * 
+ */
 export interface SpclScrollHandler extends Extract<TbmcKnbSpclScrollHandler, any>
 {}
 
+/**
+ * 
+ * WIP
+ * 
+ * @deprecated
+ * 
+ */
 const getSpclScrollHandleRefCtxStack = (
   util.L.once(() => {
     // TODO
@@ -137,6 +169,13 @@ export {
 
 } ;
 
+/**
+ * 
+ * WIP
+ * 
+ * @deprecated
+ * 
+ */
 export const useSpclisedScdPeer = (
   function ()
   {
@@ -152,6 +191,32 @@ export const useSpclisedScdPeer = (
     const csDivRef = (
       React.useContext(scdDivRefCtx)
     ) ;
+
+    return (
+      useCtxExplicitSpclisedScdPeer(ctxtuScdHandler0, {
+        ctxtuSpclScrollHandler0 ,
+        csDivRef ,
+      } )
+    ) ;
+  }
+) ;
+
+/**
+ * WIP
+ * 
+ */
+export const useCtxExplicitSpclisedScdPeer = (
+  function (...[
+    ctxtuScdHandler0 ,
+    { ctxtuSpclScrollHandler0, csDivRef, } ,
+  ] : (
+    ArgsWithOptions<[ScdStateProvCtx ] , {
+      ctxtuSpclScrollHandler0: SpclScrollHandler | null ,
+      csDivRef: React.RefObject<HTMLDivElement | null> | null ,
+    }>
+  ) )
+  {
+
     const csDiv1 = (
       useIntervalScan(() => (csDivRef?.current ?? null) , {
         latencyMillis: 0.125 * 1000 ,
@@ -181,14 +246,17 @@ export const useSpclisedScdPeer = (
         if (ctxtuSpclScrollHandler && csDiv1) {
           // TODO
           return (
+
             describeSsva({ hostNode: csDiv1, getSFromPt: function (pt0): (
               | { readonly startT : number, readonly rnk: string | null, readonly dsc ?: any, readonly debug1 ?: any, }
               | false
             ) {
+
               const e = ctxtuSpclScrollHandler.searchDisplayedSegs({
                 pt: pt0,
                 searchScope: csDiv1,
               }) ;
+
               for (const dsc of e ) {
                 const {
                   startT ,
@@ -204,23 +272,34 @@ export const useSpclisedScdPeer = (
                   } ,
                 } as const) ;
               }
+
               {
                 return false ;
               }
             } , getPtFromS: (e00) => {
+
               if (!!e00)
               {
-                const { startT, } = e00;
+
+                const {
+                  startT,
+                } = e00;
+
                 const e0 = (
                   // TODO
                   ctxtuSpclScrollHandler.analyseDisplayedSegsSearchReturnedDescs([e00])[0]
                 );
+
                 if (e0) {
-                  const { pt = util.throwAssertionError(`assertion failed for ${JSON.stringify({ e00, startT, e0, }) }`), } = e0 ;
+                  const {
+                    pt = throwDetailedAssertionError({ e00, startT, e0, })
+                    ,
+                  } = e0 ;
                   return pt ;
                 } else {
                 }
               }
+
               return {
                 x: -1, y: -1,
               } ;
@@ -246,13 +325,45 @@ export const useSpclisedScdPeer = (
   }
 ) ;
 
+/**
+ * 
+ * {@link useSpclisedScdStateValues1}
+ * 
+ * 
+ * @deprecated
+ * this is a WIP/TBD.
+ * instead, expand into (in sequence) {@link useCtxtualScdProv} and {@link useCtxExplicitSpclisedScdStateValues1}
+ * 
+ */
 export const useSpclisedScdStateValues1 = (
   function () {
     ;
-    const [ , { poi , setPoi, statDerivable, }] = useCtxtualisedScdState1() ;
+
+    const scprov = (
+      useCtxtualScdProv()
+    ) ;
+
+    return (
+      useCtxExplicitSpclisedScdStateValues1(scprov)
+    ) ;
+
+  }
+) ;
+
+export const useCtxExplicitSpclisedScdStateValues1 = (
+  function (...[scprov]: (
+    [scprov: ScdStateProvCtx,]
+  ) ) {
+    ;
+
+    const [ , { poi , setPoi, statDerivable, }] = (
+      useScdState1Tupled(scprov)
+    ) ;
+
     const [lsce, { setLsce, setLsceDebcd, }] = (
       useDebouncedScdStateWrapper1(poi, setPoi)
     ) ;
+
     return {
       poi ,
       setPoi ,
@@ -263,13 +374,6 @@ export const useSpclisedScdStateValues1 = (
     } as const ;
   }
 ) ;
-
-import {
-  WithCtxtuallyOverridenScdSProvC,
-  describeSsva ,
-  getScdSProvCtxStack ,
-  type ScdStateProvCtx ,
-} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
 import {
   TbmcKnbCDisplayed ,
