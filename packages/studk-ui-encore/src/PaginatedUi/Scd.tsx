@@ -65,6 +65,8 @@ import {
   Span ,
   SingleChildDiv, 
   RequiredComponentProps,
+  ComponentProps,
+  withExtraSemanticProperties,
 } from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
@@ -182,6 +184,69 @@ const useScdApplyFromProp = (
   }
 ) ;
 
+const useScdSubCProps = (
+  function (props: ComponentProps<typeof ScdSubC> )
+  {
+    ;
+
+    const {
+      children,
+
+      cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
+      crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
+      orientCv = "vertical",
+      onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
+      // divRef,
+      ctrlVarsDebug: shallCtrlVarsDebug = false,
+      style: styl,
+
+      ...unhandledProps
+    } = props ;
+
+    const divRef = (
+      React.useRef<HTMLDivElement | null>(null)
+    ) ;
+
+    useScdApplyFromProp(divRef , {
+      ctrlVal1 ,
+      ctrlValCrs ,
+      orientCv ,
+    } ) ;
+
+    const debugP = (
+      <div>
+        { shallCtrlVarsDebug ? (
+          <pre style={{ whiteSpace: `pre-wrap`, }}>
+            { JSON.stringify((
+              React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
+            )) }
+          </pre>
+        ) : null }
+      </div>
+    ) ;
+
+    return {
+      children ,
+
+      ctrlVal1 ,
+      ctrlValCrs ,
+      orientCv ,
+      runOnScroll ,
+
+      shallCtrlVarsDebug ,
+      styl ,
+
+      divRef ,
+
+      debugP ,
+
+      unhandledProps ,
+      props ,
+
+    } as const ;
+  }
+) ;
+
 const ScdSubC = (
   describeHtmlComponent((
     function ScdCSubImpl(props : (
@@ -194,30 +259,30 @@ const ScdSubC = (
       /* DEBUG VARS */
       & { ctrlVarsDebug ?: boolean ; }
     ))
+    : React.ReactNode
     {
+
       const {
-        children,
-
-        cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
-        crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
-        orientCv = "vertical",
-        onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
-        // divRef,
-        ctrlVarsDebug: shallCtrlVarsDebug = false,
-        style: styl,
-
-        ...otherProps
-      } = props ;
-
-      const divRef = (
-        React.useRef<HTMLDivElement | null>(null)
-      ) ;
-
-      useScdApplyFromProp(divRef , {
+        children ,
+  
         ctrlVal1 ,
         ctrlValCrs ,
         orientCv ,
-      } ) ;
+        runOnScroll ,
+  
+        shallCtrlVarsDebug ,
+        styl ,
+  
+        divRef ,
+  
+        debugP ,
+  
+        unhandledProps: otherProps ,
+        // props ,
+  
+      } = (
+        useScdSubCProps(props)
+      ) ;
 
       const applyInputEvt = (
         function (e : React.UIEvent<HTMLDivElement>)
@@ -228,18 +293,6 @@ const ScdSubC = (
         }
       ) ;
 
-      const debugP = (
-        <div>
-          { shallCtrlVarsDebug ? (
-            <pre style={{ whiteSpace: `pre-wrap`, }}>
-              { JSON.stringify((
-                React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
-              )) }
-            </pre>
-          ) : null }
-        </div>
-      ) ;
-
       // TODO
       const withSpclNecessaryCtxOverrides = (
         (...[e] : [React.ReactElement]) => {
@@ -247,9 +300,8 @@ const ScdSubC = (
         }
       ) ;
 
-      return (
+      const mE = (
         <div
-        className='studk-paginatedui-scdc-wholediv '
         style={{
           ...styl ,
         }}
@@ -313,6 +365,14 @@ const ScdSubC = (
           </>
         )}
         />
+      ) ;
+
+      return (
+        withExtraSemanticProperties({
+          classNames: ["studk-paginatedui-scdc-wholediv"] ,
+        } , (
+          mE
+        ) )
       ) ;
     }
   ))
