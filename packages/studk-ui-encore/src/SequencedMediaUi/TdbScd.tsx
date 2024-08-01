@@ -318,7 +318,7 @@ export const useCtxExplicitSpclisedScdPeer = (
           ) ;
 
           const captureAndComputeStateFromSdsReturnedItem = (
-            ((dsc, i) => {
+            ((dsc, i, { originalPt, } ) => {
 
               ;
 
@@ -349,6 +349,7 @@ export const useCtxExplicitSpclisedScdPeer = (
 
               const globalCoords = {
                 //
+                originalActualPt: originalPt,
                 sO ,
                 eDbr1,
                 csDbr ,
@@ -382,7 +383,21 @@ export const useCtxExplicitSpclisedScdPeer = (
                   // csDivRef ,
                 } ,
               } as const) ;
-            }) satisfies Parameters<ENH_BSE["map"] >[0]
+            }) satisfies ((...args: ArgsWithOptions<[ENH_BSE[number] , number ], { originalPt: { x: number, y: number }, }> ) => object )
+          ) ;
+
+          interface MStateStructure extends
+          ReturnType<typeof captureAndComputeStateFromSdsReturnedItem>
+          {}
+
+          const reanalyseMState = (
+            function (...[e00] : [MStateStructure ] )
+            {
+              return (
+                // TODO
+                ctxtuSpclScrollHandler.analyseDisplayedSegsSearchReturnedDescs([e00])[0]
+              ) ;
+            }
           ) ;
 
           // TODO
@@ -394,7 +409,9 @@ export const useCtxExplicitSpclisedScdPeer = (
               const describeMainFromSdsReturnedItem = (
 
                 ((dsc, i) => (
-                  captureAndComputeStateFromSdsReturnedItem(dsc, i)
+                  captureAndComputeStateFromSdsReturnedItem(dsc, i, {
+                    originalPt: pt0 ,
+                  } )
 
                 )) satisfies Parameters<ENH_BSE["map"] >[0]
               ) ;
@@ -413,9 +430,36 @@ export const useCtxExplicitSpclisedScdPeer = (
 
                 .map(describeMainFromSdsReturnedItem )
 
-                .filter(({ asNde: e, etc: { sO, csDbr, } , }) => {
+                .filter(function (s): boolean {
                 ;
+
+                const {
+                  asNde: e,
+                  etc: {
+                    sO,
+                    csDbr,
+                    rnk: rnk0,
+                  } ,
+                } = s ;
+
                 if (0) { return true ; }
+
+                // TODO
+
+                const sReanalysed = (
+                  reanalyseMState(s)
+                ) ;
+
+                if (1 && !sReanalysed) {
+                  return false ;
+                }
+
+                {
+                  ;
+                  if (sReanalysed && !(sReanalysed.rnk === rnk0 )) {
+                    return false ;
+                  }
+                }
 
                 const beingOutOfViewport = (
                   DOmClientBoundingRect.getFrom(e).right
@@ -429,10 +473,12 @@ export const useCtxExplicitSpclisedScdPeer = (
                   )
                 ) ;
 
+                if (beingOutOfViewport) {
+                  return false ;
+                }
+
                 return (
-                  // TODO
-                  !beingOutOfViewport
-                  // sO <=
+                  true
                 ) ;
                 } )
 
@@ -448,13 +494,17 @@ export const useCtxExplicitSpclisedScdPeer = (
               if (!!e00)
               {
 
+                if (1) {
+                  return e00.originalActualPt ;
+                }
+
                 const {
                   startT,
                 } = e00;
 
                 const e0 = (
                   // TODO
-                  ctxtuSpclScrollHandler.analyseDisplayedSegsSearchReturnedDescs([e00])[0]
+                  reanalyseMState(e00)
                 );
 
                 if (e0) {
@@ -462,7 +512,10 @@ export const useCtxExplicitSpclisedScdPeer = (
                     pt = throwDetailedAssertionError({ e00, startT, e0, })
                     ,
                   } = e0 ;
-                  return pt ;
+                  if (e0.rnk === e00.rnk) {
+                    return e00.originalActualPt ;
+                  }
+                  return e0.pt ;
                 } else {
                 }
               }
