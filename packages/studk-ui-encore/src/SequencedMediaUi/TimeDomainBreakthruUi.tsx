@@ -598,6 +598,9 @@ const WithSsc1DInner = (
               e = (
                 <div>
                 <aside>
+                  { " " && (
+                  //
+                  <div>
                   <p>
                     debug values:
                   </p>
@@ -612,7 +615,7 @@ const WithSsc1DInner = (
                   <pre
                   style={{
                     whiteSpace: "pre-wrap",
-                    fontSize: `6px`,
+                    fontSize: `8px`,
                   }}
                   >
                     { (
@@ -623,7 +626,7 @@ const WithSsc1DInner = (
                         origiinalPos: statDerivable.originalPosArg ,
                         pos1: statDerivable.pos,
                         altPos1: (statDerivable.s.etc ?? {}).sO,
-                        coords: statDerivable.s.etc,
+                        ...(0 ? { coords: statDerivable.s.etc, } : { }),
                         poi,
 
                         hostNd: (
@@ -642,6 +645,8 @@ const WithSsc1DInner = (
                   </pre>
                   ) }
                   </div>
+                  </div>
+                  ) }
                 </aside>
                 { e }
                 { (
