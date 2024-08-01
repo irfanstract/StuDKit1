@@ -104,15 +104,9 @@ export interface TbmcKnbSpclScrollHandler extends Extract<{}, any>
   isTbmcKnbSpclScrollHandler ?: true ;
 
   searchDisplayedSegs: (
-    SdsFncImpl<(
+    TbmcKnbSpclScrollHandler.SdsFncImpl<(
       ReadonlyArray<(
-        & {
-          readonly startT: number,
-          readonly endT?: number,
-        }
-        & { rnk: string | null, }
-        & { asNde: Element, }
-        & { etc ?: {} | null, }
+        TbmcKnbSpclScrollHandler.SdsItemDesc
       )>
     )>
   ) ;
@@ -120,36 +114,57 @@ export interface TbmcKnbSpclScrollHandler extends Extract<{}, any>
   analyseDisplayedSegsSearchReturnedDescs: (
     (ctx: readonly (ReturnType<TbmcKnbSpclScrollHandler["searchDisplayedSegs"] >[number] )[] ) => (
       ReadonlyArray<(
-        { pt: { x: number, y: number, } }
+        TbmcKnbSpclScrollHandler.AdrResultItem
       )>
     )
   ) ;
 
 }
 
-interface SdsFncImpl<out R>
-{
-  //
+export namespace TbmcKnbSpclScrollHandler {
+  ;
 
-  (...ctx: (
-    ArgsWithOptions<(
-      ArgsWithOptions<[], (
-        & ({ e: Element } | { pt: { x: number, y: number, } })
-        & ({ searchScope: GCOIbleNode, })
-      )>
-    ) , {  }>
-  )): R ;
+  export interface SdsItemDesc extends Extract<(
+    & {
+      readonly startT: number,
+      readonly endT?: number,
+    }
+    & { rnk: string | null, }
+    & { asNde: Element, }
+    & { etc ?: {} | null, }
+  ) , any > {}
 
-  /** @deprecated */
-  (...ctx: (
-    ArgsWithOptions<(
-      ArgsWithOptions<[], (
-        & ({ e: Element } | { pt: { x: number, y: number, } })
-        & ({ searchScope?: never, })
-      )>
-    ) , {}>
-  )): R ;
+  export interface SdsFncImpl<out R>
+  {
+    //
+  
+    (...ctx: (
+      ArgsWithOptions<(
+        ArgsWithOptions<[], (
+          & ({ e: Element } | { pt: { x: number, y: number, } })
+          & ({ searchScope: GCOIbleNode, })
+        )>
+      ) , {  }>
+    )): R ;
+  
+    /** @deprecated */
+    (...ctx: (
+      ArgsWithOptions<(
+        ArgsWithOptions<[], (
+          & ({ e: Element } | { pt: { x: number, y: number, } })
+          & ({ searchScope?: never, })
+        )>
+      ) , {}>
+    )): R ;
+  
+  }
 
+  export interface AdrResultItem extends Extract<(
+    & { pt: { x: number, y: number, } }
+    & { rnk: string, }
+  ), any > {}
+  
+  ;
 }
 
 interface ASVN {
@@ -270,7 +285,7 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
                     vp: toVwp,
                     cp: toPpn,
                   } ,
-                } as const ;
+                } satisfies TbmcKnbSpclScrollHandler.SdsItemDesc ;
               } )
 
             ) ;
@@ -309,21 +324,24 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
                     }
                   })() )
                   {
-                    const poi = (
-                      GET_LOCALOFFSET_OF(e, {
-                        referenceDiv: assumedPositionalParentNode,
-                      })
-                    ) ;
                     yield {
-                      poi,
+                      incidedPageProperties: {
+                        rnk: rnk,
+                        topLeftPos: (
+                          GET_LOCALOFFSET_OF(e, {
+                            referenceDiv: assumedPositionalParentNode,
+                          })
+                        ) ,
+                      } ,
                     } as const ;
                   }
                 }
               } )
             ) )
             .map(e => ({
-              pt: e.poi,
-            } as const ) )
+              pt: e.incidedPageProperties.topLeftPos ,
+              rnk: e.incidedPageProperties.rnk ,
+            } satisfies TbmcKnbSpclScrollHandler.AdrResultItem ) )
 
           ) ;
           return [] as const ;
