@@ -41,6 +41,20 @@ import type {
   Extend,
 } from 'studk-fwcore/src/util/C1.ts'; ;
 
+const withLoggingAfterwards = (
+  function <Args extends readonly unknown[], R>(x0: (...args: Args) => R )
+  {
+    const x1 = (
+      (...a: Args) => {
+        const originalReturnVal = x0(...a) ;
+        console["debug"]({ originalReturnVal, a, }) ;
+        return originalReturnVal ;
+      }
+    ) ;
+    return x1 ;
+  }
+) ;
+
 
 
 
@@ -268,7 +282,14 @@ export const useDebouncedScdStateWrapper1A = (
   {
     
     const setPoiDebcd = (
-      React.useCallback(util.L.throttle(setPoi, 0.10205 * 1000 ) , [setPoi] )
+      React.useCallback((
+        util.L.throttle((
+          withLoggingAfterwards(setPoi)
+        ), 0.10205 * 1000 , {
+          leading: false,
+          trailing: true,
+        } )
+      ) , [setPoi] )
     ) ;
 
     const poiDeferred = (
