@@ -213,7 +213,9 @@ html {
 
 //
 
-@layer defaults {
+@layer defaults, studk-demos-strl-defaults ;
+
+@layer studk-demos-strl-defaults {
 
 /* equivalent to ((32 + 8)em ), but we can't use `px` so we assume per `em` is `16px` */
 
