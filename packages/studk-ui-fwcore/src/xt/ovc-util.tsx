@@ -63,6 +63,14 @@ export {
 
 import * as React from "react" ;
 
+/**
+ * to be able to *properly* call *event-handler(s)* __(or other callbacks u're okay it may change anytime)__ from within `useYyyEffect` handlers
+ * you'll *really* need this wrapper.
+ * 
+ * this is  a substitute of "experimental API that has not yet been released" `useEffectEvent` (not available yet),
+ * see "Separating Events From Effects" (https://19.react.dev/learn/separating-events-from-effects ).
+ * 
+ */
 export const useRefreshedCallback = (
   function <argsT extends readonly unknown[], const R>(...[upstreamImpl] : [impl: (...args: argsT) => R ])
   {
@@ -75,6 +83,14 @@ export const useRefreshedCallback = (
   }
 ) ;
 
+/**
+ * to be able to *properly* call *event-handler(s)* from within `useYyyEffect` handlers
+ * you'll *really* need this wrapper.
+ * 
+ * this is  a substitute of "experimental API that has not yet been released" `useEffectEvent` (not available yet),
+ * see "Separating Events From Effects" (https://19.react.dev/learn/separating-events-from-effects ).
+ * 
+ */
 export const useEventDispatchCallback = (() => {
   ;
   function useEventDispatchCallbackImpl(...args : [impl: () => void ] ) : () => void ;
