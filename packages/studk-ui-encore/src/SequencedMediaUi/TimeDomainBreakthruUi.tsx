@@ -72,6 +72,7 @@ import {
 
 import {
   Button ,
+  ButtonC,
   Span ,
 } from 'studk-ui/src/xst/dbc.tsx'; ;
 
@@ -84,6 +85,8 @@ import {
 import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
+
+import { renderTableByRowDtListAndColumnList, } from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx';
 
 const GET_CLIENTOFFSET_OF = (
   (e: Element) => ({
@@ -105,6 +108,10 @@ import {
   SpclCoreC,
   TbmcKnsBasedModelState,
 } from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
+
+import {
+  SccMastPlotter ,
+} from "studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx" ;
 
 import {
   ScdC ,
@@ -147,10 +154,29 @@ export const TimeDomainedImgListFigureC = (
 
 interface TimeDomainedMultiChnlInspectiveFigureCProps
 {
-  scrollingConfig ?: {
-    revertToRawPositioning ?: boolean ;
+
+  readonly scrollingConfig ?: {
+    readonly revertToRawPositioning ?: boolean ;
   } ,
+
+  readonly mainPlotter ?: SccMastPlotter.SpclSizelessInst ,
+
 }
+
+/**
+ * 
+ * @deprecated this is a WIP.
+ */
+export const TimeDomainedImgListSpanC = (
+  describeHtmlComponent((
+    //
+    function TimeDomainedImgListSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
 
 export const TimeDomainedMultiChnlInspectiveFigureC = (
   describeHtmlComponent((
@@ -180,6 +206,7 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
       } = {} ,
+      mainPlotter,
       ...otherProps
     } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
@@ -221,6 +248,7 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
           ))((
             <TimeDomainedImgListSpC
             hc={horizonConfig }
+            mainPlotter={mainPlotter ?? getSpclDefaultMainPlotter() }
             />
           )) }
           { (
@@ -237,22 +265,18 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
 
 /**
  * 
- * @deprecated this is a WIP.
+ * @deprecated
+ * 
  */
-export const TimeDomainedImgListSpanC = (
-  describeHtmlComponent((
-    //
-    function TimeDomainedImgListSpanCImpl({} : {})
-    {
-      // TODO
-      return <></> ;
-    }
+const getSpclDefaultMainPlotter = (
+  util.L.once(() => (
+    SccMastPlotter.SpclSizelessInst.getInstance()
   ))
 ) ;
 
 export const TimeDomainedImgListSpC = (
   describeHtmlComponent((
-    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg } : { hc ?: ScCHorizonConfigPropsDesc, })
+    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
     {
       ;
       
@@ -298,11 +322,85 @@ export const TimeDomainedImgListSpC = (
         } )
       ) ;
 
+      const mainPlotterAsAppletifyingInst = (
+        React.useMemo(() => (
+          SccMastPlotter.fromSizelessInstance(mainPlotter)
+        ) , [mainPlotter])
+      ) ;
+
+      ;
+      const rowHeadCollDescs = (
+        util.reiterated<(
+          renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps >
+        ) >(function* () {
+          ;
+
+          // ⬆️⬇️☯️
+
+          yield {
+            id: `itemident`,
+            renderHead: () => <i children={`name`} /> ,
+            renderContent: (v) => (
+              <div
+              style={{
+                minInlineSize: `12ex`,
+              }}
+              >
+                <p>
+                  <i children={v.id} />
+                </p>
+                <p>
+                  <ButtonC
+                  title={`Move Up`}
+                  children={`⬆️`}
+                  onClick={false }
+                  />
+                  <ButtonC
+                  title={`Move Down`}
+                  children={`⬇️`}
+                  onClick={false }
+                  />
+                </p>
+              </div>
+            ) ,
+            asRowHeader: true,
+          } ;
+
+          yield {
+            id: `itemkind`,
+            renderHead: () => <i children={`kind letter`} /> ,
+            renderContent: (v) => (
+              <div>
+                <p>
+                  <code children={`${v.kind}`} />
+                </p>
+                <p>
+                  <ButtonC
+                  title={`Change Kind`}
+                  children={`☯️`}
+                  onClick={false }
+                  />
+                </p>
+              </div>
+            ) ,
+            asRowHeader: true,
+          } ;
+
+        })
+      ) ;
+
+
       return (
         <div className='studk-sequemi-tlwalkthruinlinecomp'>
           <SpclCoreC
           horizonConfig={horizonConfig}
           value={ls}
+          mainPlotters={{
+            primaryStreamPlotter: (
+              mainPlotterAsAppletifyingInst
+            ) ,
+          }}
+          rowHeadCollDescs={rowHeadCollDescs}
           />
         </div>
       ) ;
@@ -315,9 +413,11 @@ const computeDefaultHorizonConfig = (
     range: {
       startPos: T_BY_HMS(0, 0, -15) ,
       endPos: (
-        1 ?
-        T_BY_HMS(0, 15.5, 30)
-        : T_BY_HMS(0, 45, 30)
+        T_BY_HMS(0, (
+          5.5
+          // 15.5
+          // 45
+        ), 30)
       ) ,
     } ,
   })
