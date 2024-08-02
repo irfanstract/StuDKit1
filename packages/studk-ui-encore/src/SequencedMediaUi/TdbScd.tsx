@@ -61,7 +61,12 @@ import {
   ButtonC,
   Span ,
   describeCallbackAssignedStyleProps ,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+  DOmClientBoundingRect ,
+} from 'studk-ui-fwcore/src/util/ReactDomBased.ts'; ;
+
+import {
+  GET_LOCALOFFSET_OF,
+} from 'studk-ui-fwcore/src/dom/helpers/DOmLocalBoundingRectOfElementGeCo.ts';
 
 import {
   getFullDocBodySrcBasedSvgDataUrl,
@@ -282,15 +287,134 @@ export const useCtxExplicitSpclisedScdPeer = (
 
     return (
       // TODO
-      React.useMemo<ScdStateProvCtx>(() => {
-        if (ctxtuSpclScrollHandler && csDiv1) {
+      React.useMemo<ScdStateProvCtx<{}> >(() => {
+
+        if (ctxtuSpclScrollHandler && csDiv1 && viewportDiv1 ) {
+
+          type ENH_BSE = ReturnType<typeof ctxtuSpclScrollHandler.searchDisplayedSegs> ;
+
+          const handleSdsReturnedItem = (
+            ((dsc, i) => {
+
+              ;
+
+              const localOffset = (
+                GET_LOCALOFFSET_OF(dsc.asNde, { referenceDiv: csDiv1, } )
+              ) ;
+              const clientOffset = (
+                DOmClientBoundingRect.getFrom(dsc.asNde)
+              ) ;
+
+              // const  ;
+              return (
+                {
+                  rnk: dsc.rnk ,
+                  localOffset: localOffset,
+                  clientOffset: clientOffset,
+                  ...(dsc.etc) ,
+                } as const
+              ) ;
+            }) satisfies Parameters<ENH_BSE["map"] >[0]
+          ) ;
+
+          const captureAndComputeStateFromSdsReturnedItem = (
+            ((dsc, i, { originalPt, } ) => {
+
+              ;
+
+              const fdr = (
+                handleSdsReturnedItem(dsc, i )
+              ) ;
+
+              const {
+                localOffset: localOffset ,
+                clientOffset: clientOffset ,
+              } = fdr ;
+
+              const sO = (
+                DOmClientBoundingRect.getFrom(viewportDiv1).left
+                -
+                DOmClientBoundingRect.getFrom(csDiv1).left
+              ) ;
+
+              const eDbr1 = (
+                DOmClientBoundingRect.getFrom(dsc.asNde)
+              ) ;
+              const csDbr = (
+                DOmClientBoundingRect.getFrom(csDiv1)
+              ) ;
+              const viewportDbr = (
+                DOmClientBoundingRect.getFrom(viewportDiv1)
+              ) ;
+
+              const globalCoords = {
+                //
+                originalActualPt: originalPt,
+                sO ,
+                eDbr1,
+                csDbr ,
+                viewportDbr ,
+              } as const ;
+
+              // const  ;
+              return ({
+                dsc ,
+                clientOffset ,
+                ...(globalCoords ) ,
+                etc: (
+                  {
+                    rnk1: dsc.rnk ,
+                    ...(globalCoords) ,
+                    rnk: dsc.rnk ,
+                    localOffset ,
+                    clientOffset ,
+                    ...(dsc.etc) ,
+                    dec: localOffset,
+                    dbr: clientOffset,
+                  } as const
+                ) ,
+                ... (
+                  (() => { const { etc, ...p } = dsc ; return p ; })()
+                ) ,
+                dbr: clientOffset ,
+                // rnk,
+                // startT ,
+                debug1: {
+                  // csDivRef ,
+                } ,
+              } as const) ;
+            }) satisfies ((...args: ArgsWithOptions<[ENH_BSE[number] , number ], { originalPt: { x: number, y: number }, }> ) => object )
+          ) ;
+
+          interface MStateStructure extends
+          ReturnType<typeof captureAndComputeStateFromSdsReturnedItem>
+          {}
+
+          const reanalyseMState = (
+            function (...[e00] : [MStateStructure ] )
+            {
+              return (
+                // TODO
+                ctxtuSpclScrollHandler.analyseDisplayedSegsSearchReturnedDescs([e00])[0]
+              ) ;
+            }
+          ) ;
+
           // TODO
           return (
 
-            describeSsva({ hostNode: csDiv1, getSFromPt: function (pt0): (
-              | { readonly startT : number, readonly rnk: string | null, readonly dsc ?: any, readonly debug1 ?: any, }
-              | false
-            ) {
+            describeSsva({ hostNode: csDiv1, getSFromPt: function (pt0)
+            {
+
+              const describeMainFromSdsReturnedItem = (
+
+                ((dsc, i) => (
+                  captureAndComputeStateFromSdsReturnedItem(dsc, i, {
+                    originalPt: pt0 ,
+                  } )
+
+                )) satisfies Parameters<ENH_BSE["map"] >[0]
+              ) ;
 
               /**
                * note:
@@ -304,20 +428,58 @@ export const useCtxExplicitSpclisedScdPeer = (
                   searchScope: csDiv1,
                 }) 
 
-                .map((dsc, i) => {
+                .map(describeMainFromSdsReturnedItem )
 
+                .filter(function (s): boolean {
+                ;
+
+                const {
+                  asNde: e,
+                  etc: {
+                    sO,
+                    csDbr,
+                    rnk: rnk0,
+                  } ,
+                } = s ;
+
+                if (0) { return true ; }
+
+                // TODO
+
+                const sReanalysed = (
+                  reanalyseMState(s)
+                ) ;
+
+                if (1 && !sReanalysed) {
+                  return false ;
+                }
+
+                {
                   ;
+                  if (sReanalysed && !(sReanalysed.rnk === rnk0 )) {
+                    return false ;
+                  }
+                }
 
-                  // const  ;
-                  return ({
-                    dsc ,
-                    ...(dsc) ,
-                    // rnk,
-                    // startT ,
-                    debug1: {
-                      // csDivRef ,
-                    } ,
-                  } as const) ;
+                const beingOutOfViewport = (
+                  DOmClientBoundingRect.getFrom(e).right
+                  <=
+                  (
+                    DOmClientBoundingRect.getFrom(viewportDiv1).left
+                    +
+                    (
+                      22
+                    )
+                  )
+                ) ;
+
+                if (beingOutOfViewport) {
+                  return false ;
+                }
+
+                return (
+                  true
+                ) ;
                 } )
 
               ) ) {
@@ -332,13 +494,17 @@ export const useCtxExplicitSpclisedScdPeer = (
               if (!!e00)
               {
 
+                if (1) {
+                  return e00.originalActualPt ;
+                }
+
                 const {
                   startT,
                 } = e00;
 
                 const e0 = (
                   // TODO
-                  ctxtuSpclScrollHandler.analyseDisplayedSegsSearchReturnedDescs([e00])[0]
+                  reanalyseMState(e00)
                 );
 
                 if (e0) {
@@ -346,7 +512,10 @@ export const useCtxExplicitSpclisedScdPeer = (
                     pt = throwDetailedAssertionError({ e00, startT, e0, })
                     ,
                   } = e0 ;
-                  return pt ;
+                  if (e0.rnk === e00.rnk) {
+                    return e00.originalActualPt ;
+                  }
+                  return e0.pt ;
                 } else {
                 }
               }
@@ -371,6 +540,7 @@ export const useCtxExplicitSpclisedScdPeer = (
         ctxtuSpclScrollHandler,
         csDiv1,
         // csDivRef,
+        viewportDiv1 ,
       ] )
     ) ;
   }
