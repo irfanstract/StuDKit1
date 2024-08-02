@@ -45,10 +45,6 @@ import {
 } from "studk-util/src/math/point-all.mjs" ;
 
 
-
-
-
-
 const TIMEOUT = (
   (tMillis: number) => (
     new Promise<void>(resume => (
@@ -60,6 +56,15 @@ const TIMEOUT = (
 export {
   TIMEOUT ,
 } ;
+
+import type EventEmitter from 'events';
+
+;
+
+
+
+
+
 
 import * as React from "react" ;
 
@@ -296,6 +301,55 @@ export {
 } ;
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
+
+export const useEventEmitterListener = (
+  function <hostT extends EventEmitter, typ extends string>(...[receiver, [evtnm, cbk], dependencyList] : (
+    [host: hostT, Parameters<typeof EventEmitter.prototype.on >, React.DependencyList ]
+  ))
+  {
+
+    type ActualEvt = Event ;
+
+    React["useLayoutEffect"](() => {
+      const fnc = (
+        cbk
+      ) ;
+      receiver.on(evtnm, fnc, ) ;
+      return () => {
+        ;
+        receiver.off(evtnm, fnc, ) ;
+      } ;
+    } , dependencyList) ;
+  }
+) ;
+
+function useEventTargetListener<hostT extends EventTarget, >(...args : (
+  [host: hostT, Parameters<typeof EventTarget.prototype.addEventListener >, React.DependencyList ]
+)) : void ;
+function useEventTargetListener<hostT extends HTMLElement, typ extends keyof HTMLElementEventMap>(...args : (
+  [host: hostT, Parameters<typeof HTMLElement.prototype.addEventListener<typ> >, React.DependencyList ]
+)) : void ;
+
+function useEventTargetListener<hostT extends EventTarget, typ extends string>(...[receiver, [evtnm, cbk, optns,], dependencyList] : (
+  [host: hostT, Parameters<typeof EventTarget.prototype.addEventListener >, React.DependencyList ]
+))
+{
+
+  type ActualEvt = Event ;
+
+  React["useLayoutEffect"](() => {
+    const fnc = (
+      cbk
+    ) ;
+    receiver.addEventListener(evtnm, fnc, optns ) ;
+    return () => {
+      ;
+      receiver.removeEventListener(evtnm, fnc, optns ) ;
+    } ;
+  } , dependencyList) ;
+}
+
+export { useEventTargetListener , } ;
 
 
 
