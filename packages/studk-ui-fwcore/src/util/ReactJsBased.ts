@@ -166,6 +166,12 @@ export * from 'studk-ui-fwcore/src/dbce.tsx'; ;
 
 ;
 
+export {
+  describeCallbackAssignedStyleProps,
+} from 'studk-ui-fwcore/src/xt/summerhitsmedia-cssd.tsx'; ;
+
+;
+
 
 
 
