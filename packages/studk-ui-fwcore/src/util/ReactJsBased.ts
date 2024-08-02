@@ -108,6 +108,23 @@ export const getFromClassNameProp = (
 ;
 
 
+;
+
+export type {
+  ComponentProps ,
+  ComponentPropsWithoutRef ,
+} from "react" ;
+
+/**
+ * applies {@link React.ComponentProps `React.ComponentProps<T>`} and then {@link Required `Required`}.
+ * 
+ */
+export type RequiredComponentProps<T extends keyof JSX.IntrinsicElements | React.JSXElementConstructor<any>> = (
+  Required<(
+    React.ComponentProps<T>
+  )>
+) ;
+
 import {
   describeComponent,
 } from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
