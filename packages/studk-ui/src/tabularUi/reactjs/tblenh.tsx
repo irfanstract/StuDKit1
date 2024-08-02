@@ -88,6 +88,7 @@ import {
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
 import {
+  useEventDispatchCallback,
   useIntervalEffect ,
   useIntervalScan ,
   useMutableRefObjState ,
@@ -158,10 +159,19 @@ const useRefBasedDirectPresenter1 = (
 ) ;
 
 const useDOmXEffect = (
-  function useDOmXEffectImpl(...[runMain, dependencyList] : (
+  function useDOmXEffectImpl(...[runMain0, dependencyList] : (
     [cbk: () => void, React.DependencyList]
   ))
   {
+
+    /**
+     * `useEventDispatchCallback(runMain0)`
+     * 
+     */
+    const runMain = (
+      useEventDispatchCallback(runMain0)
+    ) ;
+
     React["useLayoutEffect"](() => {
       const sC = new AbortController ;
       const s = sC.signal;
@@ -169,18 +179,28 @@ const useDOmXEffect = (
         if (s.aborted) { return ; }
         setTimeout(() => {
           if (s.aborted) { return ; }
-          runMain() ;
+          runMain0() ;
           if (s.aborted) { return ; }
           RESCHED() ;
           if (s.aborted) { return ; }
         } , (
-          document.body.matches(`:not(:focus-within, :hover)`) ? 0.35 : 0.1
+          1 ?
+          5
+          : (
+            document.body.matches(`:not(:focus-within, :hover)`) ? 0.35 : 0.1
+          )
         ) * 1000 ) ;
       })() ;
       return () => {
         sC.abort() ;
       } ;
     } , dependencyList ) ;
+
+    // TODO
+    React["useLayoutEffect"](() => {
+      runMain() ;
+    } , [runMain,] ) ;
+
   }
 ) ;
 

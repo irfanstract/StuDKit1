@@ -452,56 +452,82 @@ namespace SccMastPlotter {
         />
       ) ;
 
+      const plotSpans = (
+        (
+          util.range(glblStartT, glbEndT + 0.5 , (
+            util.L.clamp(
+              Math.floor(Math.sqrt(glbEndT - glblStartT ) ) ,
+              2, 22 )
+          ) )
+        )
+        .map(t => ({ t, x: (t * 10 ) }) )
+        .flatMap((v , i, c) => (
+          util.iterateNonNull((
+            (i + 1) < c.length ?
+            ({
+              startX: c[i]!.x,
+              startT: c[i]!.t,
+              endX: c[i+1]!.x,
+              endT: c[i+1]!.t,
+            } as const )
+            : null
+          ))
+        ))
+        .map(({ startX, startT, endX, endT, }, i) => (
+          <React.Fragment
+          key={startX }
+          >
+          <SizeFlexibleSvgC
+          viewBox={`${startX} 0 ${endX - startX} 10 `}
+          children={(
+            <g
+            style={{ transform: `translate(0, 2px) scale(10)` }}
+            >
+              <title>
+                { `from ${startT} to ${endT} ` }
+              </title>
+              { plG }
+            </g>
+          )}
+          style={{
+            background: `black`,
+            // height: `100%`,
+            blockSize: `1.8em`,
+            inlineSize: `calc((${endT - startT }) * 0.7ex) `,
+            // border: `0.1ex solid blue`,
+            marginInline: `0.051ex`,
+          }}
+          />
+          </React.Fragment>
+        ) )
+      ) ;
+
+      // if (1) {
+      //   ;
+      //   return (
+      //     <div
+      //     style={{
+      //       display: "grid",
+      //       flexDirection: "row",
+      //       flexWrap: "nowrap",
+      //     }}
+      //     >
+      //       { plotSpans }
+      //     </div>
+      //   ) ;
+      // }
+
       return (
         <div
         style={{
           display: "flex",
           flexDirection: "row",
           flexWrap: "nowrap",
+          justifyItems: "stretch",
+          border: `0.1ex solid blue`,
         }}
         >
-          { (
-            util.range(glblStartT, glbEndT + 0.5 , 2 )
-            .map(t => ({ t, x: (t * 10 ) }) )
-            .flatMap((v , i, c) => (
-              util.iterateNonNull((
-                (i + 1) < c.length ?
-                ({
-                  startX: c[i]!.x,
-                  startT: c[i]!.t,
-                  endX: c[i+1]!.x,
-                  endT: c[i+1]!.t,
-                } as const )
-                : null
-              ))
-            ))
-            .map(({ startX, startT, endX, endT, }, i) => (
-              <React.Fragment
-              key={startX }
-              >
-              <SizeFlexibleSvgC
-              viewBox={`${startX} 0 ${endX - startX} 10 `}
-              children={(
-                <g
-                style={{ transform: `translate(0, 2px) scale(10)` }}
-                >
-                  <title>
-                    { `from ${startT} to ${endT} ` }
-                  </title>
-                  { plG }
-                </g>
-              )}
-              style={{
-                background: `black`,
-                // height: `100%`,
-                blockSize: `1.8em`,
-                inlineSize: `calc((${endT - startT }) * 0.7ex) `,
-                // border: `0.1ex solid blue`,
-              }}
-              />
-              </React.Fragment>
-            ) )
-          ) }
+          { plotSpans }
         </div>
       ) ;
     }
