@@ -37,6 +37,7 @@ import {
   Span, 
   withExtraSemanticProperties,
   describeCallbackAssignedStyleProps,
+  ButtonC,
 } from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
 import {
@@ -295,13 +296,43 @@ export const TbmcKnbC: {
               yield {
                 id: `itemident`,
                 renderHead: () => <i children={`name`} /> ,
-                renderContent: (v) => <code children={`${v.id}`} /> ,
+                renderContent: (v) => (
+                  <div>
+                    <p>
+                      <i children={v.id} />
+                    </p>
+                    <p>
+                      <ButtonC
+                      title={`Move Up`}
+                      children={`Up`}
+                      onClick={false }
+                      />
+                      <ButtonC
+                      title={`Move Down`}
+                      children={`DOwn`}
+                      onClick={false }
+                      />
+                    </p>
+                  </div>
+                ) ,
               } ;
 
               yield {
                 id: `itemkind`,
                 renderHead: () => <i children={`kind letter`} /> ,
-                renderContent: (v) => <code children={`${v.kind}`} /> ,
+                renderContent: (v) => (
+                  <div>
+                    <p>
+                      <code children={`${v.kind}`} />
+                    </p>
+                    <p>
+                      <ButtonC
+                      children={`Change Kind`}
+                      onClick={false }
+                      />
+                    </p>
+                  </div>
+                ) ,
               } ;
 
               for (const ddsd of ddsds)
