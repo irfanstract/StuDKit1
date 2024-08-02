@@ -116,7 +116,11 @@ export const withExtraSemanticProperties = (
     ] = args ;
 
     const e = (
-      expandElemt1(e0)
+      1 ?
+      e0
+      : (
+        expandElemt1(e0)
+      )
     ) ;
 
     const {
