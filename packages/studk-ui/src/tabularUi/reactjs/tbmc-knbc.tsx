@@ -105,7 +105,7 @@ interface TbmcKnbCPropsImpl extends Extract<{
 
   value?: TbmcKnsBasedModelState ,
   mainPlotters ?: {
-    primaryStreamPlotter ?: SccMastPlotter.RegularInstance ,
+    primaryStreamPlotter ?: SccMastPlotter.RegularAppletifyingInstance ,
   } ,
 
 }, any>
@@ -143,7 +143,8 @@ const useTbmcKnbCProps = (
     } = null ?? props ;
 
     const {
-      effectiveWindowSeq: hoSegmentDescs ,
+      effectiveWindowSeq: ddsds ,
+      segmenterConfig,
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
     } = (
@@ -174,7 +175,7 @@ const useTbmcKnbCProps = (
       ;
 
       const renderTSegHeadLabelDiv : (
-        (props: { msd: (typeof hoSegmentDescs)[number], }) => React.ReactElement
+        (props: { msd: (typeof segmenterConfig.effectiveWindowSeq)[number], }) => React.ReactElement
       ) = (
         function ({ msd, }) {
           ;
@@ -202,8 +203,13 @@ const useTbmcKnbCProps = (
         }
       ) ;
 
-      const renderChPlotSeg : React.FC<{ v: (typeof chnlDataList)[number], msd: (typeof hoSegmentDescs)[number], }> = (
-        function ({ v, msd, })
+      const renderChPlotSeg : (
+        React.FC<{
+          chnlDesc: (typeof chnlDataList)[number],
+          directionalLocDesc: (typeof segmenterConfig.effectiveWindowSeq)[number],
+        }>
+      ) = (
+        function ({ chnlDesc: v, directionalLocDesc: msd, })
         {
           return (
             renderPerChannelPlotAsWrInlineContent(v, msd )
@@ -213,8 +219,10 @@ const useTbmcKnbCProps = (
 
       return {
         horizonConfig,
+        segmenterConfig,
         valueArg ,
-        hoSegmentDescs ,
+        /** {@link segmenterConfig.effectiveWindowSeq} */
+        directionalDomainWindowDescs: ddsds ,
         renderPerChannelPlotAsUnitApplet ,
         renderPerChannelPlotAsWrInlineContent ,
         chnlDataList,
@@ -240,7 +248,7 @@ export const TbmcKnbC: {
     const {
       horizonConfig,
       valueArg ,
-      hoSegmentDescs ,
+      directionalDomainWindowDescs: ddsds ,
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
       chnlDataList,
@@ -254,7 +262,7 @@ export const TbmcKnbC: {
         ;
 
         const withSpclTbmcTdCssAnnotation = (
-          function (...[e, srcSpan]: [React.ReactElement, ((typeof hoSegmentDescs)[number] )["srcSpan"] ] )
+          function (...[e, srcSpan]: [React.ReactElement, ((typeof ddsds)[number] )["srcSpan"] ] )
           {
   
             return (
@@ -296,9 +304,9 @@ export const TbmcKnbC: {
                 renderContent: (v) => <code children={`${v.kind}`} /> ,
               } ;
 
-              for (const msd of hoSegmentDescs)
+              for (const ddsd of ddsds)
               {
-                const { srcSpan, id: colId, } = msd ;
+                const { srcSpan, id: colId, } = ddsd ;
 
                 yield {
                   id: `plotsegment-${colId}`,
@@ -316,7 +324,7 @@ export const TbmcKnbC: {
                         overflow: "hidden",
                       }}
                       children={(
-                        renderTSegHeadLabelDiv({ msd, })
+                        renderTSegHeadLabelDiv({ msd: ddsd, })
                       ) }
                       />
                     ) , srcSpan )
@@ -331,7 +339,7 @@ export const TbmcKnbC: {
                       inlineSize: `100%`,
                     }}
                     >
-                      { renderChPlotSeg({ v, msd, } ) }
+                      { renderChPlotSeg({ chnlDesc: v, directionalLocDesc: ddsd, } ) }
                     </div>
                   )
                   ,
