@@ -36,6 +36,7 @@ import {
   Button ,
   Span, 
   withExtraSemanticProperties,
+  describeCallbackAssignedStyleProps,
 } from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
 import {
@@ -259,15 +260,17 @@ export const TbmcKnbC: {
             return (
   
               withExtraSemanticProperties({
-                style: {
-                  //
-                  inlineSize: `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ,
-                  ...({
-                    ["--t-start"]: srcSpan.startPos ,
-                    ["--t-end"  ]: srcSpan.endPos ,
-                    ["--sc"]: 1 ,
-                  }),
-                } ,
+                style: (
+                  describeCallbackAssignedStyleProps(c => {
+                    if (0) {
+                      c.inlineSize = `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ;
+                    }
+                    c.minInlineSize = `9ex` ;
+                    void 0 ; (c as any )["--t-start"] = srcSpan.startPos ;
+                    void 0 ; (c as any )["--t-end"  ] = srcSpan.endPos ;
+                    void 0 ; (c as any )["--sc"     ] = 1 ;
+                  } )
+                ) ,
               } , e )
             ) ;
           }
