@@ -245,7 +245,7 @@ namespace TbmcBreakthruColumnsRendering
       } ,
 
       primaryStreamSegmtPlotter ?: (
-        SccMastPlotter.RegularInstance
+        SccMastPlotter.RegularAppletifyingInstance
       ) ,
 
     }
@@ -280,7 +280,7 @@ namespace TbmcBreakthruColumnsRendering
       } ,
 
       primaryStreamSegmtPlotter ?: (
-        SccMastPlotter.RegularInstance
+        SccMastPlotter.RegularAppletifyingInstance
       ) ,
 
     }
@@ -323,10 +323,15 @@ namespace TbmcBreakthruColumnsRendering
     } = mastPlotter ;
 
     return {
+      //
+
       segmenterConfig ,
+      /** {@link segmenterConfig.effectiveWindowSeq}. */
       effectiveWindowSeq: segmenterConfig.effectiveWindowSeq ,
+
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
+
     } as const ;
   }
 
@@ -362,20 +367,13 @@ namespace TbmcBreakthruColumnsRendering
 function getSuggestedSccMastPlotter()
 {
   ;
-  const renderPerChannelPlotAsUnitApplet = function (...[v, ispan]: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] )
-  {
 
-    return (
-      SccMastPlotter.renderPua({
-        startT  : (ispan.srcSpan.startPos   ) ,
-        endT    : (ispan.srcSpan.endPos     ) ,
-      })
-    ) ;
-  }
+  const pua = (
+    SccMastPlotter.SpclSizelessInst.getInstance()
+  ) ;
+
   return (
-    SccMastPlotter.fromMinimalInstance((
-      SccMastPlotter.byRpcpu(renderPerChannelPlotAsUnitApplet )
-    ))
+    SccMastPlotter.fromSizelessInstance(pua)
   ) ;
 }
 
@@ -386,7 +384,12 @@ namespace SccMastPlotter {
 
   export const byRpcpu = (
 
-    function (...[renderPerChannelPlotAsUnitApplet,] : [(...args: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] ) => React.ReactElement ] )
+    function (...[renderPerChannelPlotAsUnitApplet,] : [(...args: (
+      ArgsWithOptions<[
+        chnlDesc: (TbmcModelState["layerStates"] )[number],
+        directionalLocDesc: TbmcBreakthruColumnsRendering.EWS[number] & {},
+      ], {}>
+    ) ) => React.ReactElement ] )
     {
 
       return {
@@ -395,13 +398,13 @@ namespace SccMastPlotter {
     }
   ) ;
 
-  export type MinimalInstance = ReturnType<typeof byRpcpu> ;
+  export type MinimalAppletifyingInstance = ReturnType<typeof byRpcpu> ;
 
-  export type RegularInstance = ReturnType<typeof fromMinimalInstance> ;
+  export type RegularAppletifyingInstance = ReturnType<typeof fromMinimalInstance> ;
 
   export const fromMinimalInstance = (
 
-    function (...[{ renderPerChannelPlotAsUnitApplet, },] : [MinimalInstance ] )
+    function (...[{ renderPerChannelPlotAsUnitApplet, },] : [MinimalAppletifyingInstance ] )
     {
 
       const renderPerChannelPlotAsWrInlineContent = (...args: Parameters<typeof renderPerChannelPlotAsUnitApplet>) => {
@@ -429,13 +432,36 @@ namespace SccMastPlotter {
     }
   ) ;
 
-  export const renderPua = (
-    function (...[{ startT: glblStartT = 0 , endT: glbEndT = glblStartT + 3, } = {}] : (
-      ArgsWithOptions<[], {
-        startT ?: number,
-        endT ?: number,
-      }>
-    ) ) {
+  // TODO
+  export function fromSizelessInstance(...[pua]: [SpclSizelessInst])
+  {
+    ;
+
+    const renderPerChannelPlotAsUnitApplet = function (...[v, ispan]: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] )
+    {
+  
+      return (
+        SccMastPlotter.renderPua({
+          startT  : (ispan.srcSpan.startPos   ) ,
+          endT    : (ispan.srcSpan.endPos     ) ,
+        } , pua )
+      ) ;
+    }
+  
+    return (
+      SccMastPlotter.fromMinimalInstance((
+        SccMastPlotter.byRpcpu(renderPerChannelPlotAsUnitApplet )
+      ))
+    ) ;
+  }
+
+  // TODO
+  export class SpclSizelessInst
+  {
+
+    toJsxSvg(): React.ReactElement
+    {
+      ;
 
       const plG = (
         <rect
@@ -450,6 +476,38 @@ namespace SccMastPlotter {
           fill: `rgba(192 192 192 / 0.5 )`,
         }}
         />
+      ) ;
+
+      return (
+        plG
+      ) ;
+    }
+
+    static getInstance()
+    : SpclSizelessInst
+    {
+
+      return new SpclSizelessInst() ;
+    }
+
+    private constructor()
+    {}
+
+  }
+
+  export const renderPua = (
+    function (...[{ startT: glblStartT = 0 , endT: glbEndT = glblStartT + 3, } , pua = SpclSizelessInst.getInstance() ] : (
+      ArgsWithOptions<[...(
+        ArgsWithOptions<[], {
+          startT : number,
+          endT : number,
+          o ?: never,
+        }>
+      ) , pua: SpclSizelessInst ] , {} >
+    ) ) {
+
+      const plG = ( 
+        pua.toJsxSvg()
       ) ;
 
       const plotSpans = (
