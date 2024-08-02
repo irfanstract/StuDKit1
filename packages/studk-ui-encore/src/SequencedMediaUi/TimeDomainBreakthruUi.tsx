@@ -315,9 +315,11 @@ const computeDefaultHorizonConfig = (
     range: {
       startPos: T_BY_HMS(0, 0, -15) ,
       endPos: (
-        1 ?
-        T_BY_HMS(0, 15.5, 30)
-        : T_BY_HMS(0, 45, 30)
+        T_BY_HMS(0, (
+          5.5
+          // 15.5
+          // 45
+        ), 30)
       ) ,
     } ,
   })
