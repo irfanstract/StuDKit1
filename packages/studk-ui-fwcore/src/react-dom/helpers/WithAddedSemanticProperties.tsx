@@ -73,21 +73,83 @@ export const asHidden = (
   }
 ) ;
 
-interface PrependableSemanticProperties {
+type PrependableSemanticProperties = (
+  & PrependableSemanticPropertiesFixedProps
+
+  & (
+    | {
+      //
+
+      /**
+       * if `true`, sets `hidden={true}`.
+       * (however, __setting this to `false` won't do anything__).
+       * 
+       */
+      hidden ?: boolean,
+    }
+    | {
+      //
+
+      /**
+       * sets `hidden={true}`.
+       * 
+       */
+      hidden : true,
+    }
+    | {
+      //
+
+      /**
+       * 
+       * @deprecated setting to `false` won't have effect
+       * 
+       */
+      hidden ?: false,
+    }
+  )
+
+) ;
+
+interface PrependableSemanticPropertiesFixedProps {
   //
 
-  /** __replaces__ the existing `key`. */
+  /**
+   * __replaces__ the existing `key`.
+   * 
+   */
   key ?: (React.Key | Extract<React.SetStateAction<React.Key | null > , (...a: any) => any > ) ,
 
-  /** adds into {@link HTMLElement.className `className`}. */
+  /**
+   * adds into {@link HTMLElement.className `className`}.
+   * 
+   */
   classNames ?: readonly string[],
-  hidden ?: boolean,
+
+  /**
+   * assign to the ReactElement's props
+   * 
+   */
   props ?: JSX.IntrinsicElements["div"] ,
-  /** `data-<key-name>` . note -- please omit the leading `data-` it'll be added automtclly. */
+  /**
+   * `data-<key-name>` .
+   * note --
+   * please omit the leading `data-`
+   * it'll be added automtclly.
+   * 
+   */
   customDataProperties ?: Record<string, any> ,
 
+  /**
+   * assign to the ReactElement's prop `style`
+   * 
+   */
   style ?: React.CSSProperties ,
-  /** `--some-prop` . note -- please include the leading suffix `--` . */
+  /**
+   * `--some-prop` .
+   * note --
+   * please include the leading suffix `--` .
+   * 
+   */
   customStyleProperties ?: Record<string, any> ,
 
 }
