@@ -205,22 +205,46 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
         computeDefaultHorizonConfig()
       ) , [] ) ;
 
-      return (
-        <div className='studk-sequemi-tlwalkthruappcomp'>
+      const usrDebugPane = (
+        <div>
           <p>
-            Time-domain plot of <code>movie.mp4</code>
+            debug values:
           </p>
-          <aside>
-            <p>
-              debug values:
-            </p>
-            { (
-            // <pre style={{ whiteSpace: "pre-wrap", }}>
-            //   { ((e: any) => JSON.stringify(e) )(statDerivable.s) }
-            // </pre>
-            null
-            ) }
-          </aside>
+          { (
+          null
+          ) }
+        </div>
+      ) ;
+
+      const filenameSpan = (
+        (() : React.ReactElement | null => (
+          <code>movie.mp4</code>
+        ) )()
+      ) ;
+
+      const sHeader = (
+        <div>
+        <p>
+          Time-domain plot {}
+          { filenameSpan ? <>of { filenameSpan }</> : <></> }
+        </p>
+        </div>
+      );
+
+      return (
+      //
+      withExtraSemanticProperties({
+        classNames: ["studk-sequemi-tlwalkthruappcomp"] ,
+      } , (
+        <div className=' '>
+          { sHeader }
+          { (
+            usrDebugPane
+          ) && (
+            <aside>
+              { usrDebugPane }
+            </aside>
+          ) }
           { ((
             (...[e] : [React.ReactElement]) => {
               if (1)
@@ -247,6 +271,7 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
           null
           ) }
         </div>
+      ))
       ) ;
     }
   ))
@@ -290,20 +315,40 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
         computeDefaultHorizonConfig()
       ) , [horizonConfigArg] ) ;
 
+      const [chnlIds, setChnlIds] = (
+        React.useState(() => (
+          util.reiterated(function* () {
+            for (const i of util.range(0, 3) ) {
+              yield { id: `chnl ${i}` as const, }.id ;
+            }
+          } )
+        ))
+      ) ;
+
       const ls = (
         React.useMemo((): TbmcKnsBasedModelState => {
+
           return (
             TbmcKnsBasedModelState.getCmnInstance({
+
               layerStates: (
-                util.reiterated(function* (): Generator<TbmcKnsBasedModelState.LayerStateOps> {
-                  for (const i of util.range(0, 3) ) {
-                    yield { id: `chnl ${i}`, kind: "XLayer", } ;
+                util.reiterated(function* () {
+                  for (const chnlId of chnlIds ) {
+                    yield (
+                      util.asConst<TbmcKnsBasedModelState.LayerStateOps>({
+                        id: chnlId,
+                        kind: "XLayer",
+                      })
+                    ) ;
                   }
                 } )
               ) ,
+
             })
           ) ;
-        } , [] )
+        } , [
+          chnlIds ,
+        ] )
       ) ;
 
       const tdSnpMap = (
@@ -333,6 +378,96 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
         ) , [mainPlotter])
       ) ;
 
+      const renderLayerReorderCtrls = (
+        (() => {
+          ;
+
+          const renderChnlReorderBtn = (
+            function (...[chnlIdx0, { relativeIds: chMvRelativeIdx, } ] : (
+              ArgsWithOptions<[chnlIdx: number], {
+                relativeIds: number,
+                // onChange?: (props: { newIdx: number }) => void ,
+              } >
+            ) )
+            {
+              ;
+
+              const chnlLaterIdx = (
+                chnlIdx0 + chMvRelativeIdx
+              ) ;
+              const onChange: (
+                (props: { newIdx: number }) => void
+              ) = (
+                function ({ newIdx, }) {
+                  setChnlIds(s0 => {
+                    const vlue0 = s0[chnlIdx0]! ;
+                    return (
+                      s0
+                      .toSpliced(chnlIdx0, 1 )
+                      .toSpliced(chnlLaterIdx, 0, vlue0, )
+                    ) ;
+                  }) ;
+                }
+              ) ;
+              const chgAc = (
+                onChange && (0 <= chnlLaterIdx && chnlLaterIdx <= chnlIds.length ) ?
+                function () {
+                  ;
+                  return (
+                    onChange({ newIdx: chnlLaterIdx, })
+                  ) ;
+                }
+                : false
+              ) ;
+              return (
+                <ButtonC
+                // title={`Move Up`}
+                // children={`⬆️`}
+                {...(
+                  (() => {
+                    if (chMvRelativeIdx < 0) {
+                      return {
+                        title: `Move Up`,
+                        children: `⬆️` ,
+                      } ;
+                    }
+                    if (0 < chMvRelativeIdx) {
+                      return {
+                        title: `Move Down`,
+                        children: `⬇️` ,
+                      } ;
+                    }
+                    return {} ;
+                  })()
+                ) }
+                onClick={chgAc }
+                />
+              ) ;
+            }
+          ) ;
+
+          return (
+            function (...[chnlId]: [chnlId: number]) {
+              return {
+                // TODO
+                mveUpBtn: (
+                  renderChnlReorderBtn(chnlId, {
+                    relativeIds: -1 ,
+                    // onChange
+                  } )
+                ) ,
+                mveDwnBtn: (
+                  renderChnlReorderBtn(chnlId, {
+                    relativeIds: 1 ,
+                    // onChange
+                  } )
+                ) ,
+              } ;
+            }
+          ) ;
+        })()
+      ) ;
+
       ;
       const rowHeadCollDescs = (
         util.reiterated<(
@@ -345,7 +480,16 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
           yield {
             id: `itemident`,
             renderHead: () => <i children={`name`} /> ,
-            renderContent: (v) => (
+            renderContent: (v) => {
+            ;
+            const idx = (
+              chnlIds.indexOf(v.id)
+            ) ;
+            const {
+              mveUpBtn ,
+              mveDwnBtn ,
+            } = renderLayerReorderCtrls(idx) ;
+            return (
               <div
               style={{
                 minInlineSize: `12ex`,
@@ -355,19 +499,12 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
                   <i children={v.id} />
                 </p>
                 <p>
-                  <ButtonC
-                  title={`Move Up`}
-                  children={`⬆️`}
-                  onClick={false }
-                  />
-                  <ButtonC
-                  title={`Move Down`}
-                  children={`⬇️`}
-                  onClick={false }
-                  />
+                  { mveUpBtn }
+                  { mveDwnBtn }
                 </p>
               </div>
-            ) ,
+            ) ;
+            } ,
             asRowHeader: true,
           } ;
 
@@ -396,7 +533,10 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
 
 
       return (
-        <div className='studk-sequemi-tlwalkthruinlinecomp'>
+        withExtraSemanticProperties({
+          classNames: ["studk-sequemi-tlwalkthruinlinecomp"] ,
+        }, (
+        <div>
           <SpclCoreC
           horizonConfig={horizonConfig}
           value={ls}
@@ -408,6 +548,7 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
           rowHeadCollDescs={rowHeadCollDescs}
           />
         </div>
+        ))
       ) ;
     }
   ))
