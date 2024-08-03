@@ -108,11 +108,11 @@ class TbmcKnsBasedModelState extends Object
 
   private constructor(
     /** @deprecated */
-    public layerStates: (
+    public readonly layerStates: (
       ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
     ) ,
     // TODO remove the '?'-mark
-    public layerStatesImtb?: (
+    public readonly layerStatesImtb?: (
       // | ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
       util.Immutable.Collection<any, TbmcKnsBasedModelState.LayerStateOps>
     ) ,
