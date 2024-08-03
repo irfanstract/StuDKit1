@@ -100,6 +100,21 @@ import {
 } from "react" ;
 
 /**
+ * `useSyncExternalStore`,
+ * `useMemo`,
+ * `useDeferredValue`,
+ * `useState`,
+ * `useReducer`,
+ * `useCallback`,
+ * 
+ */
+;
+
+export {
+  useMemo ,
+} from "react" ;
+
+/**
  * {@link React.useDeferredValue }
  * with signature subtly refined (specifically add second parameter) in light of React 19.
  * 
@@ -120,12 +135,12 @@ const useDeferredValue = (
 );
 
 export {
-  useCallback,
-  useMemo ,
-} from "react" ;
-export {
   useDeferredValue ,
 } ;
+
+export {
+  useSyncExternalStore ,
+} from "react" ;
 
 export {
   useState ,
@@ -137,9 +152,67 @@ export {
 } from "studk-ui-fwcore/src/reactjs/helpers/UseReactSetStateAction.tsx" ;
 
 export {
+  useCallback,
+} from "react" ;
+
+export {
+  useEventDispatchCallback ,
+  useRefreshedCallback ,
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
+
+/** SUSPENSE */
+
+export {
+  Suspense as AsSuspensedE ,
+  useTransition ,
+} from "react" ;
+
+/* IMPERATIVE EFFECTS */
+
+export {
   useEffect,
   useLayoutEffect ,
+  // useTransition ,
+  // Suspense ,
 } from "react" ;
+
+export {
+  useRef ,
+  createRef ,
+  useImperativeHandle ,
+} from "react" ;
+
+/* COMPONENT DEFINITION */
+
+export {
+  createContext ,
+  useContext ,
+} from "react" ;
+
+export {
+  useId,
+  forwardRef as describeRefIbleComponent ,
+} from "react" ;
+
+export {
+  createElement ,
+} from "react" ;
+
+// /**
+//  * WIP
+//  * 
+//  * @deprecated
+//  * 
+//  */
+// export const UnorderedListC = "ul" ;
+
+// /**
+//  * WIP
+//  * 
+//  * @deprecated
+//  * 
+//  */
+// export const OrderedListC = "ul" ;
 
 /**
  * {@link toComponentMountKey} - WIP
