@@ -91,6 +91,13 @@ import {
   useEffect ,
 } from "react" ;
 
+import {
+  //
+
+  ReactSetStateActionHelpers ,
+
+} from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
+
 export {
   //
 
@@ -108,6 +115,15 @@ export {
   useLayoutEffect ,
 
 } from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
+
+import {
+  //
+  OptionallyExternedState ,
+} from "studk-ui-fwcore/src/reactjs/helpers/OptionallyExternedSetStateHook.tsx" ;
+
+export {
+  OptionallyExternedState ,
+} ;
 
 import {
   //
