@@ -652,14 +652,6 @@ const WithSsc1D = (
                 />
               ) ;
             }
-            if (revertToRawScrollSavePos === false)
-            {
-              e = (
-                <WithSpclisedScdOverrides1C
-                children={e}
-                />
-              ) ;
-            }
             if (TBMC_SCDNEXTINGDEBUG)
             {
               e = (
@@ -859,61 +851,8 @@ const WithSsc1DInner = (
   ))
 ) ;
 
-export const WithSpclisedScdOverrides1C = (
-  describeHtmlComponent((
-    function WithSpclisedOverrides1CImpl({ children, } : React.PropsWithChildren)
-    {
-      ;
-
-      const scdPeer = (
-        useSpclisedScdPeer()
-      ) ;
-
-      return (
-        ((
-          (...[e] : [React.ReactElement]) => {
-            if (TBMC_SCDNEXTINGDEBUG)
-            {
-              e = (
-                <div
-                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c02'
-                children={e}
-                />
-              ) ;
-            }
-            if (1)
-            {
-              e = (
-                <WithCtxtuallyOverridenScdSProvC
-                value={(
-                  scdPeer
-                )}
-                children={e}
-                />
-              ) ;
-            }
-            if (TBMC_SCDNEXTINGDEBUG)
-            {
-              e = (
-                <div
-                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c01'
-                children={e}
-                />
-              ) ;
-            }
-            return e ;
-          }
-        ))((
-          <>{ children }</>
-        ))
-      ) ;
-    }
-  ))
-) ;
-
 import {
   SpclScrollHandler ,
-  useSpclisedScdPeer, 
   useCtxExplicitSpclisedScdStateValues1,
   useCtxExplicitSpclisedScdPeer,
 } from "studk-ui-encore/src/SequencedMediaUi/TdbScd.tsx" ;
@@ -924,7 +863,6 @@ import {
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
-  WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
   useCtxtualScdProv,
   type ScdStateProvCtx ,
