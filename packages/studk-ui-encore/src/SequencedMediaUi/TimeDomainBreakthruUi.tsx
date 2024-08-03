@@ -25,9 +25,15 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts' ;
 
 const T_BY_HMS = (
   function (...[hn, mn, sn] : [...values: [Array<any>["length"], Array<any>["length"], Array<any>["length"]] ])
@@ -36,31 +42,24 @@ const T_BY_HMS = (
   }
 ) ;
 
-import type {
-  ArgsGetOptions ,
-  ArgsWithOptions, 
-  Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
-
-
-
-
-
-
-import * as React from "react" ;
 
 
 
 
 
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
-
-import {
+  React ,
+  toComponentMountKey,
+  describeComponent ,
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  ButtonC,
+  Span ,
+  describeCallbackAssignedStyleProps ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -70,11 +69,6 @@ import {
   SingleChildDiv,
 } from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
-
 // import Link from "next/link" ;
 
 import {
@@ -82,15 +76,8 @@ import {
 } from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
 
 import {
-  describeCallbackAssignedStyleProps,
-} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
-
-const GET_CLIENTOFFSET_OF = (
-  (e: Element) => ({
-    x: e.getBoundingClientRect().left,
-    y: e.getBoundingClientRect().top,
-  })
-) ;
+  renderTableByRowDtListAndColumnList,
+} from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx';
 
 
 
@@ -107,16 +94,8 @@ import {
 } from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
 
 import {
-  ScdC ,
-  useDebouncedScdState1, 
-  useDebouncedScdStateWrapper1,
-} from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
-
-import {
-  useCtxtualisedScdPoiState1, 
-  useCtxtualisedScdState1,
-  // useDebouncedScdStateWrapper1A ,
-} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
+  SccMastPlotter ,
+} from "studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx" ;
 
 // TODO
 /**
@@ -147,14 +126,50 @@ export const TimeDomainedImgListFigureC = (
 
 interface TimeDomainedMultiChnlInspectiveFigureCProps
 {
-  scrollingConfig ?: {
-    revertToRawPositioning ?: boolean ;
+
+  readonly scrollingConfig ?: {
+    readonly revertToRawPositioning ?: boolean ;
   } ,
+
+  readonly mainPlotter ?: SccMastPlotter.SpclSizelessInst ,
+
 }
+
+/**
+ * 
+ * @deprecated this is a WIP.
+ * 
+ */
+export const TimeDomainedImgListSpanC = (
+  describeHtmlComponent((
+    //
+    function TimeDomainedImgListSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
+
+/**
+ * 
+ * @deprecated this is a WIP.
+ * 
+ */
+export const TimeDomainedMultiChnlInspectiveSpanC = (
+  describeHtmlComponent((
+    //
+    function TimeDomainedMultiChnlInspectiveSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
 
 export const TimeDomainedMultiChnlInspectiveFigureC = (
   describeHtmlComponent((
-    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
+    function TimeDomainedMultiChnlInspectiveFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
 
@@ -176,10 +191,11 @@ export const TimeDomainedMultiChnlInspectiveFigureC = (
 // TODO
 const TimeDomainedMultiChnlInspectiveFigureC11 = (
   describeHtmlComponent((
-    function TimeDomainedImgListFigureCInnerImpl({
+    function TimeDomainedMultiChnlInspectiveFigureCInnerImpl({
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
       } = {} ,
+      mainPlotter,
       ...otherProps
     } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
@@ -189,22 +205,46 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
         computeDefaultHorizonConfig()
       ) , [] ) ;
 
-      return (
-        <div className='studk-sequemi-tlwalkthruappcomp'>
+      const usrDebugPane = (
+        <div>
           <p>
-            Time-domain plot of <code>movie.mp4</code>
+            debug values:
           </p>
-          <aside>
-            <p>
-              debug values:
-            </p>
-            { (
-            // <pre style={{ whiteSpace: "pre-wrap", }}>
-            //   { ((e: any) => JSON.stringify(e) )(statDerivable.s) }
-            // </pre>
-            null
-            ) }
-          </aside>
+          { (
+          null
+          ) }
+        </div>
+      ) ;
+
+      const filenameSpan = (
+        (() : React.ReactElement | null => (
+          <code>movie.mp4</code>
+        ) )()
+      ) ;
+
+      const sHeader = (
+        <div>
+        <p>
+          Time-domain plot {}
+          { filenameSpan ? <>of { filenameSpan }</> : <></> }
+        </p>
+        </div>
+      );
+
+      return (
+      //
+      withExtraSemanticProperties({
+        classNames: ["studk-sequemi-tlwalkthruappcomp"] ,
+      } , (
+        <div className=' '>
+          { sHeader }
+          { (
+            usrDebugPane
+          ) && (
+            <aside>
+              { usrDebugPane }
+            </aside>
+          ) }
           { ((
             (...[e] : [React.ReactElement]) => {
               if (1)
@@ -219,8 +259,9 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
               return e ;
             }
           ))((
-            <TimeDomainedImgListSpC
+            <TimeDomainedMultiChnlInspectiveSpC
             hc={horizonConfig }
+            mainPlotter={mainPlotter ?? getSpclDefaultMainPlotter() }
             />
           )) }
           { (
@@ -230,6 +271,7 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
           null
           ) }
         </div>
+      ))
       ) ;
     }
   ))
@@ -237,12 +279,24 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
 
 /**
  * 
- * @deprecated this is a WIP.
+ * @deprecated
+ * 
  */
-export const TimeDomainedImgListSpanC = (
+const getSpclDefaultMainPlotter = (
+  util.L.once(() => (
+    SccMastPlotter.SpclSizelessInst.getInstance()
+  ))
+) ;
+
+/**
+ * WIP/TBD
+ * 
+ * @deprecated
+ * 
+ */
+export const TimeDomainedImgListSpC = (
   describeHtmlComponent((
-    //
-    function TimeDomainedImgListSpanCImpl({} : {})
+    function TimeDomainedImgListSpCImpl()
     {
       // TODO
       return <></> ;
@@ -250,9 +304,67 @@ export const TimeDomainedImgListSpanC = (
   ))
 ) ;
 
-export const TimeDomainedImgListSpC = (
+namespace TdbmcTbmcLyrs {
+  ;
+
+  export const useLayerListState = (
+    function () {
+      ;
+
+      const [chnlIds, setChnlIds] = (
+        React.useState(() => (
+          util.reiterated(function* () {
+            for (const i of util.range(0, 3) ) {
+              yield { id: `chnl ${i}` as const, }.id ;
+            }
+          } )
+        ))
+      ) ;
+
+      const ls = (
+        React.useMemo((): TbmcKnsBasedModelState => {
+
+          return (
+            TbmcKnsBasedModelState.getCmnInstance({
+
+              layerStates: (
+                util.Immutable.Seq((
+                  util.reiterated(function* () {
+                    for (const chnlId of chnlIds ) {
+                      yield (
+                        util.asConst<TbmcKnsBasedModelState.LayerStateOps>({
+                          id: chnlId,
+                          kind: "XLayer",
+                        })
+                      ) ;
+                    }
+                  } )
+                ))
+                .toOrderedMap()
+                .mapEntries(([ , vl]) => [vl.id, vl] )
+              ) ,
+
+            })
+          ) ;
+        } , [
+          chnlIds ,
+        ] )
+      ) ;
+
+      return {
+        chnlIds ,
+        setChnlIds ,
+        ls ,
+      } as const ;
+    }
+  ) ;
+
+  ;
+}
+
+export const TimeDomainedMultiChnlInspectiveSpC = (
   describeHtmlComponent((
-    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg } : { hc ?: ScCHorizonConfigPropsDesc, })
+    function TimeDomainedMultiChnlInspectiveSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
     {
       ;
       
@@ -261,21 +373,12 @@ export const TimeDomainedImgListSpC = (
         computeDefaultHorizonConfig()
       ) , [horizonConfigArg] ) ;
 
-      const ls = (
-        React.useMemo((): TbmcKnsBasedModelState => {
-          return (
-            TbmcKnsBasedModelState.getCmnInstance({
-              layerStates: (
-                util.reiterated(function* (): Generator<TbmcKnsBasedModelState.LayerStateOps> {
-                  for (const i of util.range(0, 3) ) {
-                    yield { id: `chnl ${i}`, kind: "XLayer", } ;
-                  }
-                } )
-              ) ,
-            })
-          ) ;
-        } , [] )
-      ) ;
+      const {
+        //
+        chnlIds ,
+        setChnlIds ,
+        ls ,
+      } = TdbmcTbmcLyrs.useLayerListState() ;
 
       const tdSnpMap = (
         util.Immutable.Range(0, T_BY_HMS(0, 45, 3 ) , 7.5 )
@@ -298,13 +401,205 @@ export const TimeDomainedImgListSpC = (
         } )
       ) ;
 
+      const mainPlotterAsAppletifyingInst = (
+        React.useMemo(() => (
+          SccMastPlotter.fromSizelessInstance(mainPlotter)
+        ) , [mainPlotter])
+      ) ;
+
+      const renderLayerReorderCtrls = (
+        (() => {
+          ;
+
+          const renderChnlReorderBtn = (
+            function (...[chnlIdx0, { relativeIds: chMvRelativeIdx, } ] : (
+              ArgsWithOptions<[chnlIdx: number], {
+                relativeIds: number,
+                // onChange?: (props: { newIdx: number }) => void ,
+              } >
+            ) )
+            {
+              ;
+
+              const chnlLaterIdx = (
+                chnlIdx0 + chMvRelativeIdx
+              ) ;
+              const onChange: (
+                (props: { newIdx: number }) => void
+              ) = (
+                function ({ newIdx, }) {
+                  setChnlIds(s0 => {
+                    const vlue0 = s0[chnlIdx0]! ;
+                    return (
+                      s0
+                      .toSpliced(chnlIdx0, 1 )
+                      .toSpliced(chnlLaterIdx, 0, vlue0, )
+                    ) ;
+                  }) ;
+                }
+              ) ;
+              const chgAc = (
+                onChange && (0 <= chnlLaterIdx && chnlLaterIdx <= chnlIds.length ) ?
+                function () {
+                  ;
+                  return (
+                    onChange({ newIdx: chnlLaterIdx, })
+                  ) ;
+                }
+                : false
+              ) ;
+              return (
+                <ButtonC
+                // title={`Move Up`}
+                // children={`⬆️`}
+                {...(
+                  (() => {
+                    if (chMvRelativeIdx < 0) {
+                      return {
+                        title: `Move Up`,
+                        children: `⬆️` ,
+                      } ;
+                    }
+                    if (0 < chMvRelativeIdx) {
+                      return {
+                        title: `Move Down`,
+                        children: `⬇️` ,
+                      } ;
+                    }
+                    return {} ;
+                  })()
+                ) }
+                onClick={chgAc }
+                />
+              ) ;
+            }
+          ) ;
+
+          return (
+            function (...[chnlId]: [chnlId: number]) {
+              return {
+                // TODO
+                mveUpBtn: (
+                  renderChnlReorderBtn(chnlId, {
+                    relativeIds: -1 ,
+                    // onChange
+                  } )
+                ) ,
+                mveDwnBtn: (
+                  renderChnlReorderBtn(chnlId, {
+                    relativeIds: 1 ,
+                    // onChange
+                  } )
+                ) ,
+              } ;
+            }
+          ) ;
+        })()
+      ) ;
+
+      ;
+      const rowHeadCollDescs = (
+        util.reiterated<(
+          renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps >
+        ) >(function* () {
+          ;
+
+          // ⬆️⬇️☯️
+
+          yield {
+            id: `itemident`,
+            renderHead: () => <i children={`name`} /> ,
+            renderContent: (v) => {
+            ;
+            const idx = (
+              chnlIds.indexOf(v.id)
+            ) ;
+            const {
+              mveUpBtn ,
+              mveDwnBtn ,
+            } = renderLayerReorderCtrls(idx) ;
+            const borderColor: React.CSSProperties["backgroundColor"] = (
+              ["red", "blue", "green", "yellow", "purple", "#00C090"][(
+                (
+                  (chnlIds.toSorted() )
+                  .indexOf(v.id )
+                ) % 6
+              ) ]
+              ??
+              "black"
+            ) ;
+            return (
+              <div
+              style={{
+                minInlineSize: `12ex`,
+                paddingBlock: `1ex` ,
+                borderBlockStart: (
+                  `0.805ex solid ${(
+                    borderColor
+                  ) }`
+                ) ,
+              }}
+              >
+                <div
+                style={{
+                }}
+                />
+                <p>
+                  <i children={v.id} />
+                </p>
+                <nav
+                style={{ display: "flex", flexDirection: "column", }}
+                >
+                  { mveUpBtn }
+                  { mveDwnBtn }
+                </nav>
+              </div>
+            ) ;
+            } ,
+            asRowHeader: true,
+          } ;
+
+          yield {
+            id: `itemkind`,
+            renderHead: () => <i children={`kind letter`} /> ,
+            renderContent: (v) => (
+              <div>
+                <p>
+                  <code children={`${v.kind}`} />
+                </p>
+                <p>
+                  <ButtonC
+                  title={`Change Kind`}
+                  children={`☯️`}
+                  onClick={false }
+                  />
+                </p>
+              </div>
+            ) ,
+            asRowHeader: true,
+          } ;
+
+        })
+      ) ;
+
+
       return (
-        <div className='studk-sequemi-tlwalkthruinlinecomp'>
+        withExtraSemanticProperties({
+          classNames: ["studk-sequemi-tlwalkthruinlinecomp"] ,
+        }, (
+        <div>
           <SpclCoreC
           horizonConfig={horizonConfig}
           value={ls}
+          mainPlotters={{
+            primaryStreamPlotter: (
+              mainPlotterAsAppletifyingInst
+            ) ,
+          }}
+          rowHeadCollDescs={rowHeadCollDescs}
           />
         </div>
+        ))
       ) ;
     }
   ))
@@ -315,9 +610,11 @@ const computeDefaultHorizonConfig = (
     range: {
       startPos: T_BY_HMS(0, 0, -15) ,
       endPos: (
-        1 ?
-        T_BY_HMS(0, 15.5, 30)
-        : T_BY_HMS(0, 45, 30)
+        T_BY_HMS(0, (
+          5.5
+          // 15.5
+          // 45
+        ), 30)
       ) ,
     } ,
   })
@@ -332,15 +629,42 @@ const WithSsc1D = (
       return (
         ((
           (...[e] : [React.ReactElement]) => {
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do03'
+                children={e}
+                />
+              ) ;
+            }
             e = (
               <WithSsc1DInner
               children={e}
               />
             ) ;
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do02'
+                children={e}
+                />
+              ) ;
+            }
             if (revertToRawScrollSavePos === false)
             {
               e = (
                 <WithSpclisedScdOverrides1C
+                children={e}
+                />
+              ) ;
+            }
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do01'
                 children={e}
                 />
               ) ;
@@ -361,6 +685,29 @@ const WithSsc1DInner = (
     {
       ;
 
+      const scprov0 = (
+        useCtxtualScdProv()
+      ) ;
+
+      const atLevelDivRef1 = (
+        React.useRef<HTMLDivElement>(null)
+      ) ;
+      const viewportDivRef1 = (
+        React.useRef<HTMLDivElement>(null)
+      ) ;
+
+      const scprovAlt = (
+        useCtxExplicitSpclisedScdPeer(scprov0, {
+          ctxtuSpclScrollHandler0: null ,
+          csDivRef: (
+            atLevelDivRef1
+          ),
+          viwportRef: (
+            viewportDivRef1
+          ) ,
+        } )
+      ) ;
+
       const {
         poi ,
         setPoi ,
@@ -368,13 +715,43 @@ const WithSsc1DInner = (
         lsce ,
         setLsce ,
         setLsceDebcd ,
-      } = useSpclisedScdStateValues1() ;
+      } = (
+        useCtxExplicitSpclisedScdStateValues1((
+          // scprov0
+          scprovAlt
+        ))
+      ) ;
 
       return (
         ((
           (...[e] : [React.ReactElement]) => {
             if (1)
             {
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner02'
+                  children={e}
+                  />
+                ) ;
+              }
+              e = (
+                <div
+                ref={atLevelDivRef1}
+                // className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                children={e}
+                />
+              ) ;
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner02'
+                  children={e}
+                  />
+                ) ;
+              }
               e = (
                 <ScdC
                 children={(
@@ -385,9 +762,37 @@ const WithSsc1DInner = (
                 // ctrlVarsDebug
                 />
               ) ;
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                  children={e}
+                  />
+                ) ;
+              }
+              e = (
+                <div
+                ref={viewportDivRef1}
+                // className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                children={e}
+                />
+              ) ;
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                  children={e}
+                  />
+                ) ;
+              }
               e = (
                 <div>
                 <aside>
+                  { " " && (
+                  //
+                  <div>
                   <p>
                     debug values:
                   </p>
@@ -395,18 +800,45 @@ const WithSsc1DInner = (
                   style={{
                     position: "relative",
                     overflow: "auto",
-                    blockSize: `5em`,
+                    blockSize: `13.5em`,
                   }}
                   >
                   { (
-                  <pre style={{ whiteSpace: "pre-wrap", }}>
-                    { ((e: any) => JSON.stringify(e) )({
-                      s: statDerivable.s, pos: statDerivable.pos,
-                      clsn: (statDerivable.rootNd as (Element | null))?.className ?? `(no root nd)` ,
-                    }) }
+                  <pre
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    fontSize: `8px`,
+                  }}
+                  >
+                    { (
+                      ((e: any) => JSON.stringify(e, null, 2 ) )({
+
+                        // s: statDerivable.s,
+                        rnk: statDerivable.s.rnk,
+                        origiinalPos: statDerivable.originalPosArg ,
+                        pos1: statDerivable.pos,
+                        altPos1: (statDerivable.s.etc ?? {}).sO,
+                        ...(0 ? { coords: statDerivable.s.etc, } : { }),
+                        poi,
+
+                        hostNd: (
+                          (() => {
+                            const rootNd = (
+                              statDerivable.rootNd as (Element | null)
+                            ) ;
+                            return (
+                              rootNd ? (rootNd.className ?? `Element <(no class name) >`) : `(no root nd)`
+                            ) ;
+                          })()
+                        ) ,
+
+                      })
+                    ) }
                   </pre>
                   ) }
                   </div>
+                  </div>
+                  ) }
                 </aside>
                 { e }
                 { (
@@ -440,6 +872,15 @@ export const WithSpclisedScdOverrides1C = (
       return (
         ((
           (...[e] : [React.ReactElement]) => {
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c02'
+                children={e}
+                />
+              ) ;
+            }
             if (1)
             {
               e = (
@@ -447,6 +888,15 @@ export const WithSpclisedScdOverrides1C = (
                 value={(
                   scdPeer
                 )}
+                children={e}
+                />
+              ) ;
+            }
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c01'
                 children={e}
                 />
               ) ;
@@ -462,16 +912,21 @@ export const WithSpclisedScdOverrides1C = (
 ) ;
 
 import {
-  useSpclisedScdStateValues1 ,
   SpclScrollHandler ,
-  getSpclScrollHandleRefCtxStack ,
-  useSpclisedScdPeer ,
+  useSpclisedScdPeer, 
+  useCtxExplicitSpclisedScdStateValues1,
+  useCtxExplicitSpclisedScdPeer,
 } from "studk-ui-encore/src/SequencedMediaUi/TdbScd.tsx" ;
+
+import {
+  ScdC ,
+  useDebouncedScdStateWrapper1,
+} from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
   WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
-  getScdSProvCtxStack ,
+  useCtxtualScdProv,
   type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
@@ -480,6 +935,8 @@ import {
 } from "studk-ui/src/tabularUi/reactjs/tbmc-knbc.tsx" ;
 
 import "studk-ui-encore/src/SequencedMediaUi/tmdc.scss" ;
+
+let TBMC_SCDNEXTINGDEBUG: boolean = true ;
 
 
 
