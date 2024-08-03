@@ -415,6 +415,10 @@ interface RchcProps <T extends object | true | false | null>
     readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
   )> ,
 
+  readonly crcn ?: (
+    (itemv: T , props: { rowIdx: number }) => { classNames : string[] }
+  ) ,
+
 }
 
 export const TableByRowDtListAndColumnList1C = (
@@ -430,6 +434,7 @@ export const TableByRowDtListAndColumnList1C = (
       rowDataList ,
       // getRowHash ,
       // perRowCellRenderers ,
+      crcn,
       ...etProps
     } = props ;
 
@@ -461,12 +466,13 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
       getRowHash: getRowHash ,
       className,
       doesRowBelongsToHeaderGroup = () => false ,
+      crcn,
     } ,
   ] = args ;
 
   const rowValues = rowDataList ;
 
-  const renderRowContents = (e0: { value: T } | 0 ) => {
+  const renderRowContents = (e0: { value: T } | 0 , rowIdx: number ) => {
   ;
 
   /**
@@ -498,7 +504,19 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
       const asUserSpaceTdRendt = (
         <td
         className={(
-          getSpaceSeparatedClassNameList([...(cr.classNames ?? [] )])
+          getSpaceSeparatedClassNameList((
+            util.reiterated(function * () {
+              yield* (cr.classNames ?? [] ) ;
+              if (typeof e0 === "object" && "value" in e0 ) {
+                yield* (
+                  (crcn?.(e0.value, { rowIdx: rowIdx , }) )
+                  ?.classNames
+                  ??
+                  []
+                ) ;
+              }
+            })
+          ))
         )}
 
         /* mark with data abt which one of the src-block(s) */
@@ -549,7 +567,7 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
 
       renderHead: { render: TableRowsetRendererOpsImpl.describeTblHeadRowGroupRenderer1(() => (
         //
-        <tr children={renderRowContents(0) } />
+        <tr children={renderRowContents(0, 0) } />
       ) , ) , }
       ,
 
@@ -562,14 +580,19 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
         ,
 
         renderContent: (
-          TableRowsetRendererOpsImpl.describeTblRowRenderer1((e, i) => (
+          TableRowsetRendererOpsImpl.describeTblRowRenderer1((e, i: number) => (
             //
             <React.Fragment
             children={(
-              renderRowContents({ value: e, })
+              renderRowContents({ value: e, } , i )
             )}
             />
-          ) , (e, i) => ({ ["data-src-row-id"]: String(getRowHash(e, i)) , }) )
+          ) , (e, i) => ({
+            ["data-src-row-id"]: String(getRowHash(e, i)) ,
+            // className: (
+            //   getSpaceSeparatedClassNameList(perRowCellRenderers[i]?.classNames ?? [] )
+            // ),
+          }) )
         ) ,
 
       }
@@ -638,6 +661,7 @@ namespace renderTableByRowDtListAndColumnList
           getRowHash: iRh ,
           className ,
           doesRowBelongsToHeaderGroup: drprArg = () => false ,
+          crcn,
           ...otherProps
         } ,
       ] = args ;
@@ -657,6 +681,13 @@ namespace renderTableByRowDtListAndColumnList
           doesRowBelongsToHeaderGroup: (i) => (
             prcr[i]?.asRowHeader || false
           ) ,
+
+          crcn: (...[value , { rowIdx: i, }]) => ({
+            //
+            classNames: (
+              (prcr[i]?.classNames ?? [] )
+            ),
+          }) ,
 
           perRowCellRenderers: (
 
@@ -686,6 +717,10 @@ namespace renderTableByRowDtListAndColumnList
                   ) ,
                   renderHead: () => (
                     <></>
+                  ) ,
+                  classNames: (
+                    crcn?.(rv, { rowIdx: aRowI })
+                    ?.classNames
                   ) ,
                 } ;
               }
