@@ -76,6 +76,10 @@ export {
 
 
 
+;
+
+export * from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
+
 import * as React from "react" ;
 
 import {
@@ -117,6 +121,28 @@ export {
   getFromClassNameProp ,
 
 } from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
+
+/**
+ * WIP
+ * 
+ * @deprecated
+ * 
+ */
+export const ItemC = (
+  "li"
+) ;
+
+/**
+ * WIP .
+ * when the enclosing component were a {@link customElements *custom element*},
+ * render the element's payload
+ * 
+ * @deprecated
+ * 
+ */
+export const AppliedComponentPayloadE = (
+  "slot" satisfies keyof React.JSX.IntrinsicElements
+) ;
 
 ;
 
@@ -169,6 +195,7 @@ export {
 } ;
 
 export {
+  /* wanted to delete this re-export but can't do it... chances are some things refer to this re-export by name */
   /** @deprecated use {@link getSpaceSeparatedClassNameList } instead. */
   mkClasses,
 } from 'studk-ui/src/meta/react/dec.tsx'; ;
@@ -179,10 +206,6 @@ export {
 // } from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
-  SingleChildDiv,
-} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
-
-import {
   NativeButton ,
   Button ,
   ButtonC ,
@@ -191,7 +214,7 @@ import {
 } from 'studk-ui-fwcore/src/dbce.tsx'; ;
 
 export {
-  SingleChildDiv ,
+  // SingleChildDiv ,
   NativeButton ,
   /** @deprecated use {@link ButtonC } instead. */
   Button ,
@@ -200,6 +223,13 @@ export {
   Span ,
   SpanC ,
 } ;
+
+export {
+  /** @deprecated this is a WIP. */
+  SingleChildDiv,
+
+  // @ts-ignore
+} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
 export * from 'studk-ui-fwcore/src/dbce.tsx'; ;
 
