@@ -44,7 +44,7 @@ tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
   // opacity: 0.5;
 }
 
-tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
+tbody:has(td.studk-ui-tbmc-timewatchcolumncell ) {
   background: black;
   color: white;
 }
