@@ -44,11 +44,10 @@ import type {
  * in the end, {@link Array.from a "sequential list of items" supporting the protocol `@@iterator` };
  * 
  */
-type ReadonlyArrayOrSeq<E> = (
+export type ReadonlyArrayOrSeq<E> = (
   | ReadonlyArray<E>
   | (
-    | util.Immutable.Seq.Indexed<E>
-    | util.Immutable.List<E>
+    | util.Immutable.Collection.Indexed<E>
   )
 ) ;
 
