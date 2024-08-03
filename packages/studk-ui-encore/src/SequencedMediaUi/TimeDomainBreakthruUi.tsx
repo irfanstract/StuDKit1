@@ -304,16 +304,12 @@ export const TimeDomainedImgListSpC = (
   ))
 ) ;
 
-export const TimeDomainedMultiChnlInspectiveSpC = (
-  describeHtmlComponent((
-    function TimeDomainedMultiChnlInspectiveSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
-    {
+namespace TdbmcTbmcLyrs {
+  ;
+
+  export const useLayerListState = (
+    function () {
       ;
-      
-      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
-        horizonConfigArg ??
-        computeDefaultHorizonConfig()
-      ) , [horizonConfigArg] ) ;
 
       const [chnlIds, setChnlIds] = (
         React.useState(() => (
@@ -332,16 +328,20 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
             TbmcKnsBasedModelState.getCmnInstance({
 
               layerStates: (
-                util.reiterated(function* () {
-                  for (const chnlId of chnlIds ) {
-                    yield (
-                      util.asConst<TbmcKnsBasedModelState.LayerStateOps>({
-                        id: chnlId,
-                        kind: "XLayer",
-                      })
-                    ) ;
-                  }
-                } )
+                util.Immutable.Seq((
+                  util.reiterated(function* () {
+                    for (const chnlId of chnlIds ) {
+                      yield (
+                        util.asConst<TbmcKnsBasedModelState.LayerStateOps>({
+                          id: chnlId,
+                          kind: "XLayer",
+                        })
+                      ) ;
+                    }
+                  } )
+                ))
+                .toOrderedMap()
+                .mapEntries(([ , vl]) => [vl.id, vl] )
               ) ,
 
             })
@@ -350,6 +350,35 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
           chnlIds ,
         ] )
       ) ;
+
+      return {
+        chnlIds ,
+        setChnlIds ,
+        ls ,
+      } as const ;
+    }
+  ) ;
+
+  ;
+}
+
+export const TimeDomainedMultiChnlInspectiveSpC = (
+  describeHtmlComponent((
+    function TimeDomainedMultiChnlInspectiveSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
+    {
+      ;
+      
+      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
+        horizonConfigArg ??
+        computeDefaultHorizonConfig()
+      ) , [horizonConfigArg] ) ;
+
+      const {
+        //
+        chnlIds ,
+        setChnlIds ,
+        ls ,
+      } = TdbmcTbmcLyrs.useLayerListState() ;
 
       const tdSnpMap = (
         util.Immutable.Range(0, T_BY_HMS(0, 45, 3 ) , 7.5 )
@@ -489,19 +518,41 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
               mveUpBtn ,
               mveDwnBtn ,
             } = renderLayerReorderCtrls(idx) ;
+            const borderColor: React.CSSProperties["backgroundColor"] = (
+              ["red", "blue", "green", "yellow", "purple", "#00C090"][(
+                (
+                  (chnlIds.toSorted() )
+                  .indexOf(v.id )
+                ) % 6
+              ) ]
+              ??
+              "black"
+            ) ;
             return (
               <div
               style={{
                 minInlineSize: `12ex`,
+                paddingBlock: `1ex` ,
+                borderBlockStart: (
+                  `0.805ex solid ${(
+                    borderColor
+                  ) }`
+                ) ,
               }}
               >
+                <div
+                style={{
+                }}
+                />
                 <p>
                   <i children={v.id} />
                 </p>
-                <p>
+                <nav
+                style={{ display: "flex", flexDirection: "column", }}
+                >
                   { mveUpBtn }
                   { mveDwnBtn }
-                </p>
+                </nav>
               </div>
             ) ;
             } ,
