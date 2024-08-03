@@ -39,6 +39,10 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts'; ;
 
+export type {
+  ReadonlyArrayOrSeq ,
+} from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
+
 
 
 // export {
