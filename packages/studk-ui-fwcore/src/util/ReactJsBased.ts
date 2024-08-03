@@ -108,6 +108,37 @@ export const getFromClassNameProp = (
 ;
 
 
+;
+
+export type {
+  // ComponentProps ,
+  /** @deprecated */
+  ComponentPropsWithoutRef ,
+} from "react" ;
+
+/**
+ * applies {@link ComponentProps `React.ComponentProps<T>`} and then {@link Required `Required`}.
+ * 
+ */
+export type RequiredComponentProps<T extends keyof JSX.IntrinsicElements | React.JSXElementConstructor<any>> = (
+  Required<(
+    ComponentProps<T>
+  )>
+) ;
+
+export type ComponentProps<T extends React.JSXElementConstructor<any> | keyof React.JSX.IntrinsicElements> = (
+
+  [T] extends [React.JSXElementConstructor<infer P>] ?
+  P
+  :
+
+  [T] extends [keyof React.JSX.IntrinsicElements] ?
+  React.JSX.IntrinsicElements[T]
+  :
+
+  {}
+) ; // ComponentProps
+
 import {
   describeComponent,
 } from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
@@ -167,6 +198,12 @@ export * from 'studk-ui-fwcore/src/dbce.tsx'; ;
 // import Link from "next/link" ;
 
 
+
+;
+
+export {
+  describeCallbackAssignedStyleProps,
+} from 'studk-ui-fwcore/src/xt/summerhitsmedia-cssd.tsx'; ;
 
 ;
 
