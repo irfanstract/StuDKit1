@@ -112,6 +112,7 @@ class TbmcKnsBasedModelState extends Object
   }
 
   private constructor(
+
     /** @deprecated */
     public readonly layerStates: (
       ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
@@ -121,6 +122,7 @@ class TbmcKnsBasedModelState extends Object
       // | ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
       util.Immutable.Collection<any, TbmcKnsBasedModelState.LayerStateOps>
     ) ,
+
   )
   { super() ; }
 
