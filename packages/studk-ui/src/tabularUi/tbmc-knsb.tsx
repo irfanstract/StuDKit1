@@ -80,42 +80,49 @@ class TbmcKnsBasedModelState extends Object
 {
   readonly isTbmcKnsBasedModelState !: true ;
 
-  static getCmnInstance(...[{ layerStates, }] : ArgsWithOptions<[], {
+  static getCmnInstance(...[opts] : ArgsWithOptions<[], {
     //
     layerStates: (
       | ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
       |  util.Immutable.Collection<any, TbmcKnsBasedModelState.LayerStateOps>
     ) ,
   }>) {
+
+    const {
+      layerStates: ls0,
+    } = opts ;
+
+    const layerStates = (
+      /**
+       * cannot use {@link Array.isArray} since
+       * that method would set `E` to `any`.
+       * 
+       */
+      (ls0 instanceof Array ) ?
+      util.Immutable.Seq(ls0)
+      : ls0
+    ) ;
+
     return (
-      (
-        layerStates instanceof Array ?
-        (
-          new TbmcKnsBasedModelState(
-            layerStates,
-            util.Immutable.Seq(layerStates) ,
-          )
-        )
-        : (
           new TbmcKnsBasedModelState(
             layerStates.valueSeq().toArray() ,
             layerStates ,
           )
-        )
-      )
     ) ;
   }
 
   private constructor(
+
     /** @deprecated */
-    public layerStates: (
+    public readonly layerStates: (
       ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
     ) ,
     // TODO remove the '?'-mark
-    public layerStatesImtb?: (
+    public readonly layerStatesImtb?: (
       // | ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
       util.Immutable.Collection<any, TbmcKnsBasedModelState.LayerStateOps>
     ) ,
+
   )
   { super() ; }
 
