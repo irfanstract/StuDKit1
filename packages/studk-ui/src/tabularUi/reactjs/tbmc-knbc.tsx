@@ -87,7 +87,8 @@ import {
 import {
   TbmcModelState,
   TbmcBreakthruColumnsRendering ,
-  getSuggestedSccMastPlotter ,
+  getSuggestedSccMastPlotter, 
+  SccMastPlotter,
 } from 'studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx' ;
 
 export {} ;
@@ -96,12 +97,24 @@ export type TbmcHc = {
   range: ContinuousLinearRange ,
 }
 
-interface TbmcKnbCProps extends Extract<{
+interface TbmcKnbCPropsImpl extends Extract<{
   //
+
   horizonConfig: TbmcHc ,
+
   value?: TbmcKnsBasedModelState ,
+  mainPlotters ?: {
+    primaryStreamPlotter ?: SccMastPlotter.RegularInstance ,
+  } ,
+
 }, any>
 {}
+
+/**
+ * WIP/TBD
+ * 
+ */
+export type TbmcKnbCProps = TbmcKnbCPropsImpl ;
 
 const getTbmcKnbDefaultSpecimen = util.L.once(function ()
 {
@@ -117,8 +130,15 @@ const useTbmcKnbCProps = (
     ;
 
     const {
+
       horizonConfig ,
+
       value: valueArg = getTbmcKnbDefaultSpecimen() ,
+
+      mainPlotters: {
+        primaryStreamPlotter = getSuggestedSccMastPlotter() ,
+      } = null ?? {} ,
+
     } = null ?? props ;
 
     const {
@@ -126,7 +146,9 @@ const useTbmcKnbCProps = (
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
     } = (
+
       TbmcBreakthruColumnsRendering.describeSuggestedConfig11({
+
         horizonConfig: {
           range: horizonConfig.range ,
           samplingConfig: {
@@ -136,7 +158,11 @@ const useTbmcKnbCProps = (
             ) ,
           } ,
         } ,
+
+        primaryStreamSegmtPlotter: primaryStreamPlotter ,
+
       })
+
     ) ;
 
     const chnlDataList = (
