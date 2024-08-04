@@ -23,7 +23,8 @@ import "@/public/global1.scss" ;
 
 import {
   pagesConventions,
-  describeHeadlinedWidget ,
+  describeHeadlinedWidget, 
+  RPC,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 import { allFonts, } from "@/appInternalScripts/fonts" ;
@@ -75,7 +76,7 @@ export default function RootLayout({
         overflowX: "clip",
       }}
       >
-      { children }
+      <RPC children={children} />
       </body>
     </html>
     </>
