@@ -103,12 +103,13 @@ export { SCC as SpclCoreC, } ;
 
 export interface ScCProps {
 
-  horizonConfig: ScCHorizonConfigPropsDesc ,
+  // horizonConfig: ScCHorizonConfigPropsDesc ,
 
-  value?: TbmcModelState ,
-  mainPlotters ?: Required<React.ComponentProps<typeof TbmcKnbC> >["mainPlotters"] ,
+  // value?: TbmcModelState ,
+  // mainPlotters ?: Required<React.ComponentProps<typeof TbmcKnbC> >["mainPlotters"] ,
 
 }
+export interface ScCProps extends React.ComponentProps<typeof TbmcKnbC> {}
 
 export interface ScCHorizonConfigPropsDesc extends Extract<TbmcHc, any> {}
 
@@ -119,6 +120,9 @@ export const SCC = (
     horizonConfig ,
 
     value: valueArg ,
+
+    rowHeadCollDescs ,
+
     mainPlotters ,
 
   } : ScCProps )
@@ -128,6 +132,7 @@ export const SCC = (
       <TbmcKnbC
       horizonConfig={horizonConfig}
       value={valueArg}
+      rowHeadCollDescs={rowHeadCollDescs}
       mainPlotters={mainPlotters}
       />
     ) ;
