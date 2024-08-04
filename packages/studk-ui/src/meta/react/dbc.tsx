@@ -49,7 +49,7 @@ import {
   NoOpActionReprImpl,
   DisabledBtnActionReprImpl,
   translateCommonJsxAction,
-} from 'studk-ui/src/templatedFormActions/ButtonlikeAction.tsx'; ;
+} from 'studk-ui-coreinteractivitymodels/src/ButtonlikeAction.tsx'; ;
 
 
 
