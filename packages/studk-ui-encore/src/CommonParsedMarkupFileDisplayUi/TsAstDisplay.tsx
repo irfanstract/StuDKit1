@@ -33,6 +33,10 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts'
 
+type ConstrainedNoNullAssert<T0> = (
+  <T1 extends T0>(x: T1) => asserts x is NonNullable<T1>
+) ;
+
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
 import {
@@ -40,12 +44,61 @@ import {
   getNodeChildren ,
 } from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsAstUtils.tsx"
 
+const getAllNodes = (
+  function (nd: TS.Node): readonly TS.Node[]
+  {
+    return util.reiterated(function * () {
+      yield nd ;
+      for (const childNd of nd.getChildren() ) {
+        yield* getAllNodes(childNd) ;
+      }
+    }) ;
+  }
+) ;
+
 import {
   KeywordAlikeKcn,
   NodeListKcn,
   getKcn, 
   getRlKcn,
 } from "studk-ts-codeanalysis/src/TsDeriva.ts" ;
+
+const TS_TOKENNODE_VALUANDSERIALIZE = (
+  (nd: TS.Node) => (
+    ((
+      (() => {
+        const ndText = nd.getText() ;
+
+        if (TS.isStringLiteral(nd) ) {
+          return [JSON.parse(ndText) as string , { sk: true, stxKind: nd.kind, serialize: e => JSON.stringify(e), } ] ;
+        }
+
+        // if (TS.isStringLiteral(nd) ) {
+        //   return nd.text ;
+        // }
+
+        if (TS.isIdentifier(nd) ) {
+          ;
+          return [ndText, { sk: true, stxKind: nd.kind, serialize: e => String(e), } ] ;
+        }
+
+        return [ndText, { sk: false, stxKind: nd.kind, serialize: e => String(e), } ] ;
+
+      }) satisfies (() => (
+        readonly [{} | null, {
+          /**
+           * this seemingly unused property {@link sk}
+           * is to ensure that the co-associative typings don't break
+           */
+          sk: boolean,
+
+          stxKind: TS.SyntaxKind,
+          serialize: (v: unknown) => string,
+        } ]
+      ))
+    ))()
+  )
+) ;
 
 
 
@@ -199,6 +252,11 @@ export {
 } ;
 
 interface TsNodeUnitDisplayCompProps extends
+Omit<TsNodeUnitDisplayCompPrivProps , "onChange">
+{
+}
+
+interface TsNodeUnitDisplayCompPrivProps extends
 TsAstDisplayCompCommonProps
 {
 
@@ -206,26 +264,23 @@ TsAstDisplayCompCommonProps
       clvMd ?: CLV,
 
       onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
-
-}
-
-const TsNodeUnitDisplayPrivC = (
-  describeHtmlComponent((function TsAstDisplayCImpl(props : (
-    & TsNodeUnitDisplayCompProps
-    & {
       /**
        * {@link onChange}.
-       * *we won't fire this Event ever*;
-       * consider {@link TsNodeUnitDisplayCompProps.onTextualEditEvt } instead.
-       * 
+       * *we don't fire this Event anymore*;
+       * consider {@link onTextualEditEvt } instead.
        * 
        */
       onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
-    }
-  ) )
+
+}
+
+// TODO/WIP
+/* worth reading https://github.com/microsoft/TypeScript/issues/46915 since we need it a lot here */
+const useTsNodeTreeDisplayPrivCompProps = (
+  function (...[props] : [OmitW<TsNodeUnitDisplayCompPrivProps, "nd" >] )
   {
+
     const {
-      value: nd,
       clvMd = (
         // <p><code>{nodeTypeLabelTxt }</code></p>
         getSpclDefaultClvMd()
@@ -233,12 +288,21 @@ const TsNodeUnitDisplayPrivC = (
       onTextualEditEvt: runnTextualEditEvtCb ,
     } = props ;
 
+    /* aliased condition variable */
+    const hasTextualEditReceiver = (
+      !!runnTextualEditEvtCb
+    ) ;
+
     const {
-      autoCommitOnType = false ,
       noSupressionOfZeroChgEvts = false ,
     } = ((): {
-      autoCommitOnType ?: boolean ,
       noSupressionOfZeroChgEvts ?: boolean ,
+    } => ({}) )() ;
+
+    const {
+      autoCommitOnType = false ,
+    } = ((): {
+      autoCommitOnType ?: boolean ,
     } => ({}) )() ;
 
     ;
@@ -250,6 +314,8 @@ const TsNodeUnitDisplayPrivC = (
       renderNameTokenCodeFigure ,
       renderTokenCodeFigure ,
     } = clvMd.rptcf ;
+
+    ;
 
     const renderSubTerm = (
       function (...[e, { onChange, } = null ?? {} ] : (
@@ -431,9 +497,553 @@ const TsNodeUnitDisplayPrivC = (
       useIsClientSide()
     ) ;
 
+    ;
+
+    const processTextualEditEvtCb1 = (
+      (runnTextualEditEvtCb)
+      &&
+      ((e1: ReturnType<typeof TsAstDisplayEvents.describeNdseEdit>) => {
+        ;
+
+        const isZeroChg = (
+          e1.newTxt === e1.existingTxt
+        ) ;
+
+        0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
+
+        if ((
+          (!isZeroChg || noSupressionOfZeroChgEvts)
+          ||
+          (
+            console["log"](`newText exactly the same so chg evt should be supressed.`)
+            , false
+          )
+        )) {
+          runnTextualEditEvtCb(e1) ;
+        }
+
+      } )
+    ) ;
+
+    if (runnTextualEditEvtCb) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+    
+    if (hasTextualEditReceiver) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+    
+    if (processTextualEditEvtCb1) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+
+    return {
+      //
+
+      clvMd,
+      // ...(
+      //   hasTextualEditReceiver ?
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, }
+      //   :
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, }
+      // ) ,
+      // ...(
+      //   (
+      //     // (hasTextualEditReceiver || !!processTextualEditEvtCb1)
+      //     runnTextualEditEvtCb
+      //   ) ?
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, processTextualEditEvtCb1, }
+      //   :
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, processTextualEditEvtCb1, }
+      // ) ,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      //
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+
+      //
+
+      //
+
+    } as const ;
+  }
+) ;
+
+const useTsNodeUnitDisplayPrivCompProps = (
+  function (...[props] : [TsNodeUnitDisplayCompPrivProps] )
+  {
+
+    const {
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+
+      //
+
+    } = useTsNodeTreeDisplayPrivCompProps(props) ;
+
+    const {
+      value: nd,
+    } = props ;
+
     const asTerminalMdlNode = (
       TS.isToken(nd)
       || TS.isLiteralExpression(nd)
+    ) ;
+
+    return {
+
+      nd ,
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      //
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+      asTerminalMdlNode ,
+
+      //
+
+    } as const ;
+  }
+) ;
+
+const TsNodeUnitDisplayPrivC = (
+  describeHtmlComponent((function TsAstDisplayCImpl(props : (
+    TsNodeUnitDisplayCompPrivProps
+  ) )
+  {
+    const {
+
+      nd ,
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+      asTerminalMdlNode ,
+
+      //
+
+    } = useTsNodeUnitDisplayPrivCompProps(props) ;
+
+    ;
+
+    const describeSpclTextualEditEvt1 = (
+      function (...[{ newTxt, asBeingWithinHighFrequencyEditSeqce: asBwhfe, }] : (
+        ArgsWithOptions<[], {
+          // readonly lsNd: TS.Node;
+          readonly newTxt: string;
+          readonly asBeingWithinHighFrequencyEditSeqce: boolean;
+      }>
+      ))
+      {
+        // TODO
+        return (
+          TsAstDisplayEvents.describeNdseEdit({
+            lsNd: nd,
+
+            newTxt: (
+              newTxt
+            ),
+
+            asBeingWithinHighFrequencyEditSeqce: (
+              asBwhfe
+            ) ,
+
+          })
+        ) ;
+      }
+    ) ;
+
+    const processTextualEditEvtCb1 = (
+      (runnTextualEditEvtCb)
+      &&
+      ((e1: ReturnType<typeof TsAstDisplayEvents.describeNdseEdit>) => {
+        ;
+
+        const isZeroChg = (
+          e1.newTxt === e1.existingTxt
+        ) ;
+
+        0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
+
+        if ((
+          (!isZeroChg || noSupressionOfZeroChgEvts)
+          ||
+          (
+            console["log"](`newText exactly the same so chg evt should be supressed.`)
+            , false
+          )
+        )) {
+          runnTextualEditEvtCb(e1) ;
+        }
+
+      } )
+    ) ;
+
+    const tryRenderTermQueryEditor = (
+      function (...[nd]: [TS.Identifier | TS.Expression])
+      {
+
+        if (processTextualEditEvtCb1 ) {
+          ;
+
+          const classSwitchElem = (
+            (() => {
+
+              interface SpclOptionItemOp
+              { id: "other" | "numeric" | "string" | "variable", label: string | React.ReactElement, exampleCode: string, }
+
+              const options = (
+                [
+                  { id: "numeric", label: "Numeric" , exampleCode: `5.0` } ,
+                  { id: "string" , label: "String"  , exampleCode: `"last-returned-position"` } ,
+                  { id: "variable", label: "Variable", exampleCode: `lastPos` } ,
+                ] satisfies SpclOptionItemOp[] as SpclOptionItemOp[]
+              ) ;
+
+              const optionsMp = (
+                util.Immutable.Seq(options)
+                .toMap().mapEntries(entr => [entr[1].id as string , entr[1] ] as const )
+              ) ;
+
+              const ndActualItemType1 = (
+                // "variable"
+                ((): SpclOptionItemOp["id"] => {
+                  if (TS.isNumericLiteral(nd) ) { return "numeric" ; }
+                  if (TS.isStringLiteral(nd) ) { return "string" ; }
+                  if (TS.isIdentifier(nd) ) { return "variable" ; }
+                  return "other" ;
+                })()
+              ) ;
+
+              return (
+                <span>
+                  <select
+                  value={(
+                    ndActualItemType1
+                  )}
+                  onChange={e0 => {
+                    const { value: selectedId, } = e0.target ;
+                    const cde = (
+                      optionsMp
+                      .get(selectedId)
+                      ?.exampleCode
+                    ) ;
+                    // TODO
+                    console["log"]({ cde, }) ;
+                    cde && (
+                      processTextualEditEvtCb1((
+                        TsAstDisplayEvents.describeNdseEdit({
+                          lsNd: nd,
+      
+                          newTxt: (
+                            cde
+                          ),
+      
+                          asBeingWithinHighFrequencyEditSeqce: (
+                            false
+                          ) ,
+      
+                        })
+                      ))
+                    ) ;
+                  }}
+                  >
+                    {/* <option value={"numeric" }>`Numeric`</option>
+                    <option value={"string"  }>`String` </option>
+                    <option value={"variable"}>`Variable` </option> */}
+                    { (
+                      options
+                      .map(({ id, label, exampleCode, }) => (
+                        <option
+                        key={id}
+                        value={id }
+                        children={label }
+                        />
+                      ) )
+                    ) }
+                  </select> {}
+                </span>
+              ) ;
+            })()
+          ) ;
+
+          if (TS.isIdentifier(nd) || TS.isLiteralExpression(nd) ) {
+
+            const [value, { serialize, } ] = (
+              TS_TOKENNODE_VALUANDSERIALIZE(nd)
+            ) ;
+
+            const {
+              asBwhfe ,
+              XInput ,
+            } = (
+              (
+                (() => {
+
+                  if (autoCommitOnType) {
+                    return {
+                      XInput: "input",
+                      asBwhfe: true,
+                    } ;
+                  }
+  
+                  return {
+                    XInput: SfmInputC,
+                    asBwhfe: false,
+                  } ;
+                } ) satisfies (() => {
+                  asBwhfe : boolean,
+                  XInput : "input" | (typeof SfmInputC) ,
+                } )
+              )()
+            ) ;
+
+            void (
+              TS_TOKENNODE_VALUANDSERIALIZE(nd)
+            ) ;
+
+            const keyTypedInputElem = (
+              <XInput
+
+              value={String(value) }
+
+              onChange={e0 => {
+                const { value: newTxt, } = e0.target ;
+
+                const e1 = (
+                  TsAstDisplayEvents.describeNdseEdit({
+                    lsNd: nd,
+
+                    newTxt: (
+                      serialize(newTxt)
+                    ),
+
+                    asBeingWithinHighFrequencyEditSeqce: (
+                      asBwhfe
+                    ) ,
+
+                  })
+                ) ;
+
+                processTextualEditEvtCb1(e1) ;
+
+                ;
+              } }
+
+              />
+            ) ;
+
+            const primaryInputElem = (
+              keyTypedInputElem
+            ) ;
+
+            const upperSecondaryInputElem = (
+              (() => {
+
+                if (TS.isIdentifier(nd) ) {
+
+                  const srcfle = nd.getSourceFile() ;
+
+                  const suggstsLs = (
+
+                    util.reiterated(function* () {
+                      yield* (
+                        getAllNodes(srcfle)
+                        .flatMap(nd => TS.isIdentifier(nd) ? [nd] : [] )
+                        .map(nd => nd.text )
+                      ) ;
+                      yield* (
+                        Object.keys(globalThis)
+                        .filter(nm => nm.match(/^[a-z]/) )
+                      ) ;
+                    })
+
+                    .toSorted()
+
+                    .toSorted((a, b) => (a.length - b.length ) )
+
+                    .map(value => { const score = (
+                      value.match(/(^(webkit|moz)|(page|webkit|moz)(\w*))/i) ? 5000 :
+                      (value.match(/^on(?![e])/) ) ? 700 :
+                      value.match(/((pointer|mouse)(up|down|wheel|move|enter|leave|out))/i) ? 500 :
+                      0
+                    ) ; return { value, score, } ; } ).toSorted((a, b) => (a.score - b.score) ).map(({ value, }) => value )
+
+                  ) ;
+
+                  const value = nd.text ;
+
+                  return (
+                    <span>
+                      <select
+                      value={value}
+                      style={{
+                        fontFamily: "monospace",
+                      }}
+                      // size={3 }
+                      onChange={e0 => {
+                        const { value: selectedId, } = e0.target ;
+                        const cde = (
+                          selectedId
+                        ) ;
+                        // TODO
+                        console["log"]({ cde, }) ;
+                        cde && (
+                          processTextualEditEvtCb1((
+                            TsAstDisplayEvents.describeNdseEdit({
+                              lsNd: nd,
+          
+                              newTxt: (
+                                cde
+                              ),
+          
+                              asBeingWithinHighFrequencyEditSeqce: (
+                                false
+                              ) ,
+          
+                            })
+                          ))
+                        ) ;
+                      }}
+                      >
+                        { (
+                          util.Immutable.OrderedSet(suggstsLs)
+                          .map(optVle => (
+                            <option
+                            key={optVle}
+                            value={optVle}
+                            children={(
+                              // <code>{ optVle }</code>
+                              optVle
+                            ) }
+                            />
+                          ) )
+                        ) }
+                      </select>
+                    </span>
+                  ) ;
+                }
+
+                return <></> ;
+              })()
+            ) ;
+
+            return (
+              <span>
+                { classSwitchElem }
+                { primaryInputElem }
+                { upperSecondaryInputElem }
+              </span>
+            ) ;
+
+          }
+
+        }
+
+        return null ;
+      }
     ) ;
 
     const childListDView = (() => {
@@ -543,64 +1153,18 @@ const TsNodeUnitDisplayPrivC = (
             ) ;
           }
 
-          if (TS.isIdentifier(nd) || TS.isLiteralExpression(nd) ) {
+          if (TS.isIdentifier(nd) || (TS.isToken(nd) && TS.isExpression(nd) ) || TS.isLiteralExpression(nd) ) {
+
+            for (const r of util.iterateNonNull(tryRenderTermQueryEditor(nd) ) ) {
+              return r ;
+            }
+    
             return (
               <div
               title={`value: ${ndSrcTxt}`}
               >
               <p>
                 { (() => {
-                  if (runnTextualEditEvtCb ) {
-                    ;
-                    const {
-                      asBwhfe ,
-                      XInput ,
-                    } = (
-                      ((): { asBwhfe : boolean, XInput : "input" | (typeof SfmInputC) } => {
-                        if (autoCommitOnType) {
-                          return { XInput: "input", asBwhfe: true, } ;
-                        }
-                        return { XInput: SfmInputC, asBwhfe: false, } ;
-                      } )()
-                    ) ;
-                    return (
-                      <XInput
-                      value={nd.getText() }
-                      onChange={e0 => {
-                        const { value: newTxt, } = e0.target ;
-
-                        const e1 = (
-                          TsAstDisplayEvents.describeNdseEdit({
-                            lsNd: nd,
-                            newTxt: newTxt,
-                            asBeingWithinHighFrequencyEditSeqce: asBwhfe ,
-                          })
-                        ) ;
-
-                        const isZeroChg = (
-                          e1.newTxt === e1.existingTxt
-                        ) ;
-
-                        0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
-
-                        if ((
-                          ((): boolean => {
-                            if (noSupressionOfZeroChgEvts) { return true ; }
-
-                            return (!isZeroChg || noSupressionOfZeroChgEvts) || (
-                              console["log"](`newText exactly the same so chg evt should be supressed.`)
-                              , false
-                            ) ;
-                          })()
-                        )) {
-                          runnTextualEditEvtCb(e1) ;
-                        }
-
-                        ;
-                      } }
-                      />
-                    ) ;
-                  }
                   return (
                     renderNameTokenCodeFigure((
                       <code>{ ndSrcTxt }</code>
@@ -637,6 +1201,7 @@ const TsNodeUnitDisplayPrivC = (
           return (
             clvMd.postdecDbwBdB3(et2, {
               selfEditBtnsSec ,
+              nd,
             } )
           ) ;
         }
@@ -712,6 +1277,7 @@ const TsNodeUnitDisplayPrivC = (
 
         return (
           clvMd.postdecDbwBdB3(e1, {
+            nd,
             selfEditBtnsSec ,
           } )
         ) ;
@@ -735,370 +1301,15 @@ const TsNodeUnitDisplayPrivC = (
   }))
 ) ;
 
+export const TsNodeUnitDisplayC: (
+  React.FC<TsNodeUnitDisplayCompProps>
+) = (
+  TsNodeUnitDisplayPrivC
+) ;
+
 export {
-  TsNodeUnitDisplayPrivC as TsNodeUnitDisplayC ,
   TsNodeUnitDisplayPrivC as TsAstDisplayC,
 } ;
-
-class CLV
-{
-
-  static forIsTerminaNdFnc(...args : (
-    ArgsWithOptions<[isTerminalNd ?: (e: TS.Node) => boolean ], {
-      asDbWhen?: () => boolean ,
-    } >
-  )) {
-    const [
-      isTerminalNd = (e) => {
-        if (TS.isSourceFile(e) ) {
-          return false ;
-        }
-        if (TS.isToken(e) || TS.isLiteralExpression(e) ) {
-          return true ;
-        }
-        return false ;
-      } ,
-      {
-        asDbWhen ,
-      } = null ?? {} ,
-    ] = args ;
-
-    return (
-      // <p><code>{nodeTypeLabelTxt }</code></p>
-      CLV.fromGetHeadlineImpl(e => {
-        if (isTerminalNd(e) ) {
-          return (
-            <p>
-              <code>{ e.getText() }</code>
-            </p>
-          ) ;
-        }
-        return (
-          <p>
-            (a Node <code>{ getNodeTypeLabelTxt(e) }</code>)
-          </p>
-        ) ;
-      } , {
-        skipToTerminalDecendantsFor: (e) => (
-          // TS.isToken(e) || TS.isLiteralExpression(e)
-          // true
-          isTerminalNd(e) === false
-        ) ,
-        asDbWhen ,
-      } )
-    )
-  }
-
-  static fromGetHeadlineImpl(...args : (
-    ArgsWithOptions<[getHeadlineImpl: (e: TS.Node) => React.ReactElement] , (
-      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
-      PartializedPartially<(
-        OmitW<CLV,  | `getHeadl${string}`>
-      ) ,(
-        | "asDbWhen"
-        | "postdecDbwBdB1"
-        | "postdecDbwBdB2"
-        | "postdecDbwBdB3"
-        | "skipToTerminalDecendantsFor"
-        | "postdecDbwInlinelikeB4"
-        | "postdecDbwPropertylikeB5"
-        | "rptcf"
-        | "expandCldl"
-        | "postdecMultiNodeView1"
-      ) >
-    )>
-  ) )
-  {
-    const [
-      getHeadlineImpl,
-      prps1 = {} ,
-    ] = args ;
-
-    return (
-      this.fromProps({ getHeadlineImpl, ...(prps1), })
-    ) ;
-  }
-
-  static fromProps(...[props] : (
-    ArgsWithOptions<[] , (
-      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
-      PartializedPartially<(
-        OmitW<CLV, never>
-      ) , (
-        | "asDbWhen"
-        | "postdecDbwBdB1"
-        | "postdecDbwBdB2"
-        | "postdecDbwBdB3"
-        | "skipToTerminalDecendantsFor"
-        | "postdecDbwInlinelikeB4"
-        | "postdecDbwPropertylikeB5"
-        | "rptcf"
-        | "expandCldl"
-        | "postdecMultiNodeView1"
-      ) >
-    )>
-  ) )
-  {
-    const {
-      getHeadlineImpl,
-      asDbWhen = () => false ,
-      skipToTerminalDecendantsFor: skipToTerminalDecendants = (...args) => false,
-
-      postdecDbwBdB1 = (
-        ({
-          asTerminalMdlNode ,
-          nd ,
-          bord ,
-          asJsxTag,
-        }, e1C) => {
-          ;
-          
-          const e1 = (
-            <div
-            title={`${getNodeTypeLabelTxt(nd) } `}
-            style={{
-              zoom: `99%` ,
-              border: bord ? `0.05em solid currentcolor` : undefined ,
-              background: asJsxTag ? `rgba(0 0 0 / 0.25 )` : undefined ,
-              ...((TS.isJsxOpeningElement(nd) ) ? {
-                overflow: "auto" ,
-                maxBlockSize: `9.5em` ,
-              } : {}) ,
-            }}
-            >
-              { e1C }
-            </div>
-          ) ;
-
-          return e1 ;
-        }
-      ) ,
-      postdecDbwBdB2 = (
-        ({
-          asTerminalMdlNode ,
-          nd ,
-          childListDView ,
-        }) => {
-          ;
-          
-          if (asTerminalMdlNode ) {
-            return (
-              <>
-              { getHeadlineImpl(nd) }
-              </>
-            ) ;
-          } else {
-            ;
-            return (
-              <>
-              { (asTerminalMdlNode === false) && (
-                <div
-                style={{
-                  paddingInlineStart: `1.0ex`,
-                  zoom: `95%` ,
-                }}
-                >
-                  { childListDView }
-                </div>
-              ) }
-              </>
-            ) ;
-          }
-        }
-      ),
-      postdecDbwBdB3 = (
-        (e1, {
-          selfEditBtnsSec ,
-        } ) => {
-          ;
-
-          return (
-            <div
-            style={{
-              // display: "inline-block" ,
-            }}
-            >
-              <div
-              style={{
-                display: "flex" ,
-                flexDirection: "column-reverse",
-              }}
-              >
-                { e1 }
-                { selfEditBtnsSec }
-              </div>
-            </div>
-          ) ;
-        }
-      ) ,
-      postdecDbwInlinelikeB4 = e => e ,
-      postdecDbwPropertylikeB5 = e50 => (
-        e50
-      ) ,
-      rptcf = (
-        CLV.getDfltBlockLevellingRptcf()
-      ) ,
-      
-      expandCldl = (...[children1]) => (
-        CLV.defaultRenderCldlAsHtmList(children1 )
-      ) ,
-      postdecMultiNodeView1 = (cldl) => (
-        <div>
-          { cldl }
-        </div>
-      ) ,
-
-    } = props ;
-
-    return new CLV(
-      getHeadlineImpl ,
-      skipToTerminalDecendants ,
-      asDbWhen ,
-      expandCldl ,
-      postdecMultiNodeView1 ,
-      postdecDbwBdB1 ,
-      postdecDbwBdB2 ,
-      postdecDbwBdB3 ,
-      postdecDbwInlinelikeB4 ,
-      postdecDbwPropertylikeB5 ,
-      rptcf ,
-    ) ;
-  }
-
-  private constructor(
-    //
-    public readonly getHeadlineImpl: (e: TS.Node) => React.ReactElement  ,
-    /**
-     * @deprecated
-     */
-    readonly skipToTerminalDecendantsFor : (e: TS.Node) => boolean ,
-    public readonly asDbWhen : () => boolean ,
-
-    public readonly expandCldl: (...args: [readonly React.ReactElement[] ]) => React.ReactElement ,
-    public readonly postdecMultiNodeView1: (...args: [cldl: React.ReactElement ]) => React.ReactElement ,
-
-    readonly postdecDbwBdB1: (...args: [{
-      asTerminalMdlNode: boolean ,
-      nd: TS.Node ,
-      bord: boolean ,
-      asJsxTag: boolean ,
-    }, React.ReactElement] ) => React.ReactElement ,
-    readonly postdecDbwBdB2: (...ctx: [{
-      asTerminalMdlNode: boolean ,
-      nd: TS.Node ,
-      childListDView: React.ReactElement,
-    }] ) => React.ReactElement ,
-    readonly postdecDbwBdB3: (...args: [
-      React.ReactElement ,
-      {
-        selfEditBtnsSec?: React.ReactElement ,
-      },
-    ] ) => React.ReactElement ,
-    
-    readonly postdecDbwInlinelikeB4: (...args: [
-      React.ReactElement ,
-      {
-      },
-    ] ) => React.ReactElement ,
-    readonly postdecDbwPropertylikeB5: (...args: [
-      React.ReactElement ,
-      {
-      },
-    ] ) => React.ReactElement ,
-
-    readonly rptcf: CLV.RPTCF ,
-
-  )
-  {}
-}
-
-namespace CLV {
-  ;
-
-  export interface RPTCF
-  {
-    readonly renderPuncTokenCodeFigure   : (e0: React.ReactElement) => React.JSX.Element;
-    readonly renderBracketTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
-    readonly renderKeywordTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
-    readonly renderTokenCodeFigure    : (e0: React.ReactElement) => React.ReactElement;
-    readonly renderNameTokenCodeFigure: (e0: React.ReactElement) => React.ReactElement;
-    // }
-  }
-
-  export function getDfltBlockLevellingRptcf()
-  : RPTCF
-  {
-
-    const renderAsEnlargedPuncTokenCode = (e0: React.ReactElement) => (
-      <span style={{ display: "inline-block", inlineSize: `4em` }} >
-        <span style={{ textAlign: "center", }} >
-        <span style={{ fontSize: `1.25em`, }}>
-          <span style={{ display: "inline-block", position: "relative", transform: `scale(2.5, 1)`, transformOrigin: `0 0 0` }}>
-          { e0 }
-          </span>
-          </span>
-        </span>
-      </span>
-    ) ;
-    const renderAsEnlargedBracketTokenCode = (e0: React.ReactElement) => (
-      renderAsEnlargedPuncTokenCode((
-        <span style={{ display: "inline-block", position: "relative", transform: `scale(1, 1.25)`, }}>
-        <span style={{ writingMode: "vertical-rl", }} >
-          { withExtraSemanticProperties({ style: { fontFamily: "serif", fontSize: `2em` } } , e0) }
-        </span>
-        </span>
-      ))
-    ) ;
-
-    const renderPuncTokenCodeFigure = (e0: React.ReactElement) => (
-      renderAsEnlargedPuncTokenCode(e0)
-    ) ;
-    const renderBracketTokenCodeFigure = (e0: React.ReactElement) => (
-      renderAsEnlargedBracketTokenCode(e0)
-    ) ;
-    const renderKeywordTokenCodeFigure = (e0: React.ReactElement) => (
-      <strong>
-        { e0 }
-      </strong>
-    ) ;
-    const renderTokenCodeFigure = (e0: React.ReactElement) => (
-      e0
-    ) ;
-    const renderNameTokenCodeFigure = (e0: React.ReactElement) => (
-      e0
-    ) ;
-
-    return {
-      renderPuncTokenCodeFigure ,
-      renderBracketTokenCodeFigure ,
-      renderKeywordTokenCodeFigure ,
-      renderTokenCodeFigure ,
-      renderNameTokenCodeFigure ,
-    } satisfies RPTCF ;
-  }
-
-  export const defaultRenderCldlAsHtmList: CLV["expandCldl"] = (
-    (...[children1]) => {
-      ;
-      return (
-        <ul>
-        { (
-          children1
-          .map((nd, i) => (
-            <li
-            key={i }
-            children={(
-              nd
-            )}
-            />
-          ))
-        ) }
-        </ul>
-      ) ;
-    }
-  ) ;
-
-}
 
 interface TsChildNodeListDisplayCompProps extends
 TsAstDisplayCompCommonProps
@@ -1206,6 +1417,416 @@ export const TsSrcFileInfoDisplayC = (
     ) ;
   })
 ) ;
+
+class CLV
+{
+
+  static forIsTerminaNdFnc(...args : (
+    ArgsWithOptions<[isTerminalNd ?: (e: TS.Node) => boolean ], {
+      asDbWhen?: () => boolean ,
+    } >
+  )) {
+    const [
+      isTerminalNd = (e) => {
+        if (TS.isSourceFile(e) ) {
+          return false ;
+        }
+        if (TS.isToken(e) || TS.isLiteralExpression(e) ) {
+          return true ;
+        }
+        return false ;
+      } ,
+      {
+        asDbWhen ,
+      } = null ?? {} ,
+    ] = args ;
+
+    return (
+      // <p><code>{nodeTypeLabelTxt }</code></p>
+      CLV.fromGetHeadlineImpl(e => {
+        if (isTerminalNd(e) ) {
+          return (
+            <p>
+              <code>{ e.getText() }</code>
+            </p>
+          ) ;
+        }
+        return (
+          <p>
+            (a Node <code>{ getNodeTypeLabelTxt(e) }</code>)
+          </p>
+        ) ;
+      } , {
+        skipToTerminalDecendantsFor: (e) => (
+          // TS.isToken(e) || TS.isLiteralExpression(e)
+          // true
+          isTerminalNd(e) === false
+        ) ,
+        asDbWhen ,
+      } )
+    )
+  }
+
+  static fromGetHeadlineImpl(...args : (
+    ArgsWithOptions<[getHeadlineImpl: (e: TS.Node) => React.ReactElement] , (
+      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
+      PartializedPartially<(
+        OmitW<CLV,  | `getHeadl${string}`>
+      ) ,(
+
+        | "asDbWhen"
+
+        /* NODE_UNIT */
+
+        | "postdecDbwBdB1"
+        | "postdecDbwBdB2"
+        | "postdecDbwBdB3"
+        | "skipToTerminalDecendantsFor"
+        | "postdecDbwInlinelikeB4"
+        | "postdecDbwPropertylikeB5"
+        | "rptcf"
+
+        /* CHILD_NODE_SEQ */
+
+        | "expandCldl"
+        | "postdecMultiNodeView1"
+
+      ) >
+    )>
+  ) )
+  {
+    const [
+      getHeadlineImpl,
+      prps1 = {} ,
+    ] = args ;
+
+    return (
+      this.fromProps({ getHeadlineImpl, ...(prps1), })
+    ) ;
+  }
+
+  static fromProps(...[props] : (
+    ArgsWithOptions<[] , (
+      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
+      PartializedPartially<(
+        OmitW<CLV, never>
+      ) , (
+
+        | "asDbWhen"
+
+        /* NODE_UNIT */
+
+        | "postdecDbwBdB1"
+        | "postdecDbwBdB2"
+        | "postdecDbwBdB3"
+        | "skipToTerminalDecendantsFor"
+        | "postdecDbwInlinelikeB4"
+        | "postdecDbwPropertylikeB5"
+        | "rptcf"
+
+        /* CHILD_NODE_SEQ */
+
+        | "expandCldl"
+        | "postdecMultiNodeView1"
+
+      ) >
+    )>
+  ) )
+  {
+    const {
+      //
+
+      getHeadlineImpl,
+      asDbWhen = () => false ,
+      skipToTerminalDecendantsFor: skipToTerminalDecendants = (...args) => false,
+
+      /* NODE_UNIT */
+
+      postdecDbwBdB1 = (
+        ({
+          asTerminalMdlNode ,
+          nd ,
+          bord ,
+          asJsxTag,
+        }, e1C) => {
+          ;
+          
+          const e1 = (
+            <div
+            title={`${getNodeTypeLabelTxt(nd) } `}
+            style={{
+
+              zoom: `99%` ,
+              border: bord ? `0.05em solid currentcolor` : undefined ,
+              background: asJsxTag ? `rgba(0 0 0 / 0.25 )` : undefined ,
+
+              ...((TS.isJsxOpeningElement(nd) ) ? {
+                overflow: "auto" ,
+                maxBlockSize: `9.5em` ,
+              } : {}) ,
+
+            }}
+            >
+              { e1C }
+            </div>
+          ) ;
+
+          return e1 ;
+        }
+      ) ,
+      postdecDbwBdB2 = (
+        ({
+          asTerminalMdlNode ,
+          nd ,
+
+          childListDView ,
+
+        }) => {
+          ;
+          
+          if (asTerminalMdlNode ) {
+
+            return (
+              <>
+              { getHeadlineImpl(nd) }
+              </>
+            ) ;
+          } else {
+            ;
+
+            return (
+              <>
+              { (asTerminalMdlNode === false) && (
+                <div
+                style={{
+                  paddingInlineStart: `1.0ex`,
+                  zoom: `95%` ,
+                }}
+                >
+                  { childListDView }
+                </div>
+              ) }
+              </>
+            ) ;
+          }
+        }
+      ),
+      postdecDbwBdB3 = (
+        (e1, {
+          selfEditBtnsSec ,
+          nd ,
+        } ) => {
+          ;
+
+          if (nd.kind === TS.SyntaxKind.SyntaxList) {
+            return e1 ;
+          }
+
+          return (
+            <div
+            style={{
+              // display: "inline-block" ,
+            }}
+            >
+              <div
+              style={{
+                display: "flex" ,
+                flexDirection: "column-reverse",
+              }}
+              >
+                { e1 }
+                { selfEditBtnsSec }
+              </div>
+            </div>
+          ) ;
+        }
+      ) ,
+
+      /* CHILD_NODE_SEQ */
+
+      postdecDbwInlinelikeB4 = e => e ,
+      postdecDbwPropertylikeB5 = e50 => (
+        e50
+      ) ,
+      rptcf = (
+        CLV.getDfltBlockLevellingRptcf()
+      ) ,
+      
+      expandCldl = (...[children1]) => (
+        CLV.defaultRenderCldlAsHtmList(children1 )
+      ) ,
+      postdecMultiNodeView1 = (cldl) => (
+        <div>
+          { cldl }
+        </div>
+      ) ,
+
+    } = props ;
+
+    return new CLV(
+      //
+
+      getHeadlineImpl ,
+      skipToTerminalDecendants ,
+      asDbWhen ,
+
+      expandCldl ,
+      postdecMultiNodeView1 ,
+
+      postdecDbwBdB1 ,
+      postdecDbwBdB2 ,
+      postdecDbwBdB3 ,
+      postdecDbwInlinelikeB4 ,
+      postdecDbwPropertylikeB5 ,
+      rptcf ,
+
+    ) ;
+  }
+
+  private constructor(
+    //
+
+    public readonly getHeadlineImpl: (e: TS.Node) => React.ReactElement  ,
+
+    /**
+     * @deprecated
+     */
+    readonly skipToTerminalDecendantsFor : (e: TS.Node) => boolean ,
+    public readonly asDbWhen : () => boolean ,
+
+    /* CHILD NODE SEQ */
+
+    public readonly expandCldl: (...args: [readonly React.ReactElement[] ]) => React.ReactElement ,
+    public readonly postdecMultiNodeView1: (...args: [cldl: React.ReactElement ]) => React.ReactElement ,
+
+    /* NODE_UNIT */
+
+    readonly postdecDbwBdB1: (...args: [{
+      asTerminalMdlNode: boolean ,
+      nd: TS.Node ,
+      bord: boolean ,
+      asJsxTag: boolean ,
+    }, React.ReactElement] ) => React.ReactElement ,
+
+    readonly postdecDbwBdB2: (...ctx: [{
+      asTerminalMdlNode: boolean ,
+      nd: TS.Node ,
+      childListDView: React.ReactElement,
+    }] ) => React.ReactElement ,
+
+    readonly postdecDbwBdB3: (...args: [
+      React.ReactElement ,
+      {
+        nd: TS.Node ,
+        selfEditBtnsSec?: React.ReactElement ,
+      },
+    ] ) => React.ReactElement ,
+    
+    readonly postdecDbwInlinelikeB4: (...args: [
+      React.ReactElement ,
+      {
+      },
+    ] ) => React.ReactElement ,
+
+    readonly postdecDbwPropertylikeB5: (...args: [
+      React.ReactElement ,
+      {
+      },
+    ] ) => React.ReactElement ,
+
+    readonly rptcf: CLV.RPTCF ,
+
+  )
+  {}
+}
+
+namespace CLV {
+  ;
+
+  export interface RPTCF
+  {
+    readonly renderPuncTokenCodeFigure   : (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderBracketTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderKeywordTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderTokenCodeFigure    : (e0: React.ReactElement) => React.ReactElement;
+    readonly renderNameTokenCodeFigure: (e0: React.ReactElement) => React.ReactElement;
+    // }
+  }
+
+  export function getDfltBlockLevellingRptcf()
+  : RPTCF
+  {
+
+    const renderAsEnlargedPuncTokenCode = (e0: React.ReactElement) => (
+      <span style={{ display: "inline-block", inlineSize: `4em` }} >
+        <span style={{ textAlign: "center", }} >
+        <span style={{ fontSize: `1.25em`, }}>
+          <span style={{ display: "inline-block", position: "relative", transform: `scale(2.5, 1)`, transformOrigin: `0 0 0` }}>
+          { e0 }
+          </span>
+          </span>
+        </span>
+      </span>
+    ) ;
+    const renderAsEnlargedBracketTokenCode = (e0: React.ReactElement) => (
+      renderAsEnlargedPuncTokenCode((
+        <span style={{ display: "inline-block", position: "relative", transform: `scale(1, 1.25)`, }}>
+        <span style={{ writingMode: "vertical-rl", }} >
+          { withExtraSemanticProperties({ style: { fontFamily: "serif", fontSize: `2em` } } , e0) }
+        </span>
+        </span>
+      ))
+    ) ;
+
+    const renderPuncTokenCodeFigure = (e0: React.ReactElement) => (
+      renderAsEnlargedPuncTokenCode(e0)
+    ) ;
+    const renderBracketTokenCodeFigure = (e0: React.ReactElement) => (
+      renderAsEnlargedBracketTokenCode(e0)
+    ) ;
+    const renderKeywordTokenCodeFigure = (e0: React.ReactElement) => (
+      <strong>
+        { e0 }
+      </strong>
+    ) ;
+    const renderTokenCodeFigure = (e0: React.ReactElement) => (
+      e0
+    ) ;
+    const renderNameTokenCodeFigure = (e0: React.ReactElement) => (
+      e0
+    ) ;
+
+    return {
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+    } satisfies RPTCF ;
+  }
+
+  export const defaultRenderCldlAsHtmList: CLV["expandCldl"] = (
+    (...[children1]) => {
+      ;
+      return (
+        <ul>
+        { (
+          children1
+          .map((nd, i) => (
+            <li
+            key={i }
+            children={(
+              nd
+            )}
+            />
+          ))
+        ) }
+        </ul>
+      ) ;
+    }
+  ) ;
+
+}
 
 import "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/tsd.scss" ;
 
