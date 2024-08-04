@@ -1,9 +1,6 @@
 
 
 
-
-
-
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -42,36 +39,40 @@ import {
 
 ;
 
-export abstract class RewaicWaveTableDesc {
-  protected constructor() {}
-}
-
-export namespace RewaicWaveTableDesc
-{ {} }
-
-export namespace RewaicWaveTableDesc
-{
-
-  export class ForWaveTable extends RewaicWaveTableDesc
-  {
-    constructor (protected d: PeriodicWave)
-    { super() ; }
-  }
-
-  export class ForWaveSpan extends RewaicWaveTableDesc
-  {
-    constructor (protected d: AudioBuffer )
-    { super() ; }
-  }
-
-}
+import {
+  copyOfWMonoF ,
+  copyOfWAudioBuffer ,
+} from "studk-audio-pipeline-common/src/fwCore/domAudioApiHelpers/AudioBufferCopyOf" ;
 
 
 
 
 
+export default (
+  (() => {
 
+    const {
+      asConst ,
+      assert ,
+      iterateNonNull,
+      iteratePositives,
+      reiterated ,
+    } = util ;
 
+    return (
+      [
+        //
+        asConst ,
+        assert ,
+        iterateNonNull,
+        iteratePositives,
+        reiterated ,
+      ]
+      .map(v => String(v) )
+      .join("\r\n\r\n")
+    ) ;
+  })()
+) ;
 
 
 
