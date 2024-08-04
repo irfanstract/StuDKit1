@@ -40,22 +40,98 @@ replace `npm install` with `npm ci`
 
 __discussed in depth in section "when testing, `npm install` shall be replaced with `npm ci`" in "Package Dependencies Converns" below__.
 
-### app crashed with "syntax error, unexpected (.....)"
+### caveats with `.mts*` and `.cts*` and `.mjsx` extension(s)
+
+__caveats with `.mts*` and `.cts*` and `.mjsx` extension(s)__
+
+At the time of writing, NextJS doesn't support those ext(s).
+avoid using those ext(s) for these days; use plain `.ts*` instead.
+
+### app crashed with "syntax error, unexpected (.....)" or "syntax error, module parse failed, (......)"
 
 __for example, app crashed with__
-- "syntax error, unexpected keyword 'type'",
-- "syntax error, unexpected token ':'",
-  "syntax error, unexpected token '!'",
-- "syntax error, unexpected keyword 'satisfies'"
+- `ERR_UNKNOWN_FILE_EXTENSION`
+- "Syntax Error" complaints
+  - SyntaxError(s) at Run-Time:
+    - "syntax error, unexpected keyword 'type'",
+    - "syntax error, unexpected token ':'",
+    - "syntax error, unexpected token '!'",
+    - "syntax error, unexpected keyword 'satisfies'"
+  - "syntax error unexpected token, module parse failed, you may need an appropriate handler for these files", from Webpack or Turbopack
 
-__replacing `node` with `npx --yes ts-node`__ would likely resolve this issue.
-see *replacing `node` with `npx --yes ts-node`* below for the intro to that.
+first of all, upgrade Node to version 20 (__not enough of a fix itself__ but this is a must) 😉
 
-### replacing `node` with `npx --yes ts-node`
+__replacing `node <the-file>` with <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100)__ would likely resolve this issue.
+see *replacing `node` with <s>`npx --yes ts-node`</s> `node --import ./scripts/setup-tsnodeimportfixups.mjs`* below
+for the intro to that.
 
-replacing `node` with `npx --yes ts-node`
+```diff
+- node <the-file>
++ node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>
+```
 
-see https://typestrong.org/ts-node/docs/ .
+__in case u didn't know:__ __[`npx ts-node <main-file>` failed to properly do its thing in Node 20](https://github.com/TypeStrong/ts-node/issues/2100) so
+you'll need to switch to `node --import <aux-path> <main-file>`__:
+
+```diff
++ # see https://github.com/TypeStrong/ts-node/issues/2100
+- npx --yes ts-node <the-file>
++ node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>
+```
+
+also,
+at time of writing,
+NextJS doesn't seem to support the ext(s) `.mts*` and `.cts*` and `.mjsx`.
+avoid using those ext(s) *for the moment*;
+rename those files back to "plain naive" `.ts*`, go back to the associated `package.json` and set `type` to `module`.
+
+-
+  ```diff
+    ▼ main
+      ▼ PrimitiveTypedInputUi
+        - OneLineTxtEd.tsx
+        - DatePicker.tsx
+      ▼ RichTextModelling
+  -     - HtmlDoc.mts
+  +     - HtmlDoc.ts
+  -     - GfmDoc.mts
+  +     - GfmDoc.ts
+  
+  ```
+  
+  ```diff json
+    {
+      ...
+  +   "type": "module,
+      ...
+    }
+  ```
+
+### replacing `node` with <s>`npx --yes ts-node`</s> `node --import ./scripts/setup-tsnodeimportfixups.mjs`
+
+replacing `node <the-file>` with <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100)
+
+```diff
+- node <the-file>
++ node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>
+```
+
+__worth noting__ __[`npx ts-node <main-file>` failed to properly do its thing in Node 20](https://github.com/TypeStrong/ts-node/issues/2100) so
+you'll need to switch to `node --import <aux-path> <main-file>`__:
+
+```diff
++ # see https://github.com/TypeStrong/ts-node/issues/2100
+- npx --yes ts-node <the-file>
++ node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>
+```
+
+see
+- https://typestrong.org/ts-node/docs/
+- https://github.com/TypeStrong/ts-node/issues/2100 
+- [`./scripts/setup-tsnodeimportfixups.mjs`](./scripts/setup-tsnodeimportfixups.mjs)
+.
+
+### file [`git-rebase-todos`](./.git/rebase-merge/git-rebase-todo)
 
 
 
@@ -100,7 +176,7 @@ this
 is necessary to allow loading the packages natively in Node without needing to "manually first searching, reaching and hiting the 'build' button".
 except for the React-specific stuffs since
 for now they'll only be used for the apps written for Vite or Next anyway;
-use `npx --yes ts-node` to run such src files - see *replacing `node` with `npx --yes ts-node`* above for the intro to that.
+use <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100) to run such src files - see *replacing `node` with `npx --yes ts-node`* above for the intro to that.
 
 #### `studk-util`
 
@@ -118,7 +194,7 @@ in contrast to the general recommendation of avoiding extra 'manually click to b
 a subset of the source files there
 will only be used for apps written for Vite or Next, so
 one should use TypeScript for that ;
-use `npx --yes ts-node` to run such src files.
+use <s>`npx --yes ts-node <the-file>`</s> [`node --import ./scripts/setup-tsnodeimportfixups.mjs <the-file>`](https://github.com/TypeStrong/ts-node/issues/2100) to run such src files.
 
 #### `studk-demos`
 
@@ -126,10 +202,11 @@ its `package.json` has `script` entry `dev` to run the dev server; if started, i
 you should then see some showcases; they're mostly stuffs building on these packages developed here in this monorepo.
 
 for now
-the source files
-will only be used for the apps written for Vite or Next anyway, so
-one should use TypeScript for that ;
-use `npx --yes ts-node` to run such src files.
+the source files in such tree(s)
+are only meant to be used within the app;
+avoid trying to run those files
+even if you're tempted to use <s>`npx --yes ts-node`</s> `node --import ./scripts/setup-tsnodeimportfixups.mjs` or even `esbuild` -
+presently no guarantees are made abt running those src files standalone!
 
 #### `studpresenters`
 
@@ -194,10 +271,11 @@ unless it's to fix the naming issues.
 
 
 
-## Package Dependencies Concerns
+## Concerns with Package(s): The `package.json` File, Dependencies, Pkg Managers, Exports, etc
 
 this (sub)section
-talks about package dependency management in general
+talks about
+*Concerns with Package(s): The `package.json` File, Dependencies, Pkg Managers, Exports, etc* general
 
 for the list(ing) of packages which shall not be removed because eg they serve as the cmd-line tools (eg `ts-node`, `esbuild`, `typescript`, `sass`, etc),
 see "The Dependencies Of The StuDK Source(s) And Binaries" below
@@ -282,7 +360,22 @@ installing dependencies via `npm install <packages>`
 will [*naively reformat `package.json` in Git-unfriendly way*](https://stackoverflow.com/questions/24852116/what-exactly-is-a-merge-conflict).
 
 ```
-npm install chokidar glob@10  ❌❌ don't do this
+❌ not a good practice
+npm install @types/react@^18 @types/react-dom@^18
+❌ not a good practice
+npm install chokidar glob@10 
+❌ not a good practice
+npm install @react-three/drei @react-springs/three 
+```
+
+```
+$ git pull origin main
+CONFLICT: `packages/studk-ui-fwcore/package.json
+CONFLICT: `packages/studk-fwcore/package.json`
+Error: Merge Conflict Encountered
+You must fix all conflicts and then
+run 'git ... ...'.
+$
 ```
 
 instead,
@@ -290,7 +383,7 @@ add into [`package.json`](./package.json) first and then run `npm install` (ie N
 .
 
 ```diff json
-{
+  {
     "devDependencies": {
         "@types/chai": "^4.3.12",
         "@types/minimist": "^1.2.5",
@@ -309,11 +402,65 @@ add into [`package.json`](./package.json) first and then run `npm install` (ie N
         "hereby": "^1.8.9",
         "jsonc-parser": "^3.2.1",
     },
-}
+  }
 ```
 
 ```
 npm install
+```
+
+### caveats with (`package.json`'s) `exports`
+
+__caveats with (`package.json`'s) `exports`__
+
+see https://github.com/TypeStrong/ts-node/issues/1934 (focus at https://github.com/TypeStrong/ts-node/issues/1934#issuecomment-1682786084 ) for
+how
+`ts-node` failed to properly handle entries of `exports` using path-selector(s) whose wild-card is not at the end (eg `./src/*.ts`) ,
+forcing me to work-around the issue
+
+```diff json
+  {
+    "exports": {
+
+      "./lib/*"   : "./lib/*",
+
+      "./dist/*"  : "./dist/*",
+
+      "./src/*.ts"      : "./src/*.ts"         ,
+      "./src/*.tsx"     : "./src/*.tsx"        ,
+
++     "./src/*"         : "./src/*"            ,
+
+      "./package.json": "./package.json"
+    },
+  }
+```
+
+### caveats with `.mts*` and `.cts*` and `.mjsx` extension(s)
+
+__caveats with `.mts*` and `.cts*` and `.mjsx` extension(s)__
+
+At time of writing, NextJS doesn't seem to support those ext(s). avoid using those ext(s) for the moment; use plain `.ts*` instead.
+
+```diff
+  ▼ main
+    ▼ PrimitiveTypedInputUi
+      - OneLineTextEditor.tsx
+      - DatePicker.tsx
+    ▼ RichTextModelling
+-     - HtmlDocStructure.mts
++     - HtmlDocStructure.ts
+-     - GfmDocStructure.mts
++     - GfmDocStructure.ts
+
+```
+
+```diff json
+  {
+    ...
++   "type": "module,
+    ...
+  }
 ```
 
 

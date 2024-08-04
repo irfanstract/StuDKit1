@@ -1,0 +1,18 @@
+
+/* moved into 'tsconfig.build.json' --- per https://stackoverflow.com/q/35470511 */
+{
+  "extends": "./tsconfig.json" ,
+  "compilerOptions": {
+    "noEmit": false, "emitDeclarationOnly": false,
+    "rootDir": "src" ,
+  } ,
+  /*  for some reason `references` doesn't automatically get inherited ; */
+  /* only after adding 'refernce' to "./tsconfig.json" would the complaint go away; */
+  "references": [
+    { "path": "./tsconfig.json", } ,
+  ] ,
+  /* per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
+  "include": [
+    "src" ,
+  ],
+}
