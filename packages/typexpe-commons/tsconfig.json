@@ -1,19 +1,41 @@
 {
   "extends": "../../tsconfig.json" ,
   "compilerOptions": {
+    "moduleResolution": "Node16" /* DON'T USE "YyyNext" -- updates to the compiler will break compilation! */ ,
     "checkJs": true,
     "allowSyntheticDefaultImports": true ,
+    "module": "Node16" /* DON'T USE "YyyNext" -- updates to the compiler will break compilation! */ ,
 
+    /* to avoid the so-called complaints "referenced file is not under root dir", we need to stick to Project References, */
     /* https://www.typescriptlang.org/docs/handbook/project-references.html */
     "composite": true ,
-    "noEmit": false ,
-    "allowImportingTsExtensions": false ,
+    /* yet, at the same time, work with Vite or Next.js, meaning that */
+    /* we need the 'noEmit'-like behaviour, but */
+    /* "referenced project may not disable emit" and hence we turned to 'emitDeclarationOnly' */
+    /* https://stackoverflow.com/a/77369498 (in https://stackoverflow.com/q/71704754 ) */
+    "emitDeclarationOnly": true, "noEmit": false,
+    /* necessary  */
+    "allowImportingTsExtensions": true ,
     /* https://stackoverflow.com/a/61513685 */
-    "rootDir": "src" ,
+    // "rootDir": "src" , /* moved into 'tsconfig.build.json' --- per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
     "outDir": "dist",
+
+    /* `jsx` in `studk-demos` needs to be set to `"preserve"` per the Next(JS) docs - therefore we assume `"react-jsx"` or `"react"` */
+    "jsx": "react",
   },
+  "references": [
+    // { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-util", } ,
+
+    /* need these as some our files need these.  */
+    /* can't link to the "build" version of their `tsconfig`; only the "no-emit" version of */
+    { "path": "../../packages/studk-ui-fwcore", } ,
+
+  ] ,
+  /* per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
   "include": [
     "src" ,
+    "test" , /* per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
   ],
   // "exclude": [
   //   "src/**/*" ,

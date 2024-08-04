@@ -53,7 +53,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -66,7 +66,7 @@ import {
 import {
   Button ,
   Span ,
-} from 'studk-ui/src/meta/react/dbc.tsx'; ;
+} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 // import Link from "next/link" ;
 
