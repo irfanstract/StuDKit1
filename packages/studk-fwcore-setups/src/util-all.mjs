@@ -14,6 +14,8 @@ import "core-js/proposals/change-array-by-copy.js" ;
 import "core-js/proposals/decorators.js" ;
 import "core-js/modules/es.map.group-by.js" ;
 
+import * as Ordering from "typexpe-commons/src/common-comparingfn-all.mjs" ;
+
 import {
   random,
 } from "lodash-es" ;
@@ -38,6 +40,8 @@ const fileURLFromPath = pathToFileURL ;
 
 import * as Path from 'node:path' ;
 
+import * as Glb from "glob" ;
+
 
 /* PLATFORM I/O */
 
@@ -48,10 +52,11 @@ import * as FS from 'node:fs' ;
 
 import {
   exec as execAsync,
-  execSync,
+  execSync as execSyncImpl,
   spawn,
   spawnSync,
 } from 'node:child_process';
+const execSync = execSyncImpl ;
 const exec = execSync ;
 
 
@@ -77,6 +82,10 @@ const exec = execSync ;
 
 export { util, } ;
 
+export { Ordering, } ;
+
+// export * from "./util-eawo.mjs" ;
+
 export { createRequire, } ;
 
 
@@ -89,6 +98,8 @@ export {
   pathFromFileURL,
 } ;
 export { Path as Path, } ;
+
+export { Glb, } ;
 
 /* PLATFORM I/O */
 
