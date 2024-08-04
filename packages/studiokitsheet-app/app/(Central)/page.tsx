@@ -66,7 +66,7 @@ export default function App()
     pagesConventions.describeArticlePage({
       heading: (
         <span>
-          The Studio Kit Sheet Central Studio
+          The Workbook
         </span>
       ) ,
       children: (
