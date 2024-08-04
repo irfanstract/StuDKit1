@@ -9,7 +9,7 @@
 
 
 // @ts-ignore
-export * from "studk-ui/src/fwCore/ewo.ts" ;
+export * from "studk-ui-fwcore/src/util/EWithOpt.ts" ;
 
 
 

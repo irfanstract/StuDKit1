@@ -26,6 +26,11 @@
   "references": [
     // { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
     { "path": "../../packages/studk-util", } ,
+
+    /* need these as some our files need these.  */
+    /* can't link to the "build" version of their `tsconfig`; only the "no-emit" version of */
+    { "path": "../../packages/studk-ui-fwcore", } ,
+
   ] ,
   /* per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
   "include": [
