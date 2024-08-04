@@ -22,7 +22,7 @@ import {
 
 import {
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 /**
  * note:
@@ -36,7 +36,7 @@ import {
 import type {
   ArgsWithOptions ,
   ArgsGetOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import {
   random,
@@ -56,7 +56,11 @@ import * as React from "react" ;
 import {
   describeComponent,
   mkClasses,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
+
+export const describeSvgComponent = (
+  describeComponent
+) ;
 
 export function describeSvgContent(...[a] : [React.ReactElement] )
 {
