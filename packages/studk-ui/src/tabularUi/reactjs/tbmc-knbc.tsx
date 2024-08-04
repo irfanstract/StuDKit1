@@ -14,7 +14,8 @@ import {
 
 import type {
   ArgsGetOptions ,
-  ArgsWithOptions ,
+  ArgsWithOptions, 
+  PartializedPartially,
 } from 'studk-fwcore/src/util/C1.ts'; ;
 
 import type {
@@ -28,21 +29,18 @@ export namespace XUtil { ; }
 
 
 
-import * as React from "react" ;
-
-
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+  React ,
+  describeComponent ,
+  mkClasses ,
+  Button ,
+  Span, 
+  withExtraSemanticProperties,
+} from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
-
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/meta/react/dbc.tsx'; ;
 
 import {
   EllapsedTValueC ,
@@ -112,16 +110,16 @@ const getTbmcKnbDefaultSpecimen = util.L.once(function ()
   ) ;
 }) ;
 
-export const TbmcKnbC: {
-  /** @deprecated please make `value` non-null. */
-  (props: PartializedPartially<TbmcKnbCProps, "value">): React.JSX.Element ;
-  (props: TbmcKnbCProps): React.JSX.Element ;
-} = (
-  describeComponent(function KnBasedTimeTableMC({
-    horizonConfig ,
-    value: valueArg = getTbmcKnbDefaultSpecimen() ,
-  } : TbmcKnbCProps ) {
+const useTbmcKnbCProps = (
+
+  function (props : TbmcKnbCProps )
+  {
     ;
+
+    const {
+      horizonConfig ,
+      value: valueArg = getTbmcKnbDefaultSpecimen() ,
+    } = null ?? props ;
 
     const {
       effectiveWindowSeq: hoSegmentDescs ,
@@ -146,41 +144,109 @@ export const TbmcKnbC: {
     ) satisfies TbmcModelState["layerStates"] ;
 
     {
+      ;
+
+      const renderTSegHeadLabelDiv : (
+        (props: { msd: (typeof hoSegmentDescs)[number], }) => React.ReactElement
+      ) = (
+        function ({ msd, }) {
+          ;
+          const { srcSpan, id: colId, } = msd ;
+          return (
+            <div
+            style={{
+              // display: `inline-block` ,
+              fontSize: `75%` ,
+            }}
+            >
+            <p
+            >
+              Spn
+              <span>
+                (
+                  <EllapsedTValueC value={srcSpan.startPos} maxUnit='hours' /> {}
+                  to {}
+                  <EllapsedTValueC value={srcSpan.endPos} maxUnit='hours' /> {}
+                )
+              </span>
+            </p>
+            </div>
+          ) ;
+        }
+      ) ;
+
+      const renderChPlotSeg : React.FC<{ v: (typeof chnlDataList)[number], msd: (typeof hoSegmentDescs)[number], }> = (
+        function ({ v, msd, })
+        {
+          return (
+            renderPerChannelPlotAsWrInlineContent(v, msd )
+          ) ;
+        }
+      ) ;
+
+      return {
+        horizonConfig,
+        valueArg ,
+        hoSegmentDescs ,
+        renderPerChannelPlotAsUnitApplet ,
+        renderPerChannelPlotAsWrInlineContent ,
+        chnlDataList,
+
+        renderTSegHeadLabelDiv ,
+        renderChPlotSeg ,
+
+      } as const ;
+
+    }
+
+  }
+) ;
+
+export const TbmcKnbC: {
+  /** @deprecated please make `value` non-null. */
+  (props: PartializedPartially<TbmcKnbCProps, "value">): React.ReactNode ;
+  (props: TbmcKnbCProps): React.ReactNode ;
+} = (
+  describeComponent(function KnBasedTimeTableMC(props : TbmcKnbCProps ) {
+    ;
+
+    const {
+      horizonConfig,
+      valueArg ,
+      hoSegmentDescs ,
+      renderPerChannelPlotAsUnitApplet ,
+      renderPerChannelPlotAsWrInlineContent ,
+      chnlDataList,
+
+      renderTSegHeadLabelDiv ,
+      renderChPlotSeg ,
+
+    } = useTbmcKnbCProps(props) ;
+
+    {
         ;
 
-        const renderTSegLabel : React.FC<{ msd: (typeof hoSegmentDescs)[number], }> = (
-          function ({ msd, }) {
-            ;
-            const { srcSpan, id: colId, } = msd ;
-            return (
-              <p
-              style={{
-                // display: `inline-block` ,
-                fontSize: `75%` ,
-              }}
-              >
-                Spn
-                <span>
-                  (
-                    <EllapsedTValueC value={srcSpan.startPos} maxUnit='hours' /> {}
-                    to {}
-                    <EllapsedTValueC value={srcSpan.endPos} maxUnit='hours' /> {}
-                  )
-                </span>
-              </p>
-            ) ;
-          }
-        ) ;
-
-        const renderChPlotSeg : React.FC<{ v: (typeof chnlDataList)[number], msd: (typeof hoSegmentDescs)[number], }> = (
-          function ({ v, msd, })
+        const withSpclTbmcTdCssAnnotation = (
+          function (...[e, srcSpan]: [React.ReactElement, ((typeof hoSegmentDescs)[number] )["srcSpan"] ] )
           {
+  
             return (
-              renderPerChannelPlotAsWrInlineContent(v, msd )
+  
+              withExtraSemanticProperties({
+                style: {
+                  //
+                  inlineSize: `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ,
+                  ...({
+                    ["--t-start"]: srcSpan.startPos ,
+                    ["--t-end"  ]: srcSpan.endPos ,
+                    ["--sc"]: 1 ,
+                  }),
+                } ,
+              } , e )
             ) ;
           }
         ) ;
-        
+  
         const mainTable = (
           renderTableByRowDtListAndColumnList.renderAsTransposed(chnlDataList , {
 
@@ -188,44 +254,45 @@ export const TbmcKnbC: {
             ,
 
             perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
+
               yield {
+                id: `itemident`,
                 renderHead: () => <i children={`name`} /> ,
                 renderContent: (v) => <code children={`${v.id}`} /> ,
-                id: `itemident`,
               } ;
 
               yield {
+                id: `itemkind`,
                 renderHead: () => <i children={`kind letter`} /> ,
                 renderContent: (v) => <code children={`${v.kind}`} /> ,
-                id: `itemkind`,
               } ;
 
               for (const msd of hoSegmentDescs)
               {
                 const { srcSpan, id: colId, } = msd ;
+
                 yield {
                   id: `plotsegment-${colId}`,
                   classNames: ['studk-ui-tbmc-timewatchcolumncell'],
+
                   renderHead: () => (
-                    <div
-                    data-t-start={srcSpan.startPos }
-                    data-t-end={srcSpan.endPos }
-                    style={{
-                      inlineSize: `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ,
-                      minBlockSize: `2em`,
-                      contain: `layout inline-size`,
-                      overflow: "hidden",
-                      ...({
-                        ["--t-start"]: `attr(data-t-start)` ,
-                        ["--t-end"  ]: `attr(data-t-end  )` ,
-                        ["--sc"]: 1 ,
-                      }),
-                    }}
-                    children={(
-                      renderTSegLabel({ msd, })
-                    ) }
-                    />
+
+                    withSpclTbmcTdCssAnnotation((
+                      <div
+                      // data-t-start={srcSpan.startPos }
+                      // data-t-end={srcSpan.endPos }
+                      style={{
+                        minBlockSize: `2em`,
+                        contain: `layout inline-size`,
+                        overflow: "hidden",
+                      }}
+                      children={(
+                        renderTSegHeadLabelDiv({ msd, })
+                      ) }
+                      />
+                    ) , srcSpan )
                   ) ,
+
                   renderContent: (v) => (
                     <div
                     style={{
@@ -239,7 +306,9 @@ export const TbmcKnbC: {
                     </div>
                   )
                   ,
+
                 } ;
+
               }
             } )
             ,
