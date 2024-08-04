@@ -35,6 +35,22 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts' ;
 
+namespace ValidArrayIndices {
+  ;
+
+  export const isSoForIndexing = (
+    function <const E>(...[c, i] : [receiver: ReadonlyArrayOrSeq<E>, i: number ] )
+    { return 0 <= i && i < [...c].length ; }
+  ) ;
+
+  export const isSoForSplicing = (
+    function <const E>(...[c, i] : [receiver: ReadonlyArrayOrSeq<E>, i: number ] )
+    { return 0 <= i && i <= [...c].length ; }
+  ) ;
+
+  ;
+}
+
 const T_BY_HMS = (
   function (...[hn, mn, sn] : [...values: [Array<any>["length"], Array<any>["length"], Array<any>["length"]] ])
   {
@@ -58,7 +74,9 @@ import {
   Button ,
   ButtonC,
   Span ,
-  describeCallbackAssignedStyleProps ,
+  describeCallbackAssignedStyleProps, 
+  ReadonlyArrayOrSeq,
+  StudkReactJs,
 } from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
@@ -106,7 +124,7 @@ import {
  * 
  */
 export const TimeDomainedImgListFigureC = (
-  describeHtmlComponent((
+  StudkReactJs.describeHtmlComponent((
     function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
@@ -141,7 +159,7 @@ interface TimeDomainedMultiChnlInspectiveFigureCProps
  * 
  */
 export const TimeDomainedImgListSpanC = (
-  describeHtmlComponent((
+  StudkReactJs.describeHtmlComponent((
     //
     function TimeDomainedImgListSpanCImpl({} : {})
     {
@@ -157,7 +175,7 @@ export const TimeDomainedImgListSpanC = (
  * 
  */
 export const TimeDomainedMultiChnlInspectiveSpanC = (
-  describeHtmlComponent((
+  StudkReactJs.describeHtmlComponent((
     //
     function TimeDomainedMultiChnlInspectiveSpanCImpl({} : {})
     {
@@ -168,7 +186,7 @@ export const TimeDomainedMultiChnlInspectiveSpanC = (
 ) ;
 
 export const TimeDomainedMultiChnlInspectiveFigureC = (
-  describeHtmlComponent((
+  StudkReactJs.describeHtmlComponent((
     function TimeDomainedMultiChnlInspectiveFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
@@ -190,7 +208,7 @@ export const TimeDomainedMultiChnlInspectiveFigureC = (
 
 // TODO
 const TimeDomainedMultiChnlInspectiveFigureC11 = (
-  describeHtmlComponent((
+  StudkReactJs.describeHtmlComponent((
     function TimeDomainedMultiChnlInspectiveFigureCInnerImpl({
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
@@ -205,22 +223,46 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
         computeDefaultHorizonConfig()
       ) , [] ) ;
 
-      return (
-        <div className='studk-sequemi-tlwalkthruappcomp'>
+      const usrDebugPane = (
+        <div>
           <p>
-            Time-domain plot of <code>movie.mp4</code>
+            debug values:
           </p>
-          <aside>
-            <p>
-              debug values:
-            </p>
-            { (
-            // <pre style={{ whiteSpace: "pre-wrap", }}>
-            //   { ((e: any) => JSON.stringify(e) )(statDerivable.s) }
-            // </pre>
-            null
-            ) }
-          </aside>
+          { (
+          null
+          ) }
+        </div>
+      ) ;
+
+      const filenameSpan = (
+        (() : React.ReactElement | null => (
+          <code>movie.mp4</code>
+        ) )()
+      ) ;
+
+      const sHeader = (
+        <div>
+        <p>
+          Time-domain plot {}
+          { filenameSpan ? <>of { filenameSpan }</> : <></> }
+        </p>
+        </div>
+      );
+
+      return (
+      //
+      withExtraSemanticProperties({
+        classNames: ["studk-sequemi-tlwalkthruappcomp"] ,
+      } , (
+        <div className=' '>
+          { sHeader }
+          { (
+            usrDebugPane
+          ) && (
+            <aside>
+              { usrDebugPane }
+            </aside>
+          ) }
           { ((
             (...[e] : [React.ReactElement]) => {
               if (1)
@@ -247,6 +289,7 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
           null
           ) }
         </div>
+      ))
       ) ;
     }
   ))
@@ -270,7 +313,7 @@ const getSpclDefaultMainPlotter = (
  * 
  */
 export const TimeDomainedImgListSpC = (
-  describeHtmlComponent((
+  StudkReactJs.describeHtmlComponent((
     function TimeDomainedImgListSpCImpl()
     {
       // TODO
@@ -279,32 +322,20 @@ export const TimeDomainedImgListSpC = (
   ))
 ) ;
 
-export const TimeDomainedMultiChnlInspectiveSpC = (
-  describeHtmlComponent((
-    function TimeDomainedMultiChnlInspectiveSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
+/**
+ * {@link TdbmcTbmcPeekDisplayElems}
+ * is a helper for the impl of {@link TimeDomainedImgListSpanC} etc.
+ * 
+ */
+namespace TdbmcTbmcPeekDisplayElems {
+  ;
+
+  ;
+
+  export const generate = (
+    function ()
     {
       ;
-      
-      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
-        horizonConfigArg ??
-        computeDefaultHorizonConfig()
-      ) , [horizonConfigArg] ) ;
-
-      const ls = (
-        React.useMemo((): TbmcKnsBasedModelState => {
-          return (
-            TbmcKnsBasedModelState.getCmnInstance({
-              layerStates: (
-                util.reiterated(function* (): Generator<TbmcKnsBasedModelState.LayerStateOps> {
-                  for (const i of util.range(0, 3) ) {
-                    yield { id: `chnl ${i}`, kind: "XLayer", } ;
-                  }
-                } )
-              ) ,
-            })
-          ) ;
-        } , [] )
-      ) ;
 
       const tdSnpMap = (
         util.Immutable.Range(0, T_BY_HMS(0, 45, 3 ) , 7.5 )
@@ -327,10 +358,152 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
         } )
       ) ;
 
+      return {
+        tdSnpMap ,
+      } as const ;
+    }
+  ) ;
+
+  ;
+}
+
+namespace TdbmcTbmcLyrs {
+  ;
+
+  export const useLayerListState = (
+    function () {
+      ;
+
+      const [chnlIds, setChnlIds] = (
+        React.useState(() => (
+          util.reiterated(function* () {
+            for (const i of util.range(0, 3) ) {
+              yield { id: `chnl ${i}` as const, }.id ;
+            }
+          } )
+        ))
+      ) ;
+
+      const ls = (
+        React.useMemo((): TbmcKnsBasedModelState => {
+
+          return (
+            generateLayersFromIds(chnlIds)
+          ) ;
+        } , [
+          chnlIds ,
+        ] )
+      ) ;
+
+      return {
+        chnlIds ,
+        setChnlIds ,
+        ls ,
+      } as const ;
+    }
+  ) ;
+
+  // TODO
+  /**
+   * scaffolding
+   * 
+   */
+  const generateLayersFromIds = (
+    function <const idT extends string>(...[chnlIds] : [ids: ReadonlyArrayOrSeq<idT> ] )
+    : TbmcKnsBasedModelState
+    {
+
+      const layers1 = (
+
+        util.Immutable.Seq((
+          util.reiterated(function* () {
+
+            for (const chnlId of chnlIds ) {
+              yield (
+                util.asConst<TbmcKnsBasedModelState.LayerStateOps>({
+                  id: chnlId,
+                  kind: "XLayer",
+                })
+              ) ;
+            }
+
+          } )
+        ))
+
+        .toOrderedMap()
+        .mapEntries(([ , vl]) => [vl.id, vl] )
+
+      )  ;
+
+      return (
+        TbmcKnsBasedModelState.getCmnInstance({
+
+          layerStates: (
+            layers1
+          ) ,
+
+        })
+      ) ;
+    }
+  ) ;
+
+  ;
+}
+
+export const TimeDomainedMultiChnlInspectiveSpC = (
+  StudkReactJs.describeHtmlComponent((
+    function TimeDomainedMultiChnlInspectiveSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
+    {
+      ;
+      
+      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
+        horizonConfigArg ??
+        computeDefaultHorizonConfig()
+      ) , [horizonConfigArg] ) ;
+
+      const {
+        //
+        chnlIds ,
+        setChnlIds ,
+        ls ,
+      } = TdbmcTbmcLyrs.useLayerListState() ;
+
+      // TODO
+      const {
+        tdSnpMap ,
+      } = (
+        TdbmcTbmcPeekDisplayElems.generate()
+      ) ;
+
       const mainPlotterAsAppletifyingInst = (
         React.useMemo(() => (
           SccMastPlotter.fromSizelessInstance(mainPlotter)
         ) , [mainPlotter])
+      ) ;
+
+      const {
+        renderLayerReorderCtrls ,
+      } = (
+        TdbmcTbmcLyrListCtrls.RLRC({
+
+          onChange: (
+
+            function ({
+              formerIdx: chnlIdx0,
+              newIdx: chnlLaterIdx,
+            }) {
+              setChnlIds(s0 => {
+                const vlue0 = s0[chnlIdx0]! ;
+                return (
+                  s0
+                  .toSpliced(chnlIdx0, 1 )
+                  .toSpliced(chnlLaterIdx, 0, vlue0, )
+                ) ;
+              }) ;
+            }
+          ) ,
+
+        })
       ) ;
 
       ;
@@ -345,49 +518,77 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
           yield {
             id: `itemident`,
             renderHead: () => <i children={`name`} /> ,
-            renderContent: (v) => (
+            renderContent: (v) => {
+            ;
+            const idx = (
+              chnlIds.indexOf(v.id)
+            ) ;
+            const {
+              mveUpBtn ,
+              mveDwnBtn ,
+            } = renderLayerReorderCtrls(idx) ;
+            const borderColor: React.CSSProperties["backgroundColor"] = (
+              ["red", "blue", "green", "yellow", "purple", "#00C090"][(
+                (
+                  (chnlIds.toSorted() )
+                  .indexOf(v.id )
+                ) % 6
+              ) ]
+              ??
+              "black"
+            ) ;
+            return (
               <div
               style={{
                 minInlineSize: `12ex`,
+                paddingBlock: `1ex` ,
+                borderBlockStart: (
+                  `0.805ex solid ${(
+                    borderColor
+                  ) }`
+                ) ,
               }}
               >
+                <div
+                style={{
+                }}
+                />
                 <p>
                   <i children={v.id} />
                 </p>
-                <p>
-                  <ButtonC
-                  title={`Move Up`}
-                  children={`⬆️`}
-                  onClick={false }
-                  />
-                  <ButtonC
-                  title={`Move Down`}
-                  children={`⬇️`}
-                  onClick={false }
-                  />
-                </p>
+                <nav
+                style={{ display: "flex", flexDirection: "column", }}
+                >
+                  { mveUpBtn }
+                  { mveDwnBtn }
+                </nav>
               </div>
-            ) ,
+            ) ;
+            } ,
             asRowHeader: true,
           } ;
 
           yield {
             id: `itemkind`,
             renderHead: () => <i children={`kind letter`} /> ,
-            renderContent: (v) => (
-              <div>
-                <p>
-                  <code children={`${v.kind}`} />
-                </p>
-                <p>
-                  <ButtonC
-                  title={`Change Kind`}
-                  children={`☯️`}
-                  onClick={false }
-                  />
-                </p>
-              </div>
-            ) ,
+            renderContent: (v) => {
+              const idx = (
+                chnlIds.indexOf(v.id)
+              ) ;
+              const {
+                selfReformAcBtn ,
+              } = renderLayerReorderCtrls(idx) ;
+              return (
+                <div>
+                  <p>
+                    <code children={`${v.kind}`} />
+                  </p>
+                  <p>
+                    { selfReformAcBtn }
+                  </p>
+                </div>
+              ) ;
+            } ,
             asRowHeader: true,
           } ;
 
@@ -396,7 +597,10 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
 
 
       return (
-        <div className='studk-sequemi-tlwalkthruinlinecomp'>
+        withExtraSemanticProperties({
+          classNames: ["studk-sequemi-tlwalkthruinlinecomp"] ,
+        }, (
+        <div>
           <SpclCoreC
           horizonConfig={horizonConfig}
           value={ls}
@@ -408,10 +612,219 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
           rowHeadCollDescs={rowHeadCollDescs}
           />
         </div>
+        ))
       ) ;
     }
   ))
 ) ;
+
+namespace TdbmcTbmcLyrListCtrls {
+  ;
+
+  ;
+
+  export const RLRC = (
+    function (...[p1 = {}] : (
+      ArgsWithOptions<[], (
+        & {
+          onChange?: (
+            (props: { formerIdx: number, newIdx: number }) => void
+          ) ,
+        }
+      )>
+    ) ) {
+
+      const {
+        onChange: onChange1 = null,
+      } = p1 ;
+
+      const analysePerChnl = (
+        function (...p2 : (
+          ArgsWithOptions<[chnlIdx: number], {
+            //
+          } >
+        ) )
+        {
+          const [
+            chnlIdx0,
+            {
+            } = {},
+          ] = p2 ;
+
+          const onChange2: (
+            (props: { newIdx: number }) => void
+          ) | null = (
+            onChange1
+            &&
+            function ({ newIdx: chnlNewIdx, }) {
+              return (
+                onChange1({
+                  formerIdx: chnlIdx0 ,
+                  newIdx: chnlNewIdx ,
+                })
+              ) ;
+            }
+          ) ;
+
+          return {
+            chnlIdx0 ,
+            onChange2 ,
+          } as const ;
+        }
+      ) ;
+
+      ;
+      const analisePerChnlMovemt = (
+        function (...p2 : (
+          ArgsWithOptions<[chnlIdx: number], {
+            relativeIds: number,
+            // onChange?: (props: { newIdx: number }) => void ,
+          } >
+        ) )
+        {
+          const [
+            chnlIdx0,
+            {
+              relativeIds: chMvRelativeIdx,
+            },
+          ] = p2 ;
+
+          const {
+            onChange2 ,
+          } = (
+            analysePerChnl(chnlIdx0 )
+          ) ;
+
+          const chnlLaterIdx = (
+            chnlIdx0 + chMvRelativeIdx
+          ) ;
+
+          const chgAc = (
+            onChange2 && (
+              // ValidArrayIndices.isSoForSplicing(chnlIds, chnlLaterIdx )
+              1
+            ) ?
+            function () {
+              ;
+              return (
+                onChange2({ newIdx: chnlLaterIdx, })
+              ) ;
+            }
+            : false
+          ) ;
+
+          return (
+            {
+              //
+              chnlIdx0 ,
+              chMvRelativeIdx ,
+              onChange2 ,
+              chnlLaterIdx ,
+              chgAc ,
+            } as const
+          ) ;
+        }
+      ) ;
+
+
+      const renderChnlReorderBtn = (
+        function (...p2 : (
+          ArgsWithOptions<[chnlIdx: number], {
+            relativeIds: number,
+            // onChange?: (props: { newIdx: number }) => void ,
+          } >
+        ) )
+        {
+
+          const [
+            chnlIdx0,
+            {
+              relativeIds: chMvRelativeIdx,
+            },
+          ] = p2 ;
+
+          const {
+            //
+            // chnlIdx0 ,
+            // chMvRelativeIdx ,
+            onChange2 ,
+            chnlLaterIdx ,
+            chgAc ,
+          } = analisePerChnlMovemt(chnlIdx0, { relativeIds: chMvRelativeIdx, } ) ;
+
+          return (
+            <ButtonC
+            // title={`Move Up`}
+            // children={`⬆️`}
+            {...(
+              (() => {
+
+                if (chMvRelativeIdx < 0) {
+                  return {
+                    title: `Move Up`,
+                    children: `⬆️` ,
+                  } ;
+                }
+                if (0 < chMvRelativeIdx) {
+                  return {
+                    title: `Move Down`,
+                    children: `⬇️` ,
+                  } ;
+                }
+
+                return {} ;
+              })()
+            ) }
+            onClick={chgAc }
+            />
+          ) ;
+        }
+      ) ;
+
+      const renderPerChnlSelfReformAcBtn = (
+        function () {
+          return (
+            <ButtonC
+            title={`Change Kind`}
+            children={`☯️`}
+            onClick={false }
+            />
+          ) ;
+        }
+      ) ;
+
+      return {
+        renderLayerReorderCtrls: (
+
+          function renderLayerReorderCtrlsImpl(...[chnlId]: [chnlId: number])
+          {
+  
+            return {
+              // TODO
+              mveUpBtn: (
+                renderChnlReorderBtn(chnlId, {
+                  relativeIds: -1 ,
+                  // onChange
+                } )
+              ) ,
+              mveDwnBtn: (
+                renderChnlReorderBtn(chnlId, {
+                  relativeIds: 1 ,
+                  // onChange
+                } )
+              ) ,
+              selfReformAcBtn: (
+                renderPerChnlSelfReformAcBtn()
+              ) ,
+            } ;
+          }
+        ) ,
+      } as const ;
+    }
+  ) ;
+
+  ;
+}
 
 const computeDefaultHorizonConfig = (
   (): ScCHorizonConfigPropsDesc => ({
@@ -456,14 +869,6 @@ const WithSsc1D = (
               e = (
                 <div
                 className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do02'
-                children={e}
-                />
-              ) ;
-            }
-            if (revertToRawScrollSavePos === false)
-            {
-              e = (
-                <WithSpclisedScdOverrides1C
                 children={e}
                 />
               ) ;
@@ -667,61 +1072,8 @@ const WithSsc1DInner = (
   ))
 ) ;
 
-export const WithSpclisedScdOverrides1C = (
-  describeHtmlComponent((
-    function WithSpclisedOverrides1CImpl({ children, } : React.PropsWithChildren)
-    {
-      ;
-
-      const scdPeer = (
-        useSpclisedScdPeer()
-      ) ;
-
-      return (
-        ((
-          (...[e] : [React.ReactElement]) => {
-            if (TBMC_SCDNEXTINGDEBUG)
-            {
-              e = (
-                <div
-                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c02'
-                children={e}
-                />
-              ) ;
-            }
-            if (1)
-            {
-              e = (
-                <WithCtxtuallyOverridenScdSProvC
-                value={(
-                  scdPeer
-                )}
-                children={e}
-                />
-              ) ;
-            }
-            if (TBMC_SCDNEXTINGDEBUG)
-            {
-              e = (
-                <div
-                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c01'
-                children={e}
-                />
-              ) ;
-            }
-            return e ;
-          }
-        ))((
-          <>{ children }</>
-        ))
-      ) ;
-    }
-  ))
-) ;
-
 import {
   SpclScrollHandler ,
-  useSpclisedScdPeer, 
   useCtxExplicitSpclisedScdStateValues1,
   useCtxExplicitSpclisedScdPeer,
 } from "studk-ui-encore/src/SequencedMediaUi/TdbScd.tsx" ;
@@ -732,7 +1084,6 @@ import {
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
-  WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
   useCtxtualScdProv,
   type ScdStateProvCtx ,
