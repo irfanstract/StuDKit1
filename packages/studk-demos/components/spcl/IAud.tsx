@@ -63,17 +63,28 @@ export function IAudPage()
       ) ,
       children: (
         <div>
-        <MustAttachToc children={`Sharing The Audio Samples`} />
+        <MustAttachToc children={(
+          <span>
+            `Sharing The Audio Samples`
+          </span>
+        )} />
+        <MustAttachToc children={(
+          <a
+          href="#ShareSomeOfTheseSamples"
+          >
+            `Sharing The Audio Samples`
+          </a>
+        )} />
         <MustAttachToc children={(
           <SpanC
           children={`Playing The Audio Sample`}
           onClick={(
-            // (() => {
-            //   const r = iascRef.current ;
-            //   return (r !== null) && ((e: React.SyntheticEvent) => (r.initC(e.nativeEvent) ) ) ; 
-            // } )()
             (e) => {
-              iascRef.current?.initC(e.nativeEvent) ;
+              const c = iascRef.current ;
+              if (c) {
+                c.scrollIntoView() ;
+                c.initC(e.nativeEvent) ;
+              }
             }
           ) }
           />
@@ -133,21 +144,30 @@ function IAudStudioComp({ iehRef, } : { iehRef ?: React.Ref<IascImperativeHandle
 {
   ;
 
+  const divRef1 = React.useRef<HTMLDivElement | null>(null) ;
+
   const [c, initC ] = useIAudCtxInit() ;
 
   const spclHndle = (
     React.useMemo((): IascImperativeHandleOps => ({
       //
       initC: initC ,
+      scrollIntoView: () => {
+        const s = divRef1.current?.querySelectorAll("*") ?? [] ;
+        (s[1] ?? s[0] )?.scrollIntoView() ;
+      } ,
     }) , [
       initC,
+      divRef1 ,
     ] )
   );
 
   React.useImperativeHandle(iehRef, () => spclHndle , [spclHndle] ) ;
 
   return c ? (
-    <div>
+    <div
+    ref={divRef1}
+    >
       <p>
       <Button onClick={false} >
         Running
@@ -166,6 +186,7 @@ function IAudStudioComp({ iehRef, } : { iehRef ?: React.Ref<IascImperativeHandle
 
 interface IascImperativeHandleOps {
   readonly initC: React.Dispatch<Event> ,
+  readonly scrollIntoView: () => void ,
 }
 
 function IAudStudioActiveComp({ c, } : { c: BaseAudioContext, } )
@@ -206,12 +227,12 @@ function CAudioBeepSamplesComp({ c, } : { c: BaseAudioContext, } )
       //
       <span className="card" title={`Sound '${k }'`} >
         <code>{k}</code> {}
-        <button
+        <Button
         children={`Share`}
         title={`Share Sound Clip '${k }'`}
-        disabled
+        onClick={false}
         />
-        <button
+        <Button
         children={`Play`}
         title={`Play '${k }'`}
         onClick={() => cl.run(c)}
@@ -239,6 +260,7 @@ import EWAD from "studpresenters/src/EWAD.mjs" ;
 
 function CEWADComp({ c, } : { c: BaseAudioContext, } )
 {
+
   const iewd = (
     useResource(() => (
       console["log"](`initialised`)
@@ -254,7 +276,7 @@ function CEWADComp({ c, } : { c: BaseAudioContext, } )
           }
         }
       } )
-    ) , [c] )
+    ) , [c,] )
   ) ;
 
   return (
