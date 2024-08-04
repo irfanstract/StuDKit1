@@ -173,8 +173,9 @@ const useTbmcKnbCProps = (
     ) ;
 
     const chnlDataList = (
-      valueArg.layerStates
-    ) satisfies TbmcModelState["layerStates"] ;
+      TbmcKnsBasedModelState.asFixed(valueArg).layerStatesImtb!
+      // .valueSeq()
+    ) ;
 
     {
       ;
@@ -192,6 +193,11 @@ const useTbmcKnbCProps = (
               fontSize: `75%` ,
             }}
             >
+            { " " && (
+              <p>
+                (ID: <code>{ msd.id }</code> )
+              </p>
+            ) }
             <p
             >
               Spn
@@ -210,7 +216,7 @@ const useTbmcKnbCProps = (
 
       const renderChPlotSeg : (
         React.FC<{
-          chnlDesc: (typeof chnlDataList)[number],
+          chnlDesc: (typeof valueArg.layerStates)[number],
           directionalLocDesc: (typeof segmenterConfig.effectiveWindowSeq)[number],
         }>
       ) = (
@@ -335,9 +341,24 @@ export const TbmcKnbC: {
         ) ;
   
         const mainTable = (
-          renderTableByRowDtListAndColumnList.renderAsTransposed(chnlDataList , {
+          renderTableByRowDtListAndColumnList.renderAsTransposed((
+            chnlDataList
+            .valueSeq()
+            .toArray()
+          ) , {
 
-            getRowHash: (v, i) => `content-layer-${i}`
+            getRowHash: (v, displayedI) => {
+              const i = (
+                (
+                  chnlDataList
+                  .sortBy((vle, key) => vle.id )
+                )
+                .valueSeq().indexOf(v)
+              ) ;
+              return (
+                `content-layer-${i}` as const
+              ) ;
+            }
             ,
 
             perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
