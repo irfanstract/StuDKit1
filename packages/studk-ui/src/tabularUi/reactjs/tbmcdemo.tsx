@@ -13,84 +13,12 @@
 
 
 
-import {
-  util,
-} from 'typexpe-commons/src/common_sv.mjs';
-
-import {
-  random,
-} from "lodash-es" ;
-
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-
-
-
-
-
-import * as React from "react" ;
-
-
-
-
-
-import {
-  describeComponent,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
-
-import {
-  describeHeadlinedArticle ,
-  describeWorksheet ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
-
-import {
-  Button ,
-  Span ,
-} from '#currentPkg/src/meta/react/dbc.tsx'; ;
-
-
-
-
-
-import { SpclCoreC, } from "./tbmc.tsx" ;
-
-export default (
-  describeComponent(function TimeTableMC() {
-    ;
-    const horizonConfig = React.useMemo(() => ({
-      range: {
-        startPos: -5 ,
-        endPos: 5 ,
-      } ,
-    }) , [] ) ;
-    return (
-      <div>
-        <p>
-          Timeline
-        </p>
-        { describeWorksheet({
-          children: (
-            <div>
-              <p>
-                showing horizon in range <code>{ JSON.stringify(horizonConfig.range) }</code>
-              </p>
-              { describeWorksheet({
-                children: (
-                  <SpclCoreC
-                  horizonConfig={horizonConfig}
-                  />
-                ) ,
-              }) }
-            </div>
-          ),
-        }) }
-      </div>
-    ) ;
-  })
-) ;
+export {
+  /**
+   * @deprecated please import from the src module directly.
+   */
+  default ,
+} from "studk-ui-encore/src/xtras/tbmcdemo.tsx" ;
 
 ;
 
