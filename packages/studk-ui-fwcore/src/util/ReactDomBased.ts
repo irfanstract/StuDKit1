@@ -84,19 +84,19 @@ import {
   asHidden ,
 } from 'studk-ui-fwcore/src/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
 
-export {
-  //
-  React ,
-  describeComponent,
-  describeHtmlComponent ,
-  getSpaceSeparatedClassNameList ,
-  withExtraSemanticProperties ,
-  asHidden ,
-} ;
+// export {
+//   //
+//   React ,
+//   describeComponent,
+//   describeHtmlComponent ,
+//   getSpaceSeparatedClassNameList ,
+//   withExtraSemanticProperties ,
+//   asHidden ,
+// } ;
 
-export {
-  mkClasses,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+// export {
+//   mkClasses,
+// } from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 
 // import {
@@ -142,6 +142,17 @@ export {
 } ;
 
 export * from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
+
+export * from "studk-ui-fwcore/src/dom/helpers/DOmOnScreenBoundingRectOfElement.ts" ;
+export * from "studk-ui-fwcore/src/dom/helpers/DOmLocalBoundingRectOfElement.ts" ;
+
+export {
+  getEffectiveZoom ,
+  analyseNativeElemtClientOffsets ,
+  getMouseEvtClientOffset ,
+  isDescendantOfOrItselfEffectivelyDisplayNone ,
+  isNativeElementNotHidden ,
+} from "studk-ui-fwcore/src/dom/helpers/DOmOnScreenPropertiesOfElementEfz.ts" ;
 
 
 
