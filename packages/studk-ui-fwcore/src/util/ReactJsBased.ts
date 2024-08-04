@@ -69,6 +69,10 @@ import type {
 
 import * as React from "react" ;
 
+export {
+  ReactSetStateActionHelpers ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseReactSetStateAction.tsx" ;
+
 const toComponentMountKey = (
   (value: (JSX.IntrinsicElements["input"] )["value"] ) => (
     ((): string => {
@@ -88,6 +92,18 @@ const toComponentMountKey = (
 export {
   toComponentMountKey ,
 } ;
+
+export const getFromClassNameProp = (
+
+  function (...[classNameProp = ``] : [classNamePropValue: string])
+  : readonly string[]
+  {
+    return (
+      classNameProp.split(/\s+/)
+      .filter(e => e.length )
+    ) ;
+  }
+)
 
 ;
 
