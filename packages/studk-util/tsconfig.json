@@ -11,7 +11,7 @@
     /* we need the 'noEmit'-like behaviour, but */
     /* "referenced project may not disable emit" and hence we turned to 'emitDeclarationOnly' */
     /* https://stackoverflow.com/a/77369498 (in https://stackoverflow.com/q/71704754 ) */
-    "emitDeclarationOnly": true, "noEmit": false,
+    "noEmit": false, "emitDeclarationOnly": true,
     /* necessary  */
     "allowImportingTsExtensions": true ,
     /* https://stackoverflow.com/a/61513685 */

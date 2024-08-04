@@ -194,6 +194,14 @@ type PartializedSelectively<opts extends object, omtK extends keyof opts> = (
 ) ;
 
 /**
+ * - {@link Partial} for select props/names
+ * 
+ */
+type PartializedSelectivelyW<opts extends object, omtK extends keyof any> = (
+  PartializedSelectively<opts, omtK & (keyof opts)>
+) ;
+
+/**
  * {@link Partial} outside select props/names
  * 
  * opposite of {@link RequiredPartially} WRT direction ;
@@ -248,8 +256,11 @@ export type {
   AllOrNever as AllOrNever1,
   EitherPropertyOf ,
   PartializedSelectively ,
+  PartializedSelectivelyW ,
   /** @deprecated alias of {@link PartializedSelectively} */
   PartializedSelectively as PartializedPartially,
+  /** @deprecated alias of {@link PartializedSelectivelyW} */
+  PartializedSelectivelyW as PartializedPartiallyW,
   PartializedUnlessMentioned ,
   RequiredPartially,
   // PickCase ,
