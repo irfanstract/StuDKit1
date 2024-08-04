@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["ts-es-import.mts"],
+  "sourcesContent": ["\r\n\r\n\r\n\r\n\r\nimport TS from \"typescript\" ;\r\n\r\nexport default TS ;\r\n\r\n\r\n\r\n\r\n"],
+  "mappings": "AAKA,OAAOA,MAAQ,aAEf,IAAOC,EAAQD",
+  "names": ["TS", "ts_es_import_default"]
+}
