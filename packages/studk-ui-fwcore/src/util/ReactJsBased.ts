@@ -93,6 +93,18 @@ export {
   toComponentMountKey ,
 } ;
 
+export const getFromClassNameProp = (
+
+  function (...[classNameProp = ``] : [classNamePropValue: string])
+  : readonly string[]
+  {
+    return (
+      classNameProp.split(/\s+/)
+      .filter(e => e.length )
+    ) ;
+  }
+)
+
 ;
 
 
