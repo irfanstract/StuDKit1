@@ -1,0 +1,20 @@
+{
+	"license": "Apache-2.0",
+	"version": "0.0.1"
+  ,
+	"dependencies": {
+	}
+  ,
+	"devDependencies": {
+	}
+	,
+	"scripts": {
+    "dev": "npm run runDevServer"
+    ,
+		"runDevServer": "npx --yes vite --port 5173 --strictPort --force --cors "
+		,
+		"test": "npx mocha"
+	}
+	,
+	"type": "module"
+}
