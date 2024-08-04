@@ -20,12 +20,30 @@
     min-block-size: 45vh;
   }
 
-  .studk-sequemi-tlwalkthruinlinecomp table {
+  table.studk-tbmctableelem, .studk-sequemi-tlwalkthruinlinecomp table {
     // writing-mode: vertical-lr;
     // & :is(td, th) {
     //   writing-mode: initial;
     // }
     --table-cell-orientation: vertical-lr ;
+  }
+
+  // :is(table.studk-tbmctableelem > * > tr > td):is(*[data-src-col-id])
+  // table.studk-tbmctableelem > * > tr > td[data-src-col-id] ,
+  // .studk-sequemi-tlwalkthruinlinecomp td[data-src-col-id^="content-layer"]
+  :is(
+    table.studk-tbmctableelem > * > tr > td
+    ,
+    .studk-sequemi-tlwalkthruinlinecomp td
+  ):not(*[data-src-col-id^="content-layer"] )
+  {
+    //
+    font-weight: bolder;
+    @media screen {
+      position: sticky;
+      inset-inline-start: 0;
+      inset-block-start: 0;
+    }
   }
 }
 
