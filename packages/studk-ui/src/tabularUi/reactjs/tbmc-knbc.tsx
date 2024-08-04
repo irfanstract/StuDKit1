@@ -317,7 +317,9 @@ export const TbmcKnbC: {
         ) ;
 
         return (
-          mainTable
+          withExtraSemanticProperties({
+            classNames: ["studk-ui-tbmctableeelem"] ,
+          } , mainTable )
         ) ;
     }
     ;
