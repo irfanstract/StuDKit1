@@ -2,6 +2,16 @@
 
 
 
+/* 
+ * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
+ * https://stackoverflow.com/q/77592173  
+ * https://nextjs.org/docs/app/building-your-application/rendering/client-components#how-are-client-components-rendered  
+ * 
+ * */
+"use client" ;
+
+
+
 
 
 
@@ -30,7 +40,8 @@ import * as React from "react" ;
 
 import {
   pagesConventions,
-  describeHeadlinedWidget ,
+  describeHeadlinedWidget, 
+  TocRenderingC,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 import {
@@ -107,7 +118,13 @@ export default function LdDirPageLayoutC({
                         ⛳ In This Article
                       </span>
                     ) ,
-                    children: <div/> ,
+                    children: (
+                      // <div/>
+                      <div>
+                        <TocRenderingC
+                        />
+                      </div>
+                    ) ,
                   })
                 )}
                 exploring={(
