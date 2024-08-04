@@ -20,6 +20,8 @@ import "./iuib1.css" ;
 import "./iuipaddings.scss" ;
 import "./iuipaddings1.css" ;
 
+import "./studkprintexactmode.scss" ;
+
 
 
 
