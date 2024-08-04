@@ -34,13 +34,18 @@ import * as React from "react" ;
 
 
 
-export default function HomePageLayoutC({
+import {
+  KmcbsRootLayoutC,
+} from "studk-ui/src/xst/prefabs/kmcbsRootLayout1.tsx" ;
+
+export default function PageLayoutC({
   children,
 }: {
   children: React.ReactNode
 })
 {
-  return (
+
+  const c1 = (
     <div
     style={{
     }}
@@ -54,7 +59,14 @@ export default function HomePageLayoutC({
         { children }
       </div>
     </div>
-  )
+  ) ;
+
+  return (
+    <KmcbsRootLayoutC
+    children={c1 }
+    />
+  ) ;
+
 } ;
 
 
