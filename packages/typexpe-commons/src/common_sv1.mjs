@@ -19,6 +19,8 @@ export {
   throwAssertionError ,
 } ;
 
+// import type {} from "typexpe-commons/src/ArrayPrototypeIncludes.mts" ;
+
 /**
  * nonlocally-returning ev
  * 
@@ -538,6 +540,10 @@ export {
   /** @deprecated alias of {@link Resolvable }. */
   Resolvable as Deferred,
 } ;
+
+if (typeof setImmediate === "undefined") {
+  globalThis.setImmediate ??= queueMicrotask ;
+}
 
 export { startTimeout, } ;
 
