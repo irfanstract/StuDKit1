@@ -1,0 +1,64 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@layer defaults
+{
+  //
+  
+  .studk-sequemi-tlwalkthruinlinecomp {
+    min-block-size: 45vh;
+  }
+
+  .studk-sequemi-tlwalkthruinlinecomp table {
+    // writing-mode: vertical-lr;
+    // & :is(td, th) {
+    //   writing-mode: initial;
+    // }
+    --table-cell-orientation: vertical-lr ;
+  }
+}
+
+
+
+
+
+// TODO
+@property --t-start {
+  syntax: "<number> | auto";
+  inherits: true;
+  initial-value: auto;
+}
+@property --t-end {
+  syntax: "<number> | auto";
+  inherits: true;
+  initial-value: auto;
+}
+@property --sc {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
