@@ -33,6 +33,10 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts'
 
+type ConstrainedNoNullAssert<T0> = (
+  <T1 extends T0>(x: T1) => asserts x is NonNullable<T1>
+) ;
+
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
 import {
@@ -40,12 +44,61 @@ import {
   getNodeChildren ,
 } from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsAstUtils.tsx"
 
+const getAllNodes = (
+  function (nd: TS.Node): readonly TS.Node[]
+  {
+    return util.reiterated(function * () {
+      yield nd ;
+      for (const childNd of nd.getChildren() ) {
+        yield* getAllNodes(childNd) ;
+      }
+    }) ;
+  }
+) ;
+
 import {
   KeywordAlikeKcn,
   NodeListKcn,
   getKcn, 
   getRlKcn,
 } from "studk-ts-codeanalysis/src/TsDeriva.ts" ;
+
+const TS_TOKENNODE_VALUANDSERIALIZE = (
+  (nd: TS.Node) => (
+    ((
+      (() => {
+        const ndText = nd.getText() ;
+
+        if (TS.isStringLiteral(nd) ) {
+          return [JSON.parse(ndText) as string , { sk: true, stxKind: nd.kind, serialize: e => JSON.stringify(e), } ] ;
+        }
+
+        // if (TS.isStringLiteral(nd) ) {
+        //   return nd.text ;
+        // }
+
+        if (TS.isIdentifier(nd) ) {
+          ;
+          return [ndText, { sk: true, stxKind: nd.kind, serialize: e => String(e), } ] ;
+        }
+
+        return [ndText, { sk: false, stxKind: nd.kind, serialize: e => String(e), } ] ;
+
+      }) satisfies (() => (
+        readonly [{} | null, {
+          /**
+           * this seemingly unused property {@link sk}
+           * is to ensure that the co-associative typings don't break
+           */
+          sk: boolean,
+
+          stxKind: TS.SyntaxKind,
+          serialize: (v: unknown) => string,
+        } ]
+      ))
+    ))()
+  )
+) ;
 
 
 
@@ -114,6 +167,19 @@ import {
 
 // }
 
+interface TsAstDisplayCompCommonProps
+{
+
+  /**
+   * display configuration likely to be exact same unchanged for the whole doc tree.
+   * 
+   */
+  clvMd ?: CLV,
+
+  onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+
+}
+
 const getSpclDefaultClvMd = () => (
   // <p><code>{nodeTypeLabelTxt }</code></p>
   CLV.forIsTerminaNdFnc(undefined, { asDbWhen: () => true, } )
@@ -150,7 +216,18 @@ namespace TsAstDisplayEvents
       end: lsAbsoluteEnd ,
     } = lsNd ;
     const existingTxt = (
-      lsNd.getSourceFile().text.slice(lsAbsoluteStart, lsAbsoluteEnd )
+      ((): string => {
+        switch (2 as number) {
+          case 1 :
+            return (
+              lsNd.getSourceFile().text.slice(lsAbsoluteStart, lsAbsoluteEnd )
+            ) ;
+          default :
+            return (
+              lsNd.getText()
+            ) ;
+        }
+      })()
     ) ;
 
     return {
@@ -174,28 +251,59 @@ export {
   TsAstDisplayEvents ,
 } ;
 
-export const TsAstDisplayC = (
-  describeHtmlComponent((function TsAstDisplayCImpl(props : (
-    {
+interface TsNodeUnitDisplayCompProps extends
+Omit<TsNodeUnitDisplayCompPrivProps , "onChange">
+{
+}
+
+interface TsNodeUnitDisplayCompPrivProps extends
+TsAstDisplayCompCommonProps
+{
+
       value: TS.Node ,
       clvMd ?: CLV,
 
-      /**  @deprecated consider {@link onTextualEditEvt } instead. */
-      onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
       onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+      /**
+       * {@link onChange}.
+       * *we don't fire this Event anymore*;
+       * consider {@link onTextualEditEvt } instead.
+       * 
+       */
+      onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
 
-    }
-  ) )
+}
+
+// TODO/WIP
+/* worth reading https://github.com/microsoft/TypeScript/issues/46915 since we need it a lot here */
+const useTsNodeTreeDisplayPrivCompProps = (
+  function (...[props] : [OmitW<TsNodeUnitDisplayCompPrivProps, "nd" >] )
   {
+
     const {
-      value: nd,
       clvMd = (
         // <p><code>{nodeTypeLabelTxt }</code></p>
         getSpclDefaultClvMd()
       ) ,
-      onChange: runWholeTreeChgHandler ,
       onTextualEditEvt: runnTextualEditEvtCb ,
     } = props ;
+
+    /* aliased condition variable */
+    const hasTextualEditReceiver = (
+      !!runnTextualEditEvtCb
+    ) ;
+
+    const {
+      noSupressionOfZeroChgEvts = false ,
+    } = ((): {
+      noSupressionOfZeroChgEvts ?: boolean ,
+    } => ({}) )() ;
+
+    const {
+      autoCommitOnType = false ,
+    } = ((): {
+      autoCommitOnType ?: boolean ,
+    } => ({}) )() ;
 
     ;
     
@@ -207,6 +315,8 @@ export const TsAstDisplayC = (
       renderTokenCodeFigure ,
     } = clvMd.rptcf ;
 
+    ;
+
     const renderSubTerm = (
       function (...[e, { onChange, } = null ?? {} ] : (
         ArgsWithOptions<[TS.Node] , {
@@ -215,7 +325,7 @@ export const TsAstDisplayC = (
       ))
       {
         return (
-          <TsAstDisplayC
+          <TsNodeUnitDisplayPrivC
           value={e }
           clvMd={clvMd}
           // TODO
@@ -303,7 +413,7 @@ export const TsAstDisplayC = (
                         ) ;
                       }
                       return (
-                        <TsAstDisplayC
+                        <TsNodeUnitDisplayPrivC
                         value={initializer }
                         clvMd={clvMd}
                         // TODO
@@ -383,26 +493,557 @@ export const TsAstDisplayC = (
       }
     ) ;
 
-    const ndCtor = (
-      (Object.getPrototypeOf(nd) as (Object | null ))?.constructor
-    ) ;
-    const nodeTypeLabelTxt = (
-      getNodeTypeLabelTxt(nd)
-      ??
-      `Node Type ${nd.kind }`
-    ) ;
-
     const ncs = (
       useIsClientSide()
     ) ;
+
+    ;
+
+    const processTextualEditEvtCb1 = (
+      (runnTextualEditEvtCb)
+      &&
+      ((e1: ReturnType<typeof TsAstDisplayEvents.describeNdseEdit>) => {
+        ;
+
+        const isZeroChg = (
+          e1.newTxt === e1.existingTxt
+        ) ;
+
+        0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
+
+        if ((
+          (!isZeroChg || noSupressionOfZeroChgEvts)
+          ||
+          (
+            console["log"](`newText exactly the same so chg evt should be supressed.`)
+            , false
+          )
+        )) {
+          runnTextualEditEvtCb(e1) ;
+        }
+
+      } )
+    ) ;
+
+    if (runnTextualEditEvtCb) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+    
+    if (hasTextualEditReceiver) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+    
+    if (processTextualEditEvtCb1) {
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    } else {
+      ;
+      void hasTextualEditReceiver ;
+      void runnTextualEditEvtCb ;
+      void runnTextualEditEvtCb ;
+      void processTextualEditEvtCb1 ;
+    }
+
+    return {
+      //
+
+      clvMd,
+      // ...(
+      //   hasTextualEditReceiver ?
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, }
+      //   :
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, }
+      // ) ,
+      // ...(
+      //   (
+      //     // (hasTextualEditReceiver || !!processTextualEditEvtCb1)
+      //     runnTextualEditEvtCb
+      //   ) ?
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, processTextualEditEvtCb1, }
+      //   :
+      //   { hasTextualEditReceiver, runnTextualEditEvtCb, processTextualEditEvtCb1, }
+      // ) ,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      //
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+
+      //
+
+      //
+
+    } as const ;
+  }
+) ;
+
+const useTsNodeUnitDisplayPrivCompProps = (
+  function (...[props] : [TsNodeUnitDisplayCompPrivProps] )
+  {
+
+    const {
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+
+      //
+
+    } = useTsNodeTreeDisplayPrivCompProps(props) ;
+
+    const {
+      value: nd,
+    } = props ;
 
     const asTerminalMdlNode = (
       TS.isToken(nd)
       || TS.isLiteralExpression(nd)
     ) ;
 
-    const sptdKcn = (
-      getRlKcn(nd)
+    return {
+
+      nd ,
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      //
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+      asTerminalMdlNode ,
+
+      //
+
+    } as const ;
+  }
+) ;
+
+const TsNodeUnitDisplayPrivC = (
+  describeHtmlComponent((function TsAstDisplayCImpl(props : (
+    TsNodeUnitDisplayCompPrivProps
+  ) )
+  {
+    const {
+
+      nd ,
+
+      clvMd,
+      runnTextualEditEvtCb ,
+
+      autoCommitOnType ,
+      noSupressionOfZeroChgEvts ,
+
+      //
+
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+
+      renderSubTerm ,
+      renderJsxExpression ,
+      renderPropertylike ,
+
+      //
+
+      ncs ,
+      asTerminalMdlNode ,
+
+      //
+
+    } = useTsNodeUnitDisplayPrivCompProps(props) ;
+
+    ;
+
+    const describeSpclTextualEditEvt1 = (
+      function (...[{ newTxt, asBeingWithinHighFrequencyEditSeqce: asBwhfe, }] : (
+        ArgsWithOptions<[], {
+          // readonly lsNd: TS.Node;
+          readonly newTxt: string;
+          readonly asBeingWithinHighFrequencyEditSeqce: boolean;
+      }>
+      ))
+      {
+        // TODO
+        return (
+          TsAstDisplayEvents.describeNdseEdit({
+            lsNd: nd,
+
+            newTxt: (
+              newTxt
+            ),
+
+            asBeingWithinHighFrequencyEditSeqce: (
+              asBwhfe
+            ) ,
+
+          })
+        ) ;
+      }
+    ) ;
+
+    const processTextualEditEvtCb1 = (
+      (runnTextualEditEvtCb)
+      &&
+      ((e1: ReturnType<typeof TsAstDisplayEvents.describeNdseEdit>) => {
+        ;
+
+        const isZeroChg = (
+          e1.newTxt === e1.existingTxt
+        ) ;
+
+        0 && console["log"]({ ...(e1), isZeroChg, noSupressionOfZeroChgEvts, }) ;
+
+        if ((
+          (!isZeroChg || noSupressionOfZeroChgEvts)
+          ||
+          (
+            console["log"](`newText exactly the same so chg evt should be supressed.`)
+            , false
+          )
+        )) {
+          runnTextualEditEvtCb(e1) ;
+        }
+
+      } )
+    ) ;
+
+    const tryRenderTermQueryEditor = (
+      function (...[nd]: [TS.Identifier | TS.Expression])
+      {
+
+        if (processTextualEditEvtCb1 ) {
+          ;
+
+          const classSwitchElem = (
+            (() => {
+
+              interface SpclOptionItemOp
+              { id: "other" | "numeric" | "string" | "variable", label: string | React.ReactElement, exampleCode: string, }
+
+              const options = (
+                [
+                  { id: "numeric", label: "Numeric" , exampleCode: `5.0` } ,
+                  { id: "string" , label: "String"  , exampleCode: `"last-returned-position"` } ,
+                  { id: "variable", label: "Variable", exampleCode: `lastPos` } ,
+                ] satisfies SpclOptionItemOp[] as SpclOptionItemOp[]
+              ) ;
+
+              const optionsMp = (
+                util.Immutable.Seq(options)
+                .toMap().mapEntries(entr => [entr[1].id as string , entr[1] ] as const )
+              ) ;
+
+              const ndActualItemType1 = (
+                // "variable"
+                ((): SpclOptionItemOp["id"] => {
+                  if (TS.isNumericLiteral(nd) ) { return "numeric" ; }
+                  if (TS.isStringLiteral(nd) ) { return "string" ; }
+                  if (TS.isIdentifier(nd) ) { return "variable" ; }
+                  return "other" ;
+                })()
+              ) ;
+
+              return (
+                <span>
+                  <select
+                  value={(
+                    ndActualItemType1
+                  )}
+                  onChange={e0 => {
+                    const { value: selectedId, } = e0.target ;
+                    const cde = (
+                      optionsMp
+                      .get(selectedId)
+                      ?.exampleCode
+                    ) ;
+                    // TODO
+                    console["log"]({ cde, }) ;
+                    cde && (
+                      processTextualEditEvtCb1((
+                        TsAstDisplayEvents.describeNdseEdit({
+                          lsNd: nd,
+      
+                          newTxt: (
+                            cde
+                          ),
+      
+                          asBeingWithinHighFrequencyEditSeqce: (
+                            false
+                          ) ,
+      
+                        })
+                      ))
+                    ) ;
+                  }}
+                  >
+                    {/* <option value={"numeric" }>`Numeric`</option>
+                    <option value={"string"  }>`String` </option>
+                    <option value={"variable"}>`Variable` </option> */}
+                    { (
+                      options
+                      .map(({ id, label, exampleCode, }) => (
+                        <option
+                        key={id}
+                        value={id }
+                        children={label }
+                        />
+                      ) )
+                    ) }
+                  </select> {}
+                </span>
+              ) ;
+            })()
+          ) ;
+
+          if (TS.isIdentifier(nd) || TS.isLiteralExpression(nd) ) {
+
+            const [value, { serialize, } ] = (
+              TS_TOKENNODE_VALUANDSERIALIZE(nd)
+            ) ;
+
+            const {
+              asBwhfe ,
+              XInput ,
+            } = (
+              (
+                (() => {
+
+                  if (autoCommitOnType) {
+                    return {
+                      XInput: "input",
+                      asBwhfe: true,
+                    } ;
+                  }
+  
+                  return {
+                    XInput: SfmInputC,
+                    asBwhfe: false,
+                  } ;
+                } ) satisfies (() => {
+                  asBwhfe : boolean,
+                  XInput : "input" | (typeof SfmInputC) ,
+                } )
+              )()
+            ) ;
+
+            void (
+              TS_TOKENNODE_VALUANDSERIALIZE(nd)
+            ) ;
+
+            const keyTypedInputElem = (
+              <XInput
+
+              value={String(value) }
+
+              onChange={e0 => {
+                const { value: newTxt, } = e0.target ;
+
+                const e1 = (
+                  TsAstDisplayEvents.describeNdseEdit({
+                    lsNd: nd,
+
+                    newTxt: (
+                      serialize(newTxt)
+                    ),
+
+                    asBeingWithinHighFrequencyEditSeqce: (
+                      asBwhfe
+                    ) ,
+
+                  })
+                ) ;
+
+                processTextualEditEvtCb1(e1) ;
+
+                ;
+              } }
+
+              />
+            ) ;
+
+            const primaryInputElem = (
+              keyTypedInputElem
+            ) ;
+
+            const upperSecondaryInputElem = (
+              (() => {
+
+                if (TS.isIdentifier(nd) ) {
+
+                  const srcfle = nd.getSourceFile() ;
+
+                  const suggstsLs = (
+
+                    util.reiterated(function* () {
+                      yield* (
+                        getAllNodes(srcfle)
+                        .flatMap(nd => TS.isIdentifier(nd) ? [nd] : [] )
+                        .map(nd => nd.text )
+                      ) ;
+                      yield* (
+                        Object.keys(globalThis)
+                        .filter(nm => nm.match(/^[a-z]/) )
+                      ) ;
+                    })
+
+                    .toSorted()
+
+                    .toSorted((a, b) => (a.length - b.length ) )
+
+                    .map(value => { const score = (
+                      value.match(/(^(webkit|moz)|(page|webkit|moz)(\w*))/i) ? 5000 :
+                      (value.match(/^on(?![e])/) ) ? 700 :
+                      value.match(/((pointer|mouse)(up|down|wheel|move|enter|leave|out))/i) ? 500 :
+                      0
+                    ) ; return { value, score, } ; } ).toSorted((a, b) => (a.score - b.score) ).map(({ value, }) => value )
+
+                  ) ;
+
+                  const value = nd.text ;
+
+                  return (
+                    <span>
+                      <select
+                      value={value}
+                      style={{
+                        fontFamily: "monospace",
+                      }}
+                      // size={3 }
+                      onChange={e0 => {
+                        const { value: selectedId, } = e0.target ;
+                        const cde = (
+                          selectedId
+                        ) ;
+                        // TODO
+                        console["log"]({ cde, }) ;
+                        cde && (
+                          processTextualEditEvtCb1((
+                            TsAstDisplayEvents.describeNdseEdit({
+                              lsNd: nd,
+          
+                              newTxt: (
+                                cde
+                              ),
+          
+                              asBeingWithinHighFrequencyEditSeqce: (
+                                false
+                              ) ,
+          
+                            })
+                          ))
+                        ) ;
+                      }}
+                      >
+                        { (
+                          util.Immutable.OrderedSet(suggstsLs)
+                          .map(optVle => (
+                            <option
+                            key={optVle}
+                            value={optVle}
+                            children={(
+                              // <code>{ optVle }</code>
+                              optVle
+                            ) }
+                            />
+                          ) )
+                        ) }
+                      </select>
+                    </span>
+                  ) ;
+                }
+
+                return <></> ;
+              })()
+            ) ;
+
+            return (
+              <span>
+                { classSwitchElem }
+                { primaryInputElem }
+                { upperSecondaryInputElem }
+              </span>
+            ) ;
+
+          }
+
+        }
+
+        return null ;
+      }
     ) ;
 
     const childListDView = (() => {
@@ -437,21 +1078,10 @@ export const TsAstDisplayC = (
         ) ;
     
         return (
-          <TsAllChildNodesListDisplayC
+          <TsChildNodeListDisplayC
           value={ndChildren }
           clvMd={clvMd}
           // srcNd={nd }
-          onChange={runWholeTreeChgHandler && (
-            (sptdKcn instanceof NodeListKcn)
-            ?
-            (({ newValue: newChildrenList, }) => {
-              const newv = (
-                sptdKcn.withReplacedChildren(nd, newChildrenList )
-              ) ;
-              runWholeTreeChgHandler({ newValue: newv }) ;
-            } )
-            : undefined
-          )}
           onTextualEditEvt={runnTextualEditEvtCb}
           />
         ) ;
@@ -463,6 +1093,27 @@ export const TsAstDisplayC = (
     const e = (() => {
       ;
       
+      const selfEditBtnsSec = (
+        <div>
+        { (
+          (runnTextualEditEvtCb ) ?
+          <Button
+          title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
+          children={<>☯</>}
+          onClick={() => {
+            // const newNd = (() => {
+            //   if (sptdKcn instanceof NodeListKcn) {
+            //     return sptdKcn.withReplacedChildren(nd,  ) ;
+            //   }
+            //   return nd ;
+            // })() ;
+          }}
+          />
+          : <></>
+        ) }
+        </div>
+      ) ;
+
       if (clvMd.asDbWhen() ) {
 
         {
@@ -502,32 +1153,18 @@ export const TsAstDisplayC = (
             ) ;
           }
 
-          if (TS.isIdentifier(nd) || TS.isLiteralExpression(nd) ) {
+          if (TS.isIdentifier(nd) || (TS.isToken(nd) && TS.isExpression(nd) ) || TS.isLiteralExpression(nd) ) {
+
+            for (const r of util.iterateNonNull(tryRenderTermQueryEditor(nd) ) ) {
+              return r ;
+            }
+    
             return (
               <div
               title={`value: ${ndSrcTxt}`}
               >
               <p>
                 { (() => {
-                  if (runnTextualEditEvtCb ) {
-                    ;
-                    return (
-                      <SfmInputC
-                      value={nd.getText() }
-                      onChange={e0 => {
-                        const { value: newTxt, } = e0.target ;
-
-                        const e1 = (
-                          TsAstDisplayEvents.describeNdseEdit({ lsNd: nd, newTxt: newTxt, })
-                        ) ;
-
-                        runnTextualEditEvtCb(e1) ;
-
-                        ;
-                      } }
-                      />
-                    ) ;
-                  }
                   return (
                     renderNameTokenCodeFigure((
                       <code>{ ndSrcTxt }</code>
@@ -558,8 +1195,14 @@ export const TsAstDisplayC = (
         } )() ;
 
         if (et !== null) {
-          return (
+          const et2 = (
             clvMd.postdecDbwInlinelikeB4(et, {})
+          ) ;
+          return (
+            clvMd.postdecDbwBdB3(et2, {
+              selfEditBtnsSec ,
+              nd,
+            } )
           ) ;
         }
 
@@ -632,29 +1275,9 @@ export const TsAstDisplayC = (
           } , e1C )
         ) ;
 
-        const selfEditBtnsSec = (
-          runWholeTreeChgHandler ?
-          <div>
-          { (
-            <Button
-            title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
-            children={<>☯</>}
-            onClick={() => {
-              // const newNd = (() => {
-              //   if (sptdKcn instanceof NodeListKcn) {
-              //     return sptdKcn.withReplacedChildren(nd,  ) ;
-              //   }
-              //   return nd ;
-              // })() ;
-            }}
-            />
-          ) }
-          </div>
-          : <></>
-        ) ;
-
         return (
           clvMd.postdecDbwBdB3(e1, {
+            nd,
             selfEditBtnsSec ,
           } )
         ) ;
@@ -676,6 +1299,123 @@ export const TsAstDisplayC = (
       e
     ) ;
   }))
+) ;
+
+export const TsNodeUnitDisplayC: (
+  React.FC<TsNodeUnitDisplayCompProps>
+) = (
+  TsNodeUnitDisplayPrivC
+) ;
+
+export {
+  TsNodeUnitDisplayPrivC as TsAstDisplayC,
+} ;
+
+interface TsChildNodeListDisplayCompProps extends
+TsAstDisplayCompCommonProps
+{
+
+  value: ReadonlyArray<TS.Node>,
+  clvMd ?: CLV,
+
+  /**  @deprecated consider {@link onTextualEditEvt } instead. */
+  onChange?: (evt: { newValue: ReadonlyArray<TS.Node> , changedIndices: readonly number[] }) => void ,
+  onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+
+  // // TODO
+  // /** @deprecated */
+  // srcNd: TS.Node ,
+
+}
+
+const TsChildNodeListDisplayC = (
+  describeHtmlComponent((function TsNodeListDisplayCImpl(props : (
+    TsChildNodeListDisplayCompProps
+  ) )
+  {
+    const {
+      clvMd = getSpclDefaultClvMd() ,
+      value: ndChildren,
+      // srcNd ,
+      onChange: runOnChgCbk  ,
+      onTextualEditEvt: runOnTextualEditEvtCbk ,
+    } = props ;
+
+    const children1 = (
+      ndChildren
+      .map((nd, i) => {
+        return (
+          <TsNodeUnitDisplayPrivC
+          value={nd}
+          clvMd={clvMd}
+          onChange={runOnChgCbk && (({ newValue, }) => (
+            runOnChgCbk({
+              changedIndices: [i] ,
+              newValue: (
+                ndChildren
+                .toSpliced(i, 1, ...[newValue] )
+              ) ,
+            })
+          ) ) }
+          onTextualEditEvt={runOnTextualEditEvtCbk}
+          />
+        ) ;
+      })
+    ) ;
+
+    if (clvMd.asDbWhen() ) {
+
+      const childrenAsLs = (
+        clvMd.expandCldl(children1)
+      ) ;
+
+      const c11 = (
+        withExtraSemanticProperties({
+          classNames: ["studk-ui-encoretsnodedisp-inline-children-l"] ,
+        } , childrenAsLs)
+      ) ;
+  
+      return (
+        clvMd.postdecMultiNodeView1(c11 )
+      ) ;
+    }
+    {
+
+      const childrenAsLs = (
+        CLV.defaultRenderCldlAsHtmList(children1)
+      ) ;
+  
+      return (
+        <div>
+          { (
+            <p><code>{ ndChildren.length }</code> child(en)</p>
+          ) }
+          { (
+            withExtraSemanticProperties({
+              classNames: ["studk-ui-encoretsnodedisp-blocklevel-children-l"] ,
+            } , childrenAsLs)
+          ) }
+        </div>
+      ) ;
+    }
+  }))
+) ;
+
+export {
+  TsChildNodeListDisplayC as TsAllChildNodesListDisplayC,
+} ;
+
+export const TsSrcFileInfoDisplayC = (
+  describeHtmlComponent(function TsSrcFileDisplayCImpl(props : { value: TS.SourceFile } )
+  {
+    const { value: nd, } = props ;
+    return (
+      <div>
+        <p>Source File</p>
+        <p>Child Count: { nd.getChildren().length }</p>
+      </div>
+    ) ;
+  })
 ) ;
 
 class CLV
@@ -733,7 +1473,11 @@ class CLV
       PartializedPartially<(
         OmitW<CLV,  | `getHeadl${string}`>
       ) ,(
+
         | "asDbWhen"
+
+        /* NODE_UNIT */
+
         | "postdecDbwBdB1"
         | "postdecDbwBdB2"
         | "postdecDbwBdB3"
@@ -741,8 +1485,12 @@ class CLV
         | "postdecDbwInlinelikeB4"
         | "postdecDbwPropertylikeB5"
         | "rptcf"
+
+        /* CHILD_NODE_SEQ */
+
         | "expandCldl"
         | "postdecMultiNodeView1"
+
       ) >
     )>
   ) )
@@ -763,7 +1511,11 @@ class CLV
       PartializedPartially<(
         OmitW<CLV, never>
       ) , (
+
         | "asDbWhen"
+
+        /* NODE_UNIT */
+
         | "postdecDbwBdB1"
         | "postdecDbwBdB2"
         | "postdecDbwBdB3"
@@ -771,16 +1523,24 @@ class CLV
         | "postdecDbwInlinelikeB4"
         | "postdecDbwPropertylikeB5"
         | "rptcf"
+
+        /* CHILD_NODE_SEQ */
+
         | "expandCldl"
         | "postdecMultiNodeView1"
+
       ) >
     )>
   ) )
   {
     const {
+      //
+
       getHeadlineImpl,
       asDbWhen = () => false ,
       skipToTerminalDecendantsFor: skipToTerminalDecendants = (...args) => false,
+
+      /* NODE_UNIT */
 
       postdecDbwBdB1 = (
         ({
@@ -795,13 +1555,16 @@ class CLV
             <div
             title={`${getNodeTypeLabelTxt(nd) } `}
             style={{
+
               zoom: `99%` ,
               border: bord ? `0.05em solid currentcolor` : undefined ,
               background: asJsxTag ? `rgba(0 0 0 / 0.25 )` : undefined ,
+
               ...((TS.isJsxOpeningElement(nd) ) ? {
                 overflow: "auto" ,
                 maxBlockSize: `9.5em` ,
               } : {}) ,
+
             }}
             >
               { e1C }
@@ -815,11 +1578,14 @@ class CLV
         ({
           asTerminalMdlNode ,
           nd ,
+
           childListDView ,
+
         }) => {
           ;
           
           if (asTerminalMdlNode ) {
+
             return (
               <>
               { getHeadlineImpl(nd) }
@@ -827,6 +1593,7 @@ class CLV
             ) ;
           } else {
             ;
+
             return (
               <>
               { (asTerminalMdlNode === false) && (
@@ -847,8 +1614,13 @@ class CLV
       postdecDbwBdB3 = (
         (e1, {
           selfEditBtnsSec ,
+          nd ,
         } ) => {
           ;
+
+          if (nd.kind === TS.SyntaxKind.SyntaxList) {
+            return e1 ;
+          }
 
           return (
             <div
@@ -859,7 +1631,7 @@ class CLV
               <div
               style={{
                 display: "flex" ,
-                flexDirection: "column",
+                flexDirection: "column-reverse",
               }}
               >
                 { e1 }
@@ -869,6 +1641,9 @@ class CLV
           ) ;
         }
       ) ,
+
+      /* CHILD_NODE_SEQ */
+
       postdecDbwInlinelikeB4 = e => e ,
       postdecDbwPropertylikeB5 = e50 => (
         e50
@@ -889,31 +1664,42 @@ class CLV
     } = props ;
 
     return new CLV(
+      //
+
       getHeadlineImpl ,
       skipToTerminalDecendants ,
       asDbWhen ,
+
       expandCldl ,
       postdecMultiNodeView1 ,
+
       postdecDbwBdB1 ,
       postdecDbwBdB2 ,
       postdecDbwBdB3 ,
       postdecDbwInlinelikeB4 ,
       postdecDbwPropertylikeB5 ,
       rptcf ,
+
     ) ;
   }
 
   private constructor(
     //
+
     public readonly getHeadlineImpl: (e: TS.Node) => React.ReactElement  ,
+
     /**
      * @deprecated
      */
     readonly skipToTerminalDecendantsFor : (e: TS.Node) => boolean ,
     public readonly asDbWhen : () => boolean ,
 
+    /* CHILD NODE SEQ */
+
     public readonly expandCldl: (...args: [readonly React.ReactElement[] ]) => React.ReactElement ,
     public readonly postdecMultiNodeView1: (...args: [cldl: React.ReactElement ]) => React.ReactElement ,
+
+    /* NODE_UNIT */
 
     readonly postdecDbwBdB1: (...args: [{
       asTerminalMdlNode: boolean ,
@@ -921,14 +1707,17 @@ class CLV
       bord: boolean ,
       asJsxTag: boolean ,
     }, React.ReactElement] ) => React.ReactElement ,
+
     readonly postdecDbwBdB2: (...ctx: [{
       asTerminalMdlNode: boolean ,
       nd: TS.Node ,
       childListDView: React.ReactElement,
     }] ) => React.ReactElement ,
+
     readonly postdecDbwBdB3: (...args: [
       React.ReactElement ,
       {
+        nd: TS.Node ,
         selfEditBtnsSec?: React.ReactElement ,
       },
     ] ) => React.ReactElement ,
@@ -938,6 +1727,7 @@ class CLV
       {
       },
     ] ) => React.ReactElement ,
+
     readonly postdecDbwPropertylikeB5: (...args: [
       React.ReactElement ,
       {
@@ -1037,102 +1827,6 @@ namespace CLV {
   ) ;
 
 }
-
-export const TsAllChildNodesListDisplayC = (
-  describeHtmlComponent((function TsNodeListDisplayCImpl(props : (
-    & { value: ReadonlyArray<TS.Node>, clvMd ?: CLV, }
-    & {
-      /**  @deprecated consider {@link onTextualEditEvt } instead. */
-      onChange?: (evt: { newValue: ReadonlyArray<TS.Node> , changedIndices: readonly number[] }) => void ,
-      onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
-    }
-    & {
-      // // TODO
-      // /** @deprecated */
-      // srcNd: TS.Node ,
-    }
-  ) )
-  {
-    const {
-      clvMd = getSpclDefaultClvMd() ,
-      value: ndChildren,
-      // srcNd ,
-      onChange: runOnChgCbk  ,
-      onTextualEditEvt: runOnTextualEditEvtCbk ,
-    } = props ;
-
-    const children1 = (
-      ndChildren
-      .map((nd, i) => {
-        return (
-          <TsAstDisplayC
-          value={nd}
-          clvMd={clvMd}
-          onChange={runOnChgCbk && (({ newValue, }) => (
-            runOnChgCbk({
-              changedIndices: [i] ,
-              newValue: (
-                ndChildren
-                .toSpliced(i, 1, ...[newValue] )
-              ) ,
-            })
-          ) ) }
-          onTextualEditEvt={runOnTextualEditEvtCbk}
-          />
-        ) ;
-      })
-    ) ;
-
-    if (clvMd.asDbWhen() ) {
-
-      const childrenAsLs = (
-        clvMd.expandCldl(children1)
-      ) ;
-
-      const c11 = (
-        withExtraSemanticProperties({
-          classNames: ["studk-ui-encoretsnodedisp-inline-children-l"] ,
-        } , childrenAsLs)
-      ) ;
-  
-      return (
-        clvMd.postdecMultiNodeView1(c11 )
-      ) ;
-    }
-    {
-
-      const childrenAsLs = (
-        CLV.defaultRenderCldlAsHtmList(children1)
-      ) ;
-  
-      return (
-        <div>
-          { (
-            <p><code>{ ndChildren.length }</code> child(en)</p>
-          ) }
-          { (
-            withExtraSemanticProperties({
-              classNames: ["studk-ui-encoretsnodedisp-blocklevel-children-l"] ,
-            } , childrenAsLs)
-          ) }
-        </div>
-      ) ;
-    }
-  }))
-) ;
-
-export const TsSrcFileInfoDisplayC = (
-  describeHtmlComponent(function TsSrcFileDisplayCImpl(props : { value: TS.SourceFile } )
-  {
-    const { value: nd, } = props ;
-    return (
-      <div>
-        <p>Source File</p>
-        <p>Child Count: { nd.getChildren().length }</p>
-      </div>
-    ) ;
-  })
-) ;
 
 import "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/tsd.scss" ;
 
