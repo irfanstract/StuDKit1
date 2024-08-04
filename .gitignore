@@ -24,6 +24,7 @@ bin
 target/
 # Next
 .next/
+next-env.d.ts
 # Vite(JS)
 dist-ssr
 # Python
