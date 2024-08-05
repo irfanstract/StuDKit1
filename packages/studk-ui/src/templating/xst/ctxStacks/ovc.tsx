@@ -55,7 +55,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
 
 import {
   useIntervalEffect ,
@@ -79,7 +79,7 @@ import {
 
 // import {
 //   OVCB, 
-// } from '#currentPkg/src/templating/xst/ovcb.tsx';
+// } from 'studk-ui/src/templating/xst/ovcb.tsx';
 
 import {
   UserToElementActivityState,
@@ -101,7 +101,7 @@ import {
 
 export {
   /**
-   * @deprecated import from `studk-ui/src/meta/react-dom/computedstyles1.tsx` directly
+   * @deprecated import from `studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx` directly
    */
   useNativeCompDisplayedOffsetsAnalysis as useNativeCompPosition,
 } ;
