@@ -15,7 +15,7 @@ import {
 
 import {
   declareUrlBasedCssNecessity ,
-} from 'studk-ui/src/fwCore/domHeadLinkElementNecessity.tsx'; ;
+} from 'studk-ui-cssd/src/userspace/UrlBasedCssNecessity'; ;
 
 
 
