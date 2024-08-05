@@ -61,7 +61,12 @@ import {
   ButtonC,
   Span ,
   describeCallbackAssignedStyleProps ,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+  DOmClientBoundingRect ,
+} from 'studk-ui-fwcore/src/util/ReactDomBased.ts'; ;
+
+import {
+  GET_LOCALOFFSET_OF,
+} from 'studk-ui-fwcore/src/dom/helpers/DOmLocalBoundingRectOfElementGeCo.ts';
 
 import {
   getFullDocBodySrcBasedSvgDataUrl,
@@ -282,15 +287,117 @@ export const useCtxExplicitSpclisedScdPeer = (
 
     return (
       // TODO
-      React.useMemo<ScdStateProvCtx>(() => {
-        if (ctxtuSpclScrollHandler && csDiv1) {
+      React.useMemo<ScdStateProvCtx<{}> >(() => {
+
+        if (ctxtuSpclScrollHandler && csDiv1 && viewportDiv1 ) {
+
+          type ENH_BSE = ReturnType<typeof ctxtuSpclScrollHandler.searchDisplayedSegs> ;
+
+          const handleSdsReturnedItem = (
+            ((dsc, i) => {
+
+              ;
+
+              const localOffset = (
+                GET_LOCALOFFSET_OF(dsc.asNde, { referenceDiv: csDiv1, } )
+              ) ;
+              const clientOffset = (
+                DOmClientBoundingRect.getFrom(dsc.asNde)
+              ) ;
+
+              // const  ;
+              return (
+                {
+                  rnk: dsc.rnk ,
+                  localOffset: localOffset,
+                  clientOffset: clientOffset,
+                  ...(dsc.etc) ,
+                } as const
+              ) ;
+            }) satisfies Parameters<ENH_BSE["map"] >[0]
+          ) ;
+
+          const captureAndComputeStateFromSdsReturnedItem = (
+            ((dsc, i) => {
+
+              ;
+
+              const fdr = (
+                handleSdsReturnedItem(dsc, i )
+              ) ;
+
+              const {
+                localOffset: localOffset ,
+                clientOffset: clientOffset ,
+              } = fdr ;
+
+              const sO = (
+                DOmClientBoundingRect.getFrom(viewportDiv1).left
+                -
+                DOmClientBoundingRect.getFrom(csDiv1).left
+              ) ;
+
+              const eDbr1 = (
+                DOmClientBoundingRect.getFrom(dsc.asNde)
+              ) ;
+              const csDbr = (
+                DOmClientBoundingRect.getFrom(csDiv1)
+              ) ;
+              const viewportDbr = (
+                DOmClientBoundingRect.getFrom(viewportDiv1)
+              ) ;
+
+              const globalCoords = {
+                //
+                sO ,
+                eDbr1,
+                csDbr ,
+                viewportDbr ,
+              } as const ;
+
+              // const  ;
+              return ({
+                dsc ,
+                clientOffset ,
+                ...(globalCoords ) ,
+                etc: (
+                  {
+                    rnk1: dsc.rnk ,
+                    ...(globalCoords) ,
+                    rnk: dsc.rnk ,
+                    localOffset ,
+                    clientOffset ,
+                    ...(dsc.etc) ,
+                    dec: localOffset,
+                    dbr: clientOffset,
+                  } as const
+                ) ,
+                ... (
+                  (() => { const { etc, ...p } = dsc ; return p ; })()
+                ) ,
+                dbr: clientOffset ,
+                // rnk,
+                // startT ,
+                debug1: {
+                  // csDivRef ,
+                } ,
+              } as const) ;
+            }) satisfies Parameters<ENH_BSE["map"] >[0]
+          ) ;
+
           // TODO
           return (
 
-            describeSsva({ hostNode: csDiv1, getSFromPt: function (pt0): (
-              | { readonly startT : number, readonly rnk: string | null, readonly dsc ?: any, readonly debug1 ?: any, }
-              | false
-            ) {
+            describeSsva({ hostNode: csDiv1, getSFromPt: function (pt0)
+            {
+
+              const describeMainFromSdsReturnedItem = (
+
+                ((dsc, i) => (
+                  captureAndComputeStateFromSdsReturnedItem(dsc, i)
+
+                )) satisfies Parameters<ENH_BSE["map"] >[0]
+              ) ;
 
               /**
                * note:
@@ -304,20 +411,29 @@ export const useCtxExplicitSpclisedScdPeer = (
                   searchScope: csDiv1,
                 }) 
 
-                .map((dsc, i) => {
+                .map(describeMainFromSdsReturnedItem )
 
-                  ;
+                .filter(({ asNde: e, etc: { sO, csDbr, } , }) => {
+                ;
+                if (0) { return true ; }
 
-                  // const  ;
-                  return ({
-                    dsc ,
-                    ...(dsc) ,
-                    // rnk,
-                    // startT ,
-                    debug1: {
-                      // csDivRef ,
-                    } ,
-                  } as const) ;
+                const beingOutOfViewport = (
+                  DOmClientBoundingRect.getFrom(e).right
+                  <=
+                  (
+                    DOmClientBoundingRect.getFrom(viewportDiv1).left
+                    +
+                    (
+                      22
+                    )
+                  )
+                ) ;
+
+                return (
+                  // TODO
+                  !beingOutOfViewport
+                  // sO <=
+                ) ;
                 } )
 
               ) ) {
@@ -371,6 +487,7 @@ export const useCtxExplicitSpclisedScdPeer = (
         ctxtuSpclScrollHandler,
         csDiv1,
         // csDivRef,
+        viewportDiv1 ,
       ] )
     ) ;
   }
