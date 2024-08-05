@@ -31,14 +31,10 @@ import {
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-  MapEntrySpec,
   ObjectFromEntry, 
   RecordValue,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
+  MapEntrySpec,
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 type OptionalSingleLineWhiteSpace = (
   OLSW
