@@ -598,6 +598,9 @@ const WithSsc1DInner = (
               e = (
                 <div>
                 <aside>
+                  { " " && (
+                  //
+                  <div>
                   <p>
                     debug values:
                   </p>
@@ -605,22 +608,25 @@ const WithSsc1DInner = (
                   style={{
                     position: "relative",
                     overflow: "auto",
-                    blockSize: `5em`,
+                    blockSize: `13.5em`,
                   }}
                   >
                   { (
                   <pre
                   style={{
                     whiteSpace: "pre-wrap",
-                    fontSize: `75%`,
+                    fontSize: `8px`,
                   }}
                   >
                     { (
                       ((e: any) => JSON.stringify(e, null, 2 ) )({
 
-                        s: statDerivable.s,
+                        // s: statDerivable.s,
+                        rnk: statDerivable.s.rnk,
                         origiinalPos: statDerivable.originalPosArg ,
                         pos1: statDerivable.pos,
+                        altPos1: (statDerivable.s.etc ?? {}).sO,
+                        ...(0 ? { coords: statDerivable.s.etc, } : { }),
                         poi,
 
                         hostNd: (
@@ -639,6 +645,8 @@ const WithSsc1DInner = (
                   </pre>
                   ) }
                   </div>
+                  </div>
+                  ) }
                 </aside>
                 { e }
                 { (
