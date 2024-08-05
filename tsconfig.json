@@ -26,6 +26,7 @@
     
     // "baseUrl": ".",
     "moduleResolution": "NodeNext" /* https://github.com/microsoft/TypeScript/pull/51669 */,
+    "resolvePackageJsonExports": true,
     "forceConsistentCasingInFileNames": true,
     
     /* post-vendoring paths settings */
