@@ -34,10 +34,6 @@ import type {
   ArgsWithOptions ,
 } from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
 
-import type {
-  ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
-
 import {
   allocateKeyInternedObjectPool ,
 } from 'typexpe-commons/src/ort.mjs';
