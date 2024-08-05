@@ -58,8 +58,32 @@ import {
 
 ;
 
+interface ScdStateDerivable extends Extract<(
+  ReturnType<typeof describeSsva>
+), any>
+{}
+
+namespace ScdStateDerivable { ; }
+
+export {
+
+  /* final */
+  ScdStateDerivable ,
+
+} ;
+
+
+
+;
+
 type ScdsPoint2D = { x: number, y: number } ;
 
+/**
+ * 
+ * @deprecated
+ * this is primarily part of those not-scalable solution.
+ * 
+ */
 const useCtxtualScdProv = () => (
   React.useContext(getScdSProvCtxStack() )
 ) ;
@@ -70,6 +94,9 @@ export {
 /**
  * boundary with ctxtual override for {@link ScdStateProvCtx}.
  * use-case for eg overriding the defaults of `<Scd>`.
+ * 
+ * @deprecated
+ * this is primarily part of those not-scalable solution.
  * 
  */
 const WithCtxtuallyOverridenScdSProvC = (
@@ -82,6 +109,13 @@ const WithCtxtuallyOverridenScdSProvC = (
 ) ;
 
 /* needs deferring, to avoid unexpected NPE(s) */
+/**
+ * 
+ * 
+ * @deprecated
+ * this is primarily part of those not-scalable solution.
+ * 
+ */
 const getScdSProvCtxStack = (
   util.L.once(() => (
     React.createContext<ScdStateProvCtx >((
@@ -93,10 +127,7 @@ const getScdSProvCtxStack = (
 interface ScdStateProvCtx extends Extract<ScdStateDerivable, any>
 {}
 
-interface ScdStateDerivable extends Extract<(
-  ReturnType<typeof describeSsva>
-), any>
-{}
+namespace ScdStateProvCtx { ; }
 
 /* needs deferring, to avoid unexpected NPE(s) */
 const computeGlobalDefaultScdsHandler = (
@@ -108,26 +139,34 @@ const computeGlobalDefaultScdsHandler = (
 ) ;
 
 export {
-  /**
-   * 
-   * @deprecated this is a WIP/TBD.
-   */
-  getScdSProvCtxStack ,
+
   /**
    * 
    * @deprecated this is a WIP/TBD.
    */
   useCtxtualScdProv ,
+  /**
+   * 
+   * @deprecated this is a WIP/TBD.
+   */
   WithCtxtuallyOverridenScdSProvC ,
-} ;
-export type {
+
+  /**
+   * 
+   * @deprecated this is a WIP/TBD.
+   */
+  getScdSProvCtxStack ,
+
   /**
    * 
    * @deprecated this is a WIP/TBD.
    */
   ScdStateProvCtx ,
-  /* final */
-  ScdStateDerivable ,
+
+} ;
+
+export type {
+
 } ;
 
 
@@ -156,6 +195,7 @@ const describeSsva = (
     )>
   ) )
   {
+
     const {
       hostNode: rootNode = null,
       getPtFromS ,
@@ -163,21 +203,32 @@ const describeSsva = (
     } = opts ;
 
     interface DfoReturnedOps {
+      /**
+       * 
+       * @deprecated
+       * *this property would prevent cross-element reusability of {@link describeSsva}-ed ctx(es)* .
+       */
       readonly rootNd: typeof rootNode,
       readonly s: S ,
       readonly pos: SsvaPoint2D ,
+      readonly originalPosArg: SsvaPoint2D ,
       readonly insteadForPos: (ctx: { pos: SsvaPoint2D, }) => DfoReturnedOps ,
     }
-    const DERIVED_FOR: DfoReturnedOps["insteadForPos"] = (
+
+    const DERIVED_FOR: (
+      (ctx: { pos: SsvaPoint2D, }) =>
+        DfoReturnedOps
+    ) = (
       function (...[{ pos: posArg, }] )
       {
         const s = getSFromPt(posArg) ;
         const nrmsedPos = getPtFromS(s) ;
         return {
           rootNd: rootNode,
+          originalPosArg: posArg,
           pos: nrmsedPos,
           s ,
-          insteadForPos: DERIVED_FOR ,
+          insteadForPos: ({ pos, }) => DERIVED_FOR({ pos, }) ,
         } as const ;
       }
     ) ;
