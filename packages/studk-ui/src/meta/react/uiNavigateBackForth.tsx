@@ -32,7 +32,7 @@ console["log"](`[uiNavigateBackForth.tsx] init`) ;
 
 import {
   describeComponent ,
-} from "#currentPkg/src/meta/react/dhc.tsx" ;
+} from "studk-ui/src/meta/react/dhc.tsx" ;
 
 import {
   Span ,
