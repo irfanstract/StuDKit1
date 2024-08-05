@@ -65,7 +65,10 @@ import {
   Span ,
   SingleChildDiv, 
   RequiredComponentProps,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+  ComponentProps,
+  withExtraSemanticProperties,
+  getEffectiveZoom,
+} from 'studk-ui-fwcore/src/util/ReactDomBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -162,23 +165,119 @@ const useScdApplyFromProp = (
 
     useIntervalEffect(() => {
       ;
+
       const { current: dv, } = divRef ;
+
       if (dv) {
+        const eMg = getEffectiveZoom(dv) ;
         void (() => {
           switch (orientCv) {
             case "horizontal":
-              dv.scrollLeft = cv1Ref.current ;
-              dv.scrollTop = cvCrsRef.current ;
+              dv.scrollLeft = (1 / eMg) * cv1Ref.current ;
+              dv.scrollTop  = (1 / eMg) * cvCrsRef.current ;
               return ;
             case "vertical":
-              dv.scrollTop = cv1Ref.current ;
-              dv.scrollLeft = cvCrsRef.current ;
+              dv.scrollTop  = (1 / eMg) * cv1Ref.current ;
+              dv.scrollLeft = (1 / eMg) * cvCrsRef.current ;
               return ;
           }
         })() ;
       }
+
     } , 1.7 * 1000 , [divRef, cv1Ref, cvCrsRef]) ;
 
+  }
+) ;
+
+const useScdSubCProps = (
+  function (props: ComponentProps<typeof ScdSubC> )
+  {
+    ;
+
+    const {
+      children,
+
+      cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
+      crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
+      orientCv = "vertical",
+      onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
+      // divRef,
+      ctrlVarsDebug: shallCtrlVarsDebug = false,
+      style: styl,
+
+      ...unhandledProps
+    } = props ;
+
+    const divRef = (
+      React.useRef<HTMLDivElement | null>(null)
+    ) ;
+
+    useScdApplyFromProp(divRef , {
+      ctrlVal1 ,
+      ctrlValCrs ,
+      orientCv ,
+    } ) ;
+
+    const applyInputEvt = (
+
+      function (e : React.UIEvent<HTMLDivElement>)
+      {
+
+        const dv = divRef.current ;
+
+        if (dv) {
+          ;
+
+          const y0 = dv.scrollTop ; ;
+          const x0 = dv.scrollLeft ; ;
+          const eS = getEffectiveZoom(dv) ;
+
+          return (
+            runOnScroll({
+              target: dv,
+              newVals: {
+                x: eS * x0,
+                y: eS * y0,
+              } ,
+            })
+          ) ;
+        }
+      }
+    ) ;
+
+    const debugP = (
+      <div>
+        { shallCtrlVarsDebug ? (
+          <pre style={{ whiteSpace: `pre-wrap`, }}>
+            { JSON.stringify((
+              React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
+            )) }
+          </pre>
+        ) : null }
+      </div>
+    ) ;
+
+    return {
+      children ,
+
+      ctrlVal1 ,
+      ctrlValCrs ,
+      orientCv ,
+      runOnScroll ,
+
+      shallCtrlVarsDebug ,
+      styl ,
+
+      divRef ,
+
+      applyInputEvt ,
+
+      debugP ,
+
+      unhandledProps ,
+      props ,
+
+    } as const ;
   }
 ) ;
 
@@ -188,56 +287,37 @@ const ScdSubC = (
       & React.PropsWithChildren
       & AllOrNever1<{ cv : number, crossCv: number, } & { orientCv : "inherit" | "horizontal" | "vertical" }>
       & Pick<JSX.IntrinsicElements["div"] , "hidden" | "style" >
-      & { onScroll?: (evtInfo: ScrollingEvt) => void ; }
+      & { onScroll?: SpclOnScrollHandler ; }
       /* INTERNAL OBLIGATORY VARS */
       // & { divRef: React.MutableRefObject<HTMLDivElement | null>, }
       /* DEBUG VARS */
       & { ctrlVarsDebug ?: boolean ; }
     ))
+    : React.ReactNode
     {
+
       const {
-        children,
-
-        cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
-        crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
-        orientCv = "vertical",
-        onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
-        // divRef,
-        ctrlVarsDebug: shallCtrlVarsDebug = false,
-        style: styl,
-
-        ...otherProps
-      } = props ;
-
-      const divRef = (
-        React.useRef<HTMLDivElement | null>(null)
-      ) ;
-
-      useScdApplyFromProp(divRef , {
+        children ,
+  
         ctrlVal1 ,
         ctrlValCrs ,
         orientCv ,
-      } ) ;
+        runOnScroll ,
+  
+        shallCtrlVarsDebug ,
+        styl ,
+  
+        divRef ,
 
-      const applyInputEvt = (
-        function (e : React.UIEvent<HTMLDivElement>)
-        {
-          const y = e.currentTarget.scrollTop ; ;
-          const x = e.currentTarget.scrollLeft ; ;
-          runOnScroll({ target: e.currentTarget, newVals: { x, y, } , }) ;
-        }
-      ) ;
-
-      const debugP = (
-        <div>
-          { shallCtrlVarsDebug ? (
-            <pre style={{ whiteSpace: `pre-wrap`, }}>
-              { JSON.stringify((
-                React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
-              )) }
-            </pre>
-          ) : null }
-        </div>
+        applyInputEvt ,
+  
+        debugP ,
+  
+        unhandledProps: otherProps ,
+        // props ,
+  
+      } = (
+        useScdSubCProps(props)
       ) ;
 
       // TODO
@@ -247,9 +327,8 @@ const ScdSubC = (
         }
       ) ;
 
-      return (
+      const mE = (
         <div
-        className='studk-paginatedui-scdc-wholediv '
         style={{
           ...styl ,
         }}
@@ -314,10 +393,42 @@ const ScdSubC = (
         )}
         />
       ) ;
+
+      return (
+        withExtraSemanticProperties({
+          classNames: ["studk-paginatedui-scdc-wholediv"] ,
+        } , (
+          mE
+        ) )
+      ) ;
     }
   ))
 ) ;
 
+export interface SpclOnScrollHandler
+{
+
+  /**
+   * {@link SpclOnScrollHandler}
+   * 
+   * since the likely scenario is that
+   * there'll be no attempt to transform/adjust/scale the vector across the coord_space(s),
+   * we instead
+   * pre-transform them before propagating them up
+   * 
+   */
+  (evtInfo: ScrollingEvt): void ;
+
+}
+
+/**
+ * {@link scdDivRefCtx}
+ * 
+ * 
+ * @deprecated
+ * this is part of those not-scalable solution
+ * 
+ */
 const scdDivRefCtx = (
   React.createContext<{ mainDRef: React.RefObject<HTMLDivElement | null>, }["mainDRef"] | null>(null)
 ) ;
