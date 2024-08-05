@@ -25,7 +25,7 @@ import {
   MNI_CTXTUALONLY ,
   XJson,
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 
 
@@ -40,17 +40,17 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
   describeWorksheet ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   Button ,
   Span ,
-} from '#currentPkg/src/meta/react/dbc.tsx'; ;
+} from 'studk-ui/src/meta/react/dbc.tsx'; ;
 
 
 
