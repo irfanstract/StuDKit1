@@ -58,12 +58,19 @@ import {
 
 ;
 
-interface ScdStateDerivable extends Extract<(
-  ReturnType<typeof describeSsva>
+interface ScdStateDerivable<S extends {} = any> extends Extract<(
+  ReturnType<typeof describeSsva<S >>
 ), any>
 {}
 
-namespace ScdStateDerivable { ; }
+namespace ScdStateDerivable {
+  ;
+
+  export type WithStateT<S extends {}> = (
+    ScdStateDerivable<S>
+  ) ;
+
+}
 
 export {
 
@@ -78,6 +85,12 @@ export {
 
 type ScdsPoint2D = { x: number, y: number } ;
 
+/**
+ * 
+ * @deprecated
+ * this is primarily part of those not-scalable solution.
+ * 
+ */
 const useCtxtualScdProv = () => (
   React.useContext(getScdSProvCtxStack() )
 ) ;
@@ -88,6 +101,9 @@ export {
 /**
  * boundary with ctxtual override for {@link ScdStateProvCtx}.
  * use-case for eg overriding the defaults of `<Scd>`.
+ * 
+ * @deprecated
+ * this is primarily part of those not-scalable solution.
  * 
  */
 const WithCtxtuallyOverridenScdSProvC = (
@@ -100,6 +116,13 @@ const WithCtxtuallyOverridenScdSProvC = (
 ) ;
 
 /* needs deferring, to avoid unexpected NPE(s) */
+/**
+ * 
+ * 
+ * @deprecated
+ * this is primarily part of those not-scalable solution.
+ * 
+ */
 const getScdSProvCtxStack = (
   util.L.once(() => (
     React.createContext<ScdStateProvCtx >((
@@ -108,7 +131,8 @@ const getScdSProvCtxStack = (
   ))
 ) ;
 
-interface ScdStateProvCtx extends Extract<ScdStateDerivable, any>
+interface ScdStateProvCtx<St extends {} = any > extends
+Extract<ScdStateDerivable.WithStateT<St>, any>
 {}
 
 namespace ScdStateProvCtx { ; }
@@ -187,9 +211,15 @@ const describeSsva = (
     } = opts ;
 
     interface DfoReturnedOps {
+      /**
+       * 
+       * @deprecated
+       * *this property would prevent cross-element reusability of {@link describeSsva}-ed ctx(es)* .
+       */
       readonly rootNd: typeof rootNode,
       readonly s: S ,
       readonly pos: SsvaPoint2D ,
+      readonly originalPosArg: SsvaPoint2D ,
       readonly insteadForPos: (ctx: { pos: SsvaPoint2D, }) => DfoReturnedOps ,
     }
 
@@ -203,6 +233,7 @@ const describeSsva = (
         const nrmsedPos = getPtFromS(s) ;
         return {
           rootNd: rootNode,
+          originalPosArg: posArg,
           pos: nrmsedPos,
           s ,
           insteadForPos: ({ pos, }) => DERIVED_FOR({ pos, }) ,
