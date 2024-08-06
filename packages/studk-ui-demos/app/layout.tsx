@@ -67,6 +67,33 @@ export default function RootLayout({
         <WOSC>
         <KmcbsRootLayoutC
         children={children }
+        footerSecContents={(
+          <menu>
+          <React.Fragment>
+              <Link href="/" >
+              Home
+              </Link>
+              --
+              <Link href="/reference/demos/" >
+              Demos
+              </Link>
+              <Link href="/reference/emptypage/" >
+              Empty Page
+              </Link>
+              --
+              <Link href="/credits/">
+              credits
+              </Link>
+              --
+              <Link href="about:blank">
+              <code>about:blank</code>
+              </Link>
+              --
+              <NavigateBackButton />
+              <NavigateForwardButton />
+          </React.Fragment>
+          </menu>
+        )}
         />
         </WOSC>
         <EnvTsxMainDummyC />
