@@ -1,0 +1,13 @@
+
+/* moved into 'tsconfig.build.json' --- per https://stackoverflow.com/q/35470511 */
+{
+  "extends": "./tsconfig.json" ,
+  "compilerOptions": {
+    "noEmit": false ,
+    "rootDir": "src" ,
+  } ,
+  /* per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
+  "include": [
+    "src" ,
+  ],
+}
