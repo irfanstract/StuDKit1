@@ -72,6 +72,7 @@ import {
 
 import {
   Button ,
+  ButtonC,
   Span ,
 } from 'studk-ui/src/xst/dbc.tsx'; ;
 
@@ -84,6 +85,8 @@ import {
 import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
+
+import { renderTableByRowDtListAndColumnList, } from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx';
 
 const GET_CLIENTOFFSET_OF = (
   (e: Element) => ({
@@ -107,6 +110,10 @@ import {
 } from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
 
 import {
+  SccMastPlotter ,
+} from "studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx" ;
+
+import {
   ScdC ,
   useDebouncedScdState1, 
   useDebouncedScdStateWrapper1,
@@ -118,16 +125,79 @@ import {
   // useDebouncedScdStateWrapper1A ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
 
-interface TimeDomainedImgListFigureCProps
-{
-  scrollingConfig ?: {
-    revertToRawPositioning ?: boolean ;
-  } ,
-}
-
+// TODO
+/**
+ * 
+ * WIP/TBD
+ * 
+ * @deprecated
+ * 
+ */
 export const TimeDomainedImgListFigureC = (
   describeHtmlComponent((
-    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedImgListFigureCProps)
+    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
+    {
+      ;
+
+      return (
+        <div>
+          <p>
+            <strong>
+            Time-domained Image List FIgure
+            </strong>
+          </p>
+        </div>
+      ) ;
+    }
+  ))
+) ;
+
+interface TimeDomainedMultiChnlInspectiveFigureCProps
+{
+
+  readonly scrollingConfig ?: {
+    readonly revertToRawPositioning ?: boolean ;
+  } ,
+
+  readonly mainPlotter ?: SccMastPlotter.SpclSizelessInst ,
+
+}
+
+/**
+ * 
+ * @deprecated this is a WIP.
+ * 
+ */
+export const TimeDomainedImgListSpanC = (
+  describeHtmlComponent((
+    //
+    function TimeDomainedImgListSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
+
+/**
+ * 
+ * @deprecated this is a WIP.
+ * 
+ */
+export const TimeDomainedMultiChnlInspectiveSpanC = (
+  describeHtmlComponent((
+    //
+    function TimeDomainedMultiChnlInspectiveSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
+
+export const TimeDomainedMultiChnlInspectiveFigureC = (
+  describeHtmlComponent((
+    function TimeDomainedMultiChnlInspectiveFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
 
@@ -137,7 +207,7 @@ export const TimeDomainedImgListFigureC = (
             return e ;
           }
         ))((
-          <TimeDomainedImgListFigureC11
+          <TimeDomainedMultiChnlInspectiveFigureC11
           {...props}
           />
         ))
@@ -147,14 +217,15 @@ export const TimeDomainedImgListFigureC = (
 ) ;
 
 // TODO
-const TimeDomainedImgListFigureC11 = (
+const TimeDomainedMultiChnlInspectiveFigureC11 = (
   describeHtmlComponent((
-    function TimeDomainedImgListFigureCInnerImpl({
+    function TimeDomainedMultiChnlInspectiveFigureCInnerImpl({
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
       } = {} ,
+      mainPlotter,
       ...otherProps
-    } : TimeDomainedImgListFigureCProps)
+    } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
 
@@ -192,8 +263,9 @@ const TimeDomainedImgListFigureC11 = (
               return e ;
             }
           ))((
-            <TimeDomainedImgListSpC
+            <TimeDomainedMultiChnlInspectiveSpC
             hc={horizonConfig }
+            mainPlotter={mainPlotter ?? getSpclDefaultMainPlotter() }
             />
           )) }
           { (
@@ -210,12 +282,24 @@ const TimeDomainedImgListFigureC11 = (
 
 /**
  * 
- * @deprecated this is a WIP.
+ * @deprecated
+ * 
  */
-export const TimeDomainedImgListSpanC = (
+const getSpclDefaultMainPlotter = (
+  util.L.once(() => (
+    SccMastPlotter.SpclSizelessInst.getInstance()
+  ))
+) ;
+
+/**
+ * WIP/TBD
+ * 
+ * @deprecated
+ * 
+ */
+export const TimeDomainedImgListSpC = (
   describeHtmlComponent((
-    //
-    function TimeDomainedImgListSpanCImpl({} : {})
+    function TimeDomainedImgListSpCImpl()
     {
       // TODO
       return <></> ;
@@ -223,9 +307,9 @@ export const TimeDomainedImgListSpanC = (
   ))
 ) ;
 
-export const TimeDomainedImgListSpC = (
+export const TimeDomainedMultiChnlInspectiveSpC = (
   describeHtmlComponent((
-    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg } : { hc ?: ScCHorizonConfigPropsDesc, })
+    function TimeDomainedMultiChnlInspectiveSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
     {
       ;
       
@@ -271,11 +355,85 @@ export const TimeDomainedImgListSpC = (
         } )
       ) ;
 
+      const mainPlotterAsAppletifyingInst = (
+        React.useMemo(() => (
+          SccMastPlotter.fromSizelessInstance(mainPlotter)
+        ) , [mainPlotter])
+      ) ;
+
+      ;
+      const rowHeadCollDescs = (
+        util.reiterated<(
+          renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps >
+        ) >(function* () {
+          ;
+
+          // ⬆️⬇️☯️
+
+          yield {
+            id: `itemident`,
+            renderHead: () => <i children={`name`} /> ,
+            renderContent: (v) => (
+              <div
+              style={{
+                minInlineSize: `12ex`,
+              }}
+              >
+                <p>
+                  <i children={v.id} />
+                </p>
+                <p>
+                  <ButtonC
+                  title={`Move Up`}
+                  children={`⬆️`}
+                  onClick={false }
+                  />
+                  <ButtonC
+                  title={`Move Down`}
+                  children={`⬇️`}
+                  onClick={false }
+                  />
+                </p>
+              </div>
+            ) ,
+            asRowHeader: true,
+          } ;
+
+          yield {
+            id: `itemkind`,
+            renderHead: () => <i children={`kind letter`} /> ,
+            renderContent: (v) => (
+              <div>
+                <p>
+                  <code children={`${v.kind}`} />
+                </p>
+                <p>
+                  <ButtonC
+                  title={`Change Kind`}
+                  children={`☯️`}
+                  onClick={false }
+                  />
+                </p>
+              </div>
+            ) ,
+            asRowHeader: true,
+          } ;
+
+        })
+      ) ;
+
+
       return (
         <div className='studk-sequemi-tlwalkthruinlinecomp'>
           <SpclCoreC
           horizonConfig={horizonConfig}
           value={ls}
+          mainPlotters={{
+            primaryStreamPlotter: (
+              mainPlotterAsAppletifyingInst
+            ) ,
+          }}
+          rowHeadCollDescs={rowHeadCollDescs}
           />
         </div>
       ) ;
@@ -288,9 +446,11 @@ const computeDefaultHorizonConfig = (
     range: {
       startPos: T_BY_HMS(0, 0, -15) ,
       endPos: (
-        1 ?
-        T_BY_HMS(0, 15.5, 30)
-        : T_BY_HMS(0, 45, 30)
+        T_BY_HMS(0, (
+          5.5
+          // 15.5
+          // 45
+        ), 30)
       ) ,
     } ,
   })
@@ -305,15 +465,42 @@ const WithSsc1D = (
       return (
         ((
           (...[e] : [React.ReactElement]) => {
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do03'
+                children={e}
+                />
+              ) ;
+            }
             e = (
               <WithSsc1DInner
               children={e}
               />
             ) ;
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do02'
+                children={e}
+                />
+              ) ;
+            }
             if (revertToRawScrollSavePos === false)
             {
               e = (
                 <WithSpclisedScdOverrides1C
+                children={e}
+                />
+              ) ;
+            }
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do01'
                 children={e}
                 />
               ) ;
@@ -348,6 +535,15 @@ const WithSsc1DInner = (
           (...[e] : [React.ReactElement]) => {
             if (1)
             {
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner02'
+                  children={e}
+                  />
+                ) ;
+              }
               e = (
                 <ScdC
                 children={(
@@ -358,12 +554,28 @@ const WithSsc1DInner = (
                 // ctrlVarsDebug
                 />
               ) ;
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                  children={e}
+                  />
+                ) ;
+              }
               e = (
                 <div>
                 <aside>
                   <p>
                     debug values:
                   </p>
+                  <div
+                  style={{
+                    position: "relative",
+                    overflow: "auto",
+                    blockSize: `5em`,
+                  }}
+                  >
                   { (
                   <pre style={{ whiteSpace: "pre-wrap", }}>
                     { ((e: any) => JSON.stringify(e) )({
@@ -372,6 +584,7 @@ const WithSsc1DInner = (
                     }) }
                   </pre>
                   ) }
+                  </div>
                 </aside>
                 { e }
                 { (
@@ -405,6 +618,15 @@ export const WithSpclisedScdOverrides1C = (
       return (
         ((
           (...[e] : [React.ReactElement]) => {
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c02'
+                children={e}
+                />
+              ) ;
+            }
             if (1)
             {
               e = (
@@ -412,6 +634,15 @@ export const WithSpclisedScdOverrides1C = (
                 value={(
                   scdPeer
                 )}
+                children={e}
+                />
+              ) ;
+            }
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c01'
                 children={e}
                 />
               ) ;
@@ -445,6 +676,8 @@ import {
 } from "studk-ui/src/tabularUi/reactjs/tbmc-knbc.tsx" ;
 
 import "studk-ui-encore/src/SequencedMediaUi/tmdc.scss" ;
+
+let TBMC_SCDNEXTINGDEBUG: boolean = true ;
 
 
 
