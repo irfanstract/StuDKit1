@@ -13,7 +13,40 @@
 	"devDependencies": {
 	}
 	,
+  "exports": {
+
+    "./src/TsDeriva"                                        : "./src/TsDeriva.ts",
+    "./src/TsDeriva.ts"                                     : "./src/TsDeriva.ts",
+    "./src/TsDeriva.js"                                     : "./src/TsDeriva.ts",
+    "./src/TsDeriva.mjs"                                    : "./src/TsDeriva.ts",
+    "./src/ts-import-specifier"                             : "./src/ts-import-specifier.mts",
+    "./src/ts-import-specifier.ts"                          : "./src/ts-import-specifier.mts",
+    "./src/ts-import-specifier.mts"                         : "./src/ts-import-specifier.mts",
+    "./src/ts-import-specifier.mjs"                         : "./src/ts-import-specifier.mts",
+
+    "./src/BrowserBundledTsLibs/*"                          : "./src/BrowserBundledTsLibs/*.js",
+    "./src/BrowserBundledTsLibs/*.js"                       : "./src/BrowserBundledTsLibs/*.js",
+    "./src/BrowserBundledTsLibs/*.mjs"                      : "./src/BrowserBundledTsLibs/*.js",
+    "./src/BrowserBundledTsLibs/built.ts-es-import.bundle.*"    : {
+      "node"   :     "./src/BrowserBundledTsLibs/built.ts-es-import.bundle-node.mjs" ,
+      "default":     "./src/BrowserBundledTsLibs/built.ts-es-import.bundle.mjs"
+    },
+    
+    "./lib/*"   : "./lib/*",
+
+    "./dist/*"  : "./dist/*",
+
+    "./src/*.ts"                     : "./src/*.ts"         ,
+    "./src/*.tsx"                    : "./src/*.tsx"        ,
+
+    "./src/*"                        : "./src/*"            ,
+
+    "./package.json": "./package.json"
+  }
+	,
 	"scripts": {
 		"test": "npx mocha"
 	}
+	,
+	"type": "module"
 }
