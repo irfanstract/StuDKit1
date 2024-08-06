@@ -17,7 +17,7 @@ import type {
   Extend,
   RecordEntry,
   RecordValue,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'
+} from 'studk-fwcore/src/util/C1.ts'
 
 
 
@@ -163,7 +163,10 @@ export const formatByKeyedPointDictMeshObjFile1 = (
         yield ;
         yield ;
         for (const [vkey, vd] of vertEnts ) {
-          yield `v  ${mapVtxDataToString(vd ) satisfies string }`
+          yield `v  ${(
+            // @ts-ignore
+            mapVtxDataToString(vd )
+          ) satisfies string }`
         }
         yield ;
         yield `# at least ThreeJS refuses to Add Object(s) unless we've begin with any these Directive. `;
