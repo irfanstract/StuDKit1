@@ -25,9 +25,15 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts' ;
 
 const T_BY_HMS = (
   function (...[hn, mn, sn] : [...values: [Array<any>["length"], Array<any>["length"], Array<any>["length"]] ])
@@ -36,31 +42,24 @@ const T_BY_HMS = (
   }
 ) ;
 
-import type {
-  ArgsGetOptions ,
-  ArgsWithOptions, 
-  Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
-
-
-
-
-
-
-import * as React from "react" ;
 
 
 
 
 
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
-
-import {
+  React ,
+  toComponentMountKey,
+  describeComponent ,
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  ButtonC,
+  Span ,
+  describeCallbackAssignedStyleProps ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -70,12 +69,6 @@ import {
   SingleChildDiv,
 } from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
-import {
-  Button ,
-  ButtonC,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
-
 // import Link from "next/link" ;
 
 import {
@@ -83,17 +76,8 @@ import {
 } from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
 
 import {
-  describeCallbackAssignedStyleProps,
-} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
-
-import { renderTableByRowDtListAndColumnList, } from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx';
-
-const GET_CLIENTOFFSET_OF = (
-  (e: Element) => ({
-    x: e.getBoundingClientRect().left,
-    y: e.getBoundingClientRect().top,
-  })
-) ;
+  renderTableByRowDtListAndColumnList,
+} from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx';
 
 
 
@@ -112,18 +96,6 @@ import {
 import {
   SccMastPlotter ,
 } from "studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx" ;
-
-import {
-  ScdC ,
-  useDebouncedScdState1, 
-  useDebouncedScdStateWrapper1,
-} from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
-
-import {
-  useCtxtualisedScdPoiState1, 
-  useCtxtualisedScdState1,
-  // useDebouncedScdStateWrapper1A ,
-} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
 
 // TODO
 /**
@@ -521,6 +493,17 @@ const WithSsc1DInner = (
     {
       ;
 
+      const scprov0 = (
+        useCtxtualScdProv()
+      ) ;
+
+      const scprovAlt = (
+        useCtxExplicitSpclisedScdPeer(scprov0, {
+          ctxtuSpclScrollHandler0: null ,
+          csDivRef: null,
+        } )
+      ) ;
+
       const {
         poi ,
         setPoi ,
@@ -528,7 +511,12 @@ const WithSsc1DInner = (
         lsce ,
         setLsce ,
         setLsceDebcd ,
-      } = useSpclisedScdStateValues1() ;
+      } = (
+        useCtxExplicitSpclisedScdStateValues1((
+          // scprov0
+          scprovAlt
+        ))
+      ) ;
 
       return (
         ((
@@ -577,11 +565,32 @@ const WithSsc1DInner = (
                   }}
                   >
                   { (
-                  <pre style={{ whiteSpace: "pre-wrap", }}>
-                    { ((e: any) => JSON.stringify(e) )({
-                      s: statDerivable.s, pos: statDerivable.pos,
-                      clsn: (statDerivable.rootNd as (Element | null))?.className ?? `(no root nd)` ,
-                    }) }
+                  <pre
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    fontSize: `75%`,
+                  }}
+                  >
+                    { (
+                      ((e: any) => JSON.stringify(e) )({
+
+                        s: statDerivable.s,
+                        pos: statDerivable.pos,
+                        poi,
+
+                        hostNd: (
+                          (() => {
+                            const rootNd = (
+                              statDerivable.rootNd as (Element | null)
+                            ) ;
+                            return (
+                              rootNd ? (rootNd.className ?? `Element <(no class name) >`) : `(no root nd)`
+                            ) ;
+                          })()
+                        ) ,
+
+                      })
+                    ) }
                   </pre>
                   ) }
                   </div>
@@ -661,13 +670,22 @@ import {
   useSpclisedScdStateValues1 ,
   SpclScrollHandler ,
   getSpclScrollHandleRefCtxStack ,
-  useSpclisedScdPeer ,
+  useSpclisedScdPeer, 
+  useCtxExplicitSpclisedScdStateValues1,
+  useCtxExplicitSpclisedScdPeer,
 } from "studk-ui-encore/src/SequencedMediaUi/TdbScd.tsx" ;
+
+import {
+  ScdC ,
+  useDebouncedScdState1, 
+  useDebouncedScdStateWrapper1,
+} from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
   WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
   getScdSProvCtxStack ,
+  useCtxtualScdProv,
   type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
