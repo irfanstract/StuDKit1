@@ -30,7 +30,7 @@ table:has(.studk-ui-tbmc-timewatchcolumncell) {
 }
 
 :is(tbody, thead) > * > td {
-  z-index: 10;
+  // z-index: 10;
 }
 
 tbody > * > td.studk-ui-tbmc-timewatchcolumncell + .studk-ui-tbmc-timewatchcolumncell {
@@ -41,14 +41,34 @@ tbody > * > td.studk-ui-tbmc-timewatchcolumncell:has(+ .studk-ui-tbmc-timewatchc
 }
 
 tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
-  opacity: 0.5;
+  // opacity: 0.5;
 }
 
-tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
+tbody:has(td.studk-ui-tbmc-timewatchcolumncell ) {
   background: black;
+  color: white;
 }
 
 }
+
+@layer defaults {
+  //
+
+  tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
+    user-select: all;
+  }
+
+  @media screen {
+
+    :is(.studk-ui-tbmc-timewatchcolumncell, .studk-ui-tbmctableeelem :is(td, th) ):is(td, th)
+    {
+      @starting-style {
+        opacity: 0 !important ;
+      }
+    }
+  }
+
+} // @layer defaults @screen .studk-ui-tbmc-timewatchcolumncell starting opacity
 
 
 
