@@ -66,17 +66,17 @@ export const getSampleTsSourceFile = (
           <cube origin={loc} diameter={d} />
         ) ;
 
-        {
-          "unused string literal" ;
-          if (1) {
-            "unused string literal" ;
-          }
+        // {
+        //   "unused string literal" ;
+        //   if (1) {
+        //     "unused string literal" ;
+        //   }
 
-          { 5; 6; 7; }
-          [5, 6, 7] ;
+        //   { 5; 6; 7; }
+        //   [5, 6, 7] ;
           
-          [5, 6, 7] as const ;
-        }
+        //   [5, 6, 7] as const ;
+        // }
 
         `
       ) )
