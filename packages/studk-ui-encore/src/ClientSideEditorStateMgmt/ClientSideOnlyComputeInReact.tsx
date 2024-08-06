@@ -3,6 +3,12 @@
 
 
 
+
+
+
+
+
+
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -13,6 +19,7 @@
  * 
  * */
 "use client" ;
+
 
 
 
@@ -32,19 +39,17 @@ import type {
 
 
 
+;
+
+
 
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
+;
 
 
-import {
-  getNodeTypeLabelTxt ,
-  getNodeChildren ,
-} from "studk-ts-codeanalysis/src/core/TsAstInspectiveUtil.ts" ;
 
-export {
-  getNodeTypeLabelTxt ,
-} ;
+;
 
 
 
@@ -52,28 +57,27 @@ export {
 
 
 
-import {
-  getSampleTsSourceFile ,
-} from "studk-ts-codeanalysis/src/core/TsAstScaffoldedExample.ts" ;
+;
 
-export {
-  getSampleTsSourceFile ,
-} ;
+import * as React from "react" ;
 
-export {
-  getNodeChildren ,
-} ;
+export const useClientSideOnly = (
+  () => React.useSyncExternalStore((
+    React.useCallback(() => (() => {} ) , [] )
+  ) , () => true, () => false )
+) ;
 
 import {
-  getRepresentationallyReducedCopyOf ,
-} from "studk-ts-codeanalysis/src/core/TsAstComposableMode.ts" ;
+  useClientSideInitOnlyState ,
+} from "studk-ui-encore/src/ClientSideEditorStateMgmt/Csioe.tsx" ;
 
-export {
-  getRepresentationallyReducedCopyOf as getRepresentationallyReducedCopyOf ,
-} ;
-
-
-
+export const useClientSideOnlyCompute = (
+  function <const R extends true | object > (...[recompute]: [() => R] )
+  {
+    const [s, setS] = useClientSideInitOnlyState(recompute) ;
+    return s ;
+  }
+) ;
 
 
 
