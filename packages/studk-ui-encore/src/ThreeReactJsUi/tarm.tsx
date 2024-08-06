@@ -26,7 +26,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'
+} from 'studk-fwcore/src/util/C1.ts'
 
 
 import React, {
@@ -36,7 +36,7 @@ import React, {
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'
 
 import {
   describeSvgComponent ,
@@ -50,6 +50,8 @@ import {
 import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'
+
+import { flushSync, } from 'react-dom';
 
 
 import * as THREE from 'three'
@@ -72,84 +74,20 @@ import {
   ByCoordTupleArrayGeometryC ,
 } from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx" 
 
-const Box = (
-  describeComponent((
-    function BoxCImpl(props0: ThreeElements['mesh']) {
-      const {
-        position,
-        ...props
-      } = props0 ;
+import {
+  LINE_STROKED, 
+} from 'studk-ui-encore/src/ThreeReactJsUi/PolygonalOrthoExpansionEncore.tsx';
 
-      return (
-        <HovAcIbleC
-        position={position }
+import {
+  sprungThreeElements,
+  useThreeJsSpring,
+  SupposeControlledForcedConstantRedrawC,
+} from 'studk-ui-encore/src/ThreeReactJsUi/TrA.tsx';
 
-        children={(...[{ hovered, active, }] ) => (
-          <group
-          >
-          <mesh
-            {...props}
-            >
-            <boxGeometry args={[1, 1, 1]} />
-            { (
-              // <meshStandardMaterial color={hovered ? 'yellow' : 'orange'} />
-              hovered ?
-              <meshStandardMaterial color={"yellow"} />
-              : <meshStandardMaterial color={"orange"} />
-            ) }
-          </mesh>
-          </group>
-        ) }
-
-        />
-      )
-    }
-  ))
-)
-
-const HovAcIbleC = (
-  describeComponent((
-    function HovAcIbleCImpl(props0: (
-      & {
-        children: (...[{ hovered, active, }] : ArgsWithOptions<[], (
-          & { hovered : boolean, }
-          & { active : boolean, }
-        )>) => (React.ReactElement | null) ,
-      }
-      & Partial<Pick<ThreeElements["mesh"], "position" > >
-    )) {
-      const {
-        children: renderContent ,
-        position ,
-        ...props
-      } = props0
-
-      /** manual call to `invalidate()` is necessary since the enclosing `<R3F.Canvas>` could have set `frameloop` to `"demand"`. */
-      const tr = useThree()
-      const meshRef = useRef<THREE.Group>(null!)
-      const [hovered, setHover] = useState(false)
-      const [active, setActive] = useState(false)
-      useFrame((state, delta) => {
-        if (active || hovered) {
-          meshRef.current.rotation.x += delta
-          tr.invalidate()
-        }
-      })
-      return (
-        <group
-        ref={meshRef}
-        onClick={(event) => setActive(!active)}
-        onPointerOver={(event) => setHover(true)}
-        onPointerOut={(event) => setHover(false)}
-        scale={active ? 1.5 : 1}
-        position={position}
-        >
-          { renderContent({ hovered, active, }) }
-        </group>
-      )
-    }
-  ))
-)
+import {
+  Box ,
+  HovAcIbleC ,
+} from "studk-ui-encore/src/ThreeReactJsUi/CDE.tsx"
 
 import * as POE1 from "studk-ui-encore/src/ThreeReactJsUi/PolygonalOrthoExpansion1.tsx"
 
@@ -164,6 +102,8 @@ import 'three'
 export const TArmsDemoC = (
   describeComponent((
     function TArmsDemoCImpl() {
+
+      const [isTrIng, startTransition] = React.useTransition()
 
       const [camPropv, ] = (
         React.useState<Extract<React.ComponentProps<typeof Canvas>["camera"] , {}> >(() => {
@@ -188,6 +128,9 @@ export const TArmsDemoC = (
         })
       )
 
+      const [spnA, setSpnA] = React.useState<number>(() => 0 )
+      const { scale: spnAAnimated, } = useThreeJsSpring({ scale: spnA, })
+
       const ambientLights = (
         <>
         <ambientLight intensity={Math.PI / 2} />
@@ -209,11 +152,13 @@ export const TArmsDemoC = (
         { (
           ((e: React.ReactElement) => {
             e = (
-              <group
-              scale={2 ** -2.5}
-              >
-                { e }
-              </group>
+              <sprungThreeElements.group
+              rotation-y={spnAAnimated }
+              children={e}
+              />
+            )
+            e = (
+              <group scale={2 ** -2.5} children={e} />
             )
             return e
           } )(
@@ -223,6 +168,11 @@ export const TArmsDemoC = (
             </>
           )
         ) }
+        <SupposeControlledForcedConstantRedrawC
+        isInTopicallyNeglectibleState={(
+          () => (spnAAnimated.isAnimating === false )
+        ) }
+        />
         </Canvas>
       )
 
@@ -240,12 +190,21 @@ export const TArmsDemoC = (
         { (
           ((e: React.ReactElement) => {
             e = (
-              <group
-              scale={2 ** -2.5}
-              >
-                { e }
-              </group>
+              <sprungThreeElements.group
+              rotation-y={spnAAnimated }
+              children={e}
+              />
             )
+            e = (
+              <group scale={2 ** -2.5} children={e} />
+            )
+            // e = (
+            //   <group
+            //   children={e}
+            //   onPointerDown={e => setSpnA(() => Math.PI ) }
+            //   onPointerUp={e => setSpnA(() => 0.00 ) }
+            //   />
+            // )
             return e
           } )(
             <>
@@ -254,6 +213,11 @@ export const TArmsDemoC = (
             </>
           )
         ) }
+        <SupposeControlledForcedConstantRedrawC
+        isInTopicallyNeglectibleState={(
+          () => (spnAAnimated.isAnimating === false )
+        ) }
+        />
         </Canvas>
       )
 
@@ -274,7 +238,7 @@ export const TArmsDemoC = (
         }
       )
 
-      return (
+      const demoItems = (
         <div
         style={{
           display: "grid",
@@ -286,6 +250,41 @@ export const TArmsDemoC = (
         >
           { renderSpclCont(c1) }
           { renderSpclCont(c2) }
+        </div>
+      )
+
+      const ctrls1 = (
+        <nav>
+          <Button
+          onClick={e => { setSpnA(v0 => (v0 + (0.225 * Math.PI ) ) ) }}
+          >
+            Rotate
+          </Button>
+          <Button
+          onClick={async (e) => {
+            flushSync(() => {
+              setSpnA(v0 => ((-2 * (2 * Math.PI)) + (v0 % (2 * Math.PI ) ) ) ) ;
+            }) ;
+            (
+              await new Promise<void>(r => requestAnimationFrame(() => r() ) )
+              ,
+              await new Promise<void>(r => setTimeout(() => r(), 50 ) )
+            ) ;
+            startTransition(() => {
+              setSpnA(0 ) ;
+            }) ;
+          }}
+          >
+            Reset Rotation
+          </Button>
+        </nav>
+      )
+      
+      return (
+        <div
+        >
+          { demoItems }
+          { ctrls1 }
         </div>
       )
     }
@@ -307,34 +306,53 @@ import {
   XRescatterablePointsReact ,
 } from "studk-ui-encore/src/StI3dPresenters/rescatterableptx.tsx"
 
+const SpclCtrlPointC = (
+  describeThreeJsObjComponent((
+    function CtrlPointCImpl({ position: positionArg, ...etProps } : { position: readonly [number, number, number], } )
+    {
+      let e: React.ReactElement = (
+        <Box position={[0, 0, 0]} />
+      )
+      e = (
+        <group scale={2 ** -2} >
+          { e }
+        </group>
+      )
+      e = (
+        <group position={positionArg} >
+          { e }
+        </group>
+      )
+      return (
+        e
+      )
+    }
+  ))
+)
+
+const renderCtrlPoints = (
+  function (...[pts] : [readonly POE1.PTCOORD3D[] ] )
+  {
+    return (
+      <>
+      { (
+        pts
+        .map((ptPos, i) => (
+          <SpclCtrlPointC
+          key={`ctrl pt ${i}`}
+          position={ptPos}
+          />
+        ))
+      ) }
+      </>
+    )
+  }
+)
+
 const {
   PReformableTriangularC ,
-  PEdgesC ,
 } = (() => {
-  const SpclCtrlPointC = (
-    describeThreeJsObjComponent((
-      function CtrlPointCImpl({ position: positionArg, ...etProps } : { position: readonly [number, number, number], } )
-      {
-        let e: React.ReactElement = (
-          <Box position={[0, 0, 0]} />
-        )
-        e = (
-          <group scale={2 ** -2} >
-            { e }
-          </group>
-        )
-        e = (
-          <group position={positionArg} >
-            { e }
-          </group>
-        )
-        return (
-          e
-        )
-      }
-    ))
-  )
-  return ({
+  return {
     //
 
     PReformableTriangularC : describeThreeJsObjComponent((
@@ -355,17 +373,11 @@ const {
           onClick={(event) => SCATTER_EM() }
           >
               { (
-                [
+                renderCtrlPoints([
                   p1Pos ,
                   p2Pos ,
                   p3Pos ,
-                ]
-                .map((ptPos, i) => (
-                  <SpclCtrlPointC
-                  key={`ctrl pt ${i}`}
-                  position={ptPos}
-                  />
-                ))
+                ])
               ) }
               <mesh>
                 <ByCoordTupleArrayGeometryC
@@ -373,10 +385,10 @@ const {
                 coords={(
                   POLYLINE_AS_TRIANGLES((() => {
                     const d = [
-                      [p1Pos[0], p1Pos[1], -3.8, ] as const ,
-                      [p2Pos[0], p2Pos[1], -3.8, ] as const ,
-                      [p3Pos[0], p3Pos[1], -3.8, ] as const ,
-                    ]
+                      p1Pos ,
+                      p2Pos ,
+                      p3Pos ,
+                    ] satisfies POE1.PTCOORD3D[]
                     return [...d, ...d.toReversed() ]
                   })() , { close: true, } )
                 )}
@@ -388,43 +400,70 @@ const {
       }
     )) ,
 
+  }
+} )() ;
+
+const {
+  PEdgesC ,
+} = (() => {
+
+  /**
+   * Featured Key Drive Segment
+   */
+  function DSe(props : { readonly [k in keyof { p1Pos, p2Pos } ] -?: POE1.PTCOORD3D } )
+  {
+    const { p1Pos, p2Pos, } = props
+    ;
+    return (
+      <mesh>
+        <ByCoordTupleArrayGeometryC
+        key={3}
+        attach="geometry"
+        coords={(
+          LINE_STROKED([p1Pos, p2Pos] , { strokeWidth: [0.2025, 0.2725], } )
+        )}
+        />
+        <meshStandardMaterial color={"#FFC0C0"} />
+      </mesh>
+    )
+  }
+  /**
+   * Featured Key Drive-Joining Segment
+   */
+  function JSe(props : { readonly [k in keyof { centralPos } ] -?: POE1.PTCOORD3D } )
+  {
+    ;
+    const { centralPos: p2Pos, } = props
+    ;
+    return (
+      <group
+      position={p2Pos}
+      >
+        <mesh>
+          <boxGeometry args={[0.5, 0.5, 0.5 ]} />
+          <meshStandardMaterial color={'#000000'} />
+        </mesh>
+      </group>
+    )
+  }
+
+  return ({
+    //
+
     PEdgesC : describeThreeJsObjComponent((
       function PEdgeCImpl()
       {
         ;
-        const drawCtrlPoint = (
-          function (...[[p1Pos, p2Pos]] : [readonly [POE1.PTCOORD3D, POE1.PTCOORD3D] ] )
-          {
-            return (
-              <mesh>
-                <ByCoordTupleArrayGeometryC
-                key={2}
-                attach="geometry"
-                coords={(
-                  POLYLINE_AS_TRIANGLES((() => {
-                    const {
-                      strkeRelativePosL ,
-                      strkeRelativePosR ,
-                    } = POE1.APPLY_NRMMAT_BRUSHEDGE_ALONG_BETWEEN_TWO([
-                      // p1Pos, p2Pos ,
-                      [p1Pos[0], p1Pos[1], 0] as const ,
-                      [p2Pos[0], p2Pos[1], 0] as const ,
-                    ] , 0.1525 )
-                    const d = [
-                      POE1.PLUS_TWO(p1Pos , strkeRelativePosR ) ,
-                      POE1.PLUS_TWO(p1Pos , strkeRelativePosL ) ,
-                      POE1.PLUS_TWO(p2Pos , strkeRelativePosL ) ,
-                      POE1.PLUS_TWO(p2Pos , strkeRelativePosR ) ,
-                    ]
-                    return [...d, ...d.toReversed() ]
-                  })() , { close: true, } )
-                )}
-                />
-                <meshStandardMaterial color={"blue"} />
-              </mesh>
-            )
-          }
-        )
+        // const renderFeaturedKeyDriveSegment1 = (
+        //   function (...[[p1Pos, p2Pos]] : [readonly [POE1.PTCOORD3D, POE1.PTCOORD3D] ] )
+        //   {
+        //     return (
+        //       <DSe
+        //       {...{ p1Pos, p2Pos, }}
+        //       />
+        //     )
+        //   }
+        // )
 
         {
 
@@ -441,24 +480,74 @@ const {
           } ,
         } = XRescatterablePointsReact.useReScatterableFor3()
 
+        const kdg = (
+          (() => {
+            ;
+
+            const keyDriveG1 = (
+              <DSe
+              p1Pos={p1Pos}
+              p2Pos={p2Pos}
+              />
+            )
+            const joiningG1With2 = (
+              <JSe centralPos={p2Pos} />
+            )
+            const keyDriveG2 = (
+              <DSe
+              p1Pos={p2Pos}
+              p2Pos={p3Pos}
+              />
+            )
+    
+            return (
+              <group>
+                { keyDriveG1 }
+                { joiningG1With2 }
+                { keyDriveG2 }
+              </group>
+            )
+
+            // const pts = [
+            //   p1Pos ,
+            //   p2Pos ,
+            //   p3Pos ,
+            //   [-2, -2, -2] as const ,
+            //   [-12, 2.25, 1.5] as const ,
+            // ]
+
+            // interface S0 { i: number, r: React.ReactElement, }
+            // interface S1 { i0: number, i1: number, r: React.ReactElement, }
+
+            // return (
+            //   <group>
+            //   { (
+            //     util.Immutable.Seq((
+            //       util.unfoldConjPro({
+            //         digest: ({ i, } : S0) => (
+            //           0
+            //         ) ,
+            //       })
+            //     ))
+            //   ) }
+            //   </group>
+            // )
+          })()
+        )
+
         const mainG = (
           <group
           onClick={(event) => SCATTER_EM() }
           >
-              { drawCtrlPoint([p1Pos, p2Pos]) }
-              { drawCtrlPoint([p2Pos, p3Pos]) }
+              <group>
+                { kdg }
+              </group>
               { (
-                [
+                renderCtrlPoints([
                   p1Pos ,
                   p2Pos ,
                   p3Pos ,
-                ]
-                .map((ptPos, i) => (
-                  <SpclCtrlPointC
-                  key={`ctrl pt ${i}`}
-                  position={ptPos}
-                  />
-                ))
+                ])
               ) }
           </group>
         )
