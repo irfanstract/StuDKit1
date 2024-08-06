@@ -66,21 +66,38 @@ export default function App()
     pagesConventions.describeArticlePage({
       heading: (
         <span>
-          The Studio Kit Sheet Central Studio
+          The Workbook
         </span>
       ) ,
       children: (
         <div>
-          { <EvrC /> }
+          { (
+            <EvrC />
+            // (0 && <EvrC /> )
+            // null
+          ) }
         </div>
       ) ,
     })
   ) ;
 } ;
 
-import {
-  EvrC ,
-} from "@/components/EVR"; ;
+// import {
+//   EvrC ,
+// } from "@/components/EVR"; ;
+/* https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading */
+const EvrC = dynamicComponent(async () => {
+  const { EvrC: C , } = await import("@/components/EVR") ;
+  return C ;
+} , { ssr: false, loading: function EvrCStillLoadingFallbackCompImpl() {
+  return (
+    <div>
+      <p>
+      <strong><code>EvrC</code> (<code>@/components/EVR</code>) is still loading...</strong>
+      </p>
+    </div>
+  ) ;
+} , } ) ;
 
 
 
