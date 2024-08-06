@@ -90,6 +90,11 @@ import {
   getSuggestedSccMastPlotter ,
 } from 'studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx' ;
 
+import {
+  TbmcKnbC ,
+  TbmcHc ,
+} from 'studk-ui/src/tabularUi/reactjs/tbmc-knbc.tsx' ;
+
 export { TbmcModelState , } ;
 
 export {} ;
@@ -97,30 +102,43 @@ export {} ;
 export { SCC as SpclCoreC, } ;
 
 export interface ScCProps {
-  horizonConfig: ScCHorizonConfigPropsDesc ,
-  value?: TbmcModelState ,
+
+  // horizonConfig: ScCHorizonConfigPropsDesc ,
+
+  // value?: TbmcModelState ,
+  // mainPlotters ?: Required<React.ComponentProps<typeof TbmcKnbC> >["mainPlotters"] ,
+
 }
+export interface ScCProps extends React.ComponentProps<typeof TbmcKnbC> {}
 
 export interface ScCHorizonConfigPropsDesc extends Extract<TbmcHc, any> {}
 
 export const SCC = (
+
   describeComponent(function TimeTableMC({
+
     horizonConfig ,
+
     value: valueArg ,
-  } : ScCProps ) {
+
+    rowHeadCollDescs ,
+
+    mainPlotters ,
+
+  } : ScCProps )
+  {
+
     return (
       <TbmcKnbC
       horizonConfig={horizonConfig}
       value={valueArg}
+      rowHeadCollDescs={rowHeadCollDescs}
+      mainPlotters={mainPlotters}
       />
     ) ;
+
   })
 ) ;
-
-import {
-  TbmcKnbC ,
-  TbmcHc ,
-} from 'studk-ui/src/tabularUi/reactjs/tbmc-knbc.tsx' ;
 
 
 
