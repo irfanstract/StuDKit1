@@ -2,6 +2,8 @@
 
 
 
+
+
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -28,6 +30,35 @@ import type {
   Extend,
 } from 'studk-fwcore/src/util/C1.ts'
 
+import {
+  ADJACENT_PAIRS ,
+  OR_TUPLE_TWO ,
+} from "studk-fwcore/src/util/AsStartAndEndPair1.ts"
+
+import {
+  Matrix3,
+  Matrix4,
+  matrixAssign,
+} from 'studk-simulations-commons/src/LinearMap1.mjs'
+import {
+  LinTrCoords3,
+  Point3D,
+  linTrFromTranslateCoord3Matr, 
+  linTrTransformedPosition3DMat,
+} from "studk-video-fwcore/src/LinearTransforms.mjs"
+
+import * as POE from "studk-i3d/src/xt/PolygonalOrthoExpansionABrueNrmOnXyz.ts"
+
+import * as POE1 from "studk-i3d/src/xt/PolygonalOrthoExpansionABrueNrmOnCoord.ts"
+
+import type * as THREE from 'three'
+
+import {
+  POLYLINE_AS_TRIANGLES ,
+} from "studk-i3d/src/helpers/PolygonalAsTriangularOnCoord.ts"
+
+
+
 
 import React, {
   useRef,
@@ -43,36 +74,23 @@ import {
 } from 'studk-ui/src/meta/react/gec.tsx'
 
 import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'
+  describeThreeJsObjComponent ,
+} from "studk-ui-encore/src/ThreeReactJsUi/DescribeMeshC.tsx"
 
 import {
-  describeCallbackAssignedStyleProps,
-} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'
+  ByCoordTupleArrayGeometryC ,
+} from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx" 
 
 
-import * as THREE from 'three'
+
+
+
 import {
-  Canvas,
-  useFrame,
-  ThreeElements, 
-  useThree,
-} from '@react-three/fiber'
+  LINE_STROKING_ANALYSIS ,
+  LINE_STROKED ,
+} from "studk-i3d/src/helpers/PolylinearStrokingEncoreBasic.ts"
 
-/**
- * {@link ThreeElements some React-Described Three Object Constructor }
- * 
- * @see describeComponent
- * 
- */
-export const describeThreeJsObjComponent = (
-  describeComponent
-)
-
-
-
-
+export { LINE_STROKED, }
 
 
 
