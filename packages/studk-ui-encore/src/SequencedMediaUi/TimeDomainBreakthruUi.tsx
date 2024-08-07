@@ -35,6 +35,22 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts' ;
 
+namespace ValidArrayIndices {
+  ;
+
+  export const isSoForIndexing = (
+    function <const E>(...[c, i] : [receiver: ReadonlyArrayOrSeq<E>, i: number ] )
+    { return 0 <= i && i < [...c].length ; }
+  ) ;
+
+  export const isSoForSplicing = (
+    function <const E>(...[c, i] : [receiver: ReadonlyArrayOrSeq<E>, i: number ] )
+    { return 0 <= i && i <= [...c].length ; }
+  ) ;
+
+  ;
+}
+
 const T_BY_HMS = (
   function (...[hn, mn, sn] : [...values: [Array<any>["length"], Array<any>["length"], Array<any>["length"]] ])
   {
@@ -58,7 +74,8 @@ import {
   Button ,
   ButtonC,
   Span ,
-  describeCallbackAssignedStyleProps ,
+  describeCallbackAssignedStyleProps, 
+  ReadonlyArrayOrSeq,
 } from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
@@ -325,26 +342,7 @@ namespace TdbmcTbmcLyrs {
         React.useMemo((): TbmcKnsBasedModelState => {
 
           return (
-            TbmcKnsBasedModelState.getCmnInstance({
-
-              layerStates: (
-                util.Immutable.Seq((
-                  util.reiterated(function* () {
-                    for (const chnlId of chnlIds ) {
-                      yield (
-                        util.asConst<TbmcKnsBasedModelState.LayerStateOps>({
-                          id: chnlId,
-                          kind: "XLayer",
-                        })
-                      ) ;
-                    }
-                  } )
-                ))
-                .toOrderedMap()
-                .mapEntries(([ , vl]) => [vl.id, vl] )
-              ) ,
-
-            })
+            generateLayersFromIds(chnlIds)
           ) ;
         } , [
           chnlIds ,
@@ -356,6 +354,50 @@ namespace TdbmcTbmcLyrs {
         setChnlIds ,
         ls ,
       } as const ;
+    }
+  ) ;
+
+  // TODO
+  /**
+   * scaffolding
+   * 
+   */
+  const generateLayersFromIds = (
+    function <const idT extends string>(...[chnlIds] : [ids: ReadonlyArrayOrSeq<idT> ] )
+    : TbmcKnsBasedModelState
+    {
+
+      const layers1 = (
+
+        util.Immutable.Seq((
+          util.reiterated(function* () {
+
+            for (const chnlId of chnlIds ) {
+              yield (
+                util.asConst<TbmcKnsBasedModelState.LayerStateOps>({
+                  id: chnlId,
+                  kind: "XLayer",
+                })
+              ) ;
+            }
+
+          } )
+        ))
+
+        .toOrderedMap()
+        .mapEntries(([ , vl]) => [vl.id, vl] )
+
+      )  ;
+
+      return (
+        TbmcKnsBasedModelState.getCmnInstance({
+
+          layerStates: (
+            layers1
+          ) ,
+
+        })
+      ) ;
     }
   ) ;
 
@@ -439,7 +481,7 @@ export const TimeDomainedMultiChnlInspectiveSpC = (
                 }
               ) ;
               const chgAc = (
-                onChange && (0 <= chnlLaterIdx && chnlLaterIdx <= chnlIds.length ) ?
+                onChange && ValidArrayIndices.isSoForSplicing(chnlIds, chnlLaterIdx ) ?
                 function () {
                   ;
                   return (
@@ -652,14 +694,6 @@ const WithSsc1D = (
                 />
               ) ;
             }
-            if (revertToRawScrollSavePos === false)
-            {
-              e = (
-                <WithSpclisedScdOverrides1C
-                children={e}
-                />
-              ) ;
-            }
             if (TBMC_SCDNEXTINGDEBUG)
             {
               e = (
@@ -859,61 +893,8 @@ const WithSsc1DInner = (
   ))
 ) ;
 
-export const WithSpclisedScdOverrides1C = (
-  describeHtmlComponent((
-    function WithSpclisedOverrides1CImpl({ children, } : React.PropsWithChildren)
-    {
-      ;
-
-      const scdPeer = (
-        useSpclisedScdPeer()
-      ) ;
-
-      return (
-        ((
-          (...[e] : [React.ReactElement]) => {
-            if (TBMC_SCDNEXTINGDEBUG)
-            {
-              e = (
-                <div
-                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c02'
-                children={e}
-                />
-              ) ;
-            }
-            if (1)
-            {
-              e = (
-                <WithCtxtuallyOverridenScdSProvC
-                value={(
-                  scdPeer
-                )}
-                children={e}
-                />
-              ) ;
-            }
-            if (TBMC_SCDNEXTINGDEBUG)
-            {
-              e = (
-                <div
-                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c01'
-                children={e}
-                />
-              ) ;
-            }
-            return e ;
-          }
-        ))((
-          <>{ children }</>
-        ))
-      ) ;
-    }
-  ))
-) ;
-
 import {
   SpclScrollHandler ,
-  useSpclisedScdPeer, 
   useCtxExplicitSpclisedScdStateValues1,
   useCtxExplicitSpclisedScdPeer,
 } from "studk-ui-encore/src/SequencedMediaUi/TdbScd.tsx" ;
@@ -924,7 +905,6 @@ import {
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
-  WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
   useCtxtualScdProv,
   type ScdStateProvCtx ,
