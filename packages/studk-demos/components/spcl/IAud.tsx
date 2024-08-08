@@ -21,7 +21,8 @@ import {
 
 import {
   NativeButton ,
-  Button ,
+  Button, 
+  SpanC,
 } from "studk-ui/src/xst/dbc.tsx" ;
 console["log"]({ NativeButton, }) ;
 
@@ -34,12 +35,25 @@ import Link from "next/link";
 
 
 import {
+  MustAttachToc,
   pagesConventions,
 } from "@/appInternalScripts/appPagesConvention"; ;
+
+import {
+  ChildrenAndOutlineAndExploring ,
+  SpclCurrentlyPathDisplay ,
+  AsResettibleC, 
+  ActivableStudkCard,
+} from "@/appInternalScripts/layoutComponents" ;
 
 export function IAudPage()
 {
   ;
+
+  const iascRef = (
+    React.useRef<IascImperativeHandleOps>(null)
+  ) ;
+
   return (
     pagesConventions.describeArticlePage({
       heading: (
@@ -49,14 +63,47 @@ export function IAudPage()
       ) ,
       children: (
         <div>
+        <MustAttachToc children={(
+          <span>
+            `Sharing The Audio Samples`
+          </span>
+        )} />
+        <MustAttachToc children={(
+          <a
+          href="#ShareSomeOfTheseSamples"
+          >
+            `Sharing The Audio Samples`
+          </a>
+        )} />
+        <MustAttachToc children={(
+          <SpanC
+          children={`Playing The Audio Sample`}
+          onClick={(
+            (e) => {
+              const c = iascRef.current ;
+              if (c) {
+                c.scrollIntoView() ;
+                c.initC(e.nativeEvent) ;
+              }
+            }
+          ) }
+          />
+        )} />
         <p>
           <i>
             this is StuDK's Audio Pipeline Demo.
             click on the <i>init</i> button to get it started!
           </i>
         </p>
-        <studk-card>
-          <IAudStudioComp />
+        <ActivableStudkCard>
+          { (
+            (() => {
+              const c = <IAudStudioComp iehRef={iascRef} /> ;
+              return (
+                <AsResettibleC children={c} />
+              ) ;
+            })()
+          ) }
           <details>
             <p>
               <em>
@@ -69,18 +116,15 @@ export function IAudPage()
               yeah
             </p>
           </details>
-        </studk-card>
+        </ActivableStudkCard>
         <p>
-          This is
-          a demo app
-          developed to demonstrate various applets building on StuDK.
-          The packages carried by this monorepo
-          are put into usage in these demos.
-          This is
-          a demo app
-          developed to demonstrate various applets building on StuDK.
-          The packages carried by this monorepo
-          are put into usage in these demos.
+          this is StuDK's Audio Pipeline Demo.
+          click on the <i>init</i> button to get it started!
+          this is StuDK's Audio Pipeline Demo.
+          click on the <i>init</i> button to get it started!
+          <span>St.</span>
+          this is StuDK's Audio Pipeline Demo.
+          click on the <i>init</i> button to get it started!
         </p>
       </div>
       ) ,
@@ -96,13 +140,34 @@ export function IAudPage()
 
 
 
-function IAudStudioComp()
+function IAudStudioComp({ iehRef, } : { iehRef ?: React.Ref<IascImperativeHandleOps> } )
 {
   ;
+
+  const divRef1 = React.useRef<HTMLDivElement | null>(null) ;
+
   const [c, initC ] = useIAudCtxInit() ;
 
+  const spclHndle = (
+    React.useMemo((): IascImperativeHandleOps => ({
+      //
+      initC: initC ,
+      scrollIntoView: () => {
+        const s = divRef1.current?.querySelectorAll("*") ?? [] ;
+        (s[1] ?? s[0] )?.scrollIntoView() ;
+      } ,
+    }) , [
+      initC,
+      divRef1 ,
+    ] )
+  );
+
+  React.useImperativeHandle(iehRef, () => spclHndle , [spclHndle] ) ;
+
   return c ? (
-    <div>
+    <div
+    ref={divRef1}
+    >
       <p>
       <Button onClick={false} >
         Running
@@ -117,6 +182,11 @@ function IAudStudioComp()
       </Button>
     </p>
   ) ;
+}
+
+interface IascImperativeHandleOps {
+  readonly initC: React.Dispatch<Event> ,
+  readonly scrollIntoView: () => void ,
 }
 
 function IAudStudioActiveComp({ c, } : { c: BaseAudioContext, } )
@@ -157,12 +227,12 @@ function CAudioBeepSamplesComp({ c, } : { c: BaseAudioContext, } )
       //
       <span className="card" title={`Sound '${k }'`} >
         <code>{k}</code> {}
-        <button
+        <Button
         children={`Share`}
         title={`Share Sound Clip '${k }'`}
-        disabled
+        onClick={false}
         />
-        <button
+        <Button
         children={`Play`}
         title={`Play '${k }'`}
         onClick={() => cl.run(c)}
@@ -190,6 +260,7 @@ import EWAD from "studpresenters/src/EWAD.mjs" ;
 
 function CEWADComp({ c, } : { c: BaseAudioContext, } )
 {
+
   const iewd = (
     useResource(() => (
       console["log"](`initialised`)
@@ -205,7 +276,7 @@ function CEWADComp({ c, } : { c: BaseAudioContext, } )
           }
         }
       } )
-    ) , [c] )
+    ) , [c,] )
   ) ;
 
   return (
