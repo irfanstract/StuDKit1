@@ -118,16 +118,43 @@ import {
   // useDebouncedScdStateWrapper1A ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
 
-interface TimeDomainedImgListFigureCProps
+// TODO
+/**
+ * 
+ * WIP/TBD
+ * 
+ * @deprecated
+ * 
+ */
+export const TimeDomainedImgListFigureC = (
+  describeHtmlComponent((
+    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
+    {
+      ;
+
+      return (
+        <div>
+          <p>
+            <strong>
+            Time-domained Image List FIgure
+            </strong>
+          </p>
+        </div>
+      ) ;
+    }
+  ))
+) ;
+
+interface TimeDomainedMultiChnlInspectiveFigureCProps
 {
   scrollingConfig ?: {
     revertToRawPositioning ?: boolean ;
   } ,
 }
 
-export const TimeDomainedImgListFigureC = (
+export const TimeDomainedMultiChnlInspectiveFigureC = (
   describeHtmlComponent((
-    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedImgListFigureCProps)
+    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
 
@@ -137,7 +164,7 @@ export const TimeDomainedImgListFigureC = (
             return e ;
           }
         ))((
-          <TimeDomainedImgListFigureC11
+          <TimeDomainedMultiChnlInspectiveFigureC11
           {...props}
           />
         ))
@@ -147,14 +174,14 @@ export const TimeDomainedImgListFigureC = (
 ) ;
 
 // TODO
-const TimeDomainedImgListFigureC11 = (
+const TimeDomainedMultiChnlInspectiveFigureC11 = (
   describeHtmlComponent((
     function TimeDomainedImgListFigureCInnerImpl({
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
       } = {} ,
       ...otherProps
-    } : TimeDomainedImgListFigureCProps)
+    } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
 
@@ -364,6 +391,13 @@ const WithSsc1DInner = (
                   <p>
                     debug values:
                   </p>
+                  <div
+                  style={{
+                    position: "relative",
+                    overflow: "auto",
+                    blockSize: `5em`,
+                  }}
+                  >
                   { (
                   <pre style={{ whiteSpace: "pre-wrap", }}>
                     { ((e: any) => JSON.stringify(e) )({
@@ -372,6 +406,7 @@ const WithSsc1DInner = (
                     }) }
                   </pre>
                   ) }
+                  </div>
                 </aside>
                 { e }
                 { (
