@@ -25,39 +25,39 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
-
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts' ;
 
-
-
-
-
-
-import * as React from "react" ;
 
 
 
 
 
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+  React ,
+  toComponentMountKey,
+  describeComponent ,
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  ButtonC,
+  Span ,
+  describeCallbackAssignedStyleProps ,
+  DOmClientBoundingRect ,
+} from 'studk-ui-fwcore/src/util/ReactDomBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
-
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 // import Link from "next/link" ;
 
@@ -65,22 +65,15 @@ import {
   getFullDocBodySrcBasedSvgDataUrl,
 } from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
 
-interface GCOIbleNode extends Extract<Element, any> {}
+import {
+  GET_LOCALOFFSET_OF ,
+  GCOIbleNode ,
+} from "studk-ui-fwcore/src/dom/helpers/DOmLocalBoundingRectOfElementGeCo.ts" ;
+
 export type {
   /** @deprecated this is a WIP/TBD. */
   GCOIbleNode ,
 };
-
-const GET_LOCALOFFSET_OF = (
-  (...[e, { referenceDiv, }] : (
-    ArgsWithOptions<[main: Element,] , (
-      & { referenceDiv: GCOIbleNode, }
-    ) >
-  ) ) => ({
-    x: (e.getBoundingClientRect().left) - ((referenceDiv.getBoundingClientRect().left) + -(referenceDiv.scrollLeft) ) ,
-    y: (e.getBoundingClientRect().top ) - ((referenceDiv.getBoundingClientRect().top ) + -(referenceDiv.scrollTop ) ) ,
-  })
-) ;
 
 
 
@@ -98,19 +91,18 @@ import {
 
 import {
   ScdC ,
-  useDebouncedScdState1, 
   useDebouncedScdStateWrapper1,
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
 
 import {
-  useCtxtualisedScdPoiState1, 
-  useCtxtualisedScdState1,
+  // useCtxtualisedScdState1,
   // useDebouncedScdStateWrapper1A ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
 
 export interface TbmcKnbSpclScrollHandler extends Extract<{}, any>
 {
-  isSpclScrollHandler ?: true ;
+  isTbmcKnbSpclScrollHandler ?: true ;
+
   searchDisplayedSegs: (
     SdsFncImpl<(
       ReadonlyArray<(
@@ -119,20 +111,26 @@ export interface TbmcKnbSpclScrollHandler extends Extract<{}, any>
           readonly endT?: number,
         }
         & { rnk: string | null, }
+        & { asNde: Element, }
         & { etc ?: {} | null, }
       )>
     )>
   ) ;
-  analyseDisplayedSegsSearchReturnedDescs: (ctx: readonly (ReturnType<TbmcKnbSpclScrollHandler["searchDisplayedSegs"] >[number] )[] ) => (
-    ReadonlyArray<(
-      { pt: { x: number, y: number, } }
-    )>
+
+  analyseDisplayedSegsSearchReturnedDescs: (
+    (ctx: readonly (ReturnType<TbmcKnbSpclScrollHandler["searchDisplayedSegs"] >[number] )[] ) => (
+      ReadonlyArray<(
+        { pt: { x: number, y: number, } }
+      )>
+    )
   ) ;
+
 }
 
 interface SdsFncImpl<out R>
 {
   //
+
   (...ctx: (
     ArgsWithOptions<(
       ArgsWithOptions<[], (
@@ -151,10 +149,30 @@ interface SdsFncImpl<out R>
       )>
     ) , {}>
   )): R ;
+
 }
+
+interface ASVN {
+  //
+  assumedViewportNode : (
+    // Document | Element
+    GCOIbleNode
+  ),
+  assumedPositionalParentNode : (
+    // Document | Element
+    GCOIbleNode
+  ),
+}
+function ASVN(props : ASVN )
+: ASVN
+{
+  return props ;
+}
+export { ASVN, } ;
 
 export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
   function (...args : (
+
     ArgsWithOptions<[rootNode: (
       // Document | Element
       GCOIbleNode
@@ -163,27 +181,54 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
         // Document | Element
         GCOIbleNode
       ),
+      aSVn?: ASVN ,
     } >
+
   )) : TbmcKnbSpclScrollHandler
   {
   ;
-  const [rootNode, { lookupRootNode: altLookupRootNode = rootNode, } = {} ,] = args ;
+
+  const [
+    rootNode,
+    {
+      lookupRootNode: altLookupRootNode = rootNode,
+      aSVn: {
+        //
+        assumedPositionalParentNode = rootNode ,
+        assumedViewportNode = rootNode ,
+      } = {} satisfies AllOrNever1<ASVN> ,
+    } = null ?? {} ,
+  ] = args ;
+
+  const processAdrdException = (
+    // console["error"](String(z) )
+    util.L.throttle((z: unknown) => (
+      console["error"](String(z) )
+    ) , (100 * 1000 ) )
+  ) ;
+
   return (
     ((
       {
+
         searchDisplayedSegs: (ctx) => {
+
           if (0) {
             return [] ;
           }
+
           if (1)
           {
+
             const {
               searchScope: customRootDiv = rootNode ,
             } = ctx ;
             const {
               searchScope: lookupRootNode = altLookupRootNode ,
             } = ctx ;
+
             return (
+
               TbmcKnbCDisplayed.searchSegmentDisplayNodes(lookupRootNode, {
                 flatTranslate: ({ e, rnk: rnk, }) => {
                   return [
@@ -191,59 +236,101 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
                   ] as const ;
                 } ,
               } )
+
               .filter(({ e, }) => {
                 if (0) {
                   return true ;
                 }
+                // TODO
                 return (
-                  0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, } ).x
+                  0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: assumedPositionalParentNode, } ).x
                   &&
-                  (1 || -23.0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, }).y )
+                  (1 || -23.0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: assumedPositionalParentNode, }).y )
                 ) ;
               } )
+
               .map(({ rnk, e, }) => {
-                const cp = GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, }) ;
+                const toPpn = GET_LOCALOFFSET_OF(e, { referenceDiv: (assumedPositionalParentNode ), }) ;
+                const toVwp = GET_LOCALOFFSET_OF(e, { referenceDiv: (assumedViewportNode         ), }) ;
+                const baselines = {
+                  ePage: GET_LOCALOFFSET_OF(e                          , { referenceDiv: (document.body ), }) ,
+                  cPage: GET_LOCALOFFSET_OF(assumedPositionalParentNode, { referenceDiv: (document.body ), }) ,
+                  vPage: GET_LOCALOFFSET_OF(assumedViewportNode        , { referenceDiv: (document.body ), }) ,
+                } ;
                 return {
                   startT: -1 ,
                   rnk,
-                  etc: { rnk, cp, } ,
+                  asNde: e,
+                  etc: {
+                    rnk,
+                    toPpn,
+                    toVwp,
+                    // baselines ,
+                    ...baselines,
+                    vp: toVwp,
+                    cp: toPpn,
+                  } ,
                 } as const ;
               } )
+
             ) ;
           }
-          return [] ;
+          return [] as const ;
         } ,
+
         analyseDisplayedSegsSearchReturnedDescs: (ctxs) => {
           // TODO
+
           const customRootDiv = rootNode;
+
           return (
+
             ctxs
-            .flatMap(({ rnk, }) => (
+
+            .flatMap(({ rnk, asNde: asNde0, }) => (
+
               util.reiterated(function* () {
+
                 if (typeof rnk === "string") {
-                  for (const e of (function () {
+
+                  for (const e of (function (): Element[] {
+
+                    if (1) {
+                      return [asNde0] ;
+                    }
+
                     try {
                       return (
                         TbmcKnbCDisplayed.getSegmentDisplayRowsByRnk(rnk)
                       ) ;
                     } catch (z: any) {
-                      console["error"](String(z) ) ;
+                      processAdrdException(z) ;
                       return [] ;
                     }
                   })() )
                   {
-                    const poi = GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, }) ;
-                    yield { poi, } as const ;
+                    const poi = (
+                      GET_LOCALOFFSET_OF(e, {
+                        referenceDiv: assumedPositionalParentNode,
+                      })
+                    ) ;
+                    yield {
+                      poi,
+                    } as const ;
                   }
                 }
               } )
             ) )
-            .map(e => ({ pt: e.poi, }) )
+            .map(e => ({
+              pt: e.poi,
+            } as const ) )
+
           ) ;
-          return [] ;
+          return [] as const ;
         } ,
-      }
-    ) satisfies TbmcKnbSpclScrollHandler)
+
+      } satisfies TbmcKnbSpclScrollHandler
+    ) )
   ) ;
   }
 ) ;
@@ -256,32 +343,8 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
   })
 ) ;
 
-/**
- * 
- * @deprecated this is a WIP/TBD
- */
-export const useSpclisedScdStateValues1 = (
-  function () {
-    ;
-    const [ , { poi , setPoi, statDerivable, }] = useCtxtualisedScdState1() ;
-    const [lsce, { setLsce, setLsceDebcd, }] = (
-      useDebouncedScdStateWrapper1(poi, setPoi)
-    ) ;
-    return {
-      poi ,
-      setPoi ,
-      statDerivable ,
-      lsce ,
-      setLsce ,
-      setLsceDebcd ,
-    } as const ;
-  }
-) ;
-
 import {
-  WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
-  getScdSProvCtxStack ,
   type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
