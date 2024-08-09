@@ -170,6 +170,11 @@ export const AppliedComponentPayloadE = (
   "slot" satisfies keyof React.JSX.IntrinsicElements
 ) ;
 
+export {
+  //
+  useRefreshedCallback ,
+} from "studk-ui-fwcore/src/util/StudkReactJsRefreshedCallback.tsx" ;
+
 ;
 
 
@@ -192,6 +197,12 @@ export type {
   RequiredComponentProps ,
   ComponentProps ,
 } from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
+
+export {
+  //
+  useEventDispatchCallback ,
+
+} from "studk-ui-fwcore/src/util/StudkReactJsxEventListenerDispatchUtils.tsx" ;
 
 import {
   describeComponent,
