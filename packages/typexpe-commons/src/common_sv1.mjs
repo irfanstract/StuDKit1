@@ -19,6 +19,8 @@ export {
   throwAssertionError ,
 } ;
 
+// import type {} from "typexpe-commons/src/ArrayPrototypeIncludes.mts" ;
+
 /**
  * nonlocally-returning ev
  * 
@@ -493,6 +495,16 @@ export {
 
 ;
 
+/* `allocateKeyInternedObjectPool` */
+export {
+  allocateKeyInternedObjectPool ,
+} from 'typexpe-commons/src/ort.mjs';
+
+/* `createInterningSubclass` */
+export {
+  createInterningSubclass ,
+} from 'typexpe-commons/src/ortEdConstructors.mjs';
+
 /** @type {{ <T extends (...args: [...argsT]) => any, const argsT extends any[]>(func: T, resolver: ((...args: Parameters<T>) => any) | undefined): ReturnType<(typeof L.memoize<T>)>; } } */
 export const xMemoize = (
   function (...[f, r])
@@ -538,6 +550,10 @@ export {
   /** @deprecated alias of {@link Resolvable }. */
   Resolvable as Deferred,
 } ;
+
+if (typeof setImmediate === "undefined") {
+  globalThis.setImmediate ??= queueMicrotask ;
+}
 
 export { startTimeout, } ;
 
