@@ -29,16 +29,16 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   // ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
 
 
 
@@ -53,11 +53,11 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   SingleChildDiv,
@@ -134,7 +134,11 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
           Home
           </Link>
           --
-          <Link href="credits/">
+          <Link href="/reference/demos/">
+          Demo Pages
+          </Link>
+          --
+          <Link href="/credits/">
           credits
           </Link>
           --
