@@ -64,7 +64,7 @@ import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 // import {
 //   describeComponent,
-// } from 'studk-ui/src/meta/react/dec.tsx'; ;
+// } from 'studk-ui-componentdefinition/src/dec.tsx'; ;
 
 
 
