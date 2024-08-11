@@ -27,20 +27,11 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   RequiredPartially,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
-
-import type {
-  // ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 
 
@@ -49,17 +40,18 @@ import type {
 
 import * as React from "react" ;
 
-
-
-
-
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   SingleChildDiv,
@@ -69,8 +61,6 @@ import {
   Button ,
   Span ,
 } from 'studk-ui/src/meta/react/dbc.tsx'; ;
-
-// import Link from "next/link" ;
 
 
 
@@ -127,7 +117,7 @@ interface IdealSvgProps extends RequiredPartially<JSX.IntrinsicElements["svg"], 
 {}
 
 export const BlockLvlSvgC = (
-  describeComponent(function BlockLvlSvgCImpl ({ style, ...remProps } : IdealSvgProps ) {
+  describeHtmlComponent(function BlockLvlSvgCImpl ({ style, ...remProps } : IdealSvgProps ) {
     return (
       <InlineLvlSvgC
       style={{
@@ -143,7 +133,7 @@ export const BlockLvlSvgC = (
 ) ;
 
 export const InlineLvlSvgC = (
-  describeComponent(function InlineLvlSvgCImpl ({
+  describeHtmlComponent(function InlineLvlSvgCImpl ({
     children: c ,
     style: {
       // width: w,
