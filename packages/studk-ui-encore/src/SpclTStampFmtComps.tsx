@@ -36,36 +36,27 @@ import type {
 
 
 
-import * as React from "react" ;
-
-
-
-
-
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+  React ,
+  toComponentMountKey,
+  describeComponent ,
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  Span ,
+  SingleChildDiv ,
+  describeCallbackAssignedStyleProps ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
-  SingleChildDiv,
-} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
-
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
-
-import {
   getFullDocBodySrcBasedSvgDataUrl,
 } from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
-
-import {
-  describeCallbackAssignedStyleProps,
-} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
 
 
