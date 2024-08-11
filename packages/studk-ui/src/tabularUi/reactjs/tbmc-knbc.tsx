@@ -192,6 +192,11 @@ const useTbmcKnbCProps = (
               fontSize: `75%` ,
             }}
             >
+            { " " && (
+              <p>
+                (ID: <code>{ msd.id }</code> )
+              </p>
+            ) }
             <p
             >
               Spn
@@ -444,20 +449,23 @@ export namespace TbmcKnbCDisplayed
       (
         (function () {
 
-          const s0 = `.studk-sequemi-tlwalkthruappcomp`;
+          const s0 = (
+            // `.studk-sequemi-tlwalkthruappcomp`
+            `* `
+          );
           const s1 = `:is(tr)[data-src-row-id^=plotsegment]`;
 
           return (
             root.matches(s0) ?
             (
               Array.from((
-                root.querySelectorAll(`${s1 }`)
+                root.querySelectorAll(`:is(${s1 })`)
               ) )
             )
             :
             (
               Array.from((
-                root.querySelectorAll(`${s0 } ${s1 }`)
+                root.querySelectorAll(`:is(${s0 }) :is(${s1 })`)
               ) )
             )
           ) ;
