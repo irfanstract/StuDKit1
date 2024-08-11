@@ -116,7 +116,15 @@ const useOrTranslateBtnCProps = (
           if (hrefAc.href.match(/^(data|blob|object):/u) ) {
             return { download: "attachment", target: '_blank', } ;
           }
-          if (((typeof URL !== "undefined") && new URL(hrefAc.href).origin ) === location?.origin ) {
+          if ((
+            (typeof URL !== "undefined" && typeof location !== "undefined" )
+            &&
+            (
+              (new URL(hrefAc.href).origin )
+              ===
+              location?.origin
+            )
+          ) ) {
             return { } ;
           }
           return { target: '_blank' } ;
