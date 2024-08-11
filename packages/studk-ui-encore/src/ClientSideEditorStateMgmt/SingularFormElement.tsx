@@ -91,7 +91,7 @@ import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
-interface XIiSpcficProps extends Pick<JSX.IntrinsicElements["input"], "type" | "value" | "checked" | "step">
+interface XIiSpcficProps extends Pick<JSX.IntrinsicElements["input"], "type" | "value" | "checked" | "step" | "spellCheck">
 {}
 
 export const SfmInputC = (
@@ -107,6 +107,7 @@ export const SfmInputC = (
         type: itype,
         checked,
         step: stepv,
+        spellCheck = false,
         onChange: runOnChgCb ,
       } = props ;
 
@@ -190,6 +191,7 @@ export const SfmInputC = (
             type={itype}
             // defaultValue={value }
             value={displayedValue}
+            spellCheck={spellCheck}
             checked={checked}
             step={stepv}
             onChange={e0 => {
@@ -209,6 +211,12 @@ export const SfmInputC = (
               <strong>
               has uncommitted chgs; press 'enter' to commit
               </strong>
+            </p>
+          ) }
+          { null && (
+            <p>
+              Given Value      : {} <code>{ JSON.stringify(givenValue    ) }</code>; {}
+              Displayed Value  : {} <code>{ JSON.stringify(displayedValue) }</code>; {}
             </p>
           ) }
         </form>
