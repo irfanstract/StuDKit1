@@ -539,6 +539,10 @@ export {
   Resolvable as Deferred,
 } ;
 
+if (typeof setImmediate === "undefined") {
+  globalThis.setImmediate ??= queueMicrotask ;
+}
+
 export { startTimeout, } ;
 
 /**
