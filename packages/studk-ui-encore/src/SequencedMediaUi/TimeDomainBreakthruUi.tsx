@@ -55,7 +55,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -121,7 +126,7 @@ interface TimeDomainedImgListFigureCProps
 }
 
 export const TimeDomainedImgListFigureC = (
-  describeComponent((
+  describeHtmlComponent((
     function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedImgListFigureCProps)
     {
       ;
@@ -143,7 +148,7 @@ export const TimeDomainedImgListFigureC = (
 
 // TODO
 const TimeDomainedImgListFigureC11 = (
-  describeComponent((
+  describeHtmlComponent((
     function TimeDomainedImgListFigureCInnerImpl({
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
@@ -208,7 +213,7 @@ const TimeDomainedImgListFigureC11 = (
  * @deprecated this is a WIP.
  */
 export const TimeDomainedImgListSpanC = (
-  describeComponent((
+  describeHtmlComponent((
     //
     function TimeDomainedImgListSpanCImpl({} : {})
     {
@@ -219,7 +224,7 @@ export const TimeDomainedImgListSpanC = (
 ) ;
 
 export const TimeDomainedImgListSpC = (
-  describeComponent((
+  describeHtmlComponent((
     function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg } : { hc ?: ScCHorizonConfigPropsDesc, })
     {
       ;
@@ -292,7 +297,7 @@ const computeDefaultHorizonConfig = (
 ) ;
 
 const WithSsc1D = (
-  describeComponent((
+  describeHtmlComponent((
     function WithSsc1DImpl({ children, revertToRawScrollSavePos, } : React.PropsWithChildren<{ revertToRawScrollSavePos: boolean ; }>)
     {
       ;
@@ -324,7 +329,7 @@ const WithSsc1D = (
 ) ;
 
 const WithSsc1DInner = (
-  describeComponent((
+  describeHtmlComponent((
     function WithSsc1DInnerImpl({ children, } : React.PropsWithChildren)
     {
       ;
@@ -388,7 +393,7 @@ const WithSsc1DInner = (
 ) ;
 
 export const WithSpclisedScdOverrides1C = (
-  describeComponent((
+  describeHtmlComponent((
     function WithSpclisedOverrides1CImpl({ children, } : React.PropsWithChildren)
     {
       ;
