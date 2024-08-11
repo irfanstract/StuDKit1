@@ -41,6 +41,20 @@ import type {
   Extend,
 } from 'studk-fwcore/src/util/C1.ts'; ;
 
+const withLoggingAfterwards = (
+  function <Args extends readonly unknown[], R>(x0: (...args: Args) => R )
+  {
+    const x1 = (
+      (...a: Args) => {
+        const originalReturnVal = x0(...a) ;
+        console["debug"]({ originalReturnVal, a, }) ;
+        return originalReturnVal ;
+      }
+    ) ;
+    return x1 ;
+  }
+) ;
+
 
 
 
@@ -77,15 +91,32 @@ import {
   WithCtxtuallyOverridenScdSProvC ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
+/**
+ * *like {@link useCtxtualisedScdState1} but `provider` most be explicitly specified*.
+ * *no-tuple version of {@link useScdState1Tupled}*.
+ * 
+ */
 const useScdState1 = (
-  function (scprov: ScdStateProvCtx) {
+  function <St extends {}>(...args : (
+    ArgsWithOptions<[provider: ScdStateProvCtx<St>] , {
+      getIdOf?: (e: ScdStateDerivable) => (NonNullable<unknown> | null ) ,
+    } >
+  ) ) {
+
+    const [
+      scprov,
+      {
+        getIdOf = (e: ScdStateDerivable) => e.rootNd
+        ,
+      } = null ?? {},
+    ] = args ;
     ;
 
     const [sDerivbl, setDrvblState] = (
 
       useAutoresettingProvideredState
 
-    )((scprov: ScdStateProvCtx): ScdStateDerivable => scprov , scprov, e => e.rootNd ) ;
+    )((scprov: ScdStateProvCtx): ScdStateDerivable => scprov , scprov, getIdOf ) ;
 
     const {
       pos: lastPoi,
@@ -118,25 +149,21 @@ const useScdState1 = (
 export type ScdsPoint2D = { x: number, y: number } ;
 
 /**
- * enhanced version of {@link useCtxtualisedScdPoiState1}
- * with essential additional features
- * (eg `statDerivable`, `setDrvblState`, etc )
+ * *like {@link useCtxtualisedScdState1} but `provider` must be explicitly specified*.
+ * *tupled version of {@link useScdState1}*.
  * 
  */
-const useCtxtualisedScdState1 = (
-  function () {
-    ;
-
-    const scprov = (
-      useCtxtualScdProv()
-    ) ;
-
+const useScdState1Tupled = (
+  function <St extends {}>(...args: Parameters<typeof useScdState1<St> > )
+  {
     const {
+      //
+      scprov ,
       statDerivable ,
-      poi ,
+      poi,
       setDrvblState ,
       setPoi ,
-    } = useScdState1(scprov) ;
+    } = useScdState1(...args) ;
 
     return (
       [statDerivable, {
@@ -152,6 +179,33 @@ const useCtxtualisedScdState1 = (
         setPoi ,
       }] as const
     ) ;
+
+  }
+) ;
+
+/**
+ * enhanced version of {@link useCtxtualisedScdPoiState1}
+ * with essential additional features
+ * (eg `statDerivable`, `setDrvblState`, etc ) .
+ * a version of {@link useScdState1 } with
+ * the main argument being the return-value of {@link useCtxtualScdProv } .
+ * 
+ * @deprecated instead,
+ * expand to (in order) {@link useCtxtualScdProv } and {@link useScdState1Tupled}
+ * 
+ */
+const useCtxtualisedScdState1 = (
+  function () {
+    ;
+
+    const scprov = (
+      useCtxtualScdProv()
+    ) ;
+
+    return (
+      useScdState1Tupled(scprov)
+    ) ;
+
   }
 ) ;
 
@@ -159,6 +213,9 @@ const useCtxtualisedScdState1 = (
  * minimisation of {@link useCtxtualisedScdState1}
  * where we only want the value `poi` (like eg `<Scd>` does) -
  * returned in the format of {@link React.useState}
+ * 
+ * @deprecated instead,
+ * expand to (in order) {@link useCtxtualScdProv } and {@link useScdState1}
  * 
  */
 const useCtxtualisedScdPoiState1 = (
@@ -194,6 +251,8 @@ export {
 export {
   /** @deprecated this is a WIP/TBD. */
   useScdState1 ,
+  /** @deprecated this is a WIP/TBD. */
+  useScdState1Tupled,
   /**
    * 
    * @deprecated this is a WIP/TBD.
@@ -223,7 +282,14 @@ export const useDebouncedScdStateWrapper1A = (
   {
     
     const setPoiDebcd = (
-      React.useCallback(util.L.throttle(setPoi, 0.10205 * 1000 ) , [setPoi] )
+      React.useCallback((
+        util.L.throttle((
+          withLoggingAfterwards(setPoi)
+        ), 0.10205 * 1000 , {
+          leading: false,
+          trailing: true,
+        } )
+      ) , [setPoi] )
     ) ;
 
     const poiDeferred = (
