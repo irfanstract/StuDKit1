@@ -1,0 +1,1 @@
+export {} ; import TS from "typescript" ; export default TS ; 
