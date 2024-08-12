@@ -66,7 +66,7 @@ import {
 
 import type {
   ArgsWithOptions ,
-} from "studk-ui/src/fwCore/ewo.js" ;
+} from "studk-fwcore/src/util/C1.ts" ;
 
 export * from 'studk-fwcore-setups/src/codesemantics-dependography-all.mjs';
 
