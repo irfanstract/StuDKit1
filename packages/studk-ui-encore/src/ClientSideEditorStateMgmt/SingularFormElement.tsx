@@ -40,50 +40,25 @@ import type {
 
 ;
 
-import * as React from "react" ;
-
-const toComponentMountKey = (
-  (value: (JSX.IntrinsicElements["input"] )["value"] ) => (
-    ((): string => {
-      switch (typeof value) {
-        case "string":
-        case "number":
-        case "bigint":
-        case "boolean":
-        case "undefined":
-          return String(value) ;
-      }
-      return JSON.stringify(value) ;
-    })()
-  )
-) ;
-
-
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
-
-import {
+  React ,
+  toComponentMountKey,
+  describeComponent ,
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  Span ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
-import {
-  withExtraSemanticProperties ,
-} from 'studk-ui-fwcore/src/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
-
 // import {
 //   SingleChildDiv,
 // } from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
-
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 // import Link from "next/link" ;
 
