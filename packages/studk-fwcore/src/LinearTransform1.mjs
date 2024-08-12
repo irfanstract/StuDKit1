@@ -294,6 +294,22 @@ export function linTrScaled2D(m0, m1)
 }
 
 /**
+ * scaling with origin at "pt zero"
+ * 
+ * @param {[number] } args
+ */
+export function linTrUniformZeroPtCenteredScaling3DMat(...[sc] )
+{
+  return (
+    matrixAssign(identityMat4(), {
+      "m1,1": sc ,
+      "m2,2": sc,
+      "m3,3": sc,
+    } )
+  ) ;
+}
+
+/**
  * 
  * @param {[Angle] } args
  */
