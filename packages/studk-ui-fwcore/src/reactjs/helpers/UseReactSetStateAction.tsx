@@ -24,44 +24,44 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
-
 import type {
   ArgsGetOptions ,
-  ArgsWithOptions ,
-  ObjectFromEntry, 
-  RecordValue,
-  MapEntrySpec,
-} from 'studk-fwcore/src/util/C1.ts'; ;
-
-import {
-  allocateKeyInternedObjectPool ,
-} from 'typexpe-commons/src/ort.mjs';
-
-
-import {
-  Point2D ,
-} from "studk-util/src/math/point-all.mjs" ;
-
-
-
-
-
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'
 
 
 ;
 
-const assignStylesOnto: {
-  <hostT extends ElementCSSInlineStyle, const R extends void>(...x: [receiver: hostT, (x: hostT["style"]) => R ] ): R ;
-} = (
-  function (nd, applyStls) {
-    return applyStls(nd.style) ;
-  }
-) ;
 
-export { assignStylesOnto, } ;
+
+
+
+
+import type * as React from "react" ;
+
+namespace ReactSetStateActionHelpers {
+  ;
+
+  export function asDigestFnc<S , SF extends (
+    // (S extends ((...args: any) => any ) ? never : (React.SetStateAction<S> ) )
+    React.SetStateAction<S>
+  )>(f0: SF) : ((x0: S) => S)
+  {
+    return (
+      (typeof f0 === "function") ? f0 : (() => f0 )
+    ) ;
+  }
+
+}
+
+export {
+  ReactSetStateActionHelpers as ReactSetStateActionHelpers ,
+} ;
+
+
 
 
 
