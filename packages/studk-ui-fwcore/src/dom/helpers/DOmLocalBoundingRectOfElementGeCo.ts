@@ -4,6 +4,7 @@
 
 
 
+
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -24,27 +25,15 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
-
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
-  ArgsWithOptions ,
-  ObjectFromEntry, 
-  RecordValue,
-  MapEntrySpec,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
 } from 'studk-fwcore/src/util/C1.ts'; ;
-
-import {
-  allocateKeyInternedObjectPool ,
-} from 'typexpe-commons/src/ort.mjs';
-
-
-import {
-  Point2D ,
-} from "studk-util/src/math/point-all.mjs" ;
-
 
 
 
@@ -53,15 +42,18 @@ import {
 
 ;
 
-const assignStylesOnto: {
-  <hostT extends ElementCSSInlineStyle, const R extends void>(...x: [receiver: hostT, (x: hostT["style"]) => R ] ): R ;
-} = (
-  function (nd, applyStls) {
-    return applyStls(nd.style) ;
-  }
+import {
+  DOmClientBoundingRect ,
+} from "studk-ui-fwcore/src/dom/helpers/DOmOnScreenBoundingRectOfElement.ts" ;
+import {
+  DOmLocalClientBoundingRect ,
+} from "studk-ui-fwcore/src/dom/helpers/DOmLocalBoundingRectOfElement.ts" ;
+
+export const GET_LOCALOFFSET_OF = (
+  DOmLocalClientBoundingRect.getFrom
 ) ;
 
-export { assignStylesOnto, } ;
+export interface GCOIbleNode extends Extract<DOmLocalClientBoundingRect.EligibleElem, any> {}
 
 
 
@@ -69,4 +61,4 @@ export { assignStylesOnto, } ;
 
 
 
-
+;
