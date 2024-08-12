@@ -43,7 +43,8 @@ import {
   IObservableValue,
   observable, 
   runInAction,
-} from "mobx" ;
+  shiftStateBoxValue ,
+} from "studk-fwcore/src/FunctionalReactiveChaining/StudkMobx.ts" ;
 
 
 
@@ -105,88 +106,43 @@ import {
 
 ;
 
-export const allocateTocCtx = (
-  () => (
-    (function () {
-  
-      interface TocCtxS1Ops {
-        attachItem: () => TocAttachedIndividualItemOps ,
-      }
+interface TocCtxS1Ops {
+  attachItem: () => TocAttachedIndividualItemOps ,
+}
 
-      interface TocCtxS3Ops {
-        getAsJsxList: () => React.ReactElement,
-      }
+interface TocCtxS3Ops {
+  getAsJsxList: () => React.ReactElement,
+}
 
-      interface TocCtxPosOps extends
-      TocCtxS1Ops, TocCtxS3Ops
-      {}
+interface TocAttachedIndividualItemOps {
+  update: (x: React.ReactElement) => void ;
+  close(): void ;
+}
 
-      const tocOpCtx = (
-        React.createContext<(TocCtxS1Ops & TocCtxS3Ops) | null>(null)
-      ) ;
+;
 
-      interface TocAttachedIndividualItemOps {
-        update: (x: React.ReactElement) => void ;
-        close(): void ;
-      }
 
-      const WithTocAllocC = (
-        describeComponent((
-          function WithTocAllocCImpl({ debug = false, children, } : { debug ?: boolean, } & React.PropsWithChildren )
-          {
-            ;
+;
 
-            const [
-              mainExportedOpItc ,
-            ] = useSpcl1({ debug, }) ;
+const {
+  allocateMain: allocateSpcl1,
+} = (() => {
+      ;
 
-            let e1 : React.ReactElement = <>{ children }</> ;
-
-            e1 = (
-              <tocOpCtx.Provider
-              value={mainExportedOpItc}
-              children={e1}
-              />
-            ) ;
-
-            return e1 ;
-          }
-        ))
-      ) ;
-
-      /**
-       * the main res handle.
-       * 
-       * we cannot safely use the commonplace {@link React.useState `useState<RegItems>(Immutable.Map() )`} style as
-       * here that (if not done properly in the burdensome way) is prone to risking bringing re-renders into nonterminating loop.
-       * instead,
-       * we need to switch to *ref*-like storage
-       * 
-       */
-      const useSpcl1 = (
+      const allocateMain = (
         function ({ debug = false, } : { debug ?: boolean, } )
         {
           ;
 
-          /**
-           * we cannot safely use the commonplace {@link React.useState `useState<RegItems>(Immutable.Map() )`} style as
-           * here that (if not done properly in the burdensome way) is prone to risking bringing re-renders into nonterminating loop.
-           * instead,
-           * we need to switch to *ref*-like storage
-           * 
-           */
-          const [mOb,  ] = (
-            useClientSideInitOnlyState(() => {
-              return (
+          ;
+          const stateBox = (
                 observable.box<util.Immutable.Map<string | number, React.ReactElement> >((
                   util.Immutable.Map()
                 ))
-              ) ;
-            } )
           ) ;
 
-          const mainExportedOpItc = (
-            React.useMemo<(TocCtxS1Ops & TocCtxS3Ops) | null >(() => (mOb && {
+          return (
+            ((): (TocCtxS1Ops & TocCtxS3Ops ) => ({
 
               attachItem: (): TocAttachedIndividualItemOps => {
 
@@ -197,22 +153,41 @@ export const allocateTocCtx = (
                     update: (itemv) => {
                       runInAction(() => {
                         ;
-                        const m0 = mOb.get() ;
-                        mOb.set((
-                          (m0.get(id,) === itemv) ?
-                          m0
-                          : m0.set(id, itemv)
-                        ) ) ;
+
+                        const {
+                          state0 ,
+                          state1 ,
+                        } = (
+                          shiftStateBoxValue(stateBox, mp0 => {
+                            const mp1 = (
+                              (mp0.get(id,) === itemv) ?
+                              mp0
+                              : mp0.set(id, itemv)
+                            ) ;
+                            return mp1 ;
+                          })
+                        ) ;
                       }) ;
                     } ,
+
                     close: () => {
                       runInAction(() => {
                         ;
-                        // TODO
-                        const m0 = mOb.get() ;
-                        mOb.set(m0.remove(id,) ) ;
+
+                        const {
+                          state0 ,
+                          state1 ,
+                        } = (
+                          shiftStateBoxValue(stateBox, mp0 => {
+                            const mp1 = (
+                              mp0.remove(id,)
+                            ) ;
+                            return mp1 ;
+                          })
+                        ) ;
                       }) ;
                     } ,
+
                   } satisfies TocAttachedIndividualItemOps
                 ) ;
               } ,
@@ -222,15 +197,13 @@ export const allocateTocCtx = (
                 return (
                   <SpclAsJsxListImpl
                   debug={debug}
-                  mpOb={mOb}
+                  mpOb={stateBox}
                   />
                 ) ;
               } ,
 
-            }) , [mOb, debug])
+            }) )()
           ) ;
-
-          return [mainExportedOpItc] as const ;
         }
       ) ;
 
@@ -276,7 +249,63 @@ export const allocateTocCtx = (
           ) ;
         })
       ) ;
+
+
+      return {
+        allocateMain: allocateMain ,
+      } ;
+})() ;
+
+;
+
+
+
+export const allocateTocCtx = (
+  () => (
+    (function () {
   
+      interface TocCtxPosOps extends
+      TocCtxS1Ops, TocCtxS3Ops
+      {}
+
+      const tocOpCtx = (
+        React.createContext<(TocCtxS1Ops & TocCtxS3Ops) | null>(null)
+      ) ;
+
+      const WithTocAllocC = (
+        describeComponent((
+          function WithTocAllocCImpl({ debug = false, children, } : { debug ?: boolean, } & React.PropsWithChildren )
+          {
+            ;
+
+            /**
+             * we cannot safely use the commonplace {@link React.useState `useState<RegItems>(Immutable.Map() )`} style as
+             * here that (if not done properly in the burdensome way) is prone to risking bringing re-renders into nonterminating loop.
+             * instead,
+             * we need to switch to *ref*-like storage
+             * 
+             */
+            const [mainExportedOpItc,  ] = (
+
+              useClientSideInitOnlyState(() => (
+                allocateSpcl1({ debug, })
+              ) )
+            ) ;
+
+            let e1 : React.ReactElement = <>{ children }</> ;
+
+            e1 = (
+              <tocOpCtx.Provider
+              value={mainExportedOpItc}
+              children={e1}
+              />
+            ) ;
+
+            return e1 ;
+          }
+        ))
+      ) ;
+
       const useTocIndividualAttachCl = function () {
         ;
 
