@@ -28,6 +28,9 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
 } from 'studk-fwcore/src/util/C1.ts'
 
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
@@ -94,6 +97,10 @@ import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
+import {
+  SfmInputC ,
+} from "studk-ui-encore/src/ClientSideEditorStateMgmt/SingularFormElement.tsx" ;
+
 
 
 
@@ -109,7 +116,7 @@ import {
 
 const getSpclDefaultClvMd = () => (
   // <p><code>{nodeTypeLabelTxt }</code></p>
-  CLV.forIsTerminaNdFnc()
+  CLV.forIsTerminaNdFnc(undefined, { asDbWhen: () => true, } )
 ) ;
 
 namespace TsAstDisplayEvents
@@ -117,8 +124,48 @@ namespace TsAstDisplayEvents
   /* extra semi-colon tp work-around `TS(1205)` */ ;
 
   export interface SelfTotalReplacingChgEventDesc {
-    newValue: TS.Node,
+    readonly newValue: TS.Node,
   }
+
+  export function describeNdseEdit(...[{
+    // lsAbsoluteStart ,
+    // lsAbsoluteEnd ,
+    lsNd ,
+    newTxt ,
+    asBeingWithinHighFrequencyEditSeqce = true ,
+  }] : [(
+    {
+      // readonly lsAbsoluteStart: number,
+      // readonly lsAbsoluteEnd: number,
+      readonly lsNd: TS.Node ,
+      readonly newTxt: string ,
+      // readonly existingTxt: string ,
+      readonly asBeingWithinHighFrequencyEditSeqce ?: boolean,
+    }
+  )] )
+  {
+
+    const {
+      pos: lsAbsoluteStart,
+      end: lsAbsoluteEnd ,
+    } = lsNd ;
+    const existingTxt = (
+      lsNd.getSourceFile().text.slice(lsAbsoluteStart, lsAbsoluteEnd )
+    ) ;
+
+    return {
+      lsNd ,
+      lsAbsoluteEnd ,
+      lsAbsoluteStart ,
+      existingTxt ,
+      newTxt ,
+      asBeingWithinHighFrequencyEditSeqce ,
+    } as const ;
+  }
+
+  export interface NdseEditEventDesc extends
+  Extract<ReturnType<typeof describeNdseEdit> , any >
+  {}
 
 }
 
@@ -132,7 +179,11 @@ export const TsAstDisplayC = (
     {
       value: TS.Node ,
       clvMd ?: CLV,
+
+      /**  @deprecated consider {@link onTextualEditEvt } instead. */
       onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
+      onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+
     }
   ) )
   {
@@ -143,33 +194,21 @@ export const TsAstDisplayC = (
         getSpclDefaultClvMd()
       ) ,
       onChange: runWholeTreeChgHandler ,
+      onTextualEditEvt: runnTextualEditEvtCb ,
     } = props ;
 
     ;
     
-    const renderAsEnlargedPuncTokenCode = (e0: React.ReactElement) => (
-      <span style={{ display: "inline-block", inlineSize: `4em` }} >
-        <span style={{ textAlign: "center", }} >
-        <span style={{ fontSize: `1.25em`, }}>
-          <span style={{ display: "inline-block", position: "relative", transform: `scale(2.5, 1)`, transformOrigin: `0 0 0` }}>
-          { e0 }
-          </span>
-          </span>
-        </span>
-      </span>
-    ) ;
-    const renderAsEnlargedBracketTokenCode = (e0: React.ReactElement) => (
-      renderAsEnlargedPuncTokenCode((
-        <span style={{ display: "inline-block", position: "relative", transform: `scale(1, 1.25)`, }}>
-        <span style={{ writingMode: "vertical-rl", }} >
-          { withExtraSemanticProperties({ style: { fontFamily: "serif", fontSize: `2em` } } , e0) }
-        </span>
-        </span>
-      ))
-    ) ;
+    const {
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+      renderTokenCodeFigure ,
+    } = clvMd.rptcf ;
 
     const renderSubTerm = (
-      function (...[e, { onChange, } = {} ] : (
+      function (...[e, { onChange, } = null ?? {} ] : (
         ArgsWithOptions<[TS.Node] , {
           onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
         } >
@@ -181,13 +220,14 @@ export const TsAstDisplayC = (
           clvMd={clvMd}
           // TODO
           onChange={onChange}
+          onTextualEditEvt={runnTextualEditEvtCb}
           />
         ) ;
       }
     ) ;
 
     const renderJsxExpression = (
-      function (...[e, { onValueChange, } = {}] : (
+      function (...[e, { onValueChange, } = null ?? {}] : (
         ArgsWithOptions<[TS.JsxExpression & { readonly expression : TS.Node, }] , {
           //
           onValueChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
@@ -216,9 +256,9 @@ export const TsAstDisplayC = (
 
         return (
           <>
-          { renderAsEnlargedBracketTokenCode(<code>{ "(" }</code>) }
+          { renderBracketTokenCodeFigure(<code>{ "(" }</code>) }
           { e1 }
-          { renderAsEnlargedBracketTokenCode(<code>{ ")" }</code>) }
+          { renderBracketTokenCodeFigure(<code>{ ")" }</code>) }
           </>
         ) ;
 
@@ -226,7 +266,7 @@ export const TsAstDisplayC = (
     ) ;
     
     const renderPropertylike = (
-      function (...[nd, { onValueChange: runOnChgCb, } = {}] : (
+      function (...[nd, { onValueChange: runOnChgCb, } = null ?? {}] : (
         ArgsWithOptions<[TS.VariableDeclaration | TS.JsxAttribute] , {
           // onChange ?:
           onValueChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
@@ -268,6 +308,7 @@ export const TsAstDisplayC = (
                         clvMd={clvMd}
                         // TODO
                         onChange={undefined}
+                        onTextualEditEvt={runnTextualEditEvtCb}
                         />
                       ) ;
                     })()
@@ -312,7 +353,7 @@ export const TsAstDisplayC = (
           } )()
         ) ;
 
-        return (
+        const e5 = (
           <div
           key={3}
           style={{
@@ -335,6 +376,9 @@ export const TsAstDisplayC = (
               </>
             ) : null }
           </div>
+        ) ;
+        return (
+          clvMd.postdecDbwPropertylikeB5(e5 , {})
         ) ;
       }
     ) ;
@@ -393,11 +437,6 @@ export const TsAstDisplayC = (
         ) ;
     
         return (
-          <div
-          style={{
-            zoom: `95%` ,
-          }}
-          >
           <TsAllChildNodesListDisplayC
           value={ndChildren }
           clvMd={clvMd}
@@ -413,8 +452,8 @@ export const TsAstDisplayC = (
             } )
             : undefined
           )}
+          onTextualEditEvt={runnTextualEditEvtCb}
           />
-          </div>
         ) ;
       } else {
         return <></> ;
@@ -426,30 +465,40 @@ export const TsAstDisplayC = (
       
       if (clvMd.asDbWhen() ) {
 
+        {
+        ;
+
+        const et = (() => {
+        ;
+        
         if (asTerminalMdlNode) {
           const ndSrcTxt = nd.getText() ;
 
           switch (ndSrcTxt ) {
             // ════
-            case "(" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code>   ) ;
-            case ")" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code>   ) ;
-            case "[" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code> ) ;
-            case "]" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code> ) ;
-            case "{" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code>) ;
-            case "}" : return renderAsEnlargedBracketTokenCode(<code>{ ndSrcTxt }</code>) ;
+            case "(" : return renderBracketTokenCodeFigure(<code>{ ndSrcTxt }</code>   ) ;
+            case ")" : return renderBracketTokenCodeFigure(<code>{ ndSrcTxt }</code>   ) ;
+            case "[" : return renderBracketTokenCodeFigure(<code>{ ndSrcTxt }</code> ) ;
+            case "]" : return renderBracketTokenCodeFigure(<code>{ ndSrcTxt }</code> ) ;
+            case "{" : return renderBracketTokenCodeFigure(<code>{ ndSrcTxt }</code>) ;
+            case "}" : return renderBracketTokenCodeFigure(<code>{ ndSrcTxt }</code>) ;
             case "<" : break ; return <code><>{ "<   <   <" }</></code> ;
             case ">" : break ; return <code><>{ ">   >   >" }</></code> ;
           }
           if (TS.isToken(nd) && !ndSrcTxt.match(/\s|\w/) ) {
-            return renderAsEnlargedPuncTokenCode(<code>{ ndSrcTxt }</code>) ;
+            return (
+              renderPuncTokenCodeFigure((
+                <code>{ ndSrcTxt }</code>
+              ))
+            ) ;
           }
           if ((
             getNodeTypeLabelTxt(nd).endsWith("Keyword")
           ) ) {
             return (
-              <strong>
+              renderKeywordTokenCodeFigure((
                 <code>{ ndSrcTxt }</code>
-              </strong>
+              ))
             ) ;
           }
 
@@ -460,28 +509,29 @@ export const TsAstDisplayC = (
               >
               <p>
                 { (() => {
-                  if (runWholeTreeChgHandler && sptdKcn ) {
-                    if (sptdKcn instanceof KeywordAlikeKcn) {
-                      return (
-                        <input
-                        value={ndSrcTxt}
-                        onChange={evt => {
-                          const { value, } = evt.target ;
+                  if (runnTextualEditEvtCb ) {
+                    ;
+                    return (
+                      <SfmInputC
+                      value={nd.getText() }
+                      onChange={e0 => {
+                        const { value: newTxt, } = e0.target ;
 
-                          const newNd = sptdKcn.compileLiteral(value) ;
+                        const e1 = (
+                          TsAstDisplayEvents.describeNdseEdit({ lsNd: nd, newTxt: newTxt, })
+                        ) ;
 
-                          console["log"]({ newNd, }) ;
+                        runnTextualEditEvtCb(e1) ;
 
-                          runWholeTreeChgHandler({ newValue: newNd, }) ;
-
-                          ;
-                        } }
-                        />
-                      ) ;
-                    }
+                        ;
+                      } }
+                      />
+                    ) ;
                   }
                   return (
-                    <code>{ ndSrcTxt }</code>
+                    renderNameTokenCodeFigure((
+                      <code>{ ndSrcTxt }</code>
+                    ))
                   ) ;
                 })() }
               </p>
@@ -504,6 +554,20 @@ export const TsAstDisplayC = (
           return renderJsxExpression(nd) ;
         }
 
+        return null ;
+        } )() ;
+
+        if (et !== null) {
+          return (
+            clvMd.postdecDbwInlinelikeB4(et, {})
+          ) ;
+        }
+
+        }
+
+        {
+        ;
+        
         const asJsxTag = (() => {
           if ((
             false
@@ -541,9 +605,9 @@ export const TsAstDisplayC = (
                 }}
                 >
                 <>
-                { renderAsEnlargedPuncTokenCode(<code>{ "<" }</code>) } {}
+                { renderPuncTokenCodeFigure(<code>{ "<" }</code>) } {}
                 { renderSubTerm(nd.tagName) }
-                { renderAsEnlargedPuncTokenCode(<code>{ ">" }</code>) } {}
+                { renderPuncTokenCodeFigure(<code>{ ">" }</code>) } {}
                 </>
                 </div>
               ) ;
@@ -551,71 +615,51 @@ export const TsAstDisplayC = (
           }
 
           return (
-            <>
-            { asTerminalMdlNode && clvMd.getHeadlineImpl(nd) }
-            { (asTerminalMdlNode === false) && (
-              <div
-              style={{ paddingInlineStart: `1.0ex`, }}
-              >
-                { childListDView }
-              </div>
-            ) }
-            </>
+            clvMd.postdecDbwBdB2({
+              asTerminalMdlNode ,
+              nd ,
+              childListDView ,
+            })
           ) ;
         })() ;
 
         const e1 = (
-          <div
-          title={`${nodeTypeLabelTxt } `}
-          style={{
-            zoom: `99%` ,
-            border: bord ? `0.05em solid currentcolor` : undefined ,
-            background: asJsxTag ? `rgba(0 0 0 / 0.25 )` : undefined ,
-            ...((TS.isJsxOpeningElement(nd) ) ? {
-              overflow: "auto" ,
-              maxBlockSize: `9.5em` ,
-            } : {}) ,
-          }}
-          >
-            { e1C }
+          clvMd.postdecDbwBdB1({
+            asTerminalMdlNode ,
+            nd ,
+            bord ,
+            asJsxTag ,
+          } , e1C )
+        ) ;
+
+        const selfEditBtnsSec = (
+          runWholeTreeChgHandler ?
+          <div>
+          { (
+            <Button
+            title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
+            children={<>☯</>}
+            onClick={() => {
+              // const newNd = (() => {
+              //   if (sptdKcn instanceof NodeListKcn) {
+              //     return sptdKcn.withReplacedChildren(nd,  ) ;
+              //   }
+              //   return nd ;
+              // })() ;
+            }}
+            />
+          ) }
           </div>
+          : <></>
         ) ;
 
         return (
-          <div
-          style={{
-            // display: "inline-block" ,
-          }}
-          >
-            <div
-            style={{
-              display: "flex" ,
-              flexDirection: "column",
-            }}
-            >
-              { e1 }
-              <div>
-              { (
-                (runWholeTreeChgHandler && (sptdKcn ) )
-                &&
-                <Button
-                title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
-                children={<>☯</>}
-                onClick={() => {
-                  // const newNd = (() => {
-                  //   if (sptdKcn instanceof NodeListKcn) {
-                  //     return sptdKcn.withReplacedChildren(nd,  ) ;
-                  //   }
-                  //   return nd ;
-                  // })() ;
-                }}
-                />
-              ) }
-              </div>
-            </div>
-          </div>
+          clvMd.postdecDbwBdB3(e1, {
+            selfEditBtnsSec ,
+          } )
         ) ;
 
+        }
       }
       return (
         <div
@@ -637,17 +681,26 @@ export const TsAstDisplayC = (
 class CLV
 {
 
-  static forIsTerminaNdFnc(...[
-    isTerminalNd = (e) => {
-      if (TS.isSourceFile(e) ) {
+  static forIsTerminaNdFnc(...args : (
+    ArgsWithOptions<[isTerminalNd ?: (e: TS.Node) => boolean ], {
+      asDbWhen?: () => boolean ,
+    } >
+  )) {
+    const [
+      isTerminalNd = (e) => {
+        if (TS.isSourceFile(e) ) {
+          return false ;
+        }
+        if (TS.isToken(e) || TS.isLiteralExpression(e) ) {
+          return true ;
+        }
         return false ;
-      }
-      if (TS.isToken(e) || TS.isLiteralExpression(e) ) {
-        return true ;
-      }
-      return false ;
-    } ,
-  ] : [isTerminalNd ?: (e: TS.Node) => boolean ]) {
+      } ,
+      {
+        asDbWhen ,
+      } = null ?? {} ,
+    ] = args ;
+
     return (
       // <p><code>{nodeTypeLabelTxt }</code></p>
       CLV.fromGetHeadlineImpl(e => {
@@ -663,45 +716,336 @@ class CLV
             (a Node <code>{ getNodeTypeLabelTxt(e) }</code>)
           </p>
         ) ;
-      } , { skipToTerminalDecendants: (e) => (
-        // TS.isToken(e) || TS.isLiteralExpression(e)
-        // true
-        isTerminalNd(e) === false
-      ) , } )
+      } , {
+        skipToTerminalDecendantsFor: (e) => (
+          // TS.isToken(e) || TS.isLiteralExpression(e)
+          // true
+          isTerminalNd(e) === false
+        ) ,
+        asDbWhen ,
+      } )
     )
   }
 
   static fromGetHeadlineImpl(...args : (
     ArgsWithOptions<[getHeadlineImpl: (e: TS.Node) => React.ReactElement] , (
-      { skipToTerminalDecendants ?: (e: TS.Node) => boolean , }
+      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
+      PartializedPartially<(
+        OmitW<CLV,  | `getHeadl${string}`>
+      ) ,(
+        | "asDbWhen"
+        | "postdecDbwBdB1"
+        | "postdecDbwBdB2"
+        | "postdecDbwBdB3"
+        | "skipToTerminalDecendantsFor"
+        | "postdecDbwInlinelikeB4"
+        | "postdecDbwPropertylikeB5"
+        | "rptcf"
+        | "expandCldl"
+        | "postdecMultiNodeView1"
+      ) >
     )>
   ) )
   {
     const [
       getHeadlineImpl,
-      {
-        skipToTerminalDecendants = (e: unknown) => false,
-      } = {} ,
+      prps1 = {} ,
     ] = args ;
+
+    return (
+      this.fromProps({ getHeadlineImpl, ...(prps1), })
+    ) ;
+  }
+
+  static fromProps(...[props] : (
+    ArgsWithOptions<[] , (
+      // { skipToTerminalDecendantsFor ?: (e: TS.Node) => boolean , }
+      PartializedPartially<(
+        OmitW<CLV, never>
+      ) , (
+        | "asDbWhen"
+        | "postdecDbwBdB1"
+        | "postdecDbwBdB2"
+        | "postdecDbwBdB3"
+        | "skipToTerminalDecendantsFor"
+        | "postdecDbwInlinelikeB4"
+        | "postdecDbwPropertylikeB5"
+        | "rptcf"
+        | "expandCldl"
+        | "postdecMultiNodeView1"
+      ) >
+    )>
+  ) )
+  {
+    const {
+      getHeadlineImpl,
+      asDbWhen = () => false ,
+      skipToTerminalDecendantsFor: skipToTerminalDecendants = (...args) => false,
+
+      postdecDbwBdB1 = (
+        ({
+          asTerminalMdlNode ,
+          nd ,
+          bord ,
+          asJsxTag,
+        }, e1C) => {
+          ;
+          
+          const e1 = (
+            <div
+            title={`${getNodeTypeLabelTxt(nd) } `}
+            style={{
+              zoom: `99%` ,
+              border: bord ? `0.05em solid currentcolor` : undefined ,
+              background: asJsxTag ? `rgba(0 0 0 / 0.25 )` : undefined ,
+              ...((TS.isJsxOpeningElement(nd) ) ? {
+                overflow: "auto" ,
+                maxBlockSize: `9.5em` ,
+              } : {}) ,
+            }}
+            >
+              { e1C }
+            </div>
+          ) ;
+
+          return e1 ;
+        }
+      ) ,
+      postdecDbwBdB2 = (
+        ({
+          asTerminalMdlNode ,
+          nd ,
+          childListDView ,
+        }) => {
+          ;
+          
+          if (asTerminalMdlNode ) {
+            return (
+              <>
+              { getHeadlineImpl(nd) }
+              </>
+            ) ;
+          } else {
+            ;
+            return (
+              <>
+              { (asTerminalMdlNode === false) && (
+                <div
+                style={{
+                  paddingInlineStart: `1.0ex`,
+                  zoom: `95%` ,
+                }}
+                >
+                  { childListDView }
+                </div>
+              ) }
+              </>
+            ) ;
+          }
+        }
+      ),
+      postdecDbwBdB3 = (
+        (e1, {
+          selfEditBtnsSec ,
+        } ) => {
+          ;
+
+          return (
+            <div
+            style={{
+              // display: "inline-block" ,
+            }}
+            >
+              <div
+              style={{
+                display: "flex" ,
+                flexDirection: "column",
+              }}
+              >
+                { e1 }
+                { selfEditBtnsSec }
+              </div>
+            </div>
+          ) ;
+        }
+      ) ,
+      postdecDbwInlinelikeB4 = e => e ,
+      postdecDbwPropertylikeB5 = e50 => (
+        e50
+      ) ,
+      rptcf = (
+        CLV.getDfltBlockLevellingRptcf()
+      ) ,
+      
+      expandCldl = (...[children1]) => (
+        CLV.defaultRenderCldlAsHtmList(children1 )
+      ) ,
+      postdecMultiNodeView1 = (cldl) => (
+        <div>
+          { cldl }
+        </div>
+      ) ,
+
+    } = props ;
+
     return new CLV(
-      getHeadlineImpl , skipToTerminalDecendants ,
-      () => true ,
+      getHeadlineImpl ,
+      skipToTerminalDecendants ,
+      asDbWhen ,
+      expandCldl ,
+      postdecMultiNodeView1 ,
+      postdecDbwBdB1 ,
+      postdecDbwBdB2 ,
+      postdecDbwBdB3 ,
+      postdecDbwInlinelikeB4 ,
+      postdecDbwPropertylikeB5 ,
+      rptcf ,
     ) ;
   }
 
   private constructor(
     //
     public readonly getHeadlineImpl: (e: TS.Node) => React.ReactElement  ,
-    public readonly skipToTerminalDecendantsFor : (e: TS.Node) => boolean ,
-    public readonly asDbWhen : () => boolean = () => false ,
+    /**
+     * @deprecated
+     */
+    readonly skipToTerminalDecendantsFor : (e: TS.Node) => boolean ,
+    public readonly asDbWhen : () => boolean ,
+
+    public readonly expandCldl: (...args: [readonly React.ReactElement[] ]) => React.ReactElement ,
+    public readonly postdecMultiNodeView1: (...args: [cldl: React.ReactElement ]) => React.ReactElement ,
+
+    readonly postdecDbwBdB1: (...args: [{
+      asTerminalMdlNode: boolean ,
+      nd: TS.Node ,
+      bord: boolean ,
+      asJsxTag: boolean ,
+    }, React.ReactElement] ) => React.ReactElement ,
+    readonly postdecDbwBdB2: (...ctx: [{
+      asTerminalMdlNode: boolean ,
+      nd: TS.Node ,
+      childListDView: React.ReactElement,
+    }] ) => React.ReactElement ,
+    readonly postdecDbwBdB3: (...args: [
+      React.ReactElement ,
+      {
+        selfEditBtnsSec?: React.ReactElement ,
+      },
+    ] ) => React.ReactElement ,
+    
+    readonly postdecDbwInlinelikeB4: (...args: [
+      React.ReactElement ,
+      {
+      },
+    ] ) => React.ReactElement ,
+    readonly postdecDbwPropertylikeB5: (...args: [
+      React.ReactElement ,
+      {
+      },
+    ] ) => React.ReactElement ,
+
+    readonly rptcf: CLV.RPTCF ,
+
   )
   {}
+}
+
+namespace CLV {
+  ;
+
+  export interface RPTCF
+  {
+    readonly renderPuncTokenCodeFigure   : (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderBracketTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderKeywordTokenCodeFigure: (e0: React.ReactElement) => React.JSX.Element;
+    readonly renderTokenCodeFigure    : (e0: React.ReactElement) => React.ReactElement;
+    readonly renderNameTokenCodeFigure: (e0: React.ReactElement) => React.ReactElement;
+    // }
+  }
+
+  export function getDfltBlockLevellingRptcf()
+  : RPTCF
+  {
+
+    const renderAsEnlargedPuncTokenCode = (e0: React.ReactElement) => (
+      <span style={{ display: "inline-block", inlineSize: `4em` }} >
+        <span style={{ textAlign: "center", }} >
+        <span style={{ fontSize: `1.25em`, }}>
+          <span style={{ display: "inline-block", position: "relative", transform: `scale(2.5, 1)`, transformOrigin: `0 0 0` }}>
+          { e0 }
+          </span>
+          </span>
+        </span>
+      </span>
+    ) ;
+    const renderAsEnlargedBracketTokenCode = (e0: React.ReactElement) => (
+      renderAsEnlargedPuncTokenCode((
+        <span style={{ display: "inline-block", position: "relative", transform: `scale(1, 1.25)`, }}>
+        <span style={{ writingMode: "vertical-rl", }} >
+          { withExtraSemanticProperties({ style: { fontFamily: "serif", fontSize: `2em` } } , e0) }
+        </span>
+        </span>
+      ))
+    ) ;
+
+    const renderPuncTokenCodeFigure = (e0: React.ReactElement) => (
+      renderAsEnlargedPuncTokenCode(e0)
+    ) ;
+    const renderBracketTokenCodeFigure = (e0: React.ReactElement) => (
+      renderAsEnlargedBracketTokenCode(e0)
+    ) ;
+    const renderKeywordTokenCodeFigure = (e0: React.ReactElement) => (
+      <strong>
+        { e0 }
+      </strong>
+    ) ;
+    const renderTokenCodeFigure = (e0: React.ReactElement) => (
+      e0
+    ) ;
+    const renderNameTokenCodeFigure = (e0: React.ReactElement) => (
+      e0
+    ) ;
+
+    return {
+      renderPuncTokenCodeFigure ,
+      renderBracketTokenCodeFigure ,
+      renderKeywordTokenCodeFigure ,
+      renderTokenCodeFigure ,
+      renderNameTokenCodeFigure ,
+    } satisfies RPTCF ;
+  }
+
+  export const defaultRenderCldlAsHtmList: CLV["expandCldl"] = (
+    (...[children1]) => {
+      ;
+      return (
+        <ul>
+        { (
+          children1
+          .map((nd, i) => (
+            <li
+            key={i }
+            children={(
+              nd
+            )}
+            />
+          ))
+        ) }
+        </ul>
+      ) ;
+    }
+  ) ;
+
 }
 
 export const TsAllChildNodesListDisplayC = (
   describeHtmlComponent((function TsNodeListDisplayCImpl(props : (
     & { value: ReadonlyArray<TS.Node>, clvMd ?: CLV, }
-    & { onChange?: (evt: { newValue: ReadonlyArray<TS.Node> , changedIndices: readonly number[] }) => void }
+    & {
+      /**  @deprecated consider {@link onTextualEditEvt } instead. */
+      onChange?: (evt: { newValue: ReadonlyArray<TS.Node> , changedIndices: readonly number[] }) => void ,
+      onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+    }
     & {
       // // TODO
       // /** @deprecated */
@@ -714,59 +1058,66 @@ export const TsAllChildNodesListDisplayC = (
       value: ndChildren,
       // srcNd ,
       onChange: runOnChgCbk  ,
+      onTextualEditEvt: runOnTextualEditEvtCbk ,
     } = props ;
 
-    const childrenAsLs = (
-      <ul>
-      { (
-        ndChildren
-        .map((nd, i) => (
-          <li
-          key={i }
-          children={(
-            <TsAstDisplayC
-            value={nd}
-            clvMd={clvMd}
-            onChange={runOnChgCbk && (({ newValue, }) => (
-              runOnChgCbk({
-                changedIndices: [i] ,
-                newValue: (
-                  ndChildren
-                  .toSpliced(i, 1, ...[newValue] )
-                ) ,
-              })
-            ) ) }
-            />
-          )}
+    const children1 = (
+      ndChildren
+      .map((nd, i) => {
+        return (
+          <TsAstDisplayC
+          value={nd}
+          clvMd={clvMd}
+          onChange={runOnChgCbk && (({ newValue, }) => (
+            runOnChgCbk({
+              changedIndices: [i] ,
+              newValue: (
+                ndChildren
+                .toSpliced(i, 1, ...[newValue] )
+              ) ,
+            })
+          ) ) }
+          onTextualEditEvt={runOnTextualEditEvtCbk}
           />
-        ))
-      ) }
-      </ul>
+        ) ;
+      })
     ) ;
 
     if (clvMd.asDbWhen() ) {
+
+      const childrenAsLs = (
+        clvMd.expandCldl(children1)
+      ) ;
+
+      const c11 = (
+        withExtraSemanticProperties({
+          classNames: ["studk-ui-encoretsnodedisp-inline-children-l"] ,
+        } , childrenAsLs)
+      ) ;
+  
+      return (
+        clvMd.postdecMultiNodeView1(c11 )
+      ) ;
+    }
+    {
+
+      const childrenAsLs = (
+        CLV.defaultRenderCldlAsHtmList(children1)
+      ) ;
+  
       return (
         <div>
           { (
+            <p><code>{ ndChildren.length }</code> child(en)</p>
+          ) }
+          { (
             withExtraSemanticProperties({
-              classNames: ["studk-ui-encoretsnodedisp-inline-children-l"] ,
+              classNames: ["studk-ui-encoretsnodedisp-blocklevel-children-l"] ,
             } , childrenAsLs)
           ) }
         </div>
       ) ;
     }
-    return (
-      <div>
-        { (
-          <p><code>{ ndChildren.length }</code> child(en)</p>
-        ) }
-        { (
-          withExtraSemanticProperties({
-            classNames: ["studk-ui-encoretsnodedisp-blocklevel-children-l"] ,
-          } , childrenAsLs)
-        ) }
-      </div>
-    ) ;
   }))
 ) ;
 

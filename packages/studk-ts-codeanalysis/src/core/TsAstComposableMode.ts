@@ -18,6 +18,14 @@ import type {
   RecordFromEntry,
 } from 'studk-fwcore/src/util/C1.ts'
 
+type Tg<T0, T2 extends T0> = (
+  (x: T0) => x is T2
+) ;
+
+type TgOrReg<T0, T2 extends T0> = (
+  (x: T0) => boolean
+) ;
+
 // import type {} from "typexpe-commons/src/ArrayPrototypeIncludes.mts" ;
 
 // import { inspect, } from 'util';
@@ -351,13 +359,43 @@ const representationallyReducedNodeTypeCon = (
 
     type TSR = RecordEntry<typeof TS> ;
 
+    type AdaptTg<T extends TgOrReg<any, any>> = (
+      T extends Tg<any, infer T2 extends TS.Node> ?
+      Tg<AsRepresentationallyReduced<TS.Node>, AsRepresentationallyReduced<T2> >
+      : T
+    ) ;
+
     type TATG01 = (
       Extract<TSR, readonly [`is${string }`, (...args: any ) => boolean]>
     ) ;
+    
+    type TATG011<T1 extends TATG01 = TATG01> = (
+      T1 extends readonly [infer k, infer VF extends Tg<any, infer V extends TS.Node> ] ?
+      readonly [k, AdaptTg<VF> ]
+      : T1
+    ) ;
+    type TATG011Dbg<T1 extends TATG01 = TATG01> = (
+      T1 extends readonly [infer k, infer VF extends Tg<any, infer V extends TS.Node> ] ?
+      readonly [k, true, VF, V ]
+      : (readonly [T1[0], false, T1[1] ])
+    ) ;
+    type TATG011R0<E0 extends TATG011Dbg = TATG011Dbg > = (
+      RecordFromEntry<(
+        E0 extends readonly [infer k0 extends string, infer k1 extends boolean, ...(infer v1 extends readonly any[] )] ?
+        readonly [`${k0}${k1}`, v1 ]
+        : never
+      )>
+    ) ;
+    void ((e: TATG011R0) => {
+      e.isWhiteSpaceLikefalse ;
+    }) ;
 
     type TATG = (
-      RecordFromEntry<TATG01 >
+      RecordFromEntry<TATG011 >
     ) ;
+    void ((e: TATG) => {
+      e.isExpression ;
+    }) ;
 
     return (
       TS as TATG
