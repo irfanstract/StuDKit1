@@ -13,24 +13,11 @@ import {
 
 
 /**
- * @typedef {{ readonly [k in `m${I},${J}` ] : number ; } } Mt
- * @template {number } I
- * @template {number } J
- */
-
-/**
- * @typedef {Mt<I, I> } SquareMt
- * @template {number } I
- */
-
-/**
- * @typedef {SquareMt<NUpTo<l> > } Matrix
+ * @typedef {import("./MatrixElementsMt.mjs").SquareMt<NUpTo<l> > } Matrix
  * @template {number & (3 | 1 | 2 | 4 | 5) } l
  */
 /** {@link Matrix} @namespace */
 export const Matrix = {} ;
-
-/** @typedef { 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 } Base10Digit */
 
 /**
  * @typedef { { 1: 1, 2: 1 | 2, 3: 1 | 2 | 3, 4: 1 | 2 | 3 | 4, 5: 1 | 2 | 3 | 4 | 5, }[i] } NUpTo
