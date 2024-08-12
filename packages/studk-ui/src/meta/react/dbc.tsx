@@ -36,11 +36,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 import {
-  describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   SynchronousCallbackAction,
@@ -69,7 +70,7 @@ export {
 } ;
 
 const SpanC = (
-  describeComponent(function SpanC({ onClick: href, ...prp } : (Omit<EffectiveXButtonProps, "inline" > & { } ) ) {
+  describeHtmlComponent(function SpanC({ onClick: href, ...prp } : (Omit<EffectiveXButtonProps, "inline" > & { } ) ) {
     return (
       <ButtonC
       inline
@@ -90,21 +91,24 @@ const useOrTranslateBtnCProps = (
   ))
   {
     ;
+
     const headline = (
       headlineArg
     ) ;
+
     const inlinenessClassName = (
       asInline ? "studk-ui-dbc-subsntcspan" : "studk-ui-dbc-standalonespan"
     ) ;
     const hrefAc = (
       translateCommonJsxAction(hrefArg )
     ) ;
+
     ;
     const regularInlinePresentation = (
       (hrefAc instanceof UrlAction) ?
       (
         <a
-        className={`studk-ui-dbca ${inlinenessClassName } ${cn}`}
+        className={getSpaceSeparatedClassNameList(["studk-ui-dbca", inlinenessClassName, cn, ]) }
         children={headline}
         href={hrefAc.href}
         // target='_blank'
@@ -121,10 +125,11 @@ const useOrTranslateBtnCProps = (
         />
       )
       :
+
       (hrefAc instanceof SynchronousCallbackAction) ?
       (
         <button
-        className={`studk-ui-dbcb ${inlinenessClassName } ${cn}`}
+        className={getSpaceSeparatedClassNameList(["studk-ui-dbcb", inlinenessClassName, cn, ]) }
         children={headline}
         type='button'
         onClick={e => hrefAc.runMain(e) }
@@ -132,10 +137,11 @@ const useOrTranslateBtnCProps = (
         />
       )
       :
+
       (hrefAc instanceof DisabledBtnActionReprImpl) ?
       (
         <button
-        className={`studk-ui-dbcb ${inlinenessClassName } ${cn}`}
+        className={getSpaceSeparatedClassNameList(["studk-ui-dbcb", inlinenessClassName, cn, ]) }
         children={headline}
         type='button'
         disabled
@@ -143,13 +149,17 @@ const useOrTranslateBtnCProps = (
         />
       )
       :
+
       <span
-      className={`studk-ui-dbca ${inlinenessClassName } ${cn}`}
+      className={getSpaceSeparatedClassNameList(["studk-ui-dbca", inlinenessClassName, cn, ]) }
       children={headline}
       {...otherJsxProps}
       />
+
     ) ;
+
     ;
+
     return {
       asInline ,
       headlineArg ,
@@ -173,12 +183,14 @@ interface IXButtonProps extends Omit<(
 
 const ButtonC = (
   // ☺☘⚾❌☑⛲⚛⛰♏☐♐❣❤❇→♠
-  describeComponent(function ButtonC(props : (
+  describeHtmlComponent(function ButtonC(props : (
     IXButtonProps
-  ) ) {
+  ) )
+  {
     const {
       regularInlinePresentation ,
     } = useOrTranslateBtnCProps(props) ;
+
     return regularInlinePresentation ;
   })
 ) ;

@@ -13,7 +13,7 @@
     "rootDir": "src" ,
   },
   "references": [
-    { "path": "../../packages/typexpe-commons"      , } ,
+    { "path": "../../packages/typexpe-commons/tsconfig.build.json"      , } ,
     { "path": "../../packages/studk-fwcore"         , } ,
     { "path": "../../packages/studk-simulations-commons", } ,
     { "path": "../../packages/studk-video-fwcore"   , } ,
