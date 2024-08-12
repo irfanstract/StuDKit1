@@ -53,7 +53,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   Button ,
@@ -121,20 +126,94 @@ export default function App()
             Graphical Overlays
             </Span>
           </p>
-          { 0 && <LDCWGOC /> }
-          { 0 && (
+          { null && <LDCWGOC /> }
+          { null && (
             <AudioNodeBeepDemo />
           ) }
-          { (
+          { true && (
             <DiscogrDemoC />
           ) }
-          <TimeDomainedImgListFigureC
-          />
+          { true && (
+            <ThreeReactJsDemoC />
+          ) }
+          { true && (
+            <TArmsDemoC />
+          ) }
+          { true && (
+            <ThreeReactJsNavigaDemoC />
+          ) }
+          { ((e: React.ReactElement) => {
+            return null ;
+          } )((
+            <I3DDemoC />
+          )) }
+          { ((e: React.ReactElement) => {
+            e = (
+              <AsResettibleBlockC
+              children={e}
+              />
+            ) ;
+            return e ;
+          } )(
+            <TimeDomainedImgListFigureC
+            />
+          ) }
+          <div>
+            <div style={{ blockSize: `50vh`, border: `1px solid blue`, }} >
+              &nbsp;
+            </div>
+            <div style={{ blockSize: `50vh`, border: `1px solid black`, }} >
+              &nbsp;
+            </div>
+          </div>
         </div>
       ) ,
     })
   ) ;
 } ;
+
+const AsResettibleBlockC = (
+  function AsResettibleBlockCImpl({ children, } : React.PropsWithChildren)
+  {
+    const [c, setC] = (
+      React.useState<number>(1)
+    ) ;
+    const runIncrButtonAction = (
+      function () {
+        setC(c => c + 1) ;
+      }
+    ) ;
+    const resetBtn = (
+      <button
+      type="button"
+      children={`Reset`}
+      onClick={e => runIncrButtonAction() }
+      />
+    ) ;
+    return (
+      <React.Fragment
+      key={c}
+      children={(
+        <div
+        style={{
+          display: "flex",
+          flexDirection: "column-reverse",
+        }}
+        >
+          <div>
+          { children }
+          </div>
+          <div>
+          <p>
+            { resetBtn }
+          </p>
+          </div>
+        </div>
+      )}
+      />
+    ) ;
+  }
+) ;
 
 import LDCWGOC from "@/components/spcl/longTextDocWithGraphicalOverlaysDemo"; ;
 
@@ -145,6 +224,22 @@ function TbmcDemo()
   return <TbmcDemoImpl /> ;
   return <div /> ;
 }
+
+import {
+  I3DDemoC ,
+} from "studk-ui-encore/src/StI3dPresenters/I3DDemoC.tsx" ;
+
+import {
+  ThreeReactJsDemoC,
+} from "studk-ui-encore/src/ThreeReactJsUi/trdemo.tsx" ;
+
+import {
+  ThreeReactJsNavigaDemoC,
+} from "studk-ui-encore/src/ThreeReactJsUi/trnavigade" ;
+
+import {
+  TArmsDemoC ,
+} from "studk-ui-encore/src/ThreeReactJsUi/tarm.tsx" ;
 
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
