@@ -32,7 +32,7 @@ import type {
 
 import type {
   ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs'; ;
 
 export namespace XUtil { ; }
 
