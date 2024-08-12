@@ -70,10 +70,20 @@ export const withExtraSemanticProperties = (
     [...(
       ArgsWithOptions<[], (
         {
+          /** __replaces__ the existing `key`. */
+          key ?: React.Key ,
+
+          /** adds into {@link HTMLElement.className `className`}. */
           classNames ?: readonly string[],
           hidden ?: boolean,
-          style ?: React.CSSProperties ,
           props ?: JSX.IntrinsicElements["div"] ,
+          /** `data-<key-name>` . note -- please omit the leading `data-` it'll be added automtclly. */
+          customDataProperties ?: Record<string, any> ,
+
+          style ?: React.CSSProperties ,
+          /** `--some-prop` . note -- please include the leading suffix `--` . */
+          customStyleProperties ?: Record<string, any> ,
+
         }
       )>
     ) , ...[React.ReactElement]]
@@ -82,16 +92,19 @@ export const withExtraSemanticProperties = (
   {
     const [
       {
+        key: ovdKeyVal = null,
         classNames: extraClassNames = [] as const,
         hidden: hidden1 = false,
         style: styleProps1 = {} ,
+        customDataProperties: cdp = {} ,
+        customStyleProperties: cssp = {} ,
         props: opaquePropsArg = {} ,
-      } = {},
+      } = null ?? {},
       e,
     ] = args ;
 
     const {
-      key ,
+      key: keyFrom ,
       type ,
       ref ,
       otherProps: props0 ,
@@ -109,9 +122,18 @@ export const withExtraSemanticProperties = (
       ({
         className: `${extraClassNames.join(" ") } ${cnm0 ?? " " } ` ,
         hidden: hidden0 || hidden1 ,
-        style: { ...(styleProps0), ...(styleProps1), } ,
+        style: { ...(styleProps0), ...(styleProps1), ...(cssp), } ,
+        ...(
+          Object.fromEntries((
+            Object.entries(cdp)
+            .map(([k, v]) => (
+              [`data-${k}` as const, v] satisfies [any, any]
+            ))
+          ))
+        ),
         ...(otherProps) ,
         ...(opaquePropsArg) ,
+        // ...({ key: ovdKeyVal , }) ,
         children ,
       } satisfies JSX.IntrinsicElements["div" | "g"] )
     ) ;
@@ -120,7 +142,7 @@ export const withExtraSemanticProperties = (
       React.createElement(
         type ,
         {
-          key ,
+          key: ovdKeyVal ?? keyFrom ,
           ref ,
           ...props2 ,
         } ,
