@@ -54,7 +54,8 @@ import {
 import {
   IndividuallyMarkedNodeList ,
   NodeUnitGraph ,
-  PolygonallyMarkedNodeUnitGraph ,
+  PolygonallyMarkedNodeUnitGraph,
+  PolygonallyMarkedPointWithUnitGraph ,
 } from "studk-i3d/src/xt/IndividuallyGMarkedNodeListEnug1.tsx" ;
 
 import {
@@ -87,6 +88,8 @@ function xTransformedly(...[tr, pts] : [LinTr3DMat, readonly (Point3D | null)[]]
   ) ;
 }
 
+import { xBall1, } from "studk-i3d/src/xt/SphericalMeshSpm.ts" ;
+
 function xBall(...[
   pos,
   r = 0.35,
@@ -106,21 +109,36 @@ function xBall(...[
     }
   )>
 )){
+  if (0) {
+    return (
+      xBall1(pos, r, {
+        grnInDeg: 90,
+      } )
+    ) ;
+  }
+
+  if (0) {
+    return (
+      xBall1(pos, r, { grnInDeg, } )
+    ) ;
+  }
   return (
-    new PolygonallyMarkedNodeUnitGraph([
-      ...(
-        xEquilateralPolygon(pos, "xConY", r, { granularityInDegrees: grnInDeg, } )
-        .points
-      ) ,
-      ...(
-        xEquilateralPolygon(pos, "yConZUnisigned", r, { granularityInDegrees: grnInDeg, } )
-        .points
-      ) ,
-      ...(
-        xEquilateralPolygon(pos, "xConZ", r, { granularityInDegrees: grnInDeg, } )
-        .points
-      ) ,
-    ])
+    PolygonallyMarkedPointWithUnitGraph.by(pos, (
+      PolygonallyMarkedNodeUnitGraph.byContoursAndFill([
+        ...(
+          xEquilateralPolygon(pos, "xConY", r, { granularityInDegrees: grnInDeg, } )
+          .getContours()
+        ) ,
+        ...(
+          xEquilateralPolygon(pos, "yConZUnisigned", r, { granularityInDegrees: grnInDeg, } )
+          .getContours()
+        ) ,
+        ...(
+          xEquilateralPolygon(pos, "xConZ", r, { granularityInDegrees: grnInDeg, } )
+          .getContours()
+        ) ,
+      ])
+    ))
   ) ;
 } ;
 
@@ -146,27 +164,27 @@ function xEquilateralPolygon(...[
   ) >
 )){
   return (
-    new PolygonallyMarkedNodeUnitGraph((
-      [...util.reiterable(function* () {
-        ;
-        for (const a of (
-          util.range(0, 360, granularityInDegrees )
-          .map(v => Angle.ByDegrees(v) )
-        ) )
-        {
+    PolygonallyMarkedPointWithUnitGraph.by(nodeAnchPos, (
+      PolygonallyMarkedNodeUnitGraph.byPointsAndFill((
+        [...util.reiterable(function* () {
           ;
-          yield (() => {
-            const mvVec1 = (
-              linTrTransformedPosition3DMat(describeCartesOrthoRotationFwd(md, a), (
-                ({ x: -r, y:  0   , z: 0, })
-              ) )
-            ) ;
-            return linTrTransformedPosition3DMat((
-              linTrFromTranslateCoord3Matr(mvVec1)
-            ), nodeAnchPos) ;
-          })() ;
-        }
-      }) ]
+          for (const a of (
+            util.range(0, 360 + (granularityInDegrees / 8 ), granularityInDegrees )
+            .map(v => Angle.ByDegrees(v) )
+          ) )
+          {
+            ;
+            yield (() => {
+              const mvVec1 = (
+                linTrTransformedPosition3DMat(describeCartesOrthoRotationFwd(md, a), (
+                  ({ x: -r, y:  0   , z: 0, })
+                ) )
+              ) ;
+              return mvVec1 ;
+            })() ;
+          }
+        }) ]
+      ))
     ))
   ) ;
 } ;
@@ -188,7 +206,7 @@ function xEquilateralTriangle(...[
 
 function xPolyg(pts: Point3D[]) {
   return (
-    new PolygonallyMarkedNodeUnitGraph((
+    PolygonallyMarkedNodeUnitGraph.byPointsAndFill((
       [...util.reiterable(function* (): Generator<Point3D, void> {
         for (let i=1; i<pts.length; i += 1 )
         {
@@ -206,14 +224,20 @@ const xI3dExtendedYardStarFieldGraphDemo = (
   function ()
   {
     return (
-      new IndividuallyMarkedNodeList([
+      IndividuallyMarkedNodeList.byEachOptionalEnugBasedLayerGraph([
         ...util.reiterable(function* () {
           const sp = (
-            [...util.reiterable(function* () {
-              let range = 6;
-              for (let i = -range; i <= range; i += 2)
-              { yield i ; }
-            } ) ]
+            ((...[{ range, spacing = 2 , }] : ArgsWithOptions<[], { range: number, spacing?: number, }> ) => (
+              util.reiterated(function* () {
+                for (let i = -(
+                  util.Immutable.Range(0, Math.abs(range) + 0.05, Math.abs(spacing) )
+                  .max()
+                  ??
+                  0
+                ); i <= range; i += spacing)
+                { yield i ; }
+              } )
+            ))({ range: 7.5, })
           ) ;
           const pts = (
             [...util.reiterable(function* () {
@@ -232,7 +256,7 @@ const xI3dExtendedYardStarFieldGraphDemo = (
             yield xBall({ x, z, y, }, 0.05, { grnInDeg: 52, } ) ;
           }
         } ) ,
-        ...[
+        ...(0 ? [] : [
           xPolyg([
             { x: -3, z:  3, y: -0.5, } ,
             { x:  3, z:  3, y: -0.5, } ,
@@ -254,7 +278,7 @@ const xI3dExtendedYardStarFieldGraphDemo = (
           xBall({ x: -4    , z: -0.1 , y: -0.1 , }) ,
           xBall({ x:  3    , z: -0.1 , y: -0.1 , }) ,
           //
-        ] ,
+        ]) ,
       ])
     ) ;
   }
