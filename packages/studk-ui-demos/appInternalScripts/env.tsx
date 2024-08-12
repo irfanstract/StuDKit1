@@ -35,7 +35,7 @@ import "@/public/global.css" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
 
 console["log"](`env.tsx reloaded`) ;
 
