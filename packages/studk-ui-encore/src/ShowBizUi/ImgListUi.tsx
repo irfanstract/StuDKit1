@@ -33,7 +33,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 
 
@@ -48,7 +48,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -83,13 +88,13 @@ import {
  * 
  */
 export const ImgListC = (
-  describeComponent(function ImgListCImpl({ children: c0, } : React.PropsWithChildren) {
+  describeHtmlComponent(function ImgListCImpl({ children: c0, } : React.PropsWithChildren) {
     const c1 = (
       React.Children.toArray(c0)
     ) ;
     const XOL : ("ul" | "ol") = "ol" ;
     return (
-      <XOL className="studk-sbzi-imglistu ">
+      <XOL className={getSpaceSeparatedClassNameList(["studk-sbzi-imglistu"])}>
         { (
           c1
         ) }
