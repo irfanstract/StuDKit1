@@ -69,6 +69,10 @@ import type {
 
 import * as React from "react" ;
 
+export {
+  ReactSetStateActionHelpers ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseReactSetStateAction.tsx" ;
+
 const toComponentMountKey = (
   (value: (JSX.IntrinsicElements["input"] )["value"] ) => (
     ((): string => {
@@ -89,8 +93,37 @@ export {
   toComponentMountKey ,
 } ;
 
+export const getFromClassNameProp = (
+
+  function (...[classNameProp = ``] : [classNamePropValue: string])
+  : readonly string[]
+  {
+    return (
+      classNameProp.split(/\s+/)
+      .filter(e => e.length )
+    ) ;
+  }
+)
+
 ;
 
+
+;
+
+export type {
+  ComponentProps ,
+  ComponentPropsWithoutRef ,
+} from "react" ;
+
+/**
+ * applies {@link React.ComponentProps `React.ComponentProps<T>`} and then {@link Required `Required`}.
+ * 
+ */
+export type RequiredComponentProps<T extends keyof JSX.IntrinsicElements | React.JSXElementConstructor<any>> = (
+  Required<(
+    React.ComponentProps<T>
+  )>
+) ;
 
 import {
   describeComponent,
@@ -151,6 +184,12 @@ export * from 'studk-ui-fwcore/src/dbce.tsx'; ;
 // import Link from "next/link" ;
 
 
+
+;
+
+export {
+  describeCallbackAssignedStyleProps,
+} from 'studk-ui-fwcore/src/xt/summerhitsmedia-cssd.tsx'; ;
 
 ;
 
