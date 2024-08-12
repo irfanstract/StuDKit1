@@ -69,6 +69,10 @@ import type {
 
 import * as React from "react" ;
 
+export {
+  ReactSetStateActionHelpers ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseReactSetStateAction.tsx" ;
+
 const toComponentMountKey = (
   (value: (JSX.IntrinsicElements["input"] )["value"] ) => (
     ((): string => {
