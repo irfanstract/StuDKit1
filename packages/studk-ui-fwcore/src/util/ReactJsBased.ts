@@ -111,19 +111,33 @@ export const getFromClassNameProp = (
 ;
 
 export type {
-  ComponentProps ,
+  // ComponentProps ,
+  /** @deprecated */
   ComponentPropsWithoutRef ,
 } from "react" ;
 
 /**
- * applies {@link React.ComponentProps `React.ComponentProps<T>`} and then {@link Required `Required`}.
+ * applies {@link ComponentProps `React.ComponentProps<T>`} and then {@link Required `Required`}.
  * 
  */
 export type RequiredComponentProps<T extends keyof JSX.IntrinsicElements | React.JSXElementConstructor<any>> = (
   Required<(
-    React.ComponentProps<T>
+    ComponentProps<T>
   )>
 ) ;
+
+export type ComponentProps<T extends React.JSXElementConstructor<any> | keyof React.JSX.IntrinsicElements> = (
+
+  [T] extends [React.JSXElementConstructor<infer P>] ?
+  P
+  :
+
+  [T] extends [keyof React.JSX.IntrinsicElements] ?
+  React.JSX.IntrinsicElements[T]
+  :
+
+  {}
+) ; // ComponentProps
 
 import {
   describeComponent,
