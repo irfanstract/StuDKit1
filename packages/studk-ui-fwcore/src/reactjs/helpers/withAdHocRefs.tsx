@@ -58,47 +58,9 @@ export type {
   IntrinsicElementRef ,
 } ;
 
-const destructureElement = (
-  function <
-    //
-    const tagNameT extends (
-      React.JSXElementConstructor<any>
-      | string
-    ) ,
-    const propsT extends (
-      React.ReactElement<{ ref ?: (
-        tagNameT extends (keyof JSX.IntrinsicElements) ?
-        React.Ref<(
-          /** naming {@link React.ElementRef} doesn't agree */
-          React.ElementRef<tagNameT>
-        ) >
-        : React.Ref<refEdElemT>
-      ), children ?: any, }, tagNameT >["props"]
-    ) ,
-    const refEdElemT = never ,
-  >(...[srcE ] : (
-    ArgsWithOptions<[original: React.ReactElement<propsT, tagNameT>, ], {} >
-  ) )
-  {
-    const {
-      key,
-      type,
-      props: {
-        ref ,
-        children ,
-        ...otherProps
-      } ,
-    } = srcE ;
-
-    return {
-      key,
-      type ,
-      ref ,
-      children ,
-      otherProps ,
-    } as const ;
-  }
-) ;
+import {
+  analyseReusableJsxElement ,
+} from "studk-ui-fwcore/src/reactjs/helpers/ForwardedJsxElementAnalysis.tsx" ;
 
 const withRef: (
   & {
@@ -139,7 +101,7 @@ const withRef: (
         children,
         otherProps ,
       } = (
-        destructureElement(srcE)
+        analyseReusableJsxElement(srcE)
       ) ;
       return (
         React.createElement(type, {
