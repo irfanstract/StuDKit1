@@ -84,19 +84,19 @@ import {
   asHidden ,
 } from 'studk-ui-fwcore/src/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
 
-export {
-  //
-  React ,
-  describeComponent,
-  describeHtmlComponent ,
-  getSpaceSeparatedClassNameList ,
-  withExtraSemanticProperties ,
-  asHidden ,
-} ;
+// export {
+//   //
+//   React ,
+//   describeComponent,
+//   describeHtmlComponent ,
+//   getSpaceSeparatedClassNameList ,
+//   withExtraSemanticProperties ,
+//   asHidden ,
+// } ;
 
-export {
-  mkClasses,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+// export {
+//   mkClasses,
+// } from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 
 // import {
