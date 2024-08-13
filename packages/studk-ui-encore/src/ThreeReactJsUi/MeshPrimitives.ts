@@ -74,58 +74,59 @@ import {
 //   }
 // )
 
-export const POLYLINE_AS_TRIANGLES = (
-  function <const perPtT extends (
-    | (readonly [number, number, number])
-    // | import("studk-video-fwcore/src/LinearTransforms.mjs").Point3D
-  )>(...[
-    pts, { close: shallClose, } ,
-  ] : (
-    ArgsWithOptions<[pts: readonly perPtT[]], { close: boolean, }>
-  ) )
-  {
-    if (pts[0]) {
+import {
+  POLYLINE_AS_TRIANGLES ,
+} from "studk-i3d/src/helpers/PolygonalAsTriangularOnCoord.ts"
 
-      if (1) {
-        const idxs = (
-          util.reiterated(function* () {
-            for (let i0 = 1; (i0 + 1) <= (pts.length + (shallClose ? 0 : -1 ) ); i0 += 1 ) {
-              yield 0 ;
-              yield (i0 + 0 ) % pts.length ;
-              yield (i0 + 1 ) % pts.length ;
-            }
-          })
-        )
+export { POLYLINE_AS_TRIANGLES, }
+
+// const POLYLINE_AS_TRIANGLES = (
+//   function <const perPtT extends (
+//     | (readonly [number, number, number])
+//     // | import("studk-video-fwcore/src/LinearTransforms.mjs").Point3D
+//   )>(...[
+//     pts, { close: shallClose, } ,
+//   ] : (
+//     ArgsWithOptions<[pts: readonly perPtT[]], { close: boolean, }>
+//   ) )
+//   {
+//     if (pts[0]) {
+
+//       if (1) {
+//         const idxs = (
+//           util.reiterated(function* () {
+//             for (let i0 = 1; (i0 + 1) <= (pts.length + (shallClose ? 0 : -1 ) ); i0 += 1 ) {
+//               yield 0 ;
+//               yield (i0 + 0 ) % pts.length ;
+//               yield (i0 + 1 ) % pts.length ;
+//             }
+//           })
+//         )
   
-        return (
-          idxs
-          .map((i) => (
-            pts[i % pts.length] ?? pts[0] ?? util.throwAssertionError()
-          ))
-          .map(([x, y, z]) => (
-            [
-              x + (Math.random() * 1E-7 ) ,
-              y + (Math.random() * 1E-7 ) ,
-              z + (Math.random() * 1E-7 ) ,
-            ] as const
-          ) )
-        )
-      }
+//         return (
+//           idxs
+//           .map((i) => (
+//             pts[i % pts.length] ?? pts[0] ?? util.throwAssertionError()
+//           ))
+//           .map(([x, y, z]) => (
+//             [
+//               x + (Math.random() * 1E-7 ) ,
+//               y + (Math.random() * 1E-7 ) ,
+//               z + (Math.random() * 1E-7 ) ,
+//             ] as const
+//           ) )
+//         )
+//       }
 
-      {
+//       {
 
-        const s1 = ((...[] : []) => {
-          const p = new THREE.Shape()
-          return p
-        })()
-
-        return util.throwAssertionError()
-      }
-    } else {
-      return [] as const
-    }
-  }
-)
+//         return util.throwAssertionError()
+//       }
+//     } else {
+//       return [] as const
+//     }
+//   }
+// )
 
 
 
