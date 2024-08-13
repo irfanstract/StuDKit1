@@ -13,9 +13,9 @@ import {
 
 /**
  * 
- * @typedef {import("studk-ui/src/fwCore/ewo.ts").XJson.IDictFor<k, v> }
+ * @typedef {import("studk-ui-fwcore/src/util/EWithOpt.ts").XJson.IDictFor<k, v> }
  * @template {string} [k=string]
- * @template {import("studk-ui/src/fwCore/ewo.ts").XJson.IAny} [v=any]
+ * @template {import("studk-ui-fwcore/src/util/EWithOpt.ts").XJson.IAny} [v=any]
  * 
  */
 /**
