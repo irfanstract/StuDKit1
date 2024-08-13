@@ -29,9 +29,14 @@
     { "path": "../../packages/studk-simulations-commons", } ,
     { "path": "../../packages/studk-fwcore/tsconfig.build.json", } ,
     { "path": "../../packages/studk-ui-coreinteractivitymodels", } ,
+    { "path": "../../packages/studk-video-fwcore", } ,
     { "path": "../../packages/studk-ui-componentdefinition/tsconfig.build.json", } ,
     { "path": "../../packages/studk-dom-util", } ,
     { "path": "../../packages/studk-fbreact-all", } ,
+    
+    // /* need these as some our files need these.  */
+    // /* can't link to the "build" version of their `tsconfig`; only the "no-emit" version of */
+    // { "path": "../../packages/studk-ui", } ,
   ] ,
   "include": [
     "src" ,
