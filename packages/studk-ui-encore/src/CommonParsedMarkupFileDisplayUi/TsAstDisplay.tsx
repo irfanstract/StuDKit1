@@ -32,9 +32,10 @@ import type {
 
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
-const getNodeTypeLabelTxt = (nd: TS.Node) => (
-    `${TS.SyntaxKind[nd.kind] }`
-) ;
+import {
+  getNodeTypeLabelTxt ,
+  getNodeChildren ,
+} from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsAstUtils.tsx"
 
 import {
   KeywordAlikeKcn,
