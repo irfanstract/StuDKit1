@@ -104,7 +104,7 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 const warnOnceOfUnsetScdOnscrollVal = (
   util.L.once(() => {
