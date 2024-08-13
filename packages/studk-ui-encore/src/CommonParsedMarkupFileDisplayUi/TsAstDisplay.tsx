@@ -566,7 +566,7 @@ export const TsAstDisplayC = (
 
         const e1 = (
           <div
-          title={`${nodeTypeLabelTxt } - ${JSON.stringify(nd.getText() ) }`}
+          title={`${nodeTypeLabelTxt } `}
           style={{
             zoom: `99%` ,
             border: bord ? `0.05em solid currentcolor` : undefined ,
