@@ -44,6 +44,10 @@ import type {
 
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
+import {
+  parseTsSourceFileContent,
+} from "studk-ts-codeanalysis/src/core/TsSourceCodeParsingFrontend.ts" ;
+
 ;
 
 
@@ -114,8 +118,9 @@ export const EvrC = (
         vAndE ,
         pushRevContent ,
         revertToRevT ,
+        pruneAllRevsList ,
       } = (
-        useRevCsioe<TS.SourceFile >(() => (
+        useRevCsioe<ReturnType<typeof getSampleDocument> >(() => (
           getSampleDocument()
         ))
       ) ;
@@ -131,10 +136,10 @@ export const EvrC = (
           ;
           const {
             revs,
-            lastRevT ,
+            presentlyRevT: presentlyRevT ,
             revParentMap ,
           } = v0 ;
-          const revT = lastRevT ;
+          const revT = presentlyRevT ;
           const runUndoBtnAction = (
             (() => {
               const nextRevT = revParentMap.get(revT) ?? null ;
@@ -147,11 +152,82 @@ export const EvrC = (
               }
             })()
           ) ;
+          const runRedoBtnAction = (
+            (() => {
+              if (v0.withRedo().presentlyRevT === v0.presentlyRevT ) {
+                return false ;
+              }
+              return () => {
+                revertToRevT(v0.withRedo().presentlyRevT ) ;
+              } ;
+            })()
+          ) ;
           const value = (
             revs.get(revT)
           ) ;
           if (value) {
           ;
+          const memub = (
+            revs.valueSeq()
+            /* total length */
+            .map(f => f.text ).join("").length
+          ) ;
+          const revActsPane = (
+            <div>
+              <ul
+              style={{ display: "flex", flexDirection: "row" }}
+              >
+                <li
+                style={{ order: 2, }}
+                >
+                Rev T: {}
+                [<i>{ new Date(revT).toLocaleString() }</i>] {}
+                <i>{ new Date(v0.presentlyRevT ).toLocaleString() }</i> {}
+                </li>
+                <li
+                style={{ order: 1, }}
+                >
+                Parent Rev T: {}
+                <i>{ new Date(v0.withUndo().presentlyRevT ).toLocaleString() }</i>
+                </li>
+                <li
+                style={{ order: 3, }}
+                >
+                Redo Rev T: {}
+                <i>{ new Date(v0.withRedo().presentlyRevT ).toLocaleString() }</i>
+                </li>
+              </ul>
+              <details>
+                <pre style={{}} >
+                  { JSON.stringify({ t: v0.presentlyRevT, u: v0.revParentMap, r: v0.revRedoMap, }, null, 2 ) }
+                </pre>
+              </details>
+              <nav>
+                <Button
+                children={`Undo` }
+                onClick={runUndoBtnAction}
+                />
+                <Button
+                children={`Redo` }
+                onClick={runRedoBtnAction}
+                />
+              </nav>
+              <aside>
+              <p>
+                Estimated Mem Usage (maybe): {}
+                <i>{ ((v: number, s: number) => `${(v / (1024 ** s ) ).toFixed(2) } ${(["B", "KiB", "MiB", "GiB"] as const)[s] ?? "(...)" }` )(memub, 2 ) }</i> {}
+                ; {}
+                Current Rev          : <i>{ new Date(v0.presentlyRevT).toLocaleString() }</i> ; {}
+                Revs          : <i>{ revs.size }</i> ; {}
+                Reachable Revs: { (() => { const rs = v0.getAllReachableRevTs() ; if (0 && (rs.length < 6)) { return <i>{ rs.map(t => new Date(t).toLocaleString() ).join(" and ") }</i> } ; return <i>{ rs.length } items</i> ; })() } ; {}
+                <Button
+                children={`Prune Revs` }
+                onClick={pruneAllRevsList || false }
+                /> {}
+              </p>
+              </aside>
+            </div>
+          ) ;
           return (
             <EvrCPos
             value={value}
@@ -159,12 +235,15 @@ export const EvrC = (
               const { newValue, } = e ;
               if (TS.isSourceFile(newValue) ) {
                 ;
-                pushRevContent(newValue)
+                pushRevContent(newValue, { asBeingWithinHighFrequencyEditSeqce: true, } )
               } else {
                 ;
                 console["warn"](`'newValue' is  arbitrary Node but we can only accept SourceFile(s). ignoring the submitted chg evt, not committing it. `, { newValue, } ) ;
               }
             } }
+            revActionsPane={(
+              revActsPane
+            )}
             />
           ) ;
           }
@@ -200,8 +279,9 @@ export const EvrC = (
 const TsAstDisplayCAlt = (
   function TsAstDisplayCAltCImpl(props: React.ComponentProps<typeof TsAstDisplayC>)
   {
-    const astRenderRetryK = (
-      React.useMemo(() => Math.random() , [props.value] )
+    const astRenderRetryK : number | string = (
+      // React.useMemo(() => Math.random() , [props.value] )
+      1
     ) ;
     return (
       <div>
@@ -223,14 +303,32 @@ const EvrCPos = (
     function EvrCPosImpl(props : (
       & {
         value: import('typescript').SourceFile ,
-        onChange ?: (evt: { newValue: TS.Node }) => void ,
+        onChange ?: (evt: { newValue: TS.SourceFile }) => void ,
+        revActionsPane ?: React.ReactElement ,
       }
     ) )
     {
       const {
         value,
         onChange: onChgArg ,
+        revActionsPane: revActionsPaneArg,
       } = props ;
+
+      const revActionsFrame = (
+        revActionsPaneArg
+        &&
+        ((
+          describeHeadlinedWidget({
+            //
+            heading: <>Rev Actions</> ,
+            children: (
+              <div>
+                { revActionsPaneArg }
+              </div>
+            ) ,
+          })
+        ))
+      ) ;
 
       const definingScriptViewFrame = (() => {
         ;
@@ -238,13 +336,29 @@ const EvrCPos = (
         const handleChgEvt = (
           onChgArg
           &&
-          function (...[chgEvt] : [TsAstDisplayEvents.SelfTotalReplacingChgEventDesc ]) {
+          function (...[chgEvt] : [TsAstDisplayEvents.NdseEditEventDesc ]) {
             ;
+
+            const existingSrcText = (
+              value.text
+            ) ;
 
             // TODO
             console["log"]({ chgEvt, }) ;
 
-            onChgArg({ newValue: chgEvt.newValue, }) ;
+            const newSrcTxt = (
+              existingSrcText.slice(0, chgEvt.lsAbsoluteStart )
+              + chgEvt.newTxt
+              + existingSrcText.slice(chgEvt.lsAbsoluteEnd )
+            ) ;
+
+            const s1 = (
+              parseTsSourceFileContent((
+                newSrcTxt
+              ))
+            ) ;
+
+            onChgArg({ newValue: s1, }) ;
           }
         ) ;
 
@@ -258,7 +372,7 @@ const EvrCPos = (
                   <p>TypeScript</p>
                   <TsAstDisplayCAlt
                   value={value}
-                  onChange={handleChgEvt}
+                  onTextualEditEvt={handleChgEvt}
                   />
                 </div>
               ) ,
@@ -302,9 +416,10 @@ const EvrCPos = (
       return (
         <div>
           <AccrdListC>
-            <li>{ definingScriptViewFrame     }</li>
-            <li>{ structureExploringFrame     }</li>
-            <li>{ semiFinalRenderingAppFrame  }</li>
+            { revActionsFrame && <li key="und">{ revActionsFrame }</li> }
+            <li key="dsv">{ definingScriptViewFrame     }</li>
+            <li key="scu">{ structureExploringFrame     }</li>
+            <li key="rfm">{ semiFinalRenderingAppFrame  }</li>
           </AccrdListC>
         </div>
       ) ;
