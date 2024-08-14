@@ -78,6 +78,16 @@ export {
 
 ;
 
+import {
+  //
+  useTuple ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseVectorOrTuple.ts" ;
+
+export {
+  //
+  useTuple ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseVectorOrTuple.ts" ;
+
 export * from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
 
 import * as React from "react" ;
