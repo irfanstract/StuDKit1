@@ -152,6 +152,19 @@
   // .studk-mnavf-footer:not(:is(:focus-within, :hover ) ) {
   //   filter: blur(0.1em);
   // }
+  
+  /*
+   * i changed my mind -
+   * site-footers are not only navigations, they also include site-owners contact info, so
+   * i should cancel the floating-ness invoked above
+   */
+  @media screen {
+    .studk-mnavf-footer {
+      // right : revert;
+      bottom: revert;
+    }
+  }
+
 }
 
 @layer defaults {
