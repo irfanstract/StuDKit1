@@ -97,6 +97,10 @@ import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
+import {
+  SfmInputC ,
+} from "studk-ui-encore/src/ClientSideEditorStateMgmt/SingularFormElement.tsx" ;
+
 
 
 
@@ -112,7 +116,7 @@ import {
 
 const getSpclDefaultClvMd = () => (
   // <p><code>{nodeTypeLabelTxt }</code></p>
-  CLV.forIsTerminaNdFnc()
+  CLV.forIsTerminaNdFnc(undefined, { asDbWhen: () => true, } )
 ) ;
 
 namespace TsAstDisplayEvents
@@ -508,8 +512,8 @@ export const TsAstDisplayC = (
                   if (runnTextualEditEvtCb ) {
                     ;
                     return (
-                      <input
-                      value={ndSrcTxt}
+                      <SfmInputC
+                      value={nd.getText() }
                       onChange={e0 => {
                         const { value: newTxt, } = e0.target ;
 
@@ -629,10 +633,9 @@ export const TsAstDisplayC = (
         ) ;
 
         const selfEditBtnsSec = (
+          runWholeTreeChgHandler ?
           <div>
           { (
-            (runWholeTreeChgHandler && (sptdKcn ) )
-            &&
             <Button
             title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
             children={<>☯</>}
@@ -647,6 +650,7 @@ export const TsAstDisplayC = (
             />
           ) }
           </div>
+          : <></>
         ) ;
 
         return (
