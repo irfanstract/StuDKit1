@@ -1,0 +1,143 @@
+{
+  "extends": "../../tsconfig.json" ,
+  
+  /* copy-cats `tsconfig.json` in `studk-demos` */
+
+  "compilerOptions": {
+
+
+
+    /* 
+     * `moduleResolution` !!!
+     * generally no effect, 
+     * EXCEPT IN CASE OF - (a) `esbuild` (b) NextJS (c) Webpack (d) `ts-node` PLUS `tsconfig-paths` - IN WHICH CASE AFFECTS LINKAGE
+     */
+    
+    /* https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases#module-aliases */
+    // "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*" ,
+      ],
+      /* https://stackoverflow.com/a/57273280 . the same reason this is also there in/on the root `tsconfig.json`. */
+      "*" : [
+        "../../packages/*"
+      ] ,
+    },
+    "moduleResolution": "bundler" /* https://github.com/microsoft/TypeScript/pull/51669 */,
+    "forceConsistentCasingInFileNames": true,
+
+
+
+    /* 
+     * `module` and `esModuleInterop` !!!
+     */
+    
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": false,
+    // "jsx": "react-jsx" ,
+    "jsx": "preserve",
+
+    /* 
+     * `checkJS`
+     * `allowImportingTsExtensions`
+     * `resolveJsonModule`
+     */
+
+    "checkJs": false,
+    "allowJs": true ,
+    /* https://github.com/microsoft/TypeScript/pull/51669 */
+    /* we already have `noEmit: true` here and the runtime uses alternative compiler/transpiler */
+    "allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
+    "resolveJsonModule": true,
+
+    
+
+
+    /* 
+     * SETTINGS WHICH DOESN'T AFFECT LINKAGE !!!
+     */
+    
+    /* post-vendoring paths settings */
+
+    /* these three does not affect linkage, yet does affect generated code */
+
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "isolatedModules": true,
+    "noEmit": true /* for this (sub)package, we use TS-Node or ESBuild or NextJS, never the CLI `tsc` - https://github.com/microsoft/TypeScript/pull/51669 */ ,
+    
+    /* type-system configs */
+    /* generally inherits the parent config */
+
+    "strict": true,
+    "noImplicitAny": true, // '"strict": true ' did not enforce this
+    // without this
+    // the type-system would be unsound as
+    // `tsc` would pretend indexed array items always exists which cannot be proven.
+    // i believe `tsc init` should have done this.
+    "noUncheckedIndexedAccess": true, 
+    // more likely a bug, than not
+    "noFallthroughCasesInSwitch": true,
+    
+    
+
+
+    /* *reference libs* */
+    
+    "lib": [
+      "DOM", 
+      "DOM.Iterable", 
+      "ESNext" ,
+    ],
+    "skipLibCheck": true,
+    "incremental": true,
+
+    // "paths": {
+    //   "@/components/*": ["./components/*"],
+    //   "@/public/*"    : ["./public/*"],
+    //   "@/styles/*"    : ["./styles/*"],
+    // },
+    
+    
+
+
+    "plugins": [
+      {
+        "name": "next"
+      } ,
+    ] ,
+
+
+    
+  },
+  "include": [
+    "packages" ,
+    "src" ,
+    /* for some reason omitting these caused the type-checker to fail resolving custom-paths */
+    "app/**/*" ,
+    "pages/**/*" ,
+    "appInternalScripts/**/*" ,
+    "components/**/*" ,
+
+    /* otherwise `next-env.d.ts` has no effect */
+    "next-env.d.ts" ,
+    /* https://nextjs.org/docs/app/building-your-application/configuring/typescript#custom-type-declarations */
+    ".next/types/**/*.ts" ,
+  ],
+  // "references": [
+  // ] ,
+  "exclude": [
+    "node_modules"
+  ],
+
+  "ts-node": {
+
+    "esm": true,
+    "transpileOnly": true,
+    
+  } ,
+
+}
