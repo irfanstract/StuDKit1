@@ -35,11 +35,15 @@ import {
 
 
 
+import {
+  parseTsSourceFileContent,
+} from "studk-ts-codeanalysis/src/core/TsSourceCodeParsingFrontend.ts" ;
+
 export const getSampleTsSourceFile = (
   function ()
   {
     const sf = (
-      TS.createSourceFile("<repl>", (
+      parseTsSourceFileContent((
         `
         import {
           CMath ,
@@ -75,16 +79,7 @@ export const getSampleTsSourceFile = (
         }
 
         `
-      ) , {
-        languageVersion: TS.ScriptTarget.ES2022,
-      }, (
-        /**
-         * things break when you set this to `false`.
-         * we shall always set this to `true`.
-         * 
-         */
-        true
-      ), TS.ScriptKind.TSX )
+      ) )
     ) ;
     return sf ;
   }
