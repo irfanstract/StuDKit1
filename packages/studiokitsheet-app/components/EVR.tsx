@@ -60,30 +60,16 @@ import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
 import * as React from "react" ;
 
-const useCLientSideOnly = (
-  () => React.useSyncExternalStore((
-    React.useCallback(() => (() => {} ) , [] )
-  ) , () => true, () => false )
-) ;
+import {
+  useClientSideOnly ,
+  useClientSideOnlyCompute ,
+} from "studk-ui-encore/src/ClientSideEditorStateMgmt/ClientSideOnlyComputeInReact.tsx" ;
 
-const useClientSideInitOnlyState = (
-  function <const R extends true | object > (...[recompute]: [() => R] )
-  {
-    const [s, setS] = React.useState<R | null>(() => null) ;
-    React["useEffect"](() => {
-      setS(v0 => (v0 ?? recompute() ) ) ;
-    }) ;
-    return [s, setS] as const ;
-  }
-) ;
-
-const useClientSideOnlyCompute = (
-  function <const R extends true | object > (...[recompute]: [() => R] )
-  {
-    const [s, setS] = useClientSideInitOnlyState(recompute) ;
-    return s ;
-  }
-) ;
+import {
+  useClientSideInitOnlyState ,
+  useCsioe ,
+  useRevCsioe ,
+} from "studk-ui-encore/src/ClientSideEditorStateMgmt/Csioe" ;
 
 import {
   CFaBku ,
@@ -99,6 +85,7 @@ import {
   Image,
   describeHtmlComponent,
   describeHeadlinedWidget,
+  Button,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 import {
@@ -123,48 +110,64 @@ export const EvrC = (
     function EvrCImpl()
     {
 
-      const [vAndE, setVAndE] = (
-        useClientSideInitOnlyState((): (
-          | { value: ReturnType<typeof getSampleDocument>, err?: null, }
-          | { err: Error, value?: false | null, }
-        ) => {
-          try {
-            const value = getSampleDocument() ;
-            return { value } ;
-          } catch (z : any) {
-            return {
-              err: z ,
-              value: false ,
-            } ;
-          }
-        } )
+      const {
+        vAndE ,
+        pushRevContent ,
+        revertToRevT ,
+      } = (
+        useRevCsioe<TS.SourceFile >(() => (
+          getSampleDocument()
+        ))
       ) ;
 
       if (vAndE) {
         ;
         const {
-          value ,
+          value: v0 ,
           err ,
         } = vAndE ;
   
-        if (value) {
+        if (v0) {
+          ;
+          const {
+            revs,
+            lastRevT ,
+            revParentMap ,
+          } = v0 ;
+          const revT = lastRevT ;
+          const runUndoBtnAction = (
+            (() => {
+              const nextRevT = revParentMap.get(revT) ?? null ;
+              if (nextRevT !== null) {
+                return () => {
+                  revertToRevT(nextRevT) ;
+                } ;
+              } else {
+                return false ;
+              }
+            })()
+          ) ;
+          const value = (
+            revs.get(revT)
+          ) ;
+          if (value) {
           ;
           return (
             <EvrCPos
             value={value}
-            onChange={e => (
-              setVAndE(v0 => {
-                const { newValue, } = e ;
-                if (TS.isSourceFile(newValue) ) {
-                  ;
-                  console["warn"](`'newValue' is  arbitrary Node but we can only accept SourceFile(s). ignoring the submitted chg evt, not committing it. `, { newValue, } ) ;
-                  return { value: newValue , } ;
-                }
-                return v0 ;
-              } )
-            ) }
+            onChange={e => {
+              const { newValue, } = e ;
+              if (TS.isSourceFile(newValue) ) {
+                ;
+                pushRevContent(newValue)
+              } else {
+                ;
+                console["warn"](`'newValue' is  arbitrary Node but we can only accept SourceFile(s). ignoring the submitted chg evt, not committing it. `, { newValue, } ) ;
+              }
+            } }
             />
           ) ;
+          }
         } else {
           ;
   
@@ -183,6 +186,13 @@ export const EvrC = (
           </div>
         ) ;
       }
+
+      return (
+        <div>
+          <p>Failed To Render Document:</p>
+          <p>???</p>
+        </div>
+      ) ;
     }
   ))
 ) ;
