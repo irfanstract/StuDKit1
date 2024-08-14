@@ -97,7 +97,24 @@ export function cosineAt(x)
 export function sineAt(x)
 {
   // TODO
-  return Math.sin((2 * (Angle.getDegrees(x) / 360 ) ) * Math.PI ) ;
+  {
+    const xInDegrees = (
+      Angle.getDegrees(x)
+    ) ;
+    switch (xInDegrees) {
+      case 0 :
+      case 180 :
+      case -180 :
+        return 0 ;
+      case 90 :
+      case -270 :
+        return 1 ;
+      case -90 :
+      case 270 :
+        return -1 ;
+    }
+    return Math.sin((2 * (xInDegrees / 360 ) ) * Math.PI ) ;
+  }
 }
 
 /** @typedef {(x: Angle) => number } TrigSnf */

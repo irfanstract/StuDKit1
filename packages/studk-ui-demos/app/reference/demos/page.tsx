@@ -121,20 +121,76 @@ export default function App()
             Graphical Overlays
             </Span>
           </p>
-          { 0 && <LDCWGOC /> }
-          { 0 && (
+          { null && <LDCWGOC /> }
+          { null && (
             <AudioNodeBeepDemo />
           ) }
-          { (
+          { true && (
             <DiscogrDemoC />
           ) }
-          <TimeDomainedImgListFigureC
-          />
+          { true && (
+            <I3DDemoC />
+          ) }
+          { null && (
+            <TimeDomainedImgListFigureC
+            />
+          ) }
+          <div>
+            <div style={{ blockSize: `50vh`, border: `1px solid blue`, }} >
+              &nbsp;
+            </div>
+            <div style={{ blockSize: `50vh`, border: `1px solid black`, }} >
+              &nbsp;
+            </div>
+          </div>
         </div>
       ) ,
     })
   ) ;
 } ;
+
+const AsResettibleBlockC = (
+  function AsResettibleBlockCImpl({ children, } : React.PropsWithChildren)
+  {
+    const [c, setC] = (
+      React.useState<number>(1)
+    ) ;
+    const runIncrButtonAction = (
+      function () {
+        setC(c => c + 1) ;
+      }
+    ) ;
+    const resetBtn = (
+      <button
+      type="button"
+      children={`Reset`}
+      onClick={e => runIncrButtonAction() }
+      />
+    ) ;
+    return (
+      <React.Fragment
+      key={c}
+      children={(
+        <div
+        style={{
+          display: "flex",
+          flexDirection: "column-reverse",
+        }}
+        >
+          <div>
+          { children }
+          </div>
+          <div>
+          <p>
+            { resetBtn }
+          </p>
+          </div>
+        </div>
+      )}
+      />
+    ) ;
+  }
+) ;
 
 import LDCWGOC from "@/components/spcl/longTextDocWithGraphicalOverlaysDemo"; ;
 
@@ -145,6 +201,10 @@ function TbmcDemo()
   return <TbmcDemoImpl /> ;
   return <div /> ;
 }
+
+import {
+  I3DDemoC ,
+} from "studk-ui-encore/src/StI3dPresenters/I3DDemoC.tsx" ;
 
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
