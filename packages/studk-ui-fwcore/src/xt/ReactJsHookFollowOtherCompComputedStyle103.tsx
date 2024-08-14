@@ -72,7 +72,7 @@ import {
 import type {
   //
   NcpSupportedElem ,
-} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101" ;
+} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101.tsx" ;
 
 const useExistingNativeCompBoundingBoxViaRef = (
   function (...[syncReferee, syncedGraphicalBoundsRel = ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
@@ -204,7 +204,6 @@ export {
 } ;
 
 export type {
-  // /** @deprecated use direct import from `studk-ui/src/meta/dom/computedstyles1.tsx`. */
   NcpSupportedElem ,
 } ;
 
