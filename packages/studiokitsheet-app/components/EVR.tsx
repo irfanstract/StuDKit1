@@ -243,8 +243,9 @@ export const EvrC = (
 const TsAstDisplayCAlt = (
   function TsAstDisplayCAltCImpl(props: React.ComponentProps<typeof TsAstDisplayC>)
   {
-    const astRenderRetryK = (
-      React.useMemo(() => Math.random() , [props.value] )
+    const astRenderRetryK : number | string = (
+      // React.useMemo(() => Math.random() , [props.value] )
+      1
     ) ;
     return (
       <div>
