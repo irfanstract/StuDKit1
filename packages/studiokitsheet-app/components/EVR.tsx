@@ -44,6 +44,10 @@ import type {
 
 import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
 
+import {
+  parseTsSourceFileContent,
+} from "studk-ts-codeanalysis/src/core/TsSourceCodeParsingFrontend.ts" ;
+
 ;
 
 
@@ -234,7 +238,7 @@ const EvrCPos = (
     function EvrCPosImpl(props : (
       & {
         value: import('typescript').SourceFile ,
-        onChange ?: (evt: { newValue: TS.Node }) => void ,
+        onChange ?: (evt: { newValue: TS.SourceFile }) => void ,
         revActionsPane ?: React.ReactElement ,
       }
     ) )
@@ -267,13 +271,29 @@ const EvrCPos = (
         const handleChgEvt = (
           onChgArg
           &&
-          function (...[chgEvt] : [TsAstDisplayEvents.SelfTotalReplacingChgEventDesc ]) {
+          function (...[chgEvt] : [TsAstDisplayEvents.NdseEditEventDesc ]) {
             ;
+
+            const existingSrcText = (
+              value.text
+            ) ;
 
             // TODO
             console["log"]({ chgEvt, }) ;
 
-            onChgArg({ newValue: chgEvt.newValue, }) ;
+            const newSrcTxt = (
+              existingSrcText.slice(0, chgEvt.lsAbsoluteStart )
+              + chgEvt.newTxt
+              + existingSrcText.slice(chgEvt.lsAbsoluteEnd )
+            ) ;
+
+            const s1 = (
+              parseTsSourceFileContent((
+                newSrcTxt
+              ))
+            ) ;
+
+            onChgArg({ newValue: s1, }) ;
           }
         ) ;
 
@@ -287,7 +307,7 @@ const EvrCPos = (
                   <p>TypeScript</p>
                   <TsAstDisplayCAlt
                   value={value}
-                  onChange={handleChgEvt}
+                  onTextualEditEvt={handleChgEvt}
                   />
                 </div>
               ) ,
