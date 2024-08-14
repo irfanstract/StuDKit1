@@ -118,8 +118,9 @@ export const EvrC = (
         vAndE ,
         pushRevContent ,
         revertToRevT ,
+        pruneAllRevsList ,
       } = (
-        useRevCsioe<TS.SourceFile >(() => (
+        useRevCsioe<ReturnType<typeof getSampleDocument> >(() => (
           getSampleDocument()
         ))
       ) ;
@@ -135,10 +136,10 @@ export const EvrC = (
           ;
           const {
             revs,
-            lastRevT ,
+            presentlyRevT: presentlyRevT ,
             revParentMap ,
           } = v0 ;
-          const revT = lastRevT ;
+          const revT = presentlyRevT ;
           const runUndoBtnAction = (
             (() => {
               const nextRevT = revParentMap.get(revT) ?? null ;
@@ -151,11 +152,46 @@ export const EvrC = (
               }
             })()
           ) ;
+          const runRedoBtnAction = (
+            (() => {
+              if (v0.withRedo().presentlyRevT === v0.presentlyRevT ) {
+                return false ;
+              }
+              return () => {
+                revertToRevT(v0.withRedo().presentlyRevT ) ;
+              } ;
+            })()
+          ) ;
           const value = (
             revs.get(revT)
           ) ;
           if (value) {
           ;
+          const revActsPane = (
+            <div>
+              <ul
+              style={{ display: "flex", flexDirection: "row" }}
+              >
+                <li
+                style={{ order: 2, }}
+                >
+                Rev T: {}
+                [<i>{ new Date(revT).toLocaleString() }</i>] {}
+                <i>{ new Date(v0.presentlyRevT ).toLocaleString() }</i> {}
+                </li>
+              </ul>
+              <nav>
+                <Button
+                children={`Undo` }
+                onClick={runUndoBtnAction}
+                />
+                <Button
+                children={`Redo` }
+                onClick={runRedoBtnAction}
+                />
+              </nav>
+            </div>
+          ) ;
           return (
             <EvrCPos
             value={value}
@@ -163,22 +199,14 @@ export const EvrC = (
               const { newValue, } = e ;
               if (TS.isSourceFile(newValue) ) {
                 ;
-                pushRevContent(newValue)
+                pushRevContent(newValue, { asBeingWithinHighFrequencyEditSeqce: true, } )
               } else {
                 ;
                 console["warn"](`'newValue' is  arbitrary Node but we can only accept SourceFile(s). ignoring the submitted chg evt, not committing it. `, { newValue, } ) ;
               }
             } }
             revActionsPane={(
-              <div>
-                <p>
-                  Rev T: <i>{ new Date(revT).toLocaleString() }</i>
-                </p>
-                <Button
-                children={`Undo` }
-                onClick={runUndoBtnAction}
-                />
-              </div>
+              revActsPane
             )}
             />
           ) ;
