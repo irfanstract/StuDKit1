@@ -117,8 +117,45 @@ namespace TsAstDisplayEvents
   /* extra semi-colon tp work-around `TS(1205)` */ ;
 
   export interface SelfTotalReplacingChgEventDesc {
-    newValue: TS.Node,
+    readonly newValue: TS.Node,
   }
+
+  export function describeNdseEdit(...[{
+    // lsAbsoluteStart ,
+    // lsAbsoluteEnd ,
+    lsNd ,
+    newTxt ,
+  }] : [(
+    {
+      // readonly lsAbsoluteStart: number,
+      // readonly lsAbsoluteEnd: number,
+      readonly lsNd: TS.Node ,
+      readonly newTxt: string ,
+      // readonly existingTxt: string ,
+    }
+  )] )
+  {
+
+    const {
+      pos: lsAbsoluteStart,
+      end: lsAbsoluteEnd ,
+    } = lsNd ;
+    const existingTxt = (
+      lsNd.getSourceFile().text.slice(lsAbsoluteStart, lsAbsoluteEnd )
+    ) ;
+
+    return {
+      lsNd ,
+      lsAbsoluteEnd ,
+      lsAbsoluteStart ,
+      existingTxt ,
+      newTxt ,
+    } as const ;
+  }
+
+  export interface NdseEditEventDesc extends
+  Extract<ReturnType<typeof describeNdseEdit> , any >
+  {}
 
 }
 
@@ -132,7 +169,11 @@ export const TsAstDisplayC = (
     {
       value: TS.Node ,
       clvMd ?: CLV,
+
+      /**  @deprecated consider {@link onTextualEditEvt } instead. */
       onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
+      onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+
     }
   ) )
   {
@@ -143,6 +184,7 @@ export const TsAstDisplayC = (
         getSpclDefaultClvMd()
       ) ,
       onChange: runWholeTreeChgHandler ,
+      onTextualEditEvt: runnTextualEditEvtCb ,
     } = props ;
 
     ;
@@ -181,6 +223,7 @@ export const TsAstDisplayC = (
           clvMd={clvMd}
           // TODO
           onChange={onChange}
+          onTextualEditEvt={runnTextualEditEvtCb}
           />
         ) ;
       }
@@ -268,6 +311,7 @@ export const TsAstDisplayC = (
                         clvMd={clvMd}
                         // TODO
                         onChange={undefined}
+                        onTextualEditEvt={runnTextualEditEvtCb}
                         />
                       ) ;
                     })()
@@ -413,6 +457,7 @@ export const TsAstDisplayC = (
             } )
             : undefined
           )}
+          onTextualEditEvt={runnTextualEditEvtCb}
           />
           </div>
         ) ;
@@ -460,25 +505,24 @@ export const TsAstDisplayC = (
               >
               <p>
                 { (() => {
-                  if (runWholeTreeChgHandler && sptdKcn ) {
-                    if (sptdKcn instanceof KeywordAlikeKcn) {
-                      return (
-                        <input
-                        value={ndSrcTxt}
-                        onChange={evt => {
-                          const { value, } = evt.target ;
+                  if (runnTextualEditEvtCb ) {
+                    ;
+                    return (
+                      <input
+                      value={ndSrcTxt}
+                      onChange={e0 => {
+                        const { value: newTxt, } = e0.target ;
 
-                          const newNd = sptdKcn.compileLiteral(value) ;
+                        const e1 = (
+                          TsAstDisplayEvents.describeNdseEdit({ lsNd: nd, newTxt: newTxt, })
+                        ) ;
 
-                          console["log"]({ newNd, }) ;
+                        runnTextualEditEvtCb(e1) ;
 
-                          runWholeTreeChgHandler({ newValue: newNd, }) ;
-
-                          ;
-                        } }
-                        />
-                      ) ;
-                    }
+                        ;
+                      } }
+                      />
+                    ) ;
                   }
                   return (
                     <code>{ ndSrcTxt }</code>
@@ -701,7 +745,11 @@ class CLV
 export const TsAllChildNodesListDisplayC = (
   describeHtmlComponent((function TsNodeListDisplayCImpl(props : (
     & { value: ReadonlyArray<TS.Node>, clvMd ?: CLV, }
-    & { onChange?: (evt: { newValue: ReadonlyArray<TS.Node> , changedIndices: readonly number[] }) => void }
+    & {
+      /**  @deprecated consider {@link onTextualEditEvt } instead. */
+      onChange?: (evt: { newValue: ReadonlyArray<TS.Node> , changedIndices: readonly number[] }) => void ,
+      onTextualEditEvt ?: (evt: TsAstDisplayEvents.NdseEditEventDesc) => void ,
+    }
     & {
       // // TODO
       // /** @deprecated */
@@ -714,6 +762,7 @@ export const TsAllChildNodesListDisplayC = (
       value: ndChildren,
       // srcNd ,
       onChange: runOnChgCbk  ,
+      onTextualEditEvt: runOnTextualEditEvtCbk ,
     } = props ;
 
     const childrenAsLs = (
@@ -736,6 +785,7 @@ export const TsAllChildNodesListDisplayC = (
                 ) ,
               })
             ) ) }
+            onTextualEditEvt={runOnTextualEditEvtCbk}
             />
           )}
           />
