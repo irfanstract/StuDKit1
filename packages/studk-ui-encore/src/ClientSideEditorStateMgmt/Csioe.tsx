@@ -341,6 +341,29 @@ class CsioeTable<Vle extends object = any >
     ) ;
   }
 
+  /**
+   * optimisational method
+   * intended solely for avoiding memory usage issues ;
+   * mathematically,
+   * using this method is unecessary .
+   * 
+   */
+  // TODO
+  withHavingBeenReferentiallyPruned() {
+    const allReachblRevTs = this.getAllReachableRevTs() ;
+    return (
+      this.derivedWithProps({
+        ...this ,
+        revs: (
+          this.revs
+          .filter((vle, key) => (
+            allReachblRevTs.includes(key)
+          ) )
+        ) ,
+      })
+    ) ;
+  }
+
   getTowardsParentRevTDelta() {
     const selfT = this.presentlyRevT ;
     const parentT = this.getParentStateRevT() ;
@@ -434,10 +457,33 @@ const useRevCsioe = (
       }
     ) ;
 
+    const pruneAllRevsList = (
+      function (...[] : [ ] ) {
+        ;
+
+        return (
+          setVAndE(s0 => {
+            const { value: sv, } = s0 ?? {} ;
+
+            if (sv) {
+
+              return {
+                value: (
+                  sv.withHavingBeenReferentiallyPruned()
+                ) ,
+              } ;
+            }
+            return s0 ;
+          })
+        ) ;
+      }
+    ) ;
+
     return {
       vAndE ,
       pushRevContent ,
       revertToRevT ,
+      pruneAllRevsList ,
     } as const ;
 
   }
