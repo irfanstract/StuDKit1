@@ -165,6 +165,17 @@ export const EvrC = (
                 console["warn"](`'newValue' is  arbitrary Node but we can only accept SourceFile(s). ignoring the submitted chg evt, not committing it. `, { newValue, } ) ;
               }
             } }
+            revActionsPane={(
+              <div>
+                <p>
+                  Rev T: <i>{ new Date(revT).toLocaleString() }</i>
+                </p>
+                <Button
+                children={`Undo` }
+                onClick={runUndoBtnAction}
+                />
+              </div>
+            )}
             />
           ) ;
           }
@@ -224,13 +235,31 @@ const EvrCPos = (
       & {
         value: import('typescript').SourceFile ,
         onChange ?: (evt: { newValue: TS.Node }) => void ,
+        revActionsPane ?: React.ReactElement ,
       }
     ) )
     {
       const {
         value,
         onChange: onChgArg ,
+        revActionsPane: revActionsPaneArg,
       } = props ;
+
+      const revActionsFrame = (
+        revActionsPaneArg
+        &&
+        ((
+          describeHeadlinedWidget({
+            //
+            heading: <>Rev Actions</> ,
+            children: (
+              <div>
+                { revActionsPaneArg }
+              </div>
+            ) ,
+          })
+        ))
+      ) ;
 
       const definingScriptViewFrame = (() => {
         ;
@@ -302,9 +331,10 @@ const EvrCPos = (
       return (
         <div>
           <AccrdListC>
-            <li>{ definingScriptViewFrame     }</li>
-            <li>{ structureExploringFrame     }</li>
-            <li>{ semiFinalRenderingAppFrame  }</li>
+            { revActionsFrame && <li key="und">{ revActionsFrame }</li> }
+            <li key="dsv">{ definingScriptViewFrame     }</li>
+            <li key="scu">{ structureExploringFrame     }</li>
+            <li key="rfm">{ semiFinalRenderingAppFrame  }</li>
           </AccrdListC>
         </div>
       ) ;
