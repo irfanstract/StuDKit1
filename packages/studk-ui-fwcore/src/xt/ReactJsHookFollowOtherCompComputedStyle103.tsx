@@ -72,10 +72,26 @@ import {
 import type {
   //
   NcpSupportedElem ,
-} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101" ;
+} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101.tsx" ;
 
 const useExistingNativeCompBoundingBoxViaRef = (
   function (...[syncReferee, syncedGraphicalBoundsRel = ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
+  : React.Ref<HTMLDivElement>
+  {
+    return (
+      useExistingNativeCompPropertiesViaRef(syncReferee, {
+        syncedGraphicalBoundsRel ,
+      } )
+    ) ;
+  }
+);
+
+const useExistingNativeCompPropertiesViaRef = (
+  function (...[syncReferee, {
+    syncedGraphicalBoundsRel = ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX ,
+  } = {}] : ArgsWithOptions<[src: NcpSupportedElem, ], {
+    syncedGraphicalBoundsRel ?: ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject ,
+  } >)
   : React.Ref<HTMLDivElement>
   {
     ;
@@ -93,7 +109,7 @@ const useExistingNativeCompBoundingBoxViaRef = (
             if ((e1.hidden = !(!!ncp) , ncp) )
             {
               Object.assign(e1.style, {
-                transition: `all 0.2s ease-out, inset 0.005s ease-out`,
+                transition: null,
               }) ;
 
               C :
@@ -110,6 +126,9 @@ const useExistingNativeCompBoundingBoxViaRef = (
                 }
                 case ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX :
                 {
+                  Object.assign(e1.style, {
+                    transition: `all 0.2s ease-out, inset 0.005s ease-out`,
+                  }) ;
                   Object.assign(e1.style, {
                     //
                     top : `${`${ncp.pos.y }px` } ` , 
@@ -174,6 +193,9 @@ import NCPSR = ToNativeDomElementSyncing.GraphicalBoundsSyncing ;
 import NCPSRI = ToNativeDomElementSyncing.GraphicalBoundsSyncing ;
 
 export {
+  //
+  useExistingNativeCompPropertiesViaRef ,
+  /** @deprecated consider using the more general API {@link useExistingNativeCompPropertiesViaRef}. */
   useExistingNativeCompBoundingBoxViaRef ,
   /** @deprecated alias of {@link useExistingNativeCompBoundingBoxViaRef} */
   useExistingNativeCompBoundingBoxViaRef as useNativeCompPositionSyncRef ,
@@ -182,7 +204,6 @@ export {
 } ;
 
 export type {
-  // /** @deprecated use direct import from `studk-ui/src/meta/dom/computedstyles1.tsx`. */
   NcpSupportedElem ,
 } ;
 
