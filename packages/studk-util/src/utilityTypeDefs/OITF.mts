@@ -23,13 +23,36 @@ type RecordValueOut<opts extends object> = (
 
 type RecordValueAllcast<opts extends object> = (
   EffectiveParameters<(
-    RecordValueOut<({
-      readonly [key in keyof opts] : (
-        (x: opts[key] ) => void
-      )
-    })>
+    (
+      RVA.AsValueTransposed<(
+        RecordEntry<opts>
+      )>
+    )[1]
   )>[0]
 ) ;
+
+namespace RVA {
+  ;
+
+  // AsValueTransposed
+  export type AsValueTransposed<Ent extends MapEntrySpec<any, any > > = (
+    Ent extends MapEntrySpec<infer K, infer V> ?
+    MapEntrySpec<K , (x: V ) => void>
+    : never
+  ) ;
+
+  {
+    interface T1 { x: number, y: string, }
+    type RVT1 = [...(
+      RVA.AsValueTransposed<(
+        RecordEntry<T1>
+      )>
+    )] ;
+    type TVT1 = RecordFromEntry<RVT1> ;
+
+  }
+
+}
 
 /**
  * is {@link RecordValueOut}.
@@ -44,6 +67,22 @@ type RecordValue<opts extends object> = (
 type MapEntrySpec<k, v> = (
   readonly [key: k, value: v ]
 ) ;
+
+type MapEntrySelectByKey<SE extends MapEntrySpec<any, any>, IntendedK extends keyof any > = (
+  /* Distributive Conditional Type */
+  SE extends any ?
+  (
+    [MapEntrySpec<IntendedK, any>] extends [MapEntrySpec<SE[0] , any> ] ?
+    SE
+    : never
+  )
+  : never
+) ;
+
+{
+  type T1 = MapEntrySelectByKey<[k: "3", v: "three"] | [k: "4", v: "four"] , "3" > ;
+  type T2 = MapEntrySelectByKey<[k: string, v: "three"] | [k: "4", v: "four"] , "3" > ;
+}
 
 /**
  * {@link Object.entries}
@@ -65,25 +104,28 @@ type ObjectEntry<T extends object> = (
  * {@link Object.fromEntries}
  * 
  */
-type RecordFromEntry<opts extends MapEntrySpec<any, any> > = (
-  RecordValueAllcast<{
-    readonly [k0 in opts[0]] : {
-      readonly [k1 in k0] : (
-        (
-          /** the matching MapEntry (pair, both K-V) */
-          Extract<opts , MapEntrySpec<k1, any > >
-        )[1]
-      ) ;
-    } ;
-  }>
+type RecordFromEntry<XKv extends MapEntrySpec<any, any> > = (
+  { readonly [k in XKv[0]] : MapEntrySelectByKey<XKv, k>[1] }
 ) ;
+
+{
+  //
+}
 
 /**
  * {@link Object.fromEntries}
  * 
  */
-type ObjectFromEntry<opts extends MapEntrySpec<any, any> > = (
-  RecordFromEntry<opts>
+type ObjectFromEntry<XKv extends MapEntrySpec<any, any> > = (
+  RecordFromEntry<XKv>
+) ;
+
+type PickByEntryW<opts extends object, XKv extends MapEntrySpec<any, any> > = (
+  RecordFromEntry<(
+    Extract<(
+      [...RecordEntry<opts>]
+    ) , XKv>
+  )>
 ) ;
 
 /**
@@ -111,6 +153,7 @@ export type {
   ObjectEntry,
   RecordFromEntry,
   ObjectFromEntry,
+  PickByEntryW,
   MapEntrySpec,
 } ;
 
@@ -171,6 +214,14 @@ type RequiredPartially<opts extends object, yK extends keyof opts> = (
   opts & Required<Pick<opts, yK> >
 ) ;
 
+import type {
+  //
+  PickCase ,
+  PickW ,
+  OmitCase ,
+  OmitW ,
+} from "studk-util/src/utilityTypeDefs/DictRecordKeyedPick.mts" ;
+
 /**
  * refinement of {@link T1}
  * 
@@ -187,21 +238,11 @@ type EA<T1 extends readonly unknown[] > = (
 //   Extend<T1, T2>
 // ) ;
 
-/**
- * {@link Extract}, with constraint `T2 extends T0`
- * 
- */
-type ExtractCase<T0, T2 extends T0> = (
-  Extract<T0, T2>
-) ;
-
-/**
- * {@link Exclude}, with constraint `T2 extends T0`
- * 
- */
-type ExcludeCase<T0, T2 extends T0> = (
-  Exclude<T0, T2>
-) ;
+import type {
+  //
+  ExtractCase ,
+  ExcludeCase ,
+} from "studk-util/src/utilityTypeDefs/SpecialiseW.mts" ;
 
 export type {
   AllOrNever as AllOrNever1,
@@ -211,6 +252,10 @@ export type {
   PartializedSelectively as PartializedPartially,
   PartializedUnlessMentioned ,
   RequiredPartially,
+  // PickCase ,
+  // PickW ,
+  // OmitCase ,
+  // OmitW ,
 } ;
 
 export type {
