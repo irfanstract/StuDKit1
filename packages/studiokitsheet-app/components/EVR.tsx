@@ -167,6 +167,11 @@ export const EvrC = (
           ) ;
           if (value) {
           ;
+          const memub = (
+            revs.valueSeq()
+            /* total length */
+            .map(f => f.text ).join("").length
+          ) ;
           const revActsPane = (
             <div>
               <ul
@@ -179,7 +184,24 @@ export const EvrC = (
                 [<i>{ new Date(revT).toLocaleString() }</i>] {}
                 <i>{ new Date(v0.presentlyRevT ).toLocaleString() }</i> {}
                 </li>
+                <li
+                style={{ order: 1, }}
+                >
+                Parent Rev T: {}
+                <i>{ new Date(v0.withUndo().presentlyRevT ).toLocaleString() }</i>
+                </li>
+                <li
+                style={{ order: 3, }}
+                >
+                Redo Rev T: {}
+                <i>{ new Date(v0.withRedo().presentlyRevT ).toLocaleString() }</i>
+                </li>
               </ul>
+              <details>
+                <pre style={{}} >
+                  { JSON.stringify({ t: v0.presentlyRevT, u: v0.revParentMap, r: v0.revRedoMap, }, null, 2 ) }
+                </pre>
+              </details>
               <nav>
                 <Button
                 children={`Undo` }
@@ -190,6 +212,20 @@ export const EvrC = (
                 onClick={runRedoBtnAction}
                 />
               </nav>
+              <aside>
+              <p>
+                Estimated Mem Usage (maybe): {}
+                <i>{ ((v: number, s: number) => `${(v / (1024 ** s ) ).toFixed(2) } ${(["B", "KiB", "MiB", "GiB"] as const)[s] ?? "(...)" }` )(memub, 2 ) }</i> {}
+                ; {}
+                Current Rev          : <i>{ new Date(v0.presentlyRevT).toLocaleString() }</i> ; {}
+                Revs          : <i>{ revs.size }</i> ; {}
+                Reachable Revs: { (() => { const rs = v0.getAllReachableRevTs() ; if (0 && (rs.length < 6)) { return <i>{ rs.map(t => new Date(t).toLocaleString() ).join(" and ") }</i> } ; return <i>{ rs.length } items</i> ; })() } ; {}
+                <Button
+                children={`Prune Revs` }
+                onClick={pruneAllRevsList || false }
+                /> {}
+              </p>
+              </aside>
             </div>
           ) ;
           return (
