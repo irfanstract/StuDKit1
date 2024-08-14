@@ -36,7 +36,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 /**
  * proper version of {@link Omit} - WIP
@@ -61,7 +61,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -99,7 +104,7 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 const warnOnceOfUnsetScdOnscrollVal = (
   util.L.once(() => {
@@ -114,7 +119,7 @@ export interface ScrollingEvt
 }
 
 export const ScdC = (
-  describeComponent((
+  describeHtmlComponent((
     function ScdCImpl({ ...props } : (
       ProperOmit<React.ComponentProps<typeof ScdSubC>, (
         | "divRef"
@@ -147,7 +152,7 @@ export const ScdC = (
 ) ;
 
 const ScdSubC = (
-  describeComponent((
+  describeHtmlComponent((
     function ScdCSubImpl({
       children,
       cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
