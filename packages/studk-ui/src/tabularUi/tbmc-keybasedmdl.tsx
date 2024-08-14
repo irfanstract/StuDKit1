@@ -12,29 +12,16 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
-
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 import type {
   EffectiveParameters,
   PartializedPartially,
   RequiredPartially,
 } from 'studk-fwcore/src/util/C1.ts';
-
-import type {
-  ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
 
 export namespace XUtil { ; }
 
