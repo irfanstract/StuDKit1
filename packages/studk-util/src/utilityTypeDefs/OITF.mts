@@ -18,7 +18,8 @@ export type {
 
 
 type RecordValueOut<opts extends object> = (
-  opts[keyof opts]
+  import("studk-util/src/utilityTypeDefs/DictRecordEitherPropertyOrExtends.mts")
+  .RecordValueOut1<opts>
 ) ;
 
 type RecordValueAllcast<opts extends object> = (
@@ -160,59 +161,16 @@ export type {
 
 
 
-/**
- * restrict to, setting exactly one of its props.
- * 
- */
-type EitherPropertyOf<opts extends object> = (
-  Partial<opts>
-  &
-  RecordValueOut<{ readonly [k0 in keyof opts] -?: (
-    RequiredPartially<(
-      { readonly [k1 in keyof opts] ?: ([k1] extends [k0] ? unknown : never ) ; }
-    ) , k0 >
-  ) ; }>
-) ;
-
-/**
- * restrict to, setting all or neither, of its props.
- * 
- */
-type AllOrNever<opts extends object> = (
-  | Required<opts>
-  | { /* supposed to be *homomorphic* */ [k in keyof opts] ?: never ; }
-) ;
-
-/**
- * {@link Partial} for select props/names
- * 
- */
-type PartializedSelectively<opts extends object, omtK extends keyof opts> = (
-  // Partial<opts> & Required<Omit<opts, omtK> >
-
-  Partial<opts> & Pick<opts, ExcludeCase<keyof opts, omtK> >
-) ;
-
-/**
- * {@link Partial} outside select props/names
- * 
- * opposite of {@link RequiredPartially} WRT direction ;
- * opposite of {@link PartializedSelectively} WRT the sign ;
- * 
- */
-type PartializedUnlessMentioned<opts extends object, yK extends keyof opts> = (
-  Partial<opts> & Pick<opts, yK >
-) ;
-
-/**
- * {@link Required} for select props/names
- * 
- * opposite of {@link PartializedUnlessMentioned} WRT direction
- * 
- */
-type RequiredPartially<opts extends object, yK extends keyof opts> = (
-  opts & Required<Pick<opts, yK> >
-) ;
+import type {
+  //
+  EitherPropertyOf ,
+  AllOrNever ,
+  PartializedSelectively ,
+  PartializedSelectivelyW ,
+  PartializedUnlessMentioned ,
+  RequiredPartially ,
+  Extend ,
+} from "studk-util/src/utilityTypeDefs/DictRecordEitherPropertyOrExtends.mts" ;
 
 import type {
   //
@@ -221,14 +179,6 @@ import type {
   OmitCase ,
   OmitW ,
 } from "studk-util/src/utilityTypeDefs/DictRecordKeyedPick.mts" ;
-
-/**
- * refinement of {@link T1}
- * 
- */
-type Extend<T1 extends {}, T2 extends Partial<T1> > = (
-  T1 & T2
-) ;
 
 type EA<T1 extends readonly unknown[] > = (
   EffectiveParameters<[]>[0]
@@ -248,50 +198,43 @@ export type {
   AllOrNever as AllOrNever1,
   EitherPropertyOf ,
   PartializedSelectively ,
-  /** @deprecated alias of {@link PartializedSelectively} */
-  PartializedSelectively as PartializedPartially,
+  PartializedSelectivelyW ,
+  PartializedPartially,
+  PartializedPartiallyW,
   PartializedUnlessMentioned ,
   RequiredPartially,
   // PickCase ,
   // PickW ,
   // OmitCase ,
   // OmitW ,
-} ;
+} from "studk-util/src/utilityTypeDefs/DictRecordEitherPropertyOrExtends.mts" ;
 
 export type {
   Extend,
-  ExtractCase ,
-  ExcludeCase ,
 } ;
 
+export type {
+  ExtractCase ,
+  ExcludeCase ,
+} from "studk-util/src/utilityTypeDefs/SpecialiseW.mts" ;
 
 
 
-/**
- * bugfixed version of {@link Parameters}.
- * 
- */
-type EffectiveParameters<T extends object> = (
-  [T] extends [(...args: infer P) => any] ? P : never
-) ;
 
-/**
- * bugfixed version of {@link Parameters} and {@link ReturnType}.
- * 
- */
-type EffectiveArgsAndReturnSignature<T extends object> = (
-  [T] extends [(...args: infer P) => (infer R)] ? (readonly [args: P, returnT: R ]) : never
-) ;
+;
 
-type IIndexOfItemOf<T1 extends readonly unknown[] > = (
-  Extract<keyof T1, number | `${number}`>
-) ;
+import type {
+  //
+  EffectiveParameters ,
+  EffectiveArgsAndReturnSignature ,
+  IIndexOfItemOf ,
+} from "studk-util/src/utilityTypeDefs/EffectiveFunctionParameters.mts" ;
 
 
 export type {
   EffectiveParameters,
   EffectiveArgsAndReturnSignature ,
-} ;
+} from "studk-util/src/utilityTypeDefs/EffectiveFunctionParameters.mts" ;
 
 
 
