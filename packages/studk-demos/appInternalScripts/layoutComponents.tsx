@@ -1,4 +1,13 @@
 
+
+
+
+/* 
+ * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
+ * https://stackoverflow.com/q/77592173  
+ * https://nextjs.org/docs/app/building-your-application/rendering/client-components#how-are-client-components-rendered  
+ * 
+ * */
 "use client" ;
 
 
@@ -21,6 +30,12 @@ import {
 
 import * as React from "react" ;
 
+import {
+  NativeButton ,
+  ButtonC ,
+  SpanC ,
+} from "studk-ui/src/xst/dbc.tsx" ;
+
 import Link from "next/link" ;
 
 ;
@@ -39,6 +54,56 @@ export const ChildrenAndOutlineAndExploring = (...[{ children, outline: outlineP
     </div>
   ) ;
 } ;
+
+export const ActivableStudkCard = (
+  function (props: React.PropsWithChildren<{ autoActivate ?: boolean, }>)
+  {
+    const { children: e0, autoActivate = true, } = props ;
+
+    const e1 = (
+      <>{ e0 }</>
+    ) ;
+
+    return (
+      <studk-card>
+        { e1 }
+      </studk-card>
+    ) ;
+  }
+) ;
+
+export const AsResettibleC = (
+  function (props: React.PropsWithChildren)
+  {
+
+    const [k, adv] = (
+      React.useReducer<(x: number) => number>(x => (x + 1), 1 )
+    ) ;
+
+    return (
+      <div
+      key={k}
+      style={{
+        display: "flex" ,
+        flexDirection: "column-reverse",
+      }}
+      >
+        <div>
+        { props.children }
+        </div>
+        <div>
+          <nav>
+            <ButtonC
+            children={`Reset` }
+            onClick={e => adv() }
+            />
+          </nav>
+        </div>
+      </div>
+    ) ;
+  }
+) ;
+
 
 ;
 
