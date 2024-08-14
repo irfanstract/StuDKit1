@@ -73,7 +73,7 @@ import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 
 
@@ -185,6 +185,10 @@ const ElementTypeAndInfoBoxC : React.JSXElementConstructor<{ value: IRenderNativ
     ;
 
     const ncp = useNativeCompDisplayedOffsetsAnalysis(e , { latencyMillis: 0.58 * 1000 , } ) ;
+
+    const toDsplayedNcp = (
+      React.useDeferredValue(ncp)
+    ) ;
     ;
 
     if (0) {
@@ -192,7 +196,7 @@ const ElementTypeAndInfoBoxC : React.JSXElementConstructor<{ value: IRenderNativ
     }
 
     return (
-      ncp ?
+      toDsplayedNcp ?
       (
         <div
         style={{
@@ -200,7 +204,7 @@ const ElementTypeAndInfoBoxC : React.JSXElementConstructor<{ value: IRenderNativ
         >
           <p>
             Element <code>{ `${tagName}` }</code> {}
-            positioned at <code>{ JSON.stringify(ncp.pos ) }</code> {}
+            positioned at <code>{ JSON.stringify({ x: toDsplayedNcp.pos.x.toFixed(2), y: toDsplayedNcp.pos.y.toFixed(2) } ) }</code> {}
           </p>
         </div>
       )
