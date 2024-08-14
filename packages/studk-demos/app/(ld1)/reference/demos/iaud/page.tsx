@@ -4,7 +4,21 @@
 
 
 
+import {
+  pagesConventions,
+  dynamicComponent,
+  Link,
+  Image,
+  MustAttachToc,
+} from "@/appInternalScripts/appPagesConvention"; ;
+
 import * as React from "react" ;
+
+import {
+  ChildrenAndOutlineAndExploring ,
+  SpclCurrentlyPathDisplay ,
+  AsResettibleC ,
+} from "@/appInternalScripts/layoutComponents" ;
 
 import {
   useResource,
@@ -25,9 +39,12 @@ export default function App() {
   ;
   return (
     <div>
-      <studk-card
-      children={<IAudPage /> }
-      />
+      {/* <studk-card
+      children={(
+        <IAudPage />
+      ) }
+      /> */}
+      <IAudPage />
     </div>
   ) ;
 } ;
@@ -35,10 +52,6 @@ export default function App() {
 
 
 
-
-import dynamicComponent from "next/dynamic";
-
-import Link from "next/link";
 
 
 
