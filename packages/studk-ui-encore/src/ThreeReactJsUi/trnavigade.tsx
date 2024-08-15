@@ -68,6 +68,11 @@ import {
   POLYLINE_AS_TRIANGLES ,
 } from "studk-ui-encore/src/ThreeReactJsUi/MeshPrimitives.ts" ;
 
+import {
+  ExemplaryOBJMC, 
+  OBJMC,
+} from "studk-ui-encore/src/ThreeReactJsUi/MeshFromEnc.tsx" ;
+
 
 
 
@@ -105,9 +110,11 @@ const LoceC = function LoceCImpl(props: {}) {
       </group>
 
       <group
+      >
+
+      <group
         position={[53000, 2500, 153000]}
       >
-      <group>
         <mesh
           position={[0, 0, 0]}
           >
@@ -115,7 +122,10 @@ const LoceC = function LoceCImpl(props: {}) {
           <meshStandardMaterial color={'orange'} />
         </mesh>
       </group>
-      <group>
+
+      <group
+        position={[53000, 2500, 153000]}
+      >
         <mesh
           position={[5, 0, 0]}
           >
@@ -123,6 +133,13 @@ const LoceC = function LoceCImpl(props: {}) {
           <meshStandardMaterial color={'brown'} />
         </mesh>
       </group>
+
+      <group
+        position={[53000, 2500, 153000]}
+      >
+        { <ExemplaryOBJMC/> }
+      </group>
+
       </group>
       
       <mesh
@@ -139,17 +156,19 @@ const LoceC = function LoceCImpl(props: {}) {
           //   [52998, 2495, 153030] ,
           // ]
           [
-            [53000, 2500, 153000] ,
-            [53002, 2500, 153000] ,
-            [53002, 2500, 152997] ,
-            [53000, 2500, 152997] ,
+            [53000.0, 2500, 153000] ,
+            [53002.0, 2500, 153000] ,
+            [53002.0, 2501, 152997] ,
+            [53000.9, 2501, 152997] ,
           ]
         ) , { close: true, })
       )}
+      attach="geometry"
       />
       <meshStandardMaterial color={'gray'} />
       </mesh>
 
+      { null && (
       <mesh
           position={[0, 0, 0]}
       >
@@ -159,13 +178,63 @@ const LoceC = function LoceCImpl(props: {}) {
           //
           [52998, 2499.905, 153000] ,
           [53002, 2499.905, 153000] ,
-          [53002, 2499.905, 152300] ,
-          [52998, 2499.905, 152300] ,
+          [53002, 2499.905, 152915] ,
+          [52998, 2499.905, 152915] ,
         ] , { close: true, })
       )}
+      attach="geometry"
       />
       <meshStandardMaterial color={'gray'} />
       </mesh>
+      ) }
+      { (<OBJMC
+        key={2}
+        code={(
+          util.stringLinesConcat(function* ()
+          {
+            yield ;
+            yield `# ThreeJS's ObjLoader (apparently) always assign MeshPhongMaterial irrespective of what's in the OBJ file; ` ;
+            yield `# .` ;
+            yield `# in ThreeJS, coord 4 to 6 effectively (as effect of the chosen Material) dictates the annotated vertex's diffuse color ; ` ;
+            yield `# a caveat is that the values are not the usual 0...25, but instead 'p'(s) (ie 0...1) .` ;
+            yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L534 ` ;
+            yield ;
+            yield `# at least ThreeJS refuses to Add Object(s) unless we've begin with Directive(s) 'g' or 'o'. `;
+            yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L54` ;
+            yield `# ThreeJS refuses to display faces whose dir-ity is opposite to expected, so `;
+            yield `# we need to work-around it by Double Definition With Opposite Direction. `
+            yield ;
+            yield ;
+            yield ;
+            yield ;
+            yield `v   52998        2499.905 153100     0.49 0.50 0.50  ` ;
+            yield `v         53002  2499.905 153100     0.49 0.50 0.50  ` ;
+            yield `v   52995        2499.905 152923     0.53 0.55 0.55  ` ;
+            yield `v         53002  2499.905 152923     0.53 0.55 0.55  ` ;
+            yield `v   52998        2499.905 152860     0.49 0.50 0.50  ` ;
+            yield `v         53002  2499.905 152860     0.49 0.50 0.50  ` ;
+            yield `v   52998        2499.905 152815     0.55 0.57 0.57  ` ;
+            yield `v         53002  2499.905 152815     0.55 0.57 0.57  ` ;
+            yield `v   52998        2499.905 152715     0.50 0.50 0.50  ` ;
+            yield `v         53002  2499.905 152715     0.50 0.50 0.50  ` ;
+            yield ;
+            yield `# at least ThreeJS refuses to Add Object(s) unless we've begin with any these Directive. `;
+            yield `# https://github.com/mrdoob/three.js/blob/134ff886792734a75c0a9b30aa816d19270f8526/examples/jsm/loaders/OBJLoader.js#L54` ;
+            yield `# ThreeJS refuses to display faces whose dir-ity is opposite to expected, so `;
+            yield `# we need to work-around it by Double Definition With Opposite Direction. `;
+            yield `o oa9b30aa816d19270 `;
+            yield `f  1  2  4  3` ;
+            yield `f  2  1  3  4` ;
+            yield `f  4  3  5  6` ;
+            yield `f  3  4  6  5` ;
+            yield `f  5  6  8  7` ;
+            yield `f  6  5  7  8` ;
+            yield ;
+
+            ;
+          } )
+        )}
+        />)}
 
     </group>
   )
@@ -198,16 +267,20 @@ export const ThreeReactJsNavigaDemoC = (
       /**
        * to substitute `camera.position` which didn't seem to behave as expected.
        */
-      const [camPosv, ] = (
-        React.useState<readonly [number, number, number] >(() => {
-          return [53000, 2501, 153000] as const ;
+      const [{ camPos: camPosv, }, update1 ] = (
+        React.useState<{ readonly camPos: readonly [number, number, number], } >(() => {
+          return {
+            camPos: [53000, 2501, 152995],
+          } as const ;
         })
       ) ;
 
       const c = (
         <Canvas
         /**
-         * to avoid unnecessary repaints
+         * by default
+         * `<Canvas>`(s) constantly redraw at SRR (Screen Refresh-Rate) irrespective of whether there's actually any changes,
+         * so
          * we're tempted to set `frameloop="demand"`
          * 
          */
@@ -250,6 +323,12 @@ export const ThreeReactJsNavigaDemoC = (
                 { e }
               </group>
             )
+            e = (
+              <React.Suspense
+              children={e}
+              fallback={null}
+              />
+            )
             return e
           } )(
             <>
@@ -263,6 +342,37 @@ export const ThreeReactJsNavigaDemoC = (
         </Canvas>
       )
 
+      const runCamShiftAction = function (...[v] : [value: number]) {
+        update1(({ camPos: [x0, y0, z0,], ...etp }) => ({
+          ...etp,
+          camPos: [x0, y0, z0 + v ] ,
+        }) )
+      }
+      const renderCamShiftBtn1 = function (...[v] : [value: number]) {
+        return (
+          <Button
+          children={`SHFT ${v}`}
+          onClick={() => (
+            runCamShiftAction(-v)
+          ) }
+          />
+        )
+      }
+
+      const mBtns = (
+        <nav>
+          <p>
+            { renderCamShiftBtn1(-7.5) }
+            { renderCamShiftBtn1(-1.5) }
+            { renderCamShiftBtn1( 1.5) }
+            { renderCamShiftBtn1( 7.5) }
+          </p>
+          <p>
+            Viewer Position: <code>{ `x=${camPosv[0] } z=${camPosv[2] } y=${camPosv[1]}` }</code>
+          </p>
+        </nav>
+      )
+
       return (
         <div>
         <div
@@ -273,9 +383,9 @@ export const ThreeReactJsNavigaDemoC = (
           blockSize: `calc(min(50vh, 75vw) )`,
         }}
         />
-        <p>
-          Viewer Position: <code>{ `x=${camPosv[0] } z=${camPosv[2] } y=${camPosv[1]}` }</code>
-        </p>
+        <div>
+          { mBtns }
+        </div>
         </div>
       )
     }
