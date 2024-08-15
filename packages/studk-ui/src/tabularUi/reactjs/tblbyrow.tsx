@@ -21,7 +21,7 @@ import {
 
 import {
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 /**
  * note:
@@ -35,7 +35,7 @@ import {
 import type {
   ArgsWithOptions ,
   ArgsGetOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import {
   random,
@@ -46,25 +46,19 @@ import {
 
 
 
-import * as React from "react" ;
-
-
-
-
-
 import {
-  describeComponent,
-  mkClasses,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+  React ,
+  describeComponent ,
+  mkClasses ,
+  Button ,
+  Span, 
+  withExtraSemanticProperties,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
-
-import {
-  Button ,
-  Span ,
-} from '#currentPkg/src/meta/react/dbc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   EnhancedTableC ,
@@ -90,6 +84,7 @@ class TableRowsetRendererOpsImpl <in argsT extends unknown[], out eTr extends "t
     return (
       <C
       children={this.renderContent(...args) }
+      {...this.getRcProps(...args) }
       />
     ) ;
   }
@@ -103,16 +98,18 @@ class TableRowsetRendererOpsImpl <in argsT extends unknown[], out eTr extends "t
    */
   protected constructor(
     public readonly RCO: { (...args: argsT): ReturnType<TableRowsetRendererOpsImpl<any, any>["renderContent"] > ; },
-    public readonly C: "thead" | "tbody" | "tr",
+    public readonly C: eTr,
+    public readonly getRcProps: (...args: argsT) => JSX.IntrinsicElements[eTr] ,
    )
   {}
   
-  static ofRenderer<argsT extends unknown[], const eTr extends TableRowsetRendererOpsImpl<any, any>["C"] >(
+  static ofRenderer<argsT extends unknown[], const eTr extends TableRowsetRendererOpsImpl<any, "thead" | "tbody" | "tr">["C"] >(
     RCO: { (...args: argsT): ReturnType<TableRowsetRendererOpsImpl<any, any>["renderContent"] > ; },
     C: eTr,
+    props?: (...args: argsT) => (JSX.IntrinsicElements[eTr] & { [k in  `data-${string}`] ?: string ; } ) ,
    )
   {
-    return new TableRowsetRendererOpsImpl<argsT, eTr>(RCO, C) ;
+    return new TableRowsetRendererOpsImpl<argsT, eTr>(RCO, C, props ?? (() => ({}))) ;
   }
 }
 
@@ -224,16 +221,31 @@ namespace renderTableByRowDtListAndRowRenderer1
 
 }
 
+interface RchcProps <T extends object | true | false | null>
+{
+  // ;
+
+  /**
+   * *the {@link renderTableByRowDtListAndColumnList.RowHashingCallback } to use as the hasn-fnc for each of the rows*.
+   * 
+   */
+  readonly getRowHash: renderTableByRowDtListAndColumnList.RowHashingCallback<T>
+  ,
+
+  /**
+   * *list of columns, each interfaced as a {@link renderTableByRowDtListAndColumnList.PerColumnPrImpl }*
+   * 
+   */
+  readonly perRowCellRenderers: NoInfer<(
+    readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
+  )> ,
+
+}
+
 export const TableByRowDtListAndColumnList1C = (
   describeComponent(function TableByRowDtListAndColumnList1CImpl<const T extends object | true | false | null>({ transpose, ...props } : (
     & { rowDataList: readonly T[], }
-    & {
-      perRowCellRenderers: NoInfer<(
-        readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
-      )> ,
-      readonly getRowHash: NoInfer<renderTableByRowDtListAndColumnList.RowHashingCallback<T>>
-      ,
-    }
+    & RchcProps<T>
     & { transpose ?: boolean }
   ))
   {
@@ -242,84 +254,128 @@ export const TableByRowDtListAndColumnList1C = (
       getRowHash ,
       perRowCellRenderers ,
     } = props ;
+
     return (
       (transpose ? renderTableByRowDtListAndColumnList.renderAsTransposed : renderTableByRowDtListAndColumnList )(rowDataList, {
         perRowCellRenderers ,
         getRowHash ,
       } )
     ) ;
+
   })
 ) ;
 
 function renderTableByRowDtListAndColumnList<const T extends object | true | false | null>(...[
   rowDataList ,
   { perRowCellRenderers, getRowHash: getRowHash , className, } ,
-] : ArgsWithOptions<[rowDataList: readonly T[] ] , (
-  & {
-    perRowCellRenderers: NoInfer<(
-      readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
-    )> ,
-    readonly getRowHash: renderTableByRowDtListAndColumnList.RowHashingCallback<T>
-    ,
-  }
-  & SpclClsNameProps
-)> )
+] : (
+  ArgsWithOptions<[
+    rowDataList: readonly T[] ,
+  ] , (
+    & RchcProps<T>
+    & SpclClsNameProps
+  )>
+) )
 {
   ;
 
   const rowValues = rowDataList ;
 
-  const renderRowContents = (e0: { value: T } | 0 ) => (
+  const renderRowContents = (e0: { value: T } | 0 ) => {
+  ;
+
+  /**
+   * would be `true` if-and-only-if
+   * the cell is part of the body (rather than the head)
+   * 
+   */
+  const isCurrentlyForTableBodyElemts = (
+    !(typeof e0 === "number")
+  );
+
+  return (
+
     perRowCellRenderers
+
     .map((cr, colI) => {
-      return (
-        <React.Fragment
-        key={cr.id ?? `Col ${colI}` }
-        children={(
+      ;
+
+      const keyv = (
+        cr.id ?? `Col ${colI}`
+      ) ;
+
+      const asTd = (
+        withExtraSemanticProperties({
+          classNames: cr.classNames ?? [] ,
+        }, (
           <td
+          key={keyv }
           className={(
-            mkClasses(function* () {
-              if (colI === 0) {
-                yield "studk-ui-tblbyrow-rtdcl-row-h" ;
-              }
-              yield* (cr.classNames ?? [] ) ;
-            } )
+            getSpaceSeparatedClassNameList(["studk-ui-tblbyrow-rtdcl-row-h"])
           )}
+          {...({ ["data-src-col-id"]: String(cr.id) , }) }
           children={(
-            !(typeof e0 === "number") ?
+            isCurrentlyForTableBodyElemts ?
             cr.renderContent(e0.value , colI ) :
             cr.renderHead()
           ) }
           style={{
           }}
           />
-        )}
-        />
+        ) )
       ) ;
+
+      return (
+        // <React.Fragment
+        // key={keyv }
+        // children={(
+        //   asTd
+        // )}
+        // />
+        withExtraSemanticProperties({
+          key: keyv ,
+        } , asTd )
+      ) ;
+
     } )
+
   ) ;
 
+  
+  } ;
+
   return (
+
     renderTableByRowDtListAndRowRenderer1(rowValues, {
       //
+
+      className ,
+
       renderHead: { render: TableRowsetRendererOpsImpl.ofRenderer(() => (
         //
         <tr children={renderRowContents(0) } />
       ) , "thead" ) , }
       ,
+
       renderItemRow: {
-        getHash: (e, i) => getRowHash(e, i) ,
-        renderContent: TableRowsetRendererOpsImpl.ofRenderer((e, i) => (
-          //
-          <React.Fragment
-          children={(
-            renderRowContents({ value: e, })
-          )}
-          />
-        ) , "tr" ) ,
+
+        getHash: (e, i) => getRowHash(e, i)
+        ,
+
+        renderContent: (
+          TableRowsetRendererOpsImpl.ofRenderer((e, i) => (
+            //
+            <React.Fragment
+            children={(
+              renderRowContents({ value: e, })
+            )}
+            />
+          ) , "tr", (e, i) => ({ ["data-src-row-id"]: String(getRowHash(e, i)) , }) )
+        ) ,
+
       }
       ,
-      className ,
+
     } )
   ) ;
 }
@@ -381,7 +437,11 @@ namespace renderTableByRowDtListAndColumnList
         renderTableByRowDtListAndColumnList(prcr, {
           //
           
-          getRowHash: (v, i) => `field ${i}`
+          getRowHash: (v, i) => (
+            v.id
+            ??
+            `unnamed-field-${i}`
+          )
           ,
 
           perRowCellRenderers: (
@@ -402,7 +462,7 @@ namespace renderTableByRowDtListAndColumnList
               {
                 yield {
                   id: (
-                    iRh(rv, aRowI) ?? `layer ${aRowI}`
+                    iRh(rv, aRowI) ?? `unnamed-layer-${aRowI}`
                   ),
                   renderContent: (colD, aColIdx) => (
                     colD.renderContent(rv, aColIdx)
@@ -424,8 +484,8 @@ namespace renderTableByRowDtListAndColumnList
   ) ;
 }
 
-// #currentPkg/src/fwCore/ewo.ts
-import "./tbl-default.css" ;
+// studk-ui-fwcore/src/util/EWithOpt.ts
+import "./tbl-default1.scss" ;
  
 
 
