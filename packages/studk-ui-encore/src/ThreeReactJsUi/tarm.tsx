@@ -26,7 +26,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'
+} from 'studk-fwcore/src/util/C1.ts'
 
 
 import React, {
