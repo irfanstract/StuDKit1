@@ -33,8 +33,11 @@ import {
 
 import type {
   ArgsGetOptions ,
-  ArgsWithOptions ,
-} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'
 
 
 import {
@@ -72,23 +75,29 @@ export const useRefreshedCallback = (
   }
 ) ;
 
-export const useEventDispatchCallback = (
-  function <E extends object>(...[upstreamImpl] : [impl: (x: E) => void ] )
+export const useEventDispatchCallback = (() => {
+  ;
+  function useEventDispatchCallbackImpl(...args : [impl: () => void ] ) : () => void ;
+  function useEventDispatchCallbackImpl<E extends object>(...args : [impl: (x: E) => void ] ) : (x: E) => void ;
+  function useEventDispatchCallbackImpl<E extends object>(...[upstreamImpl] : [impl: (x: E) => void ] )
   {
     return (
       useRefreshedCallback(upstreamImpl)
     ) ;
   }
-) ;
+  return useEventDispatchCallbackImpl ;
+})() ;
 
 // /** TODO/WIP @deprecated */
 class IntervalSource extends ((
   createInterningSubclass((
     class MillisecsIntervalSourceImpl {
-      constructor (...[{ tMillis, }] : [{ tMillis: number, }] ) {
+      constructor (...[{ tMillis, onceOnly = false, }] : [{ tMillis: number, onceOnly ?: boolean, }] ) {
         this.tMillis = tMillis ;
+        this.onceOnly = onceOnly ;
       }
       readonly tMillis !: number ;
+      readonly onceOnly !: boolean ;
     }
   ) , {
     //
@@ -128,7 +137,7 @@ const useIntervalOrOnmessageEffect = (
               mCb() ;
     
               if (!(s.signal.aborted === false ) ) { return ; }
-              RESCHED() ;
+              if (mode.onceOnly === false ) { RESCHED() ; }
     
             }, tMillis ) ;
           })() ;
