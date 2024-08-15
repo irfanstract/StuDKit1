@@ -132,9 +132,21 @@ export default function App()
             <ThreeReactJsDemoC />
           ) }
           { true && (
-            <I3DDemoC />
+            <ThreeReactJsNavigaDemoC />
           ) }
-          { null && (
+          { ((e: React.ReactElement) => {
+            return null ;
+          } )((
+            <I3DDemoC />
+          )) }
+          { ((e: React.ReactElement) => {
+            e = (
+              <AsResettibleBlockC
+              children={e}
+              />
+            ) ;
+            return e ;
+          } )(
             <TimeDomainedImgListFigureC
             />
           ) }
@@ -212,6 +224,10 @@ import {
 import {
   ThreeReactJsDemoC,
 } from "studk-ui-encore/src/ThreeReactJsUi/trdemo.tsx" ;
+
+import {
+  ThreeReactJsNavigaDemoC,
+} from "studk-ui-encore/src/ThreeReactJsUi/trnavigade" ;
 
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
