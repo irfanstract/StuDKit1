@@ -146,7 +146,7 @@ export const I3DDemoC = (
     function I3DDemoCompImpl() {
       const posAll = React.useMemo(() => (
         xI3dExtendedYardStarFieldGraphDemo()
-      ) , [] ) ;
+      ) , [xI3dExtendedYardStarFieldGraphDemo,] ) ;
       // const [tr, setPersp] = React.useState<LinTr3DMat>(identityMat4() ) ;
       const [ang, setPersp] = React.useState<Angle>(Angle.ByDegrees(0) ) ;
       const persp = React.useMemo(() => (

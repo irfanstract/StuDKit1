@@ -107,18 +107,18 @@ function xBall(...[
   )>
 )){
   return (
-    new PolygonallyMarkedNodeUnitGraph([
+    PolygonallyMarkedNodeUnitGraph.byContoursAndFill([
       ...(
         xEquilateralPolygon(pos, "xConY", r, { granularityInDegrees: grnInDeg, } )
-        .points
+        .getContours()
       ) ,
       ...(
         xEquilateralPolygon(pos, "yConZUnisigned", r, { granularityInDegrees: grnInDeg, } )
-        .points
+        .getContours()
       ) ,
       ...(
         xEquilateralPolygon(pos, "xConZ", r, { granularityInDegrees: grnInDeg, } )
-        .points
+        .getContours()
       ) ,
     ])
   ) ;
@@ -146,11 +146,11 @@ function xEquilateralPolygon(...[
   ) >
 )){
   return (
-    new PolygonallyMarkedNodeUnitGraph((
+    PolygonallyMarkedNodeUnitGraph.byPointsAndFill((
       [...util.reiterable(function* () {
         ;
         for (const a of (
-          util.range(0, 360, granularityInDegrees )
+          util.range(0, 360 + (granularityInDegrees / 8 ), granularityInDegrees )
           .map(v => Angle.ByDegrees(v) )
         ) )
         {
@@ -188,7 +188,7 @@ function xEquilateralTriangle(...[
 
 function xPolyg(pts: Point3D[]) {
   return (
-    new PolygonallyMarkedNodeUnitGraph((
+    PolygonallyMarkedNodeUnitGraph.byPointsAndFill((
       [...util.reiterable(function* (): Generator<Point3D, void> {
         for (let i=1; i<pts.length; i += 1 )
         {

@@ -199,7 +199,7 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
       } ;
     
       // TODO
-      function describeJsxRenderedContour(...[itemKey, ndUnit] : [key: string, v: PolygonallyMarkedNodeUnitGraph ] )
+      function describeJsxRenderedContour(...[ikArg, ndUnit] : [key: string, v: PolygonallyMarkedNodeUnitGraph ] )
       {
         ;
     
@@ -208,9 +208,18 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
           keyof { x, y }
         ) ;
     
+        return (
+        <React.Fragment
+        children={(
+        //
+        ndUnit
+        .getContours()
+        .map((contour, contourIdx) => {
+        ;
+        
         const pts = (
           util.asNonlocalReturnBasedRun<readonly { [k in KXY ]: number ; }[] , false>(ctx => (
-            ndUnit
+            contour
             .points
             .map(pos => (
               linTrTransformedPosition3DMat(finalPersp, pos )
@@ -256,19 +265,23 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
           ) : null
         ) ;
         const keyImpl = (
-          itemKey
+          `${ikArg}-${contourIdx}`
         ) ;
         return (
           describeJsxNdUnitContour((
             keyImpl
           ), {
-            zDepth: ndUnit.points[0]?.z ,
+            // zDepth: ndUnit.points[0]?.z ,
           }, (
             <g>
             <title>{ keyImpl }</title>
             { ctgr }
             </g>
           ) )
+        ) ;
+        })
+        )}
+        />
         ) ;
       }
     
