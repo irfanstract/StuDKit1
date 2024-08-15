@@ -17,37 +17,71 @@ type AllOrNever<opts extends object> = (
   Required<opts> | { /* supposed to be *homomorphic* */ [k in keyof opts] ?: never ; }
 ) ;
 
-type RecordValue<opts extends object> = (
+type RecordValueOut<opts extends object> = (
   opts[keyof opts]
+) ;
+
+type RecordValueAllcast<opts extends object> = (
+  EffectiveParameters<(
+    RecordValueOut<({
+      readonly [key in keyof opts] : (
+        (x: opts[key] ) => void
+      )
+    })>
+  )>[0]
+) ;
+
+/**
+ * is {@link RecordValueOut}.
+ * 
+ * @deprecated this is {@link RecordValueOut}.
+ * 
+ */
+type RecordValue<opts extends object> = (
+  RecordValueOut<opts>
 ) ;
 
 type MapEntrySpec<k, v> = (
   readonly [key: k, value: v ]
 ) ;
 
+/**
+ * {@link Object.entries}
+ * 
+ */
 type RecordEntry<opts extends object> = (
-  RecordValue<{ readonly [k in keyof opts] -?: MapEntrySpec<k, opts[k] > ; }>
+  RecordValueOut<{ readonly [k in keyof opts] -?: MapEntrySpec<k, opts[k] > ; }>
 ) ;
 
+/**
+ * {@link Object.entries}
+ * 
+ */
 type ObjectEntry<T extends object> = (
   RecordEntry<T>
 ) ;
 
+/**
+ * {@link Object.fromEntries}
+ * 
+ */
 type RecordFromEntry<opts extends MapEntrySpec<any, any> > = (
-  EffectiveParameters<(
-    RecordValue<{
-      readonly [k0 in opts[0]] : (
-        (x: {
-          readonly [k1 in k0] : (
-            Extract<opts , MapEntrySpec<k1, any > >[1]
-          ) ;
-        } )
-        => void
+  RecordValueAllcast<{
+    readonly [k0 in opts[0]] : {
+      readonly [k1 in k0] : (
+        (
+          /** the matching MapEntry (pair, both K-V) */
+          Extract<opts , MapEntrySpec<k1, any > >
+        )[1]
       ) ;
-    }>
-  )>[0]
+    } ;
+  }>
 ) ;
 
+/**
+ * {@link Object.fromEntries}
+ * 
+ */
 type ObjectFromEntry<opts extends MapEntrySpec<any, any> > = (
   RecordFromEntry<opts>
 ) ;
@@ -74,10 +108,42 @@ type PDE_FULL<opts extends object> = (
 type EitherPropertyOf<opts extends object> = (
   Partial<opts>
   &
-  RecordValue<{ readonly [k0 in keyof opts] -?: (
+  RecordValueOut<{ readonly [k0 in keyof opts] -?: (
     { readonly [k1 in keyof opts] ?: ([k1] extends [k0] ? unknown : never ) ; }
   ) ; }>
 ) ;
+
+/**
+ * {@link Partial} for select names
+ * 
+ */
+type PartializedPartially<opts extends object, k1 extends keyof opts> = (
+  Partial<opts> & Required<Omit<opts, k1> >
+) ;
+
+/**
+ * {@link Required} for select names
+ * 
+ */
+type RequiredPartially<opts extends object, k1 extends keyof opts> = (
+  opts & Required<Pick<opts, k1> >
+) ;
+
+/**
+ * refinement of {@link T1}
+ * 
+ */
+type Extend<T1 extends {}, T2 extends Partial<T1> > = (
+  T1 & T2
+) ;
+
+type EA<T1 extends readonly unknown[] > = (
+  EffectiveParameters<[]>[0]
+) ;
+
+// type ExtendAll<T1 extends readonly unknown[], T2 extends Partial<T1> > = (
+//   Extend<T1, T2>
+// ) ;
 
 
 
@@ -89,17 +155,27 @@ type EffectiveParameters<T extends object> = (
   [T] extends [(...args: infer P) => any] ? P : never
 ) ;
 
+type IIndexOfItemOf<T1 extends readonly unknown[] > = (
+  Extract<keyof T1, number | `${number}`>
+) ;
 
 
 export type {
   AllOrNever as AllOrNever1,
   EitherPropertyOf ,
+  PartializedPartially,
+  RequiredPartially,
+} ;
+export type {
+  Extend,
 } ;
 
 export type {
   PDE,
   PDE_FULL,
   RecordValue,
+  RecordValueOut ,
+  RecordValueAllcast  ,
   RecordEntry ,
   ObjectEntry,
   RecordFromEntry,

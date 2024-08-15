@@ -127,7 +127,8 @@
 
     /* CONFIG FILES */
     
-    ".eslintrc.mjs" ,
+    // ".eslintrc.cjs" ,
+    // ".eslintrc.mjs" ,
     "next.config.mjs" ,
   ],
   "references": [

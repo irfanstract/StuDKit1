@@ -116,42 +116,17 @@ export { iterateNonNull, isNonNull, } ;
 
 
 
-/**
- * exports both {@link resolve} and {@link reject}.
- * 
- * @class
- * @template {{}} A
- * 
- */
-function Deferred()
-{
-  this.out = (new Promise(/** @param {(x: A) => void } resolve */ (resolve, reject) => {
-    this.resolve = resolve ;
-    this.reject = reject ;
-  }) ) ;
+;
 
-  /** @type {(x: A) => void } */
-  this.resolve ;
-}
+import * as L from "./lodash-es-min.mjs" ;
 
-export { Deferred, } ;
+import * as Immutable from "immutable" ;
 
-export { startTimeout, } ;
-
-/**
- * 
- * starts a new timeout in terms of {@link setTimeout }
- * 
- * @param {[delayMillis: number, ]} args
- * 
- */
-function startTimeout(...[delayMillis]) {
-  return (
-    new Promise((/** @type {(x: () => void ) => void } */ resolve) => (
-      setTimeout(resolve, delayMillis )
-    ) )
-  ) ;
-}
+export {
+  /** @deprecated */
+  L as lodash,
+  L ,
+} ;
 
 /**
  * Array from async-generator.
@@ -239,10 +214,10 @@ export const asyncReiterable = /** @template E @param {() => AsyncGenerator<E> }
  * async version of {@link stringLinesConcat }
  * 
  */
-export const stringLinesConcatAsync = /** @template {String} E @param {() => AsyncGenerator<E> } x */ async (x) => (
-  (await arrayFromAsync(x() ) )
-  .join("\r\n")
-) ;
+export const stringLinesConcatAsync = /** @template {String} E @param {() => AsyncGenerator<SlcSpecifiedItem<E>, void, void> } x */ async (x) => {
+  const x1 = (await arrayFromAsync(x() ) ) ;
+  return stringLinesConcat(function* () { yield* x1 ; }) ;
+} ;
 /**
  * build string by concatenating, with CRLF, lines from `x`.
  * 
@@ -263,55 +238,19 @@ export const stringLinesConcatAsync = /** @template {String} E @param {() => Asy
  * ```
  * 
  */
-export const stringLinesConcat = /** @template {String} E @param {() => Generator<E> } x */ (x) => (
+export const stringLinesConcat = /** @template {String} E @param {() => Generator<SlcSpecifiedItem<E>, void, void> } x */ (x) => (
   [...reiterable(x) ]
+  .map(lne => (lne ?? "" ))
   .join("\r\n")
 ) ;
 
-import * as L from "lodash-es" ;
-
-export {
-  /** @deprecated */
-  L as lodash,
-  L ,
-} ;
-
-/** @type {(...x: [string, number]) => string} */
-export function indent(x, n) {
-  return (
-    x
-    .split(/\r?\n/g)
-    .map(x => ("".padStart(n) + x) )
-    .join("\r\n")
-  ) ;
-}
-
-const {
-  debounce,
-} = L ;
-
-/** @type {{ <T extends (...args: [...argsT]) => any, const argsT extends any[]>(func: T, resolver: ((...args: Parameters<T>) => any) | undefined): ReturnType<(typeof L.memoize<T>)>; } } */
-export const xMemoize = (
-  function (...[f, r])
-  {
-    const newF = (
-      L.memoize(f, r ?? throwTypeError(`missing 'resolver'.`) )
-    ) ;
-    return newF ;
-  }
-) ;
-
-export {
-  xMemoize as memoize ,
-  debounce ,
-  // throt
-}  ;
-export {
-  range ,
-  // memoize ,
-  // debounce ,
-  // throt
-} from "lodash-es" ; ;
+/**
+ * @typedef {E | void }
+ * @template {string} [E = string]
+ * 
+ */
+/** @module */
+const SlcSpecifiedItem = {} ;
 
 export const asMentioned = /** @template E @param {() => Generator<E, void, void> } x @return {ReadonlyArray<E> } */ (x) => {
   return (
@@ -326,6 +265,99 @@ export const asMentioned = /** @template E @param {() => Generator<E, void, void
     })
   ) ;
 } ;
+
+export {
+  range ,
+  // memoize ,
+  // debounce ,
+  // throt
+} from "lodash-es" ; ;
+
+export {
+  Immutable ,
+} ;
+
+/** @type {{ <T extends (...args: [...argsT]) => any, const argsT extends any[]>(func: T, resolver: ((...args: Parameters<T>) => any) | undefined): ReturnType<(typeof L.memoize<T>)>; } } */
+export const xMemoize = (
+  function (...[f, r])
+  {
+    const newF = (
+      L.memoize(f, r ?? throwTypeError(`missing 'resolver'.`) )
+    ) ;
+    return newF ;
+  }
+) ;
+
+const {
+  debounce,
+  throttle: asThrottled ,
+} = L ;
+
+export {
+  xMemoize as memoize ,
+  debounce ,
+  asThrottled ,
+}  ;
+
+/**
+ * exports both {@link resolve} and {@link reject}.
+ * 
+ * @class
+ * @template {{}} A
+ * 
+ */
+function Deferred()
+{
+  this.out = (new Promise(/** @param {(x: A) => void } resolve */ (resolve, reject) => {
+    this.resolve = resolve ;
+    this.reject = reject ;
+  }) ) ;
+
+  /** @type {(x: A) => void } */
+  this.resolve ;
+}
+
+export { Deferred, } ;
+
+export { startTimeout, } ;
+
+/**
+ * 
+ * starts a new timeout in terms of {@link setTimeout }
+ * 
+ * @param {[delayMillis: number, ]} args
+ * 
+ */
+function startTimeout(...[delayMillis]) {
+  return (
+    new Promise((/** @type {(x: () => void ) => void } */ resolve) => (
+      setTimeout(resolve, delayMillis )
+    ) )
+  ) ;
+}
+
+/** @type {(...x: [string, number]) => string} */
+export function indent(x, n) {
+  return (
+    x
+    .split(/\r?\n/g)
+    .map(x => ("".padStart(n) + x) )
+    .join("\r\n")
+  ) ;
+}
+
+/**
+ * 
+ * quote given string as `code` for MD.
+ * 
+ * @satisfies {(x: string) => string}
+ * 
+ */
+export const mdQuoteCode = (
+  x => (
+    ["", x, ""].join("`")
+  )
+) ;
 
 
 
