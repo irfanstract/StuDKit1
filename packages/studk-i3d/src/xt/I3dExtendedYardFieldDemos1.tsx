@@ -88,6 +88,8 @@ function xTransformedly(...[tr, pts] : [LinTr3DMat, readonly (Point3D | null)[]]
   ) ;
 }
 
+import { xBall1, } from "studk-i3d/src/xt/SphericalMeshSpm.ts" ;
+
 function xBall(...[
   pos,
   r = 0.35,
@@ -107,6 +109,19 @@ function xBall(...[
     }
   )>
 )){
+  if (0) {
+    return (
+      xBall1(pos, r, {
+        grnInDeg: 90,
+      } )
+    ) ;
+  }
+
+  if (0) {
+    return (
+      xBall1(pos, r, { grnInDeg, } )
+    ) ;
+  }
   return (
     PolygonallyMarkedPointWithUnitGraph.by(pos, (
       PolygonallyMarkedNodeUnitGraph.byContoursAndFill([
@@ -241,7 +256,7 @@ const xI3dExtendedYardStarFieldGraphDemo = (
             yield xBall({ x, z, y, }, 0.05, { grnInDeg: 52, } ) ;
           }
         } ) ,
-        ...[
+        ...(0 ? [] : [
           xPolyg([
             { x: -3, z:  3, y: -0.5, } ,
             { x:  3, z:  3, y: -0.5, } ,
@@ -263,7 +278,7 @@ const xI3dExtendedYardStarFieldGraphDemo = (
           xBall({ x: -4    , z: -0.1 , y: -0.1 , }) ,
           xBall({ x:  3    , z: -0.1 , y: -0.1 , }) ,
           //
-        ] ,
+        ]) ,
       ])
     ) ;
   }
