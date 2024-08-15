@@ -1,0 +1,37 @@
+
+
+
+
+
+/* consider manually importing `packages\studk-ui\src\quick\studkCssPresets\headnavAndFooterLayerFw.scss` first. */
+
+
+
+
+
+
+
+
+
+@layer defaults {
+  //
+
+  body {
+    --layers-headnav   : 38000 ;
+    --layers-footer    : 50000 ;
+    --layers-headings  : 38500 ;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
