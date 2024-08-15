@@ -41,7 +41,7 @@ import type {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ContinuousLinearRange ,
@@ -83,7 +83,7 @@ export {
   mkArray ,
 } ;
 
-export type * from 'studk-ui/src/fwCore/ewo.ts'; ;
+export type * from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 export type {
   ContinuousLinearRange ,
