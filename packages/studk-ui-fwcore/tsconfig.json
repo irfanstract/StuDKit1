@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.json" ,
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true ,
+    "module": "ESNext",
+
+    /* https://www.typescriptlang.org/docs/handbook/project-references.html */
+    "composite": true ,
+    "noEmit": true,
+    "allowImportingTsExtensions": true ,
+    /* https://stackoverflow.com/a/61513685 */
+    "rootDir": "src" ,
+    "outDir": "dist",
+
+    /* `jsx` in `studk-demos` needs to be set to `"preserve"` per the Next(JS) docs - therefore we assume `"react-jsx"` or `"react"` */
+    "jsx": "react",
+  },
+  "references": [
+    { "path": "../../packages/typexpe-commons", } ,
+    { "path": "../../packages/studk-util", } ,
+    { "path": "../../packages/studk-simulations-commons", } ,
+    { "path": "../../packages/studk-ui-coreinteractivitymodels", } ,
+    { "path": "../../packages/studk-dom-util", } ,
+    { "path": "../../packages/studk-fbreact-all", } ,
+  ] ,
+  "include": [
+    "src" ,
+  ],
+  // "exclude": [
+  //   "src/**/*" ,
+  // ],
+}
