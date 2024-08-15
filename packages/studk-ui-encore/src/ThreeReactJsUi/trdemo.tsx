@@ -96,16 +96,47 @@ function Box(props: ThreeElements['mesh']) {
 export const ThreeReactJsDemoC = (
   describeComponent((
     function ThreeJsDemoCImpl() {
-      return (
+      const c = (
         <Canvas
         frameloop='demand'
         >
-          <ambientLight intensity={Math.PI / 2} />
-          <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
-          <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-          <Box position={[-1.2, 0, 0]} />
-          <Box position={[1.2, 0, 0]} />
+        { (
+          ((e: React.ReactElement) => {
+            e = (
+              <group
+              matrixAutoUpdate={false} /* https://threejs.org/docs/#manual/en/introduction/Matrix-transformations */
+              matrix={[
+                0.7, -0.7, 0, 0 ,
+                0.7,  0.7, 0, 0 ,
+                0  ,  0  , 1, 0 ,
+                0  ,  0  , 0, 1 ,
+              ]}
+              >
+                { e }
+              </group>
+            )
+            return e
+          } )(
+            <>
+            <ambientLight intensity={Math.PI / 2} />
+            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
+            <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
+            <Box position={[-1.2, 0, 0]} />
+            <Box position={[1.2, 0, 0]} />
+            </>
+          )
+        ) }
         </Canvas>
+      )
+      return (
+        <div
+        className=''
+        children={c}
+        style={{
+          display: "flex",
+          blockSize: `calc(min(50vh, 75vw) )`,
+        }}
+        />
       )
     }
   ))
