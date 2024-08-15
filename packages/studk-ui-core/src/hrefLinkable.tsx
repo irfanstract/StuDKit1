@@ -20,11 +20,7 @@ import {
 
 
 
-export type FullDocHref = `${Location["origin"]}${Location["pathname"]}` ;
-
-export type BrowsibleHref = Location["href"] ;
-
-export type LinkableHref = HTMLAnchorElement["href"] & {} ;
+export type * from "studk-ui-coreinteractivitymodels/src/hrefLinkable" ;
 
 
 

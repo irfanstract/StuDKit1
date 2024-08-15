@@ -20,7 +20,7 @@
 
 
 
-export * from "studk-ui-core/src/xt/ovc-util.tsx" ;
+export * from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 
 
