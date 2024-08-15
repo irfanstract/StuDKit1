@@ -87,16 +87,12 @@ import {
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
 import {
-  useNativeCompPositionSyncRef ,
+  useExistingNativeCompBoundingBoxViaRef ,
   NCPSR ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
-
-import type {
-  NcpSupportedElem ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 export {
-  useNativeCompPositionSyncRef ,
+  useExistingNativeCompBoundingBoxViaRef as useNativeCompPositionSyncRef ,
   /** @deprecated make the import direct to the source. */
   NCPSR ,
 } ;

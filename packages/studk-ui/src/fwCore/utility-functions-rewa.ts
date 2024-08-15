@@ -28,14 +28,19 @@ import {
   random,
 } from "lodash-es" ;
 
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'
+
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-
-import type {
-  ArgsGetOptions ,
-  ArgsWithOptions ,
 } from 'studk-ui/src/fwCore/ewo.ts'; ;
 
 import type {
