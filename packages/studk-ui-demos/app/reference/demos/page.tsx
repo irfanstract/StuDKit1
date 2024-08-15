@@ -121,15 +121,23 @@ export default function App()
             Graphical Overlays
             </Span>
           </p>
-          { 0 && <LDCWGOC /> }
-          { 0 && (
+          { null && <LDCWGOC /> }
+          { null && (
             <AudioNodeBeepDemo />
           ) }
-          { (
+          { true && (
             <DiscogrDemoC />
           ) }
           <TimeDomainedImgListFigureC
           />
+          <div>
+            <div style={{ blockSize: `50vh`, border: `1px solid blue`, }} >
+              &nbsp;
+            </div>
+            <div style={{ blockSize: `50vh`, border: `1px solid black`, }} >
+              &nbsp;
+            </div>
+          </div>
         </div>
       ) ,
     })
