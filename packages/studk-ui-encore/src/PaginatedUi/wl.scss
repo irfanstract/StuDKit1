@@ -18,9 +18,13 @@
   }
 
   :is(ul, ol).studk-ui-accrdnlc > * {
+    @media screen {
+    //
+
     overflow: auto;
     max-block-size: 75vh;
     // max-inline-size: 300vh;
+    }
 
     border: 0.05em solid currentColor;
   }
