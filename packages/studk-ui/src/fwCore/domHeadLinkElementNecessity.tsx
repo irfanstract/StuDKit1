@@ -24,15 +24,14 @@ import {
 
 
 
-export const declareUrlBasedCssNecessity = (
-  function (...[src]: [srcUrl: string]) : void
-  {
-    if (typeof document !== "undefined")
-    {
-      installCssFromUrl(src) ;
-    }
-  }
-) ;
+import {
+  declareUrlBasedCssNecessity ,
+} from "studk-ui-cssd/src/userspace/UrlBasedCssNecessity" ;
+
+export {
+  declareUrlBasedCssNecessity ,
+} ;
+
 ;
 
 
