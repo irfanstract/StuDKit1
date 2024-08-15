@@ -139,6 +139,30 @@ dialog {
 
 
 
+/* DEBUGGING */
+
+:is(td[data-src-col-id] )::before {
+  content: "from: " attr(data-src-col-id) ;
+  display: block;
+  contain: layout inline-size;
+  overflow: auto;
+}
+
+table:has(tr[data-src-row-id]) :is(tr )::before {
+  content: "from: " attr(data-src-row-id) ;
+  display: table-cell;
+  contain: layout inline-size;
+  overflow: auto;
+}
+
+
+
+
+
+
+
+
+
 
 
 

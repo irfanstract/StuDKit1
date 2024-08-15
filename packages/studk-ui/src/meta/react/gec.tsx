@@ -21,49 +21,44 @@ import {
 } from 'typexpe-commons/src/common_sv.mjs';
 
 import {
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-/**
- * note:
- * since we're not using `tsc` but instead a scanning transpiler, and
- * the import specifier is not exact path, and
- * we're only using it for their `type`s,
- * we need to avoid run-time actual importing, so
- * please don't remove the keywd `type`
- * 
- */
-import type {
-  ArgsWithOptions ,
-  ArgsGetOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-import {
   random,
 } from "lodash-es" ;
 
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
-
-
-
-
-import * as React from "react" ;
 
 
 
 
 
 import {
-  describeComponent,
-  mkClasses,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+  React ,
+  describeComponent ,
+  mkClasses ,
+  Button ,
+  Span, 
+  withExtraSemanticProperties,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
+
+export const describeSvgComponent = (
+  describeComponent
+) ;
 
 export function describeSvgContent(...[a] : [React.ReactElement] )
 {
-  return describeSvg({}, a ) ;
+  return describeSvgContentImpl({}, a ) ;
 }
 
-export function describeSvg(...[{} = {}, c ] : (
+function describeSvgContentImpl(...[{} = {}, c ] : (
   [...(ArgsWithOptions<[], {}>) , children: React.ReactElement]
 ) )
 {
@@ -74,10 +69,116 @@ export function describeSvg(...[{} = {}, c ] : (
   ) ;
 }
 
+/**
+ * {@link describeSvgContentImpl}
+ * 
+ * @deprecated
+ * 
+ */
+export const describeSvg = describeSvgContentImpl ;
+
+export const VerbatimSvgC: "svg" = (
+  "svg"
+) ;
+
+/**
+ * an `<svg>` with its intrinsic size.
+ * 
+ */
+export const AtomicSvgC: React.ElementType<JSX.IntrinsicElements["svg"]> = (
+  "svg"
+) ;
+
+/**
+ * an `<svg>` which can be flexibly resized without hassle.
+ * 
+ */
+export const SizeFlexibleSvgC = ({
+  children: c ,
+  style: {
+    // width: w,
+    // height: h,
+    ...s
+  } = {},
+  ...remProps
+} : JSX.IntrinsicElements["svg"] ) => {
+
+  return (
+    <span
+
+    children={(
+      <StretchingSvgC
+
+      children={c}
+
+      // preserveAspectRatio='none'
+      style={{
+        // height: `100%`,
+        // position: "absolute",
+        // width: `100%`,
+      }}
+
+      {...remProps}
+
+      />
+    )}
+
+    style={{
+      //
+      // display: `grid`,
+      // display: "block",
+      display: "block",
+      position: "relative",
+      borderRadius: `5%`,
+      minWidth: `1em`,
+      minHeight: `1em`,
+      ...s
+    }}
+    />
+  ) ;
+} ;
+
+/**
+ * an `<svg>` which stretches to the parent Element's bounding box
+ * 
+ */
+const StretchingSvgC = ({
+  children: c ,
+  style: {
+    // width: w,
+    // height: h,
+    ...s
+  } = {},
+  ...remProps
+} : JSX.IntrinsicElements["svg"] ) => {
+  return (
+    <svg
+    // className='studk-ui-gec-sfc-d12'
+    children={c}
+    preserveAspectRatio='none'
+    style={{
+      height: `100%`,
+      position: "absolute",
+      width: `100%`,
+      ...s ,
+    }}
+    {...remProps}
+    />
+  ) ;
+} ;
+
 import "./gec.scss" ;
 
 export { SvgFramedC as Svg, } ;
 
+/**
+ * 
+ * {@link SvgFramedC}
+ * 
+ * @deprecated
+ * you likely meant {@link VerbatimSvgC} or {@link SizeFlexibleSvgC}.
+ * 
+ */
 const SvgFramedC = ({
   children: c ,
   style: {
@@ -90,19 +191,29 @@ const SvgFramedC = ({
   return (
     <span
     className='studk-ui-gec-sfc-d11'
+
     children={(
-      <svg
-      className='studk-ui-gec-sfc-d12'
-      children={c}
-      preserveAspectRatio='none'
-      style={{
-        height: `100%`,
-        position: "absolute",
-        width: `100%`,
-      }}
-      {...remProps}
-      />
+
+      withExtraSemanticProperties({
+        classNames: ['studk-ui-gec-sfc-d12'] ,
+      } , (
+
+        <StretchingSvgC
+
+        children={c}
+
+        // preserveAspectRatio='none'
+        style={{
+          // height: `100%`,
+          // position: "absolute",
+          // width: `100%`,
+        }}
+        {...remProps}
+
+        />
+      ) )
     )}
+
     style={{
       //
       // display: `grid`,
@@ -114,6 +225,7 @@ const SvgFramedC = ({
       minHeight: `1em`,
       ...s
     }}
+
     />
   ) ;
 } ;
