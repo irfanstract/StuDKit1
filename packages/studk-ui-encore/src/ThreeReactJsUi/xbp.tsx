@@ -60,6 +60,10 @@ import {
   useThree,
 } from '@react-three/fiber'
 
+import {
+  describeThreeJsObjComponent ,
+} from "studk-ui-encore/src/ThreeReactJsUi/DescribeMeshC.tsx"
+
 
 
 
@@ -71,9 +75,35 @@ import {
 
 
 export const ByCoordTupleArrayGeometryC = (
-  describeComponent((
-    function XbpImpl(props0 : (
-      & { coords: (readonly [number, number, number])[], }
+  describeThreeJsObjComponent((
+    function ByCoordTupleArrayGeometryOuterC(props0 : (
+      & React.ComponentProps<typeof ByCoordTupleArrayGeometryInnerC>
+      & { dbflp ?: boolean }
+    ))
+    {
+      const {
+        coords ,
+        dbflp = false ,
+        ...etProps
+      } = props0 ;
+      return (
+        <ByCoordTupleArrayGeometryInnerC
+        coords={(
+          dbflp ?
+          [...coords , ...(coords.toReversed()) ]
+          : coords
+        )}
+        {...etProps}
+        />
+      ) ;
+    }
+  ))
+) ;
+
+const ByCoordTupleArrayGeometryInnerC = (
+  describeThreeJsObjComponent((
+    function ByCoordTupleArrayGeometryInnerCImpl(props0 : (
+      & { coords: readonly (readonly [number, number, number])[], }
       & Omit<ThreeElements["primitive"], "coords">
     ))
     {
