@@ -64,26 +64,66 @@ import {
   ByCoordTupleArrayGeometryC ,
 } from "studk-ui-encore/src/ThreeReactJsUi/xbp.tsx"
 
+// const POLYLINE_AS_THREEJSSHAPEOBJ = (
+//   (...[p0] : [ReadonlyArray<(readonly [number, number, number]) > ]) => {
+//     const s1 = new THREE.Shape()
+//     if (p0[0]) {
+//       s1.moveTo(p0[0][0])
+//     }
+//     return s1
+//   }
+// )
+
 export const POLYLINE_AS_TRIANGLES = (
-  function (...[pts, { close: shallClose, } ] : (
-    ArgsWithOptions<[pts: (readonly [number, number, number])[]], { close: boolean, }>
+  function <const perPtT extends (
+    | (readonly [number, number, number])
+    // | import("studk-video-fwcore/src/LinearTransforms.mjs").Point3D
+  )>(...[
+    pts, { close: shallClose, } ,
+  ] : (
+    ArgsWithOptions<[pts: readonly perPtT[]], { close: boolean, }>
   ) )
   {
-    const idxs = (
-      util.reiterated(function* () {
-        for (let i0 = 0; (i0 + 2) <= pts.length; i0 += 2 ) {
-          yield i0 ;
-          yield i0 + 1 ;
-          yield i0 + 2 ;
-        }
-      })
-    ) ;
-    return (
-      idxs
-      .map((i) => (
-        pts[i % pts.length] ?? ([Number.NaN, Number.NaN, Number.NaN] as const)
-      ))
-    ) ;
+    if (pts[0]) {
+
+      if (1) {
+        const idxs = (
+          util.reiterated(function* () {
+            for (let i0 = 1; (i0 + 1) <= (pts.length + (shallClose ? 0 : -1 ) ); i0 += 1 ) {
+              yield 0 ;
+              yield (i0 + 0 ) % pts.length ;
+              yield (i0 + 1 ) % pts.length ;
+            }
+          })
+        )
+  
+        return (
+          idxs
+          .map((i) => (
+            pts[i % pts.length] ?? pts[0] ?? util.throwAssertionError()
+          ))
+          .map(([x, y, z]) => (
+            [
+              x + (Math.random() * 1E-7 ) ,
+              y + (Math.random() * 1E-7 ) ,
+              z + (Math.random() * 1E-7 ) ,
+            ] as const
+          ) )
+        )
+      }
+
+      {
+
+        const s1 = ((...[] : []) => {
+          const p = new THREE.Shape()
+          return p
+        })()
+
+        return util.throwAssertionError()
+      }
+    } else {
+      return [] as const
+    }
   }
 )
 
