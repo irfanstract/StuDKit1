@@ -114,12 +114,22 @@ const fromLessthanPredicate = (
     (...[a0, a1]) => {
       const wasLt = isLt(a0, a1) ;
       const wasGt = isLt(a1, a0) ;
-      if (wasLt && wasGt ) { throw new TypeError(`inconsistent 'fromLessthanPredicate' callback resulting in both 'wasGt' and 'wasLt' at once`) ; }
+      if (wasLt && wasGt ) {
+        return throwInconsistentFromLtncpComparatorException(`for ${`{ a0, a1, }`} both 'wasGt' and 'wasLt' at once`) ;
+      }
       if (wasLt ) { return -1 ; }
       if (wasGt ) { return 1 ; }
       return 0 ;
     }
   )
+) ;
+
+const throwInconsistentFromLtncpComparatorException = (
+  /**
+   * 
+   * @satisfies {(msg: string) => never }
+   */
+  (function (...[msg]) { throw new TypeError(`inconsistent 'fromLessthanPredicate' callback: ${msg}`) ; })
 ) ;
 
 
