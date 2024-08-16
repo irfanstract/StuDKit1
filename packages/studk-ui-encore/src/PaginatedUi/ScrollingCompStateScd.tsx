@@ -46,7 +46,22 @@ import type {
 
 
 
-import * as React from "react" ;
+import {
+  React ,
+  toComponentMountKey,
+  describeComponent ,
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  Span, 
+  ReactSetStateActionHelpers,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+
+import {
+  useAutoresettingProvideredState ,
+} from 'studk-ui-fwcore/src/reactjs/helpers/ProvideredStateHook1.tsx'; ;
 
 
 
@@ -67,38 +82,25 @@ const useScdState1 = (
     ;
 
     const [sDerivbl, setDrvblState] = (
-      function <S extends {} & P, P extends {}, CS>(...a : [(prov: P) => S , newProvdr: P, checkProvd?: (...a: NoInfer<[prov: P]>) => CS] )
-      {
-        ;
-        const [mp, scprov, chkProvd = mp] = a ;
-        ;
-        const [lastSdvb, setDrvblState] = (
-          React.useState<S>((
-            mp(scprov)
-          ))
-        ) ;
-        /**
-         * avoid staleness.
-         * since
-         * {@link lastSdvb} (from parameter or `useState`/`useReducer`) and {@link scprov}
-         * are technically two *independent* variables,
-         * updating {@link scprov} means we need to manually (re)set {@link lastSdvb}.
-         * see https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
-         * for how to properly do that.
-         * 
-         */
-        if (chkProvd(scprov) !== chkProvd(lastSdvb) ) {
-          setDrvblState(mp(scprov))
-        }
-        return [lastSdvb, setDrvblState] as const ;
-      }
+
+      useAutoresettingProvideredState
+
     )((scprov: ScdStateProvCtx): ScdStateDerivable => scprov , scprov, e => e.rootNd ) ;
 
-    const { pos: lastPoi, } = sDerivbl ;
+    const {
+      pos: lastPoi,
+    } = sDerivbl ;
+
     const setPoi = (
-      React.useCallback((x: React.SetStateAction<SsvaPoint2D> ) => (
+
+      React.useCallback((getDerivedPos: React.SetStateAction<SsvaPoint2D> ) => (
+
         setDrvblState(s0 => (
-          s0.insteadForPos({ pos: ((typeof x === "function" ? x : (() => x) ))(s0.pos), })
+
+          s0.insteadForPos({
+            pos: (ReactSetStateActionHelpers.asDigestFnc(getDerivedPos) )(s0.pos)
+            ,
+          })
         ) )
       ) , [setDrvblState] )
     ) ;
