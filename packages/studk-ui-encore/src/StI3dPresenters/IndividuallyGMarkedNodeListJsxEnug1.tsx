@@ -201,6 +201,10 @@ export const IndividuallyMarkedNodeListEnugFullSceneUnitAppletC = (
       perspective: Matrix4,
     })
     {
+      ;
+
+      const scsc = ((): number => 17 )() ;
+
       const finalPersp = (() => {
         let persp: Matrix4 = (
           identityMat4()
@@ -236,7 +240,7 @@ export const IndividuallyMarkedNodeListEnugFullSceneUnitAppletC = (
         ;
         const viewPickRect1 = (
           (() => {
-            const r = 50 ;
+            const r = (50 / 17) * scsc ;
             const asp = 2.25 ;
             return (
               UnivoAspectRectBox.fromRAndAsp(r, asp)
@@ -253,6 +257,7 @@ export const IndividuallyMarkedNodeListEnugFullSceneUnitAppletC = (
               <IndividuallyMarkedNodeListEnugFullMeshPerspG
               perspective={finalPersp}
               content={contDfrd}
+              sc={scsc}
               />
               </g>
             )
@@ -277,6 +282,7 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
         content: IndividuallyMarkedNodeList
         ,
         perspective: Matrix4,
+        sc: number,
       }
       & {
         abortContourOnNanError ?: boolean ,
@@ -286,6 +292,7 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
       const {
         content: cont,
         perspective: finalPersp,
+        sc = 16,
         abortContourOnNanError = true ,
       } = pr ;
     
@@ -373,8 +380,8 @@ export const IndividuallyMarkedNodeListEnugFullMeshPerspG = (
               y: pos.y / Math.max(0, pos.z ) ,
             }) )
             .map(pos => ({
-              x: pos.x * 120 ,
-              y: pos.y * 120 ,
+              x: pos.x * (sc * 10) ,
+              y: pos.y * (sc * 10) ,
             }) )
           ) ;
   

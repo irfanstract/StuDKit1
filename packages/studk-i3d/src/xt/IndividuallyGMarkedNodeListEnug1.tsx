@@ -61,17 +61,44 @@ import {
 /**
  * an array of {@link I3D.NodeUnitGraph} (each or `null` to avoid issues with DOM-diffing)
  * 
+ * caveat:
+ * {@link React.Key to avoid breaking the structure due to adding extra property like "key" },
+ * we instead allow items each to be `null` to mean "null element"
+ * 
  */
 export class IndividuallyMarkedNodeList
 extends Object
 {
+  //
+
+  // /**
+  //  * @deprecated
+  //  */
+  // static by1(...[graphs]: [graphs: readonly (NodeUnitGraph | null)[]] )
+  // : IndividuallyMarkedNodeList
+  // {
+  //   return (
+  //     new IndividuallyMarkedNodeList(graphs)
+  //   ) ;
+  // }
+
   /**
-   * caveat:
-   * {@link React.Key to avoid breaking the structure due to adding extra property like "key" },
-   * we instead allow items each to be `null` to mean "null element"
-   * 
+   * @deprecated
    */
-  constructor(public posAll: readonly (NodeUnitGraph | null)[] )
+  static byEachOptionalEnugBasedLayerGraph(...[graphs]: [graphs: readonly (NodeUnitGraph | null)[]] )
+  : IndividuallyMarkedNodeList
+  {
+    return (
+      new IndividuallyMarkedNodeList(graphs, true)
+    ) ;
+  }
+
+  /**
+   * @deprecated
+   */
+  private constructor(
+    public posAll: readonly (NodeUnitGraph | null)[],
+    unsafe: true = util.throwTypeError(`illegal constructor access`) )
   { super() ; }
   
   toDebugSnippet()
