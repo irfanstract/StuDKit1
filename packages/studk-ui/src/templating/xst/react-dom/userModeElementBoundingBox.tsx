@@ -204,7 +204,7 @@ const ElementTypeAndInfoBoxC : React.JSXElementConstructor<{ value: IRenderNativ
         >
           <p>
             Element <code>{ `${tagName}` }</code> {}
-            positioned at <code>{ JSON.stringify(ncp.pos ) }</code> {}
+            positioned at <code>{ JSON.stringify({ x: toDsplayedNcp.pos.x.toFixed(2), y: toDsplayedNcp.pos.y.toFixed(2) } ) }</code> {}
           </p>
         </div>
       )
