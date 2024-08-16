@@ -155,6 +155,8 @@ export {
   renderTableByRowDtListAndColumnList ,
 } ;
 
+interface SpclClsNameProps extends Pick<JSX.IntrinsicElements["div"], "className"> {}
+
 function renderTableByRowDtListAndPresenter<T extends object | true | false | null>(...[
   dat,
   presenter,
@@ -169,15 +171,18 @@ function renderTableByRowDtListAndPresenter<T extends object | true | false | nu
 
 function renderTableByRowDtListAndRowRenderer1<T extends object | true | false | null>(...[
   dat,
-  { renderItemRow, renderHead, },
-] : ArgsWithOptions<[readonly T[] ] , {
-  renderItemRow: NoInfer<renderTableByRowDtListAndRowRenderer1.ItemRowRenderer<T> > ,
-  renderHead  ?: NoInfer<renderTableByRowDtListAndRowRenderer1.HeadRowRenderer<T> > ,
-  perRowCellRenderers ?: never ;
-}> )
+  { renderItemRow, renderHead, ...otherProps },
+] : ArgsWithOptions<[readonly T[] ] , (
+  {
+    renderItemRow: NoInfer<renderTableByRowDtListAndRowRenderer1.ItemRowRenderer<T> > ,
+    renderHead  ?: NoInfer<renderTableByRowDtListAndRowRenderer1.HeadRowRenderer<T> > ,
+    perRowCellRenderers ?: never ;
+  } & SpclClsNameProps
+)> )
 {
+  const { className: mainClName } = otherProps ;
   const mainTable = (
-    <EnhancedTableC className='studk-ui-table' >
+    <EnhancedTableC className={`studk-ui-table ${mainClName}`} >
       <thead>
         { renderHead?.render.renderContent() }
       </thead>
@@ -219,20 +224,50 @@ namespace renderTableByRowDtListAndRowRenderer1
 
 }
 
+export const TableByRowDtListAndColumnList1C = (
+  describeComponent(function TableByRowDtListAndColumnList1CImpl<const T extends object | true | false | null>({ transpose, ...props } : (
+    & { rowDataList: readonly T[], }
+    & {
+      perRowCellRenderers: NoInfer<(
+        readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
+      )> ,
+      readonly getRowHash: NoInfer<renderTableByRowDtListAndColumnList.RowHashingCallback<T>>
+      ,
+    }
+    & { transpose ?: boolean }
+  ))
+  {
+    const {
+      rowDataList ,
+      getRowHash ,
+      perRowCellRenderers ,
+    } = props ;
+    return (
+      (transpose ? renderTableByRowDtListAndColumnList.renderAsTransposed : renderTableByRowDtListAndColumnList )(rowDataList, {
+        perRowCellRenderers ,
+        getRowHash ,
+      } )
+    ) ;
+  })
+) ;
+
 function renderTableByRowDtListAndColumnList<const T extends object | true | false | null>(...[
-  dat ,
-  { perRowCellRenderers, getRowHash: getRowHash , } ,
-] : ArgsWithOptions<[readonly T[] ] , {
-  perRowCellRenderers: NoInfer<(
-    readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
-  )> ,
-  readonly getRowHash: (...a: NoInfer<[data: T, i: number]>) => Exclude<React.Key, symbol >
-  ,
-}> )
+  rowDataList ,
+  { perRowCellRenderers, getRowHash: getRowHash , className, } ,
+] : ArgsWithOptions<[rowDataList: readonly T[] ] , (
+  & {
+    perRowCellRenderers: NoInfer<(
+      readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<T>[]
+    )> ,
+    readonly getRowHash: renderTableByRowDtListAndColumnList.RowHashingCallback<T>
+    ,
+  }
+  & SpclClsNameProps
+)> )
 {
   ;
 
-  const rowValues = dat ;
+  const rowValues = rowDataList ;
 
   const renderRowContents = (e0: { value: T } | 0 ) => (
     perRowCellRenderers
@@ -284,6 +319,7 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
         ) , "tr" ) ,
       }
       ,
+      className ,
     } )
   ) ;
 }
@@ -318,6 +354,11 @@ namespace renderTableByRowDtListAndColumnList
   {
     return [...d() ] ;
   }
+
+  export interface RowHashingCallback<T> extends Extract<(
+    (...a: NoInfer<[data: T, i: number]>) => Exclude<React.Key, symbol >
+  ), any>
+  {}
 }
 
 namespace renderTableByRowDtListAndColumnList
@@ -329,7 +370,7 @@ namespace renderTableByRowDtListAndColumnList
   export const renderAsTransposed = (
     function renderTableByRowDtListAndColumnListTransposedImpl<const T extends object | true | false | null>(...[
       dat ,
-      { perRowCellRenderers: prcr, getRowHash: iRh , } ,
+      { perRowCellRenderers: prcr, getRowHash: iRh , className , ...otherProps } ,
     ] : (
       Parameters<typeof renderTableByRowDtListAndColumnList<(
         T
@@ -340,30 +381,43 @@ namespace renderTableByRowDtListAndColumnList
         renderTableByRowDtListAndColumnList(prcr, {
           //
           
-          getRowHash: (v, i) => `item ${i}-th`
+          getRowHash: (v, i) => `field ${i}`
           ,
 
           perRowCellRenderers: (
             renderTableByRowDtListAndColumnList.generateColumns(function* () {
-              // yield {
-              //   id: iRh() ,
-              // } ;
+              yield {
+                id: (
+                  `SPH`
+                ),
+                renderContent: (colD, aColIdx) => (
+                  colD.renderHead()
+                ) ,
+                renderHead: () => (
+                  <span></span>
+                ) ,
+              } ;
+
               for (const [aRowI, rv] of dat.entries() )
               {
                 yield {
                   id: (
-                    iRh(rv, aRowI) ?? `row ${aRowI}`
+                    iRh(rv, aRowI) ?? `layer ${aRowI}`
                   ),
                   renderContent: (colD, aColIdx) => (
                     colD.renderContent(rv, aColIdx)
                   ) ,
                   renderHead: () => (
-                    <span>(...)</span>
+                    <code>{ String(rv) }</code>
                   ) ,
                 } ;
               }
             } )
           ) ,
+
+          className: `${className } studk-ui-table-is-as-transposed `,
+
+          ...(otherProps)
         } )
       ) ;
     }
