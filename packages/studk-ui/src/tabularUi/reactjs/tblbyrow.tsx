@@ -425,7 +425,7 @@ namespace renderTableByRowDtListAndColumnList
 }
 
 // #currentPkg/src/fwCore/ewo.ts
-import "./tbl-default.css" ;
+import "./tbl-default1.scss" ;
  
 
 
