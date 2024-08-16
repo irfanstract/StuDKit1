@@ -36,7 +36,7 @@ import React, {
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'
 
 import {
   describeSvgComponent ,
