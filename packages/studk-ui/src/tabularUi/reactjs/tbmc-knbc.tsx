@@ -196,7 +196,7 @@ export const TbmcKnbC: {
         ) ;
         
         const mainTable = (
-          renderTableByRowDtListAndColumnList(chnlDataList , {
+          renderTableByRowDtListAndColumnList.renderAsTransposed(chnlDataList , {
 
             getRowHash: (v, i) => `item ${i}-th`
             ,
