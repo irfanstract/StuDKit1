@@ -37,6 +37,7 @@ import {
   Span, 
   withExtraSemanticProperties,
   describeCallbackAssignedStyleProps,
+  ButtonC,
 } from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
 import {
@@ -105,8 +106,10 @@ interface TbmcKnbCPropsImpl extends Extract<{
 
   value?: TbmcKnsBasedModelState ,
   mainPlotters ?: {
-    primaryStreamPlotter ?: SccMastPlotter.RegularInstance ,
+    primaryStreamPlotter ?: SccMastPlotter.RegularAppletifyingInstance ,
   } ,
+
+  rowHeadCollDescs?: readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps>[] ,
 
 }, any>
 {}
@@ -136,6 +139,8 @@ const useTbmcKnbCProps = (
 
       value: valueArg = getTbmcKnbDefaultSpecimen() ,
 
+      rowHeadCollDescs : rhcdArg ,
+
       mainPlotters: {
         primaryStreamPlotter = getSuggestedSccMastPlotter() ,
       } = null ?? {} ,
@@ -143,7 +148,8 @@ const useTbmcKnbCProps = (
     } = null ?? props ;
 
     const {
-      effectiveWindowSeq: hoSegmentDescs ,
+      effectiveWindowSeq: ddsds ,
+      segmenterConfig,
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
     } = (
@@ -174,7 +180,7 @@ const useTbmcKnbCProps = (
       ;
 
       const renderTSegHeadLabelDiv : (
-        (props: { msd: (typeof hoSegmentDescs)[number], }) => React.ReactElement
+        (props: { msd: (typeof segmenterConfig.effectiveWindowSeq)[number], }) => React.ReactElement
       ) = (
         function ({ msd, }) {
           ;
@@ -202,8 +208,13 @@ const useTbmcKnbCProps = (
         }
       ) ;
 
-      const renderChPlotSeg : React.FC<{ v: (typeof chnlDataList)[number], msd: (typeof hoSegmentDescs)[number], }> = (
-        function ({ v, msd, })
+      const renderChPlotSeg : (
+        React.FC<{
+          chnlDesc: (typeof chnlDataList)[number],
+          directionalLocDesc: (typeof segmenterConfig.effectiveWindowSeq)[number],
+        }>
+      ) = (
+        function ({ chnlDesc: v, directionalLocDesc: msd, })
         {
           return (
             renderPerChannelPlotAsWrInlineContent(v, msd )
@@ -213,8 +224,11 @@ const useTbmcKnbCProps = (
 
       return {
         horizonConfig,
+        segmenterConfig,
         valueArg ,
-        hoSegmentDescs ,
+        rhcdArg,
+        /** {@link segmenterConfig.effectiveWindowSeq} */
+        directionalDomainWindowDescs: ddsds ,
         renderPerChannelPlotAsUnitApplet ,
         renderPerChannelPlotAsWrInlineContent ,
         chnlDataList,
@@ -240,7 +254,8 @@ export const TbmcKnbC: {
     const {
       horizonConfig,
       valueArg ,
-      hoSegmentDescs ,
+      rhcdArg,
+      directionalDomainWindowDescs: ddsds ,
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
       chnlDataList,
@@ -254,7 +269,7 @@ export const TbmcKnbC: {
         ;
 
         const withSpclTbmcTdCssAnnotation = (
-          function (...[e, srcSpan]: [React.ReactElement, ((typeof hoSegmentDescs)[number] )["srcSpan"] ] )
+          function (...[e, srcSpan]: [React.ReactElement, ((typeof ddsds)[number] )["srcSpan"] ] )
           {
   
             return (
@@ -275,6 +290,49 @@ export const TbmcKnbC: {
             ) ;
           }
         ) ;
+
+        const rowHeadCollDescs = (
+          rhcdArg
+          ??
+          util.reiterated<(
+            renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps >
+          ) >(function* () {
+              ;
+
+              // ⬆️⬇️☯️
+
+              yield {
+                id: `itemident`,
+                renderHead: () => <i children={`name`} /> ,
+                renderContent: (v) => (
+                  <div
+                  style={{
+                    minInlineSize: `12ex`,
+                  }}
+                  >
+                    <p>
+                      <i children={v.id} />
+                    </p>
+                  </div>
+                ) ,
+                asRowHeader: true,
+              } ;
+
+              yield {
+                id: `itemkind`,
+                renderHead: () => <i children={`kind letter`} /> ,
+                renderContent: (v) => (
+                  <div>
+                    <p>
+                      <code children={`${v.kind}`} />
+                    </p>
+                  </div>
+                ) ,
+                asRowHeader: true,
+              } ;
+
+          })
+        ) ;
   
         const mainTable = (
           renderTableByRowDtListAndColumnList.renderAsTransposed(chnlDataList , {
@@ -284,21 +342,11 @@ export const TbmcKnbC: {
 
             perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
 
-              yield {
-                id: `itemident`,
-                renderHead: () => <i children={`name`} /> ,
-                renderContent: (v) => <code children={`${v.id}`} /> ,
-              } ;
+              yield* rowHeadCollDescs ;
 
-              yield {
-                id: `itemkind`,
-                renderHead: () => <i children={`kind letter`} /> ,
-                renderContent: (v) => <code children={`${v.kind}`} /> ,
-              } ;
-
-              for (const msd of hoSegmentDescs)
+              for (const ddsd of ddsds)
               {
-                const { srcSpan, id: colId, } = msd ;
+                const { srcSpan, id: colId, } = ddsd ;
 
                 yield {
                   id: `plotsegment-${colId}`,
@@ -316,7 +364,7 @@ export const TbmcKnbC: {
                         overflow: "hidden",
                       }}
                       children={(
-                        renderTSegHeadLabelDiv({ msd, })
+                        renderTSegHeadLabelDiv({ msd: ddsd, })
                       ) }
                       />
                     ) , srcSpan )
@@ -331,7 +379,7 @@ export const TbmcKnbC: {
                       inlineSize: `100%`,
                     }}
                     >
-                      { renderChPlotSeg({ v, msd, } ) }
+                      { renderChPlotSeg({ chnlDesc: v, directionalLocDesc: ddsd, } ) }
                     </div>
                   )
                   ,
@@ -363,9 +411,59 @@ export namespace TbmcKnbCDisplayed
    * 
    * @deprecated
    */
-  export function searchSegmentDisplayNodes<Mpe>(...[root = document, { flatTranslate: flm, }]: ArgsWithOptions<[host ?: Element | Document], { flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) }> ) {
+  export function searchSegmentDisplayNodes<Mpe>(...args: (
+    ArgsWithOptions<[host ?: Element | Document], {
+      flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) ,
+    }>
+  ) )
+  {
+    const [
+      root0 = document,
+      {
+        flatTranslate: flm,
+      },
+    ] = args ;
+
+    const root = (
+      (function (): Element {
+        if ("matches" in root0) {
+          return root0 ;
+        }
+        if ("documentElement" in root0) {
+          return root0.documentElement ;
+        }
+        return (
+          util.throwTypeError()
+        ) ;
+      } )()
+    ) ;
+
     return (
-      Array.from(root.querySelectorAll(`.studk-sequemi-tlwalkthruappcomp :is(tr)[data-src-row-id^=plotsegment]`) )
+
+      // TODO
+      (
+        (function () {
+
+          const s0 = `.studk-sequemi-tlwalkthruappcomp`;
+          const s1 = `:is(tr)[data-src-row-id^=plotsegment]`;
+
+          return (
+            root.matches(s0) ?
+            (
+              Array.from((
+                root.querySelectorAll(`${s1 }`)
+              ) )
+            )
+            :
+            (
+              Array.from((
+                root.querySelectorAll(`${s0 } ${s1 }`)
+              ) )
+            )
+          ) ;
+        })()
+      )
+
       .flatMap(e => {
         return (
           flm(S_EHE1(e) )
