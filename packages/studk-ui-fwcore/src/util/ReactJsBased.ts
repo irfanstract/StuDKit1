@@ -39,6 +39,10 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts'; ;
 
+export type {
+  ReadonlyArrayOrSeq ,
+} from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
+
 
 
 // export {
@@ -69,56 +73,84 @@ import type {
 
 import * as React from "react" ;
 
-const toComponentMountKey = (
-  (value: (JSX.IntrinsicElements["input"] )["value"] ) => (
-    ((): string => {
-      switch (typeof value) {
-        case "string":
-        case "number":
-        case "bigint":
-        case "boolean":
-        case "undefined":
-          return String(value) ;
-      }
-      return JSON.stringify(value) ;
-    })()
-  )
-) ;
+import * as StudkReactJs from "studk-ui-fwcore/src/util/StudkReactJs.ts" ;
+
+export {
+  ReactSetStateActionHelpers ,
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts" ;
+
+import {
+  //
+  toComponentMountKey ,
+  getFromClassNameProp ,
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts" ;
 
 export {
   toComponentMountKey ,
+  getFromClassNameProp ,
 } ;
 
 ;
 
 
-import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+;
+
+export type {
+  // ComponentProps ,
+  /** @deprecated use qualified name at {@link StudkReactJs }. */
+  ComponentPropsWithoutRef ,
+} from "react" ;
+
+export type {
+  /** @deprecated use qualified name at {@link StudkReactJs }. */
+  RequiredComponentProps ,
+  /** @deprecated use qualified name at {@link StudkReactJs }. */
+  ComponentProps ,
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts" ;
 
 import {
+  //
+  RequiredComponentProps ,
+  ComponentProps ,
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts" ;
+
+import {
+  //
+  describeComponent ,
+  withExtraSemanticProperties ,
+  asHidden ,
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts" ;
+
+import {
 } from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
-  withExtraSemanticProperties ,
-  asHidden ,
 } from 'studk-ui-fwcore/src/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
 
 export {
-  //
   React ,
-  describeComponent,
-  describeHtmlComponent ,
-  getSpaceSeparatedClassNameList ,
-  withExtraSemanticProperties ,
-  asHidden ,
+  StudkReactJs ,
 } ;
 
 export {
+  //
+  /** @deprecated use qualified name {@link StudkReactJs.describeComponent }. */
+  describeComponent,
+  /** @deprecated use qualified name {@link StudkReactJs.describeHtmlComponent }. */
+  describeHtmlComponent ,
+  getSpaceSeparatedClassNameList ,
+  /** @deprecated use qualified name {@link StudkReactJs.withExtraSemanticProperties }. */
+  withExtraSemanticProperties ,
+  /** @deprecated use qualified name {@link StudkReactJs.asHidden }. */
+  asHidden ,
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts" ;
+
+export {
+  /** @deprecated use {@link getSpaceSeparatedClassNameList }. */
   mkClasses,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts"; ;
 
 
 // import {
@@ -127,7 +159,7 @@ export {
 
 import {
   SingleChildDiv,
-} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts"; ;
 
 import {
   NativeButton ,
@@ -135,7 +167,7 @@ import {
   ButtonC ,
   Span ,
   SpanC ,
-} from 'studk-ui-fwcore/src/dbce.tsx'; ;
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts"; ;
 
 export {
   SingleChildDiv ,
@@ -144,13 +176,19 @@ export {
   ButtonC ,
   Span ,
   SpanC ,
-} ;
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts" ;
 
 export * from 'studk-ui-fwcore/src/dbce.tsx'; ;
 
 // import Link from "next/link" ;
 
 
+
+;
+
+export {
+  describeCallbackAssignedStyleProps,
+} from "studk-ui-fwcore/src/util/StudkReactJs.ts"; ;
 
 ;
 
