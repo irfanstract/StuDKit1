@@ -465,15 +465,42 @@ const WithSsc1D = (
       return (
         ((
           (...[e] : [React.ReactElement]) => {
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do03'
+                children={e}
+                />
+              ) ;
+            }
             e = (
               <WithSsc1DInner
               children={e}
               />
             ) ;
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do02'
+                children={e}
+                />
+              ) ;
+            }
             if (revertToRawScrollSavePos === false)
             {
               e = (
                 <WithSpclisedScdOverrides1C
+                children={e}
+                />
+              ) ;
+            }
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1do01'
                 children={e}
                 />
               ) ;
@@ -508,6 +535,15 @@ const WithSsc1DInner = (
           (...[e] : [React.ReactElement]) => {
             if (1)
             {
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner02'
+                  children={e}
+                  />
+                ) ;
+              }
               e = (
                 <ScdC
                 children={(
@@ -518,6 +554,15 @@ const WithSsc1DInner = (
                 // ctrlVarsDebug
                 />
               ) ;
+              if (TBMC_SCDNEXTINGDEBUG)
+              {
+                e = (
+                  <div
+                  className='studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01'
+                  children={e}
+                  />
+                ) ;
+              }
               e = (
                 <div>
                 <aside>
@@ -573,6 +618,15 @@ export const WithSpclisedScdOverrides1C = (
       return (
         ((
           (...[e] : [React.ReactElement]) => {
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c02'
+                children={e}
+                />
+              ) ;
+            }
             if (1)
             {
               e = (
@@ -580,6 +634,15 @@ export const WithSpclisedScdOverrides1C = (
                 value={(
                   scdPeer
                 )}
+                children={e}
+                />
+              ) ;
+            }
+            if (TBMC_SCDNEXTINGDEBUG)
+            {
+              e = (
+                <div
+                className='studk-sequemi-tdbi-withspecialisedscdoverrides-1c01'
                 children={e}
                 />
               ) ;
@@ -613,6 +676,8 @@ import {
 } from "studk-ui/src/tabularUi/reactjs/tbmc-knbc.tsx" ;
 
 import "studk-ui-encore/src/SequencedMediaUi/tmdc.scss" ;
+
+let TBMC_SCDNEXTINGDEBUG: boolean = true ;
 
 
 
