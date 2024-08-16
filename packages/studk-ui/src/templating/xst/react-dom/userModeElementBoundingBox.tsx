@@ -185,6 +185,10 @@ const ElementTypeAndInfoBoxC : React.JSXElementConstructor<{ value: IRenderNativ
     ;
 
     const ncp = useNativeCompDisplayedOffsetsAnalysis(e , { latencyMillis: 0.58 * 1000 , } ) ;
+
+    const toDsplayedNcp = (
+      React.useDeferredValue(ncp)
+    ) ;
     ;
 
     if (0) {
@@ -192,7 +196,7 @@ const ElementTypeAndInfoBoxC : React.JSXElementConstructor<{ value: IRenderNativ
     }
 
     return (
-      ncp ?
+      toDsplayedNcp ?
       (
         <div
         style={{
