@@ -57,6 +57,32 @@
 
 
 
+/* for some reason, doing this `@property` led to higher CPU usage throughout usage */
+/* @property --ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval { */
+  /* syntax: "*"; */
+  /* inherits: true ; */
+/* } */
+@property --table-cell-orientation {
+  syntax: "*";
+  inherits: true;
+  initial-value: inherit;
+}
+
+@layer defaults {
+  /* // */
+
+  table.studk-enhancedtableelement {
+    writing-mode: var(--table-cell-orientation, inherit);
+    & :is(th, td) {
+      writing-mode: var(--ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval) ;
+    }
+  }
+}
+
+
+
+
+
 
 
 
