@@ -90,6 +90,7 @@ class TableRowsetRendererOpsImpl <in argsT extends unknown[], out eTr extends "t
     return (
       <C
       children={this.renderContent(...args) }
+      {...this.getRcProps(...args) }
       />
     ) ;
   }
@@ -103,16 +104,18 @@ class TableRowsetRendererOpsImpl <in argsT extends unknown[], out eTr extends "t
    */
   protected constructor(
     public readonly RCO: { (...args: argsT): ReturnType<TableRowsetRendererOpsImpl<any, any>["renderContent"] > ; },
-    public readonly C: "thead" | "tbody" | "tr",
+    public readonly C: eTr,
+    public readonly getRcProps: (...args: argsT) => JSX.IntrinsicElements[eTr] ,
    )
   {}
   
-  static ofRenderer<argsT extends unknown[], const eTr extends TableRowsetRendererOpsImpl<any, any>["C"] >(
+  static ofRenderer<argsT extends unknown[], const eTr extends TableRowsetRendererOpsImpl<any, "thead" | "tbody" | "tr">["C"] >(
     RCO: { (...args: argsT): ReturnType<TableRowsetRendererOpsImpl<any, any>["renderContent"] > ; },
     C: eTr,
+    props?: (...args: argsT) => (JSX.IntrinsicElements[eTr] & { [k in  `data-${string}`] ?: string ; } ) ,
    )
   {
-    return new TableRowsetRendererOpsImpl<argsT, eTr>(RCO, C) ;
+    return new TableRowsetRendererOpsImpl<argsT, eTr>(RCO, C, props ?? (() => ({}))) ;
   }
 }
 
@@ -285,6 +288,7 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
               yield* (cr.classNames ?? [] ) ;
             } )
           )}
+          {...({ ["data-src-col-id"]: String(cr.id) , }) }
           children={(
             !(typeof e0 === "number") ?
             cr.renderContent(e0.value , colI ) :
@@ -316,7 +320,7 @@ function renderTableByRowDtListAndColumnList<const T extends object | true | fal
             renderRowContents({ value: e, })
           )}
           />
-        ) , "tr" ) ,
+        ) , "tr", (e, i) => ({ ["data-src-row-id"]: String(getRowHash(e, i)) , }) ) ,
       }
       ,
       className ,
@@ -381,7 +385,11 @@ namespace renderTableByRowDtListAndColumnList
         renderTableByRowDtListAndColumnList(prcr, {
           //
           
-          getRowHash: (v, i) => `field ${i}`
+          getRowHash: (v, i) => (
+            v.id
+            ??
+            `unnamed-field-${i}`
+          )
           ,
 
           perRowCellRenderers: (
@@ -402,7 +410,7 @@ namespace renderTableByRowDtListAndColumnList
               {
                 yield {
                   id: (
-                    iRh(rv, aRowI) ?? `layer ${aRowI}`
+                    iRh(rv, aRowI) ?? `unnamed-layer-${aRowI}`
                   ),
                   renderContent: (colD, aColIdx) => (
                     colD.renderContent(rv, aColIdx)
