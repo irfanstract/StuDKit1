@@ -80,6 +80,13 @@ import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
+const GET_CLIENTOFFSET_OF = (
+  (e: Element) => ({
+    x: e.getBoundingClientRect().left,
+    y: e.getBoundingClientRect().top,
+  })
+) ;
+
 
 
 
@@ -96,33 +103,32 @@ import {
 
 import {
   ScdC ,
-  useDebouncedScdState1 ,
+  useDebouncedScdState1, 
+  useDebouncedScdStateWrapper1,
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
+
+import {
+  useCtxtualisedScdPoiState1, 
+  useCtxtualisedScdState1,
+  // useDebouncedScdStateWrapper1A ,
+} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
+
+interface TimeDomainedImgListFigureCProps
+{
+  scrollingConfig ?: {
+    revertToRawPositioning ?: boolean ;
+  } ,
+}
 
 export const TimeDomainedImgListFigureC = (
   describeComponent((
-    function TimeDomainedImgListFigureCBiggerImpl(props : {})
+    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedImgListFigureCProps)
     {
       ;
-
-      const scdPeer = (
-        useSpclisedScdPeer()
-      ) ;
 
       return (
         ((
           (...[e] : [React.ReactElement]) => {
-            if (0)
-            {
-              e = (
-                <WithCtxtuallyOverridenScdSProvC
-                value={(
-                  scdPeer
-                )}
-                children={e}
-                />
-              ) ;
-            }
             return e ;
           }
         ))((
@@ -138,11 +144,14 @@ export const TimeDomainedImgListFigureC = (
 // TODO
 const TimeDomainedImgListFigureC11 = (
   describeComponent((
-    function TimeDomainedImgListFigureCInnerImpl({} : {})
+    function TimeDomainedImgListFigureCInnerImpl({
+      scrollingConfig: {
+        revertToRawPositioning: scRevertToRawPositioning = true ,
+      } = {} ,
+      ...otherProps
+    } : TimeDomainedImgListFigureCProps)
     {
       ;
-
-      const [lsce, { setLsce, setLsceDebcd, }] = useDebouncedScdState1() ;
 
       const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
         computeDefaultHorizonConfig()
@@ -153,24 +162,41 @@ const TimeDomainedImgListFigureC11 = (
           <p>
             Time-domain plot of <code>movie.mp4</code>
           </p>
+          <aside>
+            <p>
+              debug values:
+            </p>
+            { (
+            // <pre style={{ whiteSpace: "pre-wrap", }}>
+            //   { ((e: any) => JSON.stringify(e) )(statDerivable.s) }
+            // </pre>
+            null
+            ) }
+          </aside>
           { ((
             (...[e] : [React.ReactElement]) => {
+              if (1)
+              {
+                e = (
+                  <WithSsc1D
+                  children={e}
+                  revertToRawScrollSavePos={scRevertToRawPositioning }
+                  />
+                ) ;
+              }
               return e ;
             }
           ))((
-          <ScdC
-          children={(
             <TimeDomainedImgListSpC
             hc={horizonConfig }
             />
-          )}
-          {...{ orientCv: "horizontal", cv: lsce.x, crossCv: lsce.y, }}
-          onScroll={e => { setLsceDebcd(e.newVals) ; } }
-          />
           )) }
-          <p>
-            Scrolled at <code>{ JSON.stringify(lsce) }</code>
-          </p>
+          { (
+          // <p>
+          //   Scrolled at <code>{ JSON.stringify(lsce) }</code>
+          // </p>
+          null
+          ) }
         </div>
       ) ;
     }
@@ -265,84 +291,139 @@ const computeDefaultHorizonConfig = (
   })
 ) ;
 
-interface SpclScrollHandler extends Extract<ScdStateProvCtx, any>
-{
-  isSpclScrollHandler ?: true ;
-  searchDisplayedSegs: {
-    (ctx: (
-      & ({ e: Element } | { pt: { x: number, y: number, } })
-    )): (
-      ReadonlyArray<{
-        readonly startT: number,
-        readonly endT?: number,
-      }>
-    ) ;
-  } ;
-  analyseDisplayedSegsSearchReturnedDescs: (ctx: readonly (ReturnType<SpclScrollHandler["searchDisplayedSegs"] >[number] )[] ) => (
-    ReadonlyArray<(
-      { pt: { x: number, y: number, } }
-    )>
-  ) ;
-}
-
-const getSpclScrollHandleRefCtxStack = (
-  util.L.once(() => (
-    React.createContext<SpclScrollHandler | null>(null)
+const WithSsc1D = (
+  describeComponent((
+    function WithSsc1DImpl({ children, revertToRawScrollSavePos, } : React.PropsWithChildren<{ revertToRawScrollSavePos: boolean ; }>)
+    {
+      ;
+      
+      return (
+        ((
+          (...[e] : [React.ReactElement]) => {
+            e = (
+              <WithSsc1DInner
+              children={e}
+              />
+            ) ;
+            if (revertToRawScrollSavePos === false)
+            {
+              e = (
+                <WithSpclisedScdOverrides1C
+                children={e}
+                />
+              ) ;
+            }
+            return e ;
+          }
+        ))((
+          <>{ children }</>
+        ))
+      ) ;
+    }
   ))
 ) ;
 
-const useSpclisedScdPeer = (
-  function () {
-    const ctxtuSpclScrollHandler = (
-      React.useContext(getSpclScrollHandleRefCtxStack() )
-    ) ;
-    const ctxtuScdHandler0 = (
-      React.useContext(getScdSProvCtxStack() )
-    ) ;
-    return (
-      // TODO
-      React.useMemo<ScdStateProvCtx>(() => {
-        if (ctxtuSpclScrollHandler) {
-          return (
-            describeSsva({ getSFromPt: pt0 => {
-              // TODO
-              const {
-                startT ,
-              } = ctxtuSpclScrollHandler.searchDisplayedSegs({ pt: pt0, })[0] ?? util.throwTypeError() ;
-              // const  ;
-              return ({
-                startT ,
-              } as const) ;
-            } , getPtFromS: ({ startT, }) => {
-              const e0 = (
-                // TODO
-                ctxtuSpclScrollHandler.analyseDisplayedSegsSearchReturnedDescs([{ startT, }])[0]
-              );
-              if (e0) {
-                const { pt, } = e0 ;
-                return pt ;
-              } else {
-                return {
-                  x: -1, y: -1,
-                } ;
-              }
-            } })
-          ) ;
-        }
-        if (0) {
-          return (
-            describeSsva({ getSFromPt: pt => ({ x: 100, y: 100 }) , getPtFromS: pt => pt })
-          ) ;
-        }
-        return (
-          (
-            ctxtuScdHandler0
-          )
-        ) ;
-      } , [ctxtuSpclScrollHandler] )
-    ) ;
-  }
+const WithSsc1DInner = (
+  describeComponent((
+    function WithSsc1DInnerImpl({ children, } : React.PropsWithChildren)
+    {
+      ;
+
+      const {
+        poi ,
+        setPoi ,
+        statDerivable ,
+        lsce ,
+        setLsce ,
+        setLsceDebcd ,
+      } = useSpclisedScdStateValues1() ;
+
+      return (
+        ((
+          (...[e] : [React.ReactElement]) => {
+            if (1)
+            {
+              e = (
+                <ScdC
+                children={(
+                  e
+                )}
+                {...{ orientCv: "horizontal", cv: lsce.x, crossCv: lsce.y, }}
+                onScroll={e => { setLsceDebcd(e.newVals) ; } }
+                // ctrlVarsDebug
+                />
+              ) ;
+              e = (
+                <div>
+                <aside>
+                  <p>
+                    debug values:
+                  </p>
+                  { (
+                  <pre style={{ whiteSpace: "pre-wrap", }}>
+                    { ((e: any) => JSON.stringify(e) )(statDerivable.s) }
+                  </pre>
+                  ) }
+                </aside>
+                { e }
+                { (
+                  <p>
+                    Scrolled at <code>{ JSON.stringify(lsce) }</code>
+                  </p>
+                ) }
+                </div>
+              ) ;
+            }
+            return e ;
+          }
+        ))((
+          <>{ children }</>
+        ))
+      ) ;
+    }
+  ))
 ) ;
+
+export const WithSpclisedScdOverrides1C = (
+  describeComponent((
+    function WithSpclisedOverrides1CImpl({ children, } : React.PropsWithChildren)
+    {
+      ;
+
+      const scdPeer = (
+        useSpclisedScdPeer()
+      ) ;
+
+      return (
+        ((
+          (...[e] : [React.ReactElement]) => {
+            if (1)
+            {
+              e = (
+                <WithCtxtuallyOverridenScdSProvC
+                value={(
+                  scdPeer
+                )}
+                children={e}
+                />
+              ) ;
+            }
+            return e ;
+          }
+        ))((
+          <>{ children }</>
+        ))
+      ) ;
+    }
+  ))
+) ;
+
+import {
+  useSpclisedScdStateValues1 ,
+  SpclScrollHandler ,
+  getSpclScrollHandleRefCtxStack ,
+  useSpclisedScdPeer ,
+} from "studk-ui-encore/src/SequencedMediaUi/TdbScd.tsx" ;
 
 import {
   WithCtxtuallyOverridenScdSProvC,
@@ -350,6 +431,10 @@ import {
   getScdSProvCtxStack ,
   type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
+
+import {
+  TbmcKnbCDisplayed ,
+} from "studk-ui/src/tabularUi/reactjs/tbmc-knbc.tsx" ;
 
 import "studk-ui-encore/src/SequencedMediaUi/tmdc.scss" ;
 
