@@ -391,6 +391,13 @@ const WithSsc1DInner = (
                   <p>
                     debug values:
                   </p>
+                  <div
+                  style={{
+                    position: "relative",
+                    overflow: "auto",
+                    blockSize: `5em`,
+                  }}
+                  >
                   { (
                   <pre style={{ whiteSpace: "pre-wrap", }}>
                     { ((e: any) => JSON.stringify(e) )({
@@ -399,6 +406,7 @@ const WithSsc1DInner = (
                     }) }
                   </pre>
                   ) }
+                  </div>
                 </aside>
                 { e }
                 { (
