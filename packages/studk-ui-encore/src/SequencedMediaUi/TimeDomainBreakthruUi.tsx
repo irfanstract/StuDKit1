@@ -105,6 +105,10 @@ export const TimeDomainedImgListFigureC = (
     {
       ;
 
+      const scdPeer = (
+        useSpclisedScdPeer()
+      ) ;
+
       return (
         ((
           (...[e] : [React.ReactElement]) => {
@@ -113,7 +117,7 @@ export const TimeDomainedImgListFigureC = (
               e = (
                 <WithCtxtuallyOverridenScdSProvC
                 value={(
-                  describeSsva({ getSFromPt: pt => ({ x: 100, y: 100 }) , getPtFromS: pt => pt })
+                  scdPeer
                 )}
                 children={e}
                 />
@@ -261,9 +265,90 @@ const computeDefaultHorizonConfig = (
   })
 ) ;
 
+interface SpclScrollHandler extends Extract<ScdStateProvCtx, any>
+{
+  isSpclScrollHandler ?: true ;
+  searchDisplayedSegs: {
+    (ctx: (
+      & ({ e: Element } | { pt: { x: number, y: number, } })
+    )): (
+      ReadonlyArray<{
+        readonly startT: number,
+        readonly endT?: number,
+      }>
+    ) ;
+  } ;
+  analyseDisplayedSegsSearchReturnedDescs: (ctx: readonly (ReturnType<SpclScrollHandler["searchDisplayedSegs"] >[number] )[] ) => (
+    ReadonlyArray<(
+      { pt: { x: number, y: number, } }
+    )>
+  ) ;
+}
+
+const getSpclScrollHandleRefCtxStack = (
+  util.L.once(() => (
+    React.createContext<SpclScrollHandler | null>(null)
+  ))
+) ;
+
+const useSpclisedScdPeer = (
+  function () {
+    const ctxtuSpclScrollHandler = (
+      React.useContext(getSpclScrollHandleRefCtxStack() )
+    ) ;
+    const ctxtuScdHandler0 = (
+      React.useContext(getScdSProvCtxStack() )
+    ) ;
+    return (
+      // TODO
+      React.useMemo<ScdStateProvCtx>(() => {
+        if (ctxtuSpclScrollHandler) {
+          return (
+            describeSsva({ getSFromPt: pt0 => {
+              // TODO
+              const {
+                startT ,
+              } = ctxtuSpclScrollHandler.searchDisplayedSegs({ pt: pt0, })[0] ?? util.throwTypeError() ;
+              // const  ;
+              return ({
+                startT ,
+              } as const) ;
+            } , getPtFromS: ({ startT, }) => {
+              const e0 = (
+                // TODO
+                ctxtuSpclScrollHandler.analyseDisplayedSegsSearchReturnedDescs([{ startT, }])[0]
+              );
+              if (e0) {
+                const { pt, } = e0 ;
+                return pt ;
+              } else {
+                return {
+                  x: -1, y: -1,
+                } ;
+              }
+            } })
+          ) ;
+        }
+        if (0) {
+          return (
+            describeSsva({ getSFromPt: pt => ({ x: 100, y: 100 }) , getPtFromS: pt => pt })
+          ) ;
+        }
+        return (
+          (
+            ctxtuScdHandler0
+          )
+        ) ;
+      } , [ctxtuSpclScrollHandler] )
+    ) ;
+  }
+) ;
+
 import {
   WithCtxtuallyOverridenScdSProvC,
   describeSsva ,
+  getScdSProvCtxStack ,
+  type ScdStateProvCtx ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
 import "studk-ui-encore/src/SequencedMediaUi/tmdc.scss" ;
