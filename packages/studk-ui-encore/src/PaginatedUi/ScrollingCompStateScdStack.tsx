@@ -58,6 +58,24 @@ import {
 
 ;
 
+interface ScdStateDerivable extends Extract<(
+  ReturnType<typeof describeSsva>
+), any>
+{}
+
+namespace ScdStateDerivable { ; }
+
+export {
+
+  /* final */
+  ScdStateDerivable ,
+
+} ;
+
+
+
+;
+
 type ScdsPoint2D = { x: number, y: number } ;
 
 const useCtxtualScdProv = () => (
@@ -93,10 +111,7 @@ const getScdSProvCtxStack = (
 interface ScdStateProvCtx extends Extract<ScdStateDerivable, any>
 {}
 
-interface ScdStateDerivable extends Extract<(
-  ReturnType<typeof describeSsva>
-), any>
-{}
+namespace ScdStateProvCtx { ; }
 
 /* needs deferring, to avoid unexpected NPE(s) */
 const computeGlobalDefaultScdsHandler = (
@@ -108,26 +123,34 @@ const computeGlobalDefaultScdsHandler = (
 ) ;
 
 export {
-  /**
-   * 
-   * @deprecated this is a WIP/TBD.
-   */
-  getScdSProvCtxStack ,
+
   /**
    * 
    * @deprecated this is a WIP/TBD.
    */
   useCtxtualScdProv ,
+  /**
+   * 
+   * @deprecated this is a WIP/TBD.
+   */
   WithCtxtuallyOverridenScdSProvC ,
-} ;
-export type {
+
+  /**
+   * 
+   * @deprecated this is a WIP/TBD.
+   */
+  getScdSProvCtxStack ,
+
   /**
    * 
    * @deprecated this is a WIP/TBD.
    */
   ScdStateProvCtx ,
-  /* final */
-  ScdStateDerivable ,
+
+} ;
+
+export type {
+
 } ;
 
 
@@ -156,6 +179,7 @@ const describeSsva = (
     )>
   ) )
   {
+
     const {
       hostNode: rootNode = null,
       getPtFromS ,
@@ -168,7 +192,11 @@ const describeSsva = (
       readonly pos: SsvaPoint2D ,
       readonly insteadForPos: (ctx: { pos: SsvaPoint2D, }) => DfoReturnedOps ,
     }
-    const DERIVED_FOR: DfoReturnedOps["insteadForPos"] = (
+
+    const DERIVED_FOR: (
+      (ctx: { pos: SsvaPoint2D, }) =>
+        DfoReturnedOps
+    ) = (
       function (...[{ pos: posArg, }] )
       {
         const s = getSFromPt(posArg) ;
@@ -177,7 +205,7 @@ const describeSsva = (
           rootNd: rootNode,
           pos: nrmsedPos,
           s ,
-          insteadForPos: DERIVED_FOR ,
+          insteadForPos: ({ pos, }) => DERIVED_FOR({ pos, }) ,
         } as const ;
       }
     ) ;
