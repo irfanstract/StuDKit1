@@ -226,16 +226,19 @@ export const TbmcKnbC: {
                     data-t-end={srcSpan.endPos }
                     style={{
                       inlineSize: `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ,
-                      contain: `layout`,
+                      minBlockSize: `2em`,
+                      contain: `layout inline-size`,
+                      overflow: "hidden",
                       ...({
                         ["--t-start"]: `attr(data-t-start)` ,
                         ["--t-end"  ]: `attr(data-t-end  )` ,
                         ["--sc"]: 1 ,
                       }),
                     }}
-                    >
-                      { renderTSegLabel({ msd, }) }
-                    </div>
+                    children={(
+                      renderTSegLabel({ msd, })
+                    ) }
+                    />
                   ) ,
                   renderContent: (v) => (
                     <div
