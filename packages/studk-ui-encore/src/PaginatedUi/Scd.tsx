@@ -112,12 +112,14 @@ export const ScdC = (
       orientCv = "vertical",
       onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
       style: styl,
+      ctrlVarsDebug: shallCtrlVarsDebug = false,
       ...otherProps
     } : (
       & React.PropsWithChildren
       & AllOrNever1<{ cv : number, crossCv: number, } & { orientCv : "inherit" | "horizontal" | "vertical" }>
       & Pick<JSX.IntrinsicElements["div"] , "hidden" | "style" >
       & { onScroll?: (evtInfo: ScrollingEvt) => void ; }
+      & { ctrlVarsDebug ?: boolean ; }
     ))
     {
       const divRef = (
@@ -162,11 +164,22 @@ export const ScdC = (
       ) ;
 
       const debugP = (
-        <pre style={{ whiteSpace: `pre-wrap`, }}>
-          { JSON.stringify((
-            React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
-          )) }
-        </pre>
+        <div>
+          { shallCtrlVarsDebug ? (
+            <pre style={{ whiteSpace: `pre-wrap`, }}>
+              { JSON.stringify((
+                React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
+              )) }
+            </pre>
+          ) : null }
+        </div>
+      ) ;
+
+      // TODO
+      const withSpclNecessaryCtxOverrides = (
+        (...[e] : [React.ReactElement]) => {
+          return e ;
+        }
       ) ;
 
       return (
@@ -181,6 +194,7 @@ export const ScdC = (
           <aside>
             { debugP }
           </aside>
+          { withSpclNecessaryCtxOverrides((
           <div
           className='studk-paginatedui-scdc-paginroot studk-paginatedui-scdc-payloadrootdiv'
           ref={divRef}
@@ -195,6 +209,7 @@ export const ScdC = (
           >
             { children }
           </div>
+          )) }
           </>
         )}
         />
@@ -211,7 +226,7 @@ export const useDebouncedScdState1 = (
   function () {
     ;
     const [lsce, setLsce] = (
-      React.useState<{ x: number, y: number, }>({ x: 0, y: 0, })
+      useCtxtualisedScdPoiState1()
     ) ;
 
     return (
@@ -222,23 +237,30 @@ export const useDebouncedScdState1 = (
 
 /**
  * 
- * 
+ * @deprecated use {@link useDebouncedScdStateWrapper1A} instead.
  */
 export const useDebouncedScdStateWrapper1 = (
-  function <T extends {}>(...[lsce, setLsce] : [state: T, updateState: React.Dispatch<React.SetStateAction<T> >] )
+  function <T extends {}>(...[poi, setPoi] : [state: T, updateState: React.Dispatch<React.SetStateAction<T> >] )
   {
-    
-    const setLsceDebcd = (
-      React.useCallback(util.L.throttle(setLsce, 0.10205 * 1000 ) , [setLsce] )
-    ) ;
 
-    const lsceDeferred = (
-      React.useDeferredValue(lsce)
-    ) ;
+    const [ ,{
+      setPoiDebcd ,
+      poiDeferred ,
+    }] = useDebouncedScdStateWrapper1A(poi, setPoi) ;
 
-    return [lsceDeferred, { lsce, lsceDeferred, setLsce, setLsceDebcd, }] as const ;
+    return [poiDeferred, { lsce: poi, lsceDeferred: poiDeferred, setLsce: setPoi, setLsceDebcd: setPoiDebcd, }] as const ;
   }
 ) ;
+
+import {
+  useCtxtualisedScdPoiState1 ,
+  useDebouncedScdStateWrapper1A ,
+} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
+
+import {
+  WithCtxtuallyOverridenScdSProvC,
+  describeSsva ,
+} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
 
 
