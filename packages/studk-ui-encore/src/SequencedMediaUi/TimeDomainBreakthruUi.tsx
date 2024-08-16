@@ -107,6 +107,10 @@ import {
 } from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
 
 import {
+  SccMastPlotter ,
+} from "studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx" ;
+
+import {
   ScdC ,
   useDebouncedScdState1, 
   useDebouncedScdStateWrapper1,
@@ -147,10 +151,29 @@ export const TimeDomainedImgListFigureC = (
 
 interface TimeDomainedMultiChnlInspectiveFigureCProps
 {
-  scrollingConfig ?: {
-    revertToRawPositioning ?: boolean ;
+
+  readonly scrollingConfig ?: {
+    readonly revertToRawPositioning ?: boolean ;
   } ,
+
+  readonly mainPlotter ?: SccMastPlotter.SpclSizelessInst ,
+
 }
+
+/**
+ * 
+ * @deprecated this is a WIP.
+ */
+export const TimeDomainedImgListSpanC = (
+  describeHtmlComponent((
+    //
+    function TimeDomainedImgListSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
 
 export const TimeDomainedMultiChnlInspectiveFigureC = (
   describeHtmlComponent((
@@ -180,6 +203,7 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
       } = {} ,
+      mainPlotter,
       ...otherProps
     } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
@@ -221,6 +245,7 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
           ))((
             <TimeDomainedImgListSpC
             hc={horizonConfig }
+            mainPlotter={mainPlotter ?? getSpclDefaultMainPlotter() }
             />
           )) }
           { (
@@ -237,22 +262,18 @@ const TimeDomainedMultiChnlInspectiveFigureC11 = (
 
 /**
  * 
- * @deprecated this is a WIP.
+ * @deprecated
+ * 
  */
-export const TimeDomainedImgListSpanC = (
-  describeHtmlComponent((
-    //
-    function TimeDomainedImgListSpanCImpl({} : {})
-    {
-      // TODO
-      return <></> ;
-    }
+const getSpclDefaultMainPlotter = (
+  util.L.once(() => (
+    SccMastPlotter.SpclSizelessInst.getInstance()
   ))
 ) ;
 
 export const TimeDomainedImgListSpC = (
   describeHtmlComponent((
-    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg } : { hc ?: ScCHorizonConfigPropsDesc, })
+    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg, mainPlotter, } : { hc ?: ScCHorizonConfigPropsDesc, mainPlotter : SccMastPlotter.SpclSizelessInst, })
     {
       ;
       
@@ -298,11 +319,22 @@ export const TimeDomainedImgListSpC = (
         } )
       ) ;
 
+      const mainPlotterAsAppletifyingInst = (
+        React.useMemo(() => (
+          SccMastPlotter.fromSizelessInstance(mainPlotter)
+        ) , [mainPlotter])
+      ) ;
+
       return (
         <div className='studk-sequemi-tlwalkthruinlinecomp'>
           <SpclCoreC
           horizonConfig={horizonConfig}
           value={ls}
+          mainPlotters={{
+            primaryStreamPlotter: (
+              mainPlotterAsAppletifyingInst
+            ) ,
+          }}
           />
         </div>
       ) ;
