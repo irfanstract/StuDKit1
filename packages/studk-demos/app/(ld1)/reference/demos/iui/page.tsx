@@ -70,6 +70,10 @@ function TbmcDemo()
   return <div /> ;
 }
 
+import {
+  TimeDomainedMultiChnlInspectiveFigureC ,
+} from "studk-ui-encore/src/SequencedMediaUi/TimeDomainBreakthruUi.tsx" ;
+
 ;
 
 
@@ -317,6 +321,9 @@ export default function App() {
           <p>
             to test whether <code>user-select</code> works or not.
           </p>
+        </studk-card>
+        <studk-card>
+          <TimeDomainedMultiChnlInspectiveFigureC />
         </studk-card>
       </div>
       ) ,
