@@ -72,6 +72,7 @@ import {
 
 import {
   Button ,
+  ButtonC,
   Span ,
 } from 'studk-ui/src/xst/dbc.tsx'; ;
 
