@@ -57,11 +57,17 @@ import {
 
 import * as projectActualPaths from "./paths1.mjs" ;
 
+const {
+  getNamedPackagePaths ,
+} = projectActualPaths ;
+
 import * as packageListing from "./packageListing.mjs" ;
 
 export {
   projectActualPaths ,
   packageListing ,
+  /** @deprecated this re-export is presently a WIP/TBD. */
+  getNamedPackagePaths ,
 } ;
 
 
