@@ -130,6 +130,14 @@ export default function App()
           ) }
           <TimeDomainedImgListFigureC
           />
+          <div>
+            <div style={{ blockSize: `50vh`, border: `1px solid blue`, }} >
+              &nbsp;
+            </div>
+            <div style={{ blockSize: `50vh`, border: `1px solid black`, }} >
+              &nbsp;
+            </div>
+          </div>
         </div>
       ) ,
     })
