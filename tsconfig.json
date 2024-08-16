@@ -26,6 +26,7 @@
     
     // "baseUrl": ".",
     "moduleResolution": "NodeNext" /* https://github.com/microsoft/TypeScript/pull/51669 */,
+    "resolvePackageJsonExports": true,
     "forceConsistentCasingInFileNames": true,
     
     /* post-vendoring paths settings */
@@ -149,6 +150,8 @@
   ],
   
   "ts-node": {
+
+    /* https://github.com/TypeStrong/ts-node/issues/1934#issuecomment-1682786084 */
 
     /* Node no longer use custom inspect on abort on uncaught exceptions, but */
     /* `ts-node` kept doing that */
