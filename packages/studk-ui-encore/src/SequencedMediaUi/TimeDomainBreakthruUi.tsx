@@ -86,6 +86,8 @@ import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
+import { renderTableByRowDtListAndColumnList, } from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx';
+
 const GET_CLIENTOFFSET_OF = (
   (e: Element) => ({
     x: e.getBoundingClientRect().left,
@@ -326,6 +328,68 @@ export const TimeDomainedImgListSpC = (
         ) , [mainPlotter])
       ) ;
 
+      ;
+      const rowHeadCollDescs = (
+        util.reiterated<(
+          renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps >
+        ) >(function* () {
+          ;
+
+          // ⬆️⬇️☯️
+
+          yield {
+            id: `itemident`,
+            renderHead: () => <i children={`name`} /> ,
+            renderContent: (v) => (
+              <div
+              style={{
+                minInlineSize: `12ex`,
+              }}
+              >
+                <p>
+                  <i children={v.id} />
+                </p>
+                <p>
+                  <ButtonC
+                  title={`Move Up`}
+                  children={`⬆️`}
+                  onClick={false }
+                  />
+                  <ButtonC
+                  title={`Move Down`}
+                  children={`⬇️`}
+                  onClick={false }
+                  />
+                </p>
+              </div>
+            ) ,
+            asRowHeader: true,
+          } ;
+
+          yield {
+            id: `itemkind`,
+            renderHead: () => <i children={`kind letter`} /> ,
+            renderContent: (v) => (
+              <div>
+                <p>
+                  <code children={`${v.kind}`} />
+                </p>
+                <p>
+                  <ButtonC
+                  title={`Change Kind`}
+                  children={`☯️`}
+                  onClick={false }
+                  />
+                </p>
+              </div>
+            ) ,
+            asRowHeader: true,
+          } ;
+
+        })
+      ) ;
+
+
       return (
         <div className='studk-sequemi-tlwalkthruinlinecomp'>
           <SpclCoreC
@@ -336,6 +400,7 @@ export const TimeDomainedImgListSpC = (
               mainPlotterAsAppletifyingInst
             ) ,
           }}
+          rowHeadCollDescs={rowHeadCollDescs}
           />
         </div>
       ) ;
