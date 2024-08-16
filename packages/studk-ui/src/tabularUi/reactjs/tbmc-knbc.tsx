@@ -411,9 +411,26 @@ export namespace TbmcKnbCDisplayed
    * 
    * @deprecated
    */
-  export function searchSegmentDisplayNodes<Mpe>(...[root = document, { flatTranslate: flm, }]: ArgsWithOptions<[host ?: Element | Document], { flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) }> ) {
+  export function searchSegmentDisplayNodes<Mpe>(...args: (
+    ArgsWithOptions<[host ?: Element | Document], {
+      flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) ,
+    }>
+  ) )
+  {
+    const [
+      root = document,
+      {
+        flatTranslate: flm,
+      },
+    ] = args ;
+
     return (
-      Array.from(root.querySelectorAll(`.studk-sequemi-tlwalkthruappcomp :is(tr)[data-src-row-id^=plotsegment]`) )
+
+      // TODO
+      Array.from((
+        root.querySelectorAll(`.studk-sequemi-tlwalkthruappcomp :is(tr)[data-src-row-id^=plotsegment]`)
+      ) )
+
       .flatMap(e => {
         return (
           flm(S_EHE1(e) )
