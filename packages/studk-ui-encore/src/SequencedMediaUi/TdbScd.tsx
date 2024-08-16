@@ -115,7 +115,7 @@ import {
 export interface SpclScrollHandler extends Extract<TbmcKnbSpclScrollHandler, any>
 {}
 
-export const getSpclScrollHandleRefCtxStack = (
+const getSpclScrollHandleRefCtxStack = (
   util.L.once(() => {
     // TODO
     const defaultItc: SpclScrollHandler | null = (
@@ -127,6 +127,15 @@ export const getSpclScrollHandleRefCtxStack = (
     ) ;
   })
 ) ;
+
+export {
+
+  /**
+   * @deprecated this is a WIP.
+   */
+  getSpclScrollHandleRefCtxStack ,
+
+} ;
 
 export const useSpclisedScdPeer = (
   function ()
