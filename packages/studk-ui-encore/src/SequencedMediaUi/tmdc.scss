@@ -67,18 +67,47 @@ $studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
 
   }
 
-  // :is(table.studk-tbmctableelem > * > tr > td):is(*[data-src-col-id])
-  // table.studk-tbmctableelem > * > tr > td[data-src-col-id] ,
-  // .studk-sequemi-tlwalkthruinlinecomp td:where(:is(#{$studk-ui-sequemi-contentlayercellselector }) )
-  :is(
-    :is(#{$studk-ui-sequemi-maintableelemselector } ) > * > tr > :is(th, td)
-    ,
-    #----e
-  )
+  :is(#{$studk-ui-sequemi-maintableelemselector } )
   {
     //
 
+    // color: cadetblue;
+    border: 0.2ex solid cadetblue;
+
     @if true {
+      //
+
+      &:is(table) > * {
+        position: relative;
+        z-index: 20;
+
+        &:is(thead, tfoot)
+        {
+          z-index: 25 ;
+        }
+
+        position: sticky;
+  
+        &:is(thead)
+        {
+          inset-block-start: 0;
+        }
+        &:is(tfoot)
+        {
+          inset-block-end: 0;
+        }
+
+      }
+
+    }
+
+    @if false {
+    //
+
+    & > * > tr > :is(th, td)
+    {
+      //
+
       position: relative;
       z-index: 20;
       
@@ -113,7 +142,33 @@ $studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
         z-index: 10 ;
       }
 
+      //
+
+      &:not(:is(#{$studk-ui-sequemi-contentlayercellselector }) ) {
+        //
+        @media screen {
+          position: sticky;
+          inset-inline-start: 0;
+          inset-block-start: 0;
+        }
+      }
+  
     }
+
+    }
+
+  }
+
+  // :is(table.studk-tbmctableelem > * > tr > td):is(*[data-src-col-id])
+  // table.studk-tbmctableelem > * > tr > td[data-src-col-id] ,
+  // .studk-sequemi-tlwalkthruinlinecomp td:where(:is(#{$studk-ui-sequemi-contentlayercellselector }) )
+  :is(
+    :is(#{$studk-ui-sequemi-maintableelemselector } ) > * > tr > :is(th, td)
+    ,
+    #----e
+  )
+  {
+    //
 
     &:is(:is(#{$studk-ui-sequemi-contentlayercellselector }) ):is(
       // tbody > tr > *
@@ -128,11 +183,6 @@ $studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
     &:not(:is(#{$studk-ui-sequemi-contentlayercellselector }) ) {
       //
       font-weight: bolder;
-      @media screen {
-        position: sticky;
-        inset-inline-start: 0;
-        inset-block-start: 0;
-      }
     }
 
     &:is(:is(#{$studk-ui-sequemi-contentlayercellselector }) ) {
