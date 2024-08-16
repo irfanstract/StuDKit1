@@ -122,7 +122,7 @@ export const TimeDomainedImgListFigureC = (
             hc={horizonConfig }
             />
           )}
-          cv={lsce.x }
+          {...{ orientCv: "horizontal", cv: lsce.x, crossCv: lsce.y, }}
           onScroll={e => { setLsceDebcd(e.newVals) ; } }
           />
           <p>
