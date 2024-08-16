@@ -69,7 +69,10 @@ import {
 } from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx'; ;
 
 import {
+  AtomicSvgC,
+  SizeFlexibleSvgC,
   Svg ,
+  VerbatimSvgC,
   describeSvg ,
   describeSvgContent ,
 } from 'studk-ui/src/meta/react/gec.tsx'; ;
@@ -232,42 +235,65 @@ namespace TbmcBreakthruColumnsRendering
   export function describeSuggestedConfig1(...[
     {
       horizonConfig,
+      primaryStreamSegmtPlotter ,
     } ,
   ] : ArgsWithOptions<[], (
     {
+
       horizonConfig: {
         range: ContinuousLinearRange ,
       } ,
+
+      primaryStreamSegmtPlotter ?: (
+        SccMastPlotter.RegularInstance
+      ) ,
+
     }
   ) >)
   {
-    return describeSuggestedConfig11Impl({
-      horizonConfig: {
-        range: horizonConfig.range
-        ,
-        samplingConfig: {
-          perWindowSpan: 2,
-        } ,
-      },
-    })
+    return (
+      describeSuggestedConfig11Impl({
+
+        horizonConfig: {
+          range: horizonConfig.range
+          ,
+          samplingConfig: {
+            perWindowSpan: 2,
+          } ,
+        },
+
+        primaryStreamSegmtPlotter ,
+
+      })
+    ) ;
   }
 
   function describeSuggestedConfig11Impl(...[
-    {
-      horizonConfig,
-    } ,
+    opts ,
   ] : ArgsWithOptions<[], ( 
     {
+
       horizonConfig: {
         range: ContinuousLinearRange
         ,
         samplingConfig: describeSuggestedConfig11Impl.PartitionedSamplingConfigOps ,
       } ,
+
+      primaryStreamSegmtPlotter ?: (
+        SccMastPlotter.RegularInstance
+      ) ,
+
     }
   ) >)
   {
+    const {
+      horizonConfig,
+      primaryStreamSegmtPlotter : mastPlotter = (
+        getSuggestedSccMastPlotter()
+      ) ,
+    } = opts ;
     ;
-    
+
     const segmenterConfig = (() => {
       ;
       const effectiveWindowSeq = (
@@ -293,26 +319,8 @@ namespace TbmcBreakthruColumnsRendering
 
     const {
       renderPerChannelPlotAsUnitApplet ,
-    } = (
-      getSuggestedSccMastPlotter()
-    ) ;
-
-    const renderPerChannelPlotAsWrInlineContent = (...args: Parameters<typeof renderPerChannelPlotAsUnitApplet>) => {
-      ;
-      return renderFromSpclUnitInlinePlot(undefined, {
-        //
-        tip: (
-          <div>
-          <p>
-            Segmentual Stream Slice
-          </p>
-          </div>
-        ),
-        body: (
-          renderPerChannelPlotAsUnitApplet(...args )
-        ) ,
-      }) ;
-    } ;
+      renderPerChannelPlotAsWrInlineContent ,
+    } = mastPlotter ;
 
     return {
       segmenterConfig ,
@@ -354,38 +362,187 @@ namespace TbmcBreakthruColumnsRendering
 function getSuggestedSccMastPlotter()
 {
   ;
-  function renderPerChannelPlotAsUnitApplet(...[v, ispan]: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] )
+  const renderPerChannelPlotAsUnitApplet = function (...[v, ispan]: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] )
   {
+
     return (
-      <Svg
-      viewBox={`0 0 30 10 `}
-      children={(
+      SccMastPlotter.renderPua({
+        startT  : (ispan.srcSpan.startPos   ) ,
+        endT    : (ispan.srcSpan.endPos     ) ,
+      })
+    ) ;
+  }
+  return (
+    SccMastPlotter.fromMinimalInstance((
+      SccMastPlotter.byRpcpu(renderPerChannelPlotAsUnitApplet )
+    ))
+  ) ;
+}
+
+namespace SccMastPlotter {
+  ;
+
+  // [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ]
+
+  export const byRpcpu = (
+
+    function (...[renderPerChannelPlotAsUnitApplet,] : [(...args: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] ) => React.ReactElement ] )
+    {
+
+      return {
+        renderPerChannelPlotAsUnitApplet ,
+      } as const ;
+    }
+  ) ;
+
+  export type MinimalInstance = ReturnType<typeof byRpcpu> ;
+
+  export type RegularInstance = ReturnType<typeof fromMinimalInstance> ;
+
+  export const fromMinimalInstance = (
+
+    function (...[{ renderPerChannelPlotAsUnitApplet, },] : [MinimalInstance ] )
+    {
+
+      const renderPerChannelPlotAsWrInlineContent = (...args: Parameters<typeof renderPerChannelPlotAsUnitApplet>) => {
+        ;
+
+        return renderFromSpclUnitInlinePlot(undefined, {
+          //
+          tip: (
+            <div>
+            <p>
+              Segmentual Stream Slice
+            </p>
+            </div>
+          ),
+          body: (
+            renderPerChannelPlotAsUnitApplet(...args )
+          ) ,
+        }) ;
+      } ;
+  
+      return {
+        renderPerChannelPlotAsUnitApplet ,
+        renderPerChannelPlotAsWrInlineContent,
+      } as const ;
+    }
+  ) ;
+
+  export const renderPua = (
+    function (...[{ startT: glblStartT = 0 , endT: glbEndT = glblStartT + 3, } = {}] : (
+      ArgsWithOptions<[], {
+        startT ?: number,
+        endT ?: number,
+      }>
+    ) ) {
+
+      const plG = (
         <rect
-        width={10}
-        height={6}
-        y={2}
+        width={(
+          // 1
+          687
+        )}
+        height={0.6}
+        // y={2}
         x={0}
         style={{
           fill: `rgba(192 192 192 / 0.5 )`,
         }}
         />
-      )}
-      style={{
-        background: `black`,
-        // height: `100%`,
-      }}
-      />
-    ) ;
-  }
-  return {
-    renderPerChannelPlotAsUnitApplet ,
-  } ;
+      ) ;
+
+      const plotSpans = (
+        (
+          util.range(glblStartT, glbEndT + 0.5 , (
+            util.L.clamp(
+              Math.floor(Math.sqrt(glbEndT - glblStartT ) ) ,
+              2, 22 )
+          ) )
+        )
+        .map(t => ({ t, x: (t * 10 ) }) )
+        .flatMap((v , i, c) => (
+          util.iterateNonNull((
+            (i + 1) < c.length ?
+            ({
+              startX: c[i]!.x,
+              startT: c[i]!.t,
+              endX: c[i+1]!.x,
+              endT: c[i+1]!.t,
+            } as const )
+            : null
+          ))
+        ))
+        .map(({ startX, startT, endX, endT, }, i) => (
+          <React.Fragment
+          key={startX }
+          >
+          <SizeFlexibleSvgC
+          viewBox={`${startX} 0 ${endX - startX} 10 `}
+          children={(
+            <g
+            style={{ transform: `translate(0, 2px) scale(10)` }}
+            >
+              <title>
+                { `from ${startT} to ${endT} ` }
+              </title>
+              { plG }
+            </g>
+          )}
+          style={{
+            background: `black`,
+            // height: `100%`,
+            blockSize: `1.8em`,
+            inlineSize: `calc((${endT - startT }) * 0.7ex) `,
+            // border: `0.1ex solid blue`,
+            marginInline: `0.051ex`,
+          }}
+          />
+          </React.Fragment>
+        ) )
+      ) ;
+
+      // if (1) {
+      //   ;
+      //   return (
+      //     <div
+      //     style={{
+      //       display: "grid",
+      //       flexDirection: "row",
+      //       flexWrap: "nowrap",
+      //     }}
+      //     >
+      //       { plotSpans }
+      //     </div>
+      //   ) ;
+      // }
+
+      return (
+        <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          justifyItems: "stretch",
+          border: `0.1ex solid blue`,
+        }}
+        >
+          { plotSpans }
+        </div>
+      ) ;
+    }
+  ) ;
+
 }
 
 export {
   TbmcBreakthruColumnsRendering ,
+
   /** @deprecated this is a WIP/TBD. */
   getSuggestedSccMastPlotter ,
+  /** @deprecated this is a WIP/TBD. */
+  SccMastPlotter ,
+
 } ;
 
 ;
