@@ -78,6 +78,22 @@ const useExistingNativeCompBoundingBoxViaRef = (
   function (...[syncReferee, syncedGraphicalBoundsRel = ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
   : React.Ref<HTMLDivElement>
   {
+    return (
+      useExistingNativeCompPropertiesViaRef(syncReferee, {
+        syncedGraphicalBoundsRel ,
+      } )
+    ) ;
+  }
+);
+
+const useExistingNativeCompPropertiesViaRef = (
+  function (...[syncReferee, {
+    syncedGraphicalBoundsRel = ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX ,
+  } = {}] : ArgsWithOptions<[src: NcpSupportedElem, ], {
+    syncedGraphicalBoundsRel ?: ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject ,
+  } >)
+  : React.Ref<HTMLDivElement>
+  {
     ;
 
     const clientRef = (
@@ -174,6 +190,9 @@ import NCPSR = ToNativeDomElementSyncing.GraphicalBoundsSyncing ;
 import NCPSRI = ToNativeDomElementSyncing.GraphicalBoundsSyncing ;
 
 export {
+  //
+  useExistingNativeCompPropertiesViaRef ,
+  /** @deprecated consider using the more general API {@link useExistingNativeCompPropertiesViaRef}. */
   useExistingNativeCompBoundingBoxViaRef ,
   /** @deprecated alias of {@link useExistingNativeCompBoundingBoxViaRef} */
   useExistingNativeCompBoundingBoxViaRef as useNativeCompPositionSyncRef ,
