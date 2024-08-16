@@ -72,10 +72,10 @@
 
 
 /* for some reason, doing this `@property` led to higher CPU usage throughout usage */
-/* @property --ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval { */
-  /* syntax: "*"; */
-  /* inherits: true ; */
-/* } */
+// @property --ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval {
+//   syntax: "*";
+//   inherits: true ;
+// }
 @property --table-cell-orientation {
   syntax: "*";
   inherits: true;
@@ -94,9 +94,9 @@
     }
   }
 
-  /* table.studk-enhancedtableelement { */
-    /* --table-cell-orientation: horizontal-tb ; */
-  /* } */
+  // table.studk-enhancedtableelement {
+  //   --table-cell-orientation: horizontal-tb ;
+  // }
 }
 
 
