@@ -16,7 +16,7 @@
   border-collapse: collapse;
 }
 
-.studk-ui-table > :is(tbody, thead) > tr > td {
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
   padding: 0.25em ;
   padding-block: 0.45em ;
   border: 0.05em solid currentColor;
@@ -27,7 +27,7 @@
 .studk-ui-table > :is(tbody, thead) > tr {
   min-block-size : 3em;
 }
-.studk-ui-table > :is(tbody, thead) > tr > td {
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
   min-inline-size: 3em;
 }
 
@@ -35,7 +35,7 @@
   zoom: 82.367%;
 }
 
-.studk-ui-table > :is(tbody, thead) > tr > td {
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
   /* backdrop-filter: blur(0.25em) ; */
   color: black;
   background: rgba(255 255 255 / 0.815);
