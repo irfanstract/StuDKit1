@@ -167,7 +167,7 @@ export const EnhancedTableC = (
 
 ;
 
-import "studk-ui/src/tabularUi/reactjs/tbl-default.css" ;
+import "studk-ui/src/tabularUi/reactjs/tbl-default1.scss" ;
 
 ;
 
