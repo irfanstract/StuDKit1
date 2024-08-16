@@ -32,6 +32,7 @@ import {
 } from "lodash-es" ;
 
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
@@ -107,32 +108,51 @@ export const ScdC = (
     function ScdCImpl({
       children,
       cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
+      crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
+      orientCv = "vertical",
       onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
       style: styl,
+      ctrlVarsDebug: shallCtrlVarsDebug = false,
       ...otherProps
     } : (
       & React.PropsWithChildren
-      & { cv ?: number, }
+      & AllOrNever1<{ cv : number, crossCv: number, } & { orientCv : "inherit" | "horizontal" | "vertical" }>
       & Pick<JSX.IntrinsicElements["div"] , "hidden" | "style" >
       & { onScroll?: (evtInfo: ScrollingEvt) => void ; }
+      & { ctrlVarsDebug ?: boolean ; }
     ))
     {
       const divRef = (
         React.useRef<HTMLDivElement | null>(null)
       ) ;
 
-      const cvRef = (
+      const cv1Ref = (
         React.useRef<number>(0)
       ) ;
-      cvRef.current = ctrlVal1 ;
+      const cvCrsRef = (
+        React.useRef<number>(0)
+      ) ;
+      cv1Ref.current = ctrlVal1 ;
+      cvCrsRef.current = ctrlValCrs ;
 
       useIntervalEffect(() => {
         ;
         const { current: dv, } = divRef ;
         if (dv) {
-          dv.scrollTop = dv.scrollLeft = cvRef.current ;
+          void (() => {
+            switch (orientCv) {
+              case "horizontal":
+                dv.scrollLeft = cv1Ref.current ;
+                dv.scrollTop = cvCrsRef.current ;
+                return ;
+              case "vertical":
+                dv.scrollTop = cv1Ref.current ;
+                dv.scrollLeft = cvCrsRef.current ;
+                return ;
+            }
+          })() ;
         }
-      } , 1.7 * 1000 , [divRef, cvRef]) ;
+      } , 1.7 * 1000 , [divRef, cv1Ref, cvCrsRef]) ;
 
       const applyInputEvt = (
         function (e : React.UIEvent<HTMLDivElement>)
@@ -143,20 +163,55 @@ export const ScdC = (
         }
       ) ;
 
+      const debugP = (
+        <div>
+          { shallCtrlVarsDebug ? (
+            <pre style={{ whiteSpace: `pre-wrap`, }}>
+              { JSON.stringify((
+                React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
+              )) }
+            </pre>
+          ) : null }
+        </div>
+      ) ;
+
+      // TODO
+      const withSpclNecessaryCtxOverrides = (
+        (...[e] : [React.ReactElement]) => {
+          return e ;
+        }
+      ) ;
+
       return (
         <div
-        ref={divRef}
-        className='studk-paginatedui-scdc-wholediv studk-paginatedui-scdc-paginroot studk-paginatedui-scdc-payloadrootdiv'
-        onScroll={(e) => {
-          applyInputEvt(e) ;
-        } }
+        className='studk-paginatedui-scdc-wholediv '
         style={{
-          contain: "layout" ,
-          overflow: "auto" ,
           ...styl ,
         }}
         {...otherProps}
-        children={children}
+        children={(
+          <>
+          <aside>
+            { debugP }
+          </aside>
+          { withSpclNecessaryCtxOverrides((
+          <div
+          className='studk-paginatedui-scdc-paginroot studk-paginatedui-scdc-payloadrootdiv'
+          ref={divRef}
+          onScroll={(e) => {
+            applyInputEvt(e) ;
+          } }
+          style={{
+            //
+            contain: "layout" ,
+            overflow: "auto" ,
+          }}
+          >
+            { children }
+          </div>
+          )) }
+          </>
+        )}
         />
       ) ;
     }
@@ -171,7 +226,7 @@ export const useDebouncedScdState1 = (
   function () {
     ;
     const [lsce, setLsce] = (
-      React.useState<{ x: number, y: number, }>({ x: 0, y: 0, })
+      useCtxtualisedScdPoiState1()
     ) ;
 
     return (
@@ -182,23 +237,30 @@ export const useDebouncedScdState1 = (
 
 /**
  * 
- * 
+ * @deprecated use {@link useDebouncedScdStateWrapper1A} instead.
  */
 export const useDebouncedScdStateWrapper1 = (
-  function <T extends {}>(...[lsce, setLsce] : [state: T, updateState: React.Dispatch<React.SetStateAction<T> >] )
+  function <T extends {}>(...[poi, setPoi] : [state: T, updateState: React.Dispatch<React.SetStateAction<T> >] )
   {
-    
-    const setLsceDebcd = (
-      React.useCallback(util.L.throttle(setLsce, 0.10205 * 1000 ) , [setLsce] )
-    ) ;
 
-    const lsceDeferred = (
-      React.useDeferredValue(lsce)
-    ) ;
+    const [ ,{
+      setPoiDebcd ,
+      poiDeferred ,
+    }] = useDebouncedScdStateWrapper1A(poi, setPoi) ;
 
-    return [lsceDeferred, { lsce, lsceDeferred, setLsce, setLsceDebcd, }] as const ;
+    return [poiDeferred, { lsce: poi, lsceDeferred: poiDeferred, setLsce: setPoi, setLsceDebcd: setPoiDebcd, }] as const ;
   }
 ) ;
+
+import {
+  useCtxtualisedScdPoiState1 ,
+  useDebouncedScdStateWrapper1A ,
+} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
+
+import {
+  WithCtxtuallyOverridenScdSProvC,
+  describeSsva ,
+} from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScdStack.tsx" ;
 
 
 
