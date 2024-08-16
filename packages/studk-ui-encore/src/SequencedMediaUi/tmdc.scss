@@ -275,3 +275,111 @@ $studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
 
 
 
+
+/* DEBUG */
+
+
+
+
+
+
+// @if true {
+//   //
+
+//   $paddw: 1.095ex ;
+//   $bordw: 0.3095ex ;
+
+//   .studk-sequemi-tdbi-withspecialisedscdoverrides-1do03 {
+//     border: $bordw solid hsl(0, 100%, 50%) !important ;
+//     padding: $paddw !important ;
+//   }
+//   .studk-sequemi-tdbi-withspecialisedscdoverrides-1do02 {
+//     border: $bordw solid hsl(20, 100%, 50%) !important ;
+//     padding: $paddw !important ;
+//   }
+//   .studk-sequemi-tdbi-withspecialisedscdoverrides-1do01 {
+//     border: $bordw solid hsl(35, 100%, 50%) !important ;
+//     padding: $paddw !important ;
+//   }
+
+// }
+
+%debug-bordw {
+  //
+  border: 0.795ex solid black ;
+  padding: 0.6095  ;
+}
+
+@if true {
+  //
+
+  $paddw: 1.095ex ;
+  $bordw: 0.3095ex ;
+
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1do03 {
+    @extend %debug-bordw ;
+    border-color: hsl(0, 100%, 50%) ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1do02 {
+    @extend %debug-bordw ;
+    border-color: hsl(0, 100%, 50%) ;
+    border-style: dashed ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1do01 {
+    @extend %debug-bordw ;
+    border-color: hsl(0, 100%, 50%) ;
+    border-style: dotted ;
+  }
+
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner02 {
+    @extend %debug-bordw ;
+    border-color: hsl(218, 100%, 50%) ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01 {
+    @extend %debug-bordw ;
+    border-color: hsl(218, 100%, 50%) ;
+    border-style: dashed ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1c02 {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(200, 100%, 50%) ;
+    // border-style: dashed ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1c01 {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(200, 100%, 50%) ;
+    border-style: dashed ;
+  }
+
+  .studk-paginatedui-scdc-paginroot-d302 {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(183, 93%, 30%) ;
+  }
+  .studk-paginatedui-scdc-paginroot-d301 {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(183, 93%, 30%) ;
+    border-style: dashed ;
+  }
+  .studk-paginatedui-scdc-paginroot {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(183, 99%, 37%) ;
+  }
+  .studk-paginatedui-scdc-wholediv {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(183, 99%, 37%) ;
+    border-style: dashed ;
+  }
+
+}
+
+
+
+
+
+
