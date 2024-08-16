@@ -109,7 +109,7 @@ const useExistingNativeCompPropertiesViaRef = (
             if ((e1.hidden = !(!!ncp) , ncp) )
             {
               Object.assign(e1.style, {
-                transition: `all 0.2s ease-out, inset 0.005s ease-out`,
+                transition: null,
               }) ;
 
               C :
@@ -126,6 +126,9 @@ const useExistingNativeCompPropertiesViaRef = (
                 }
                 case ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX :
                 {
+                  Object.assign(e1.style, {
+                    transition: `all 0.2s ease-out, inset 0.005s ease-out`,
+                  }) ;
                   Object.assign(e1.style, {
                     //
                     top : `${`${ncp.pos.y }px` } ` , 
