@@ -32,6 +32,7 @@ import {
 } from "lodash-es" ;
 
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
@@ -107,12 +108,14 @@ export const ScdC = (
     function ScdCImpl({
       children,
       cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
+      crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
+      orientCv = "vertical",
       onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
       style: styl,
       ...otherProps
     } : (
       & React.PropsWithChildren
-      & { cv ?: number, }
+      & AllOrNever1<{ cv : number, crossCv: number, } & { orientCv : "inherit" | "horizontal" | "vertical" }>
       & Pick<JSX.IntrinsicElements["div"] , "hidden" | "style" >
       & { onScroll?: (evtInfo: ScrollingEvt) => void ; }
     ))
@@ -121,18 +124,33 @@ export const ScdC = (
         React.useRef<HTMLDivElement | null>(null)
       ) ;
 
-      const cvRef = (
+      const cv1Ref = (
         React.useRef<number>(0)
       ) ;
-      cvRef.current = ctrlVal1 ;
+      const cvCrsRef = (
+        React.useRef<number>(0)
+      ) ;
+      cv1Ref.current = ctrlVal1 ;
+      cvCrsRef.current = ctrlValCrs ;
 
       useIntervalEffect(() => {
         ;
         const { current: dv, } = divRef ;
         if (dv) {
-          dv.scrollTop = dv.scrollLeft = cvRef.current ;
+          void (() => {
+            switch (orientCv) {
+              case "horizontal":
+                dv.scrollLeft = cv1Ref.current ;
+                dv.scrollTop = cvCrsRef.current ;
+                return ;
+              case "vertical":
+                dv.scrollTop = cv1Ref.current ;
+                dv.scrollLeft = cvCrsRef.current ;
+                return ;
+            }
+          })() ;
         }
-      } , 1.7 * 1000 , [divRef, cvRef]) ;
+      } , 1.7 * 1000 , [divRef, cv1Ref, cvCrsRef]) ;
 
       const applyInputEvt = (
         function (e : React.UIEvent<HTMLDivElement>)
@@ -143,20 +161,42 @@ export const ScdC = (
         }
       ) ;
 
+      const debugP = (
+        <pre style={{ whiteSpace: `pre-wrap`, }}>
+          { JSON.stringify((
+            React.useDeferredValue({ ctrlVal1, ctrlValCrs, orientCv, })
+          )) }
+        </pre>
+      ) ;
+
       return (
         <div
-        ref={divRef}
-        className='studk-paginatedui-scdc-wholediv studk-paginatedui-scdc-paginroot studk-paginatedui-scdc-payloadrootdiv'
-        onScroll={(e) => {
-          applyInputEvt(e) ;
-        } }
+        className='studk-paginatedui-scdc-wholediv '
         style={{
-          contain: "layout" ,
-          overflow: "auto" ,
           ...styl ,
         }}
         {...otherProps}
-        children={children}
+        children={(
+          <>
+          <aside>
+            { debugP }
+          </aside>
+          <div
+          className='studk-paginatedui-scdc-paginroot studk-paginatedui-scdc-payloadrootdiv'
+          ref={divRef}
+          onScroll={(e) => {
+            applyInputEvt(e) ;
+          } }
+          style={{
+            //
+            contain: "layout" ,
+            overflow: "auto" ,
+          }}
+          >
+            { children }
+          </div>
+          </>
+        )}
         />
       ) ;
     }
