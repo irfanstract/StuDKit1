@@ -24,8 +24,9 @@ import {
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-import type { PartializedPartially, RequiredPartially, } from 'studk-fwcore-setups/src/util-eawo.mjs';
+  PartializedPartially,
+  RequiredPartially,
+} from 'studk-fwcore-setups/src/util-eawo.mjs';
 
 import type {
   ContinuousLinearRange ,
