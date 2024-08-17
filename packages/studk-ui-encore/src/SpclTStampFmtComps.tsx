@@ -74,7 +74,7 @@ import {
   T_BY_HMS ,
   T_STRING ,
   T_WALLC_PROTAC ,
-} from "studk-ui-encore/src/SpclTStampFmtFncs.tsx" ;
+} from "studk-ui-core/src/TByHms.tsx" ;
 
 export const EllapsedTValueC = (
   describeComponent(function EllapsedTValueCImpl({
