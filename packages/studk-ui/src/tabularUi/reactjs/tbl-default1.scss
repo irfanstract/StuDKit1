@@ -1,0 +1,120 @@
+
+
+
+
+
+
+
+
+
+
+
+@layer defaults {
+/* */
+
+.studk-ui-table {
+  border-collapse: collapse;
+}
+
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
+  padding: 0.25em ;
+  padding-block: 0.45em ;
+  border: 0.05em solid currentColor;
+  overflow: hidden;
+  overflow: clip ;
+}
+
+.studk-ui-table > :is(tbody, thead) > tr {
+  min-block-size : 3em;
+}
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
+  min-inline-size: 3em;
+}
+
+.studk-ui-table {
+  zoom: 82.367%;
+}
+
+.studk-ui-table > :is(tbody, thead) > tr > :is(td, th) {
+  /* backdrop-filter: blur(0.25em) ; */
+  color: black;
+  background: rgba(255 255 255 / 0.815);
+}
+
+.studk-ui-tblbyrow-rtdcl-hrow {
+  position: sticky;
+  inset-block-start: 0;
+}
+
+.studk-ui-tblbyrow-rtdcl-row-h {
+  position: sticky;
+  inset-inline-start: 0;
+}
+
+.studk-ui-table
+{
+  :is(
+    & > thead > tr > :is(td, th),
+    & > :is(tbody, thead) > tr:is(:nth-child(1) ) > :is(td, th) ,
+    & > :is(tbody, thead) > tr > :is(td, th):is(:nth-child(1) ) ,
+    #---e
+  ) {
+    position: sticky;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+  }
+}
+
+}
+
+
+
+
+
+//
+
+@layer tstdedefaults, defaults ;
+
+/* for some reason, doing this `@property` led to higher CPU usage throughout usage */
+// @property --ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval {
+//   syntax: "*";
+//   inherits: true ;
+// }
+
+/* disabled for now; for some reason this `@property` breaks what's already working */
+// @property --table-cell-orientation {
+//   syntax: "*";
+//   inherits: true;
+//   // initial-value: inherit;
+// }
+@layer tstdedefaults {
+  //
+  table.studk-enhancedtableelement {
+    // --table-cell-orientation: inherit ;
+  }
+}
+
+@layer tstdedefaults {
+  /* // */
+
+  table.studk-enhancedtableelement {
+    writing-mode: var(--table-cell-orientation, inherit) !important ;
+    & :is(th, td) {
+      writing-mode: var(--ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval) ;
+    }
+  }
+
+  // table.studk-enhancedtableelement {
+  //   --table-cell-orientation: horizontal-tb ;
+  // }
+}
+
+
+
+
+
+
+
+
+
+
