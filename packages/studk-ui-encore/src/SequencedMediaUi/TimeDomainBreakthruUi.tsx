@@ -146,7 +146,7 @@ const TimeDomainedImgListFigureC11 = (
   describeComponent((
     function TimeDomainedImgListFigureCInnerImpl({
       scrollingConfig: {
-        revertToRawPositioning: scRevertToRawPositioning = true ,
+        revertToRawPositioning: scRevertToRawPositioning = false ,
       } = {} ,
       ...otherProps
     } : TimeDomainedImgListFigureCProps)
@@ -284,7 +284,7 @@ const computeDefaultHorizonConfig = (
       startPos: T_BY_HMS(0, 0, -15) ,
       endPos: (
         1 ?
-        T_BY_HMS(0, 5, 30)
+        T_BY_HMS(0, 15.5, 30)
         : T_BY_HMS(0, 45, 30)
       ) ,
     } ,
@@ -361,7 +361,10 @@ const WithSsc1DInner = (
                   </p>
                   { (
                   <pre style={{ whiteSpace: "pre-wrap", }}>
-                    { ((e: any) => JSON.stringify(e) )(statDerivable.s) }
+                    { ((e: any) => JSON.stringify(e) )({
+                      s: statDerivable.s, pos: statDerivable.pos,
+                      clsn: (statDerivable.rootNd as (Element | null))?.className ?? `(no root nd)` ,
+                    }) }
                   </pre>
                   ) }
                 </aside>
