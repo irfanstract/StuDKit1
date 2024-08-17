@@ -65,6 +65,13 @@ import {
   getFullDocBodySrcBasedSvgDataUrl,
 } from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
 
+import {
+  useIntervalEffect ,
+  useIntervalScan ,
+  useMutableRefObjState ,
+  useRefState ,
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
+
 const GET_CLIENTOFFSET_OF = (
   (e: Element) => ({
     x: e.getBoundingClientRect().left,
@@ -88,6 +95,7 @@ import {
 
 import {
   ScdC ,
+  scdDivRefCtx,
   useDebouncedScdState1, 
   useDebouncedScdStateWrapper1,
 } from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
@@ -100,7 +108,8 @@ import {
 
 import {
   TbmcKnbSpclScrollHandler ,
-  getPreferredSpclisedTbmcKnbSpclScrollHandler ,
+  getPreferredSpclisedTbmcKnbSpclScrollHandler, 
+  getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor,
 } from "studk-ui-encore/src/SequencedMediaUi/TbmcKnbcScd.tsx" ;
 
 export interface SpclScrollHandler extends Extract<TbmcKnbSpclScrollHandler, any>
@@ -108,8 +117,9 @@ export interface SpclScrollHandler extends Extract<TbmcKnbSpclScrollHandler, any
 
 export const getSpclScrollHandleRefCtxStack = (
   util.L.once(() => {
+    // TODO
     const defaultItc: SpclScrollHandler | null = (
-      getPreferredSpclisedTbmcKnbSpclScrollHandler()
+      null
     ) ;
 
     return (
@@ -119,24 +129,57 @@ export const getSpclScrollHandleRefCtxStack = (
 ) ;
 
 export const useSpclisedScdPeer = (
-  function () {
-    const ctxtuSpclScrollHandler = (
+  function ()
+  {
+
+    const ctxtuSpclScrollHandler0 = (
       React.useContext(getSpclScrollHandleRefCtxStack() )
     ) ;
+
     const ctxtuScdHandler0 = (
       React.useContext(getScdSProvCtxStack() )
     ) ;
+
+    const csDivRef = (
+      React.useContext(scdDivRefCtx)
+    ) ;
+    const csDiv1 = (
+      useIntervalScan(() => (csDivRef?.current ?? null) , {
+        latencyMillis: 0.125 * 1000 ,
+        getFallbackValue: () => null ,
+      } )
+    ) ;
+
+    // TODO
+    const ctxtuSpclScrollHandler = (
+      React.useMemo(() => {
+        if (ctxtuSpclScrollHandler0) {
+          return ctxtuSpclScrollHandler0 ;
+        }
+        if (csDiv1) {
+          return getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor(csDiv1) ;
+        }
+        if (typeof document !== "undefined") {
+          return getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor(csDiv1 ?? document.documentElement) ;
+        }
+        return null ;
+      } , [ctxtuSpclScrollHandler0, csDiv1,] )
+    ) ;
+
     return (
       // TODO
       React.useMemo<ScdStateProvCtx>(() => {
-        if (ctxtuSpclScrollHandler) {
+        if (ctxtuSpclScrollHandler && csDiv1) {
           // TODO
           return (
-            describeSsva({ getSFromPt: function (pt0): (
-              | { readonly startT : number, readonly rnk: string | null, readonly dsc ?: any }
+            describeSsva({ hostNode: csDiv1, getSFromPt: function (pt0): (
+              | { readonly startT : number, readonly rnk: string | null, readonly dsc ?: any, readonly debug1 ?: any, }
               | false
             ) {
-              const e = ctxtuSpclScrollHandler.searchDisplayedSegs({ pt: pt0, }) ;
+              const e = ctxtuSpclScrollHandler.searchDisplayedSegs({
+                pt: pt0,
+                searchScope: csDiv1,
+              }) ;
               for (const dsc of e ) {
                 const {
                   startT ,
@@ -147,6 +190,9 @@ export const useSpclisedScdPeer = (
                   dsc ,
                   rnk,
                   startT ,
+                  debug1: {
+                    // csDivRef ,
+                  } ,
                 } as const) ;
               }
               {
@@ -182,7 +228,11 @@ export const useSpclisedScdPeer = (
             ctxtuScdHandler0
           )
         ) ;
-      } , [ctxtuSpclScrollHandler] )
+      } , [
+        ctxtuSpclScrollHandler,
+        csDiv1,
+        // csDivRef,
+      ] )
     ) ;
   }
 ) ;
