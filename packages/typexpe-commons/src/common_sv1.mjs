@@ -267,6 +267,40 @@ export const asMentioned = /** @template E @param {() => Generator<E, void, void
   ) ;
 } ;
 
+/**
+ * Constant Array
+ * 
+ */
+const SEQ = (
+  /**
+   * @type {<const IA extends readonly unknown[]>(values: IA) => typeof values }
+   * 
+   */
+  function (vs) {
+    // TODO
+    Object.freeze(vs) ;
+    return vs ;
+  }
+) ;
+
+export { SEQ , } ;
+
+/**
+ * Constant
+ * 
+ */
+export const asConst = (
+  /**
+   * @type {<const IA >(values: IA) => typeof values }
+   * 
+   */
+  function (vs) {
+    // TODO
+    Object.freeze(vs) ;
+    return vs ;
+  }
+) ;
+
 export {
   range ,
   // memoize ,
