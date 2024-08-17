@@ -36,7 +36,17 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
+
+/**
+ * proper version of {@link Omit} - WIP
+ * 
+ */
+type ProperOmit<T extends {}, xk extends keyof any> = (
+  T extends infer T1 ? (
+    Omit<T, xk>
+  ) : never
+);
 
 
 
@@ -51,7 +61,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -89,7 +104,7 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 const warnOnceOfUnsetScdOnscrollVal = (
   util.L.once(() => {
@@ -104,14 +119,48 @@ export interface ScrollingEvt
 }
 
 export const ScdC = (
-  describeComponent((
-    function ScdCImpl({
+  describeHtmlComponent((
+    function ScdCImpl({ ...props } : (
+      ProperOmit<React.ComponentProps<typeof ScdSubC>, (
+        | "divRef"
+        | never
+      )>
+    ) )
+    {
+      // const divRef = (
+      //   React.useRef<HTMLDivElement | null>(null)
+      // ) ;
+
+      var e : React.ReactElement = (
+        <ScdSubC
+        {...props}
+        // divRef={divRef}
+        />
+      ) ;
+      if (1)
+      {
+        // e = (
+        //   <scdDivRefCtx.Provider
+        //   value={divRef}
+        //   children={e}
+        //   />
+        // ) ;
+      }
+      return e ;
+    }
+  ))
+) ;
+
+const ScdSubC = (
+  describeHtmlComponent((
+    function ScdCSubImpl({
       children,
       cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
       crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
       orientCv = "vertical",
       onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
       style: styl,
+      // divRef,
       ctrlVarsDebug: shallCtrlVarsDebug = false,
       ...otherProps
     } : (
@@ -119,6 +168,9 @@ export const ScdC = (
       & AllOrNever1<{ cv : number, crossCv: number, } & { orientCv : "inherit" | "horizontal" | "vertical" }>
       & Pick<JSX.IntrinsicElements["div"] , "hidden" | "style" >
       & { onScroll?: (evtInfo: ScrollingEvt) => void ; }
+      /* INTERNAL OBLIGATORY VARS */
+      // & { divRef: React.MutableRefObject<HTMLDivElement | null>, }
+      /* DEBUG VARS */
       & { ctrlVarsDebug ?: boolean ; }
     ))
     {
@@ -207,7 +259,18 @@ export const ScdC = (
             overflow: "auto" ,
           }}
           >
-            { children }
+            { ((e: React.ReactElement) => {
+              if (1)
+              {
+                e = (
+                  <scdDivRefCtx.Provider
+                  value={divRef}
+                  children={e}
+                  />
+                ) ;
+              }
+              return e ;
+            })(<>{ children }</>) }
           </div>
           )) }
           </>
@@ -217,6 +280,15 @@ export const ScdC = (
     }
   ))
 ) ;
+
+const scdDivRefCtx = (
+  React.createContext<{ mainDRef: React.RefObject<HTMLDivElement | null>, }["mainDRef"] | null>(null)
+) ;
+
+export {
+  /** WIP/TBD @deprecated */
+  scdDivRefCtx ,
+} ;
 
 /**
  * 

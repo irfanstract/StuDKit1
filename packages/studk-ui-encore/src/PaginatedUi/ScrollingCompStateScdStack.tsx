@@ -39,7 +39,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 
 
@@ -102,7 +102,7 @@ interface ScdStateDerivable extends Extract<(
 const computeGlobalDefaultScdsHandler = (
   function () {
     return (
-      describeSsva({ getSFromPt: pt => pt, getPtFromS: pt => pt })
+      describeSsva({ hostNode: null, getSFromPt: pt => pt, getPtFromS: pt => pt })
     ) ;
   }
 ) ;
@@ -146,20 +146,27 @@ type SsvaPoint2D = { x: number, y: number } ;
 const describeSsva = (
   function <S extends {}>(...[opts] : (
     ArgsWithOptions<[], (
+      & (
+        | { hostNode: Element | Document, }
+        | { /** @deprecated */ hostNode: null, }
+        | { /** @deprecated */ hostNode?: never, }
+      )
       & { getSFromPt: (x: SsvaPoint2D) => S, }
       & { getPtFromS: (...args: NoInfer<[x: S]>) => SsvaPoint2D, }
     )>
   ) )
   {
     const {
+      hostNode: rootNode = null,
       getPtFromS ,
       getSFromPt ,
     } = opts ;
 
     interface DfoReturnedOps {
-      s: S ,
-      pos: SsvaPoint2D ,
-      insteadForPos: (ctx: { pos: SsvaPoint2D, }) => DfoReturnedOps ,
+      readonly rootNd: typeof rootNode,
+      readonly s: S ,
+      readonly pos: SsvaPoint2D ,
+      readonly insteadForPos: (ctx: { pos: SsvaPoint2D, }) => DfoReturnedOps ,
     }
     const DERIVED_FOR: DfoReturnedOps["insteadForPos"] = (
       function (...[{ pos: posArg, }] )
@@ -167,6 +174,7 @@ const describeSsva = (
         const s = getSFromPt(posArg) ;
         const nrmsedPos = getPtFromS(s) ;
         return {
+          rootNd: rootNode,
           pos: nrmsedPos,
           s ,
           insteadForPos: DERIVED_FOR ,

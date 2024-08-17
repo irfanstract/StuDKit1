@@ -39,7 +39,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 
 
@@ -66,12 +66,35 @@ const useScdState1 = (
   function (scprov: ScdStateProvCtx) {
     ;
 
-    const [statDerivable, setDrvblState] = (
-      React.useState<ScdStateDerivable>((
-        scprov
-      ))
-    ) ;
-    const { pos: poi, } = statDerivable ;
+    const [sDerivbl, setDrvblState] = (
+      function <S extends {} & P, P extends {}, CS>(...a : [(prov: P) => S , newProvdr: P, checkProvd?: (...a: NoInfer<[prov: P]>) => CS] )
+      {
+        ;
+        const [mp, scprov, chkProvd = mp] = a ;
+        ;
+        const [lastSdvb, setDrvblState] = (
+          React.useState<S>((
+            mp(scprov)
+          ))
+        ) ;
+        /**
+         * avoid staleness.
+         * since
+         * {@link lastSdvb} (from parameter or `useState`/`useReducer`) and {@link scprov}
+         * are technically two *independent* variables,
+         * updating {@link scprov} means we need to manually (re)set {@link lastSdvb}.
+         * see https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+         * for how to properly do that.
+         * 
+         */
+        if (chkProvd(scprov) !== chkProvd(lastSdvb) ) {
+          setDrvblState(mp(scprov))
+        }
+        return [lastSdvb, setDrvblState] as const ;
+      }
+    )((scprov: ScdStateProvCtx): ScdStateDerivable => scprov , scprov, e => e.rootNd ) ;
+
+    const { pos: lastPoi, } = sDerivbl ;
     const setPoi = (
       React.useCallback((x: React.SetStateAction<SsvaPoint2D> ) => (
         setDrvblState(s0 => (
@@ -82,8 +105,8 @@ const useScdState1 = (
 
     return {
       scprov ,
-      statDerivable ,
-      poi ,
+      statDerivable: sDerivbl ,
+      poi: lastPoi ,
       setDrvblState ,
       setPoi ,
     } as const ;
