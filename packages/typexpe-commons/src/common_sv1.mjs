@@ -118,7 +118,8 @@ export { iterateNonNull, isNonNull, } ;
 
 ;
 
-import * as L from "./lodash-es-min.mjs" ;
+// import * as L from "./lodash-es-min.mjs" ;
+import * as L from "lodash-es" ;
 
 import * as Immutable from "immutable" ;
 
