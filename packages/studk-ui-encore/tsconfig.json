@@ -27,6 +27,7 @@
     { "path": "../../packages/studk-fbreact-all", } ,
     { "path": "../../packages/studk-ui-coresemanticelems", } ,
     { "path": "../../packages/studk-ui", } ,
+    { "path": "../../packages/studk-i3d", } ,
   ] ,
   "include": [
     "src" ,
