@@ -38,6 +38,16 @@ import type {
   Extend,
 } from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
 
+/**
+ * proper version of {@link Omit} - WIP
+ * 
+ */
+type ProperOmit<T extends {}, xk extends keyof any> = (
+  T extends infer T1 ? (
+    Omit<T, xk>
+  ) : never
+);
+
 
 
 
@@ -105,13 +115,47 @@ export interface ScrollingEvt
 
 export const ScdC = (
   describeComponent((
-    function ScdCImpl({
+    function ScdCImpl({ ...props } : (
+      ProperOmit<React.ComponentProps<typeof ScdSubC>, (
+        | "divRef"
+        | never
+      )>
+    ) )
+    {
+      // const divRef = (
+      //   React.useRef<HTMLDivElement | null>(null)
+      // ) ;
+
+      var e : React.ReactElement = (
+        <ScdSubC
+        {...props}
+        // divRef={divRef}
+        />
+      ) ;
+      if (1)
+      {
+        // e = (
+        //   <scdDivRefCtx.Provider
+        //   value={divRef}
+        //   children={e}
+        //   />
+        // ) ;
+      }
+      return e ;
+    }
+  ))
+) ;
+
+const ScdSubC = (
+  describeComponent((
+    function ScdCSubImpl({
       children,
       cv: ctrlVal1 = (warnOnceOfUnsetScdOnscrollVal(), 0),
       crossCv: ctrlValCrs = (warnOnceOfUnsetScdOnscrollVal(), 0),
       orientCv = "vertical",
       onScroll: runOnScroll = (warnOnceOfUnsetScdOnscrollVal(), () => {}),
       style: styl,
+      // divRef,
       ctrlVarsDebug: shallCtrlVarsDebug = false,
       ...otherProps
     } : (
@@ -119,6 +163,9 @@ export const ScdC = (
       & AllOrNever1<{ cv : number, crossCv: number, } & { orientCv : "inherit" | "horizontal" | "vertical" }>
       & Pick<JSX.IntrinsicElements["div"] , "hidden" | "style" >
       & { onScroll?: (evtInfo: ScrollingEvt) => void ; }
+      /* INTERNAL OBLIGATORY VARS */
+      // & { divRef: React.MutableRefObject<HTMLDivElement | null>, }
+      /* DEBUG VARS */
       & { ctrlVarsDebug ?: boolean ; }
     ))
     {
@@ -207,7 +254,18 @@ export const ScdC = (
             overflow: "auto" ,
           }}
           >
-            { children }
+            { ((e: React.ReactElement) => {
+              if (1)
+              {
+                e = (
+                  <scdDivRefCtx.Provider
+                  value={divRef}
+                  children={e}
+                  />
+                ) ;
+              }
+              return e ;
+            })(<>{ children }</>) }
           </div>
           )) }
           </>
@@ -217,6 +275,15 @@ export const ScdC = (
     }
   ))
 ) ;
+
+const scdDivRefCtx = (
+  React.createContext<{ mainDRef: React.RefObject<HTMLDivElement | null>, }["mainDRef"] | null>(null)
+) ;
+
+export {
+  /** WIP/TBD @deprecated */
+  scdDivRefCtx ,
+} ;
 
 /**
  * 
