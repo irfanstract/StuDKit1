@@ -26,7 +26,14 @@ import * as React from "react" ;
 
 
 
-import dynamicComponent from "next/dynamic";
+// import dynamicComponent from "next/dynamic";
+const dynamicComponent: (
+  // | (typeof util.L.identity)
+  | (typeof import("next/dynamic").default )
+  | null
+) = (
+  null
+) ;
 
 export {
   dynamicComponent as dynamicComponent,
@@ -34,11 +41,19 @@ export {
 
 import AppLink from "next/link";
 
-import Image from "next/image";
+// import NxImage from "next/image";
+const Image: (
+  | React.ElementType<JSX.IntrinsicElements["img"] >
+  | (typeof import("next/image") )
+) = "img" ;
 
+// export {
+//   default as NxImage,
+// } from "next/image";
 export {
   AppLink as AppLink,
   Image as Image,
+  // NxImage ,
 } ;
 
 
