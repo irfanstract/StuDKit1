@@ -48,7 +48,7 @@ import {
   NoOpActionReprImpl,
   DisabledBtnActionReprImpl,
   translateCommonJsxAction,
-} from 'studk-ui/src/ui/dbcAc.tsx'; ;
+} from 'studk-ui/src/templatedFormActions/ButtonlikeAction.tsx'; ;
 
 
 
@@ -61,12 +61,17 @@ const NativeButton: "button" = (
 
 import "./dbc.scss" ;
 
-export { Span, Button, } ;
+export {
+  SpanC ,
+  SpanC as Span,
+  ButtonC,
+  ButtonC as Button,
+} ;
 
-const Span = (
+const SpanC = (
   describeComponent(function SpanC({ onClick: href, ...prp } : (Omit<EffectiveXButtonProps, "inline" > & { } ) ) {
     return (
-      <Button
+      <ButtonC
       inline
       {...prp}
       onClick={href ?? null }
@@ -76,16 +81,15 @@ const Span = (
 ) ;
 
 type EffectiveXButtonProps = (
-  React.ComponentPropsWithoutRef<typeof Button>
+  React.ComponentPropsWithoutRef<typeof ButtonC>
 ) ;
 
-const Button = (
-  // ☺☘⚾❌☑⛲⚛⛰♏☐♐❣❤❇→♠
-  describeComponent(function ButtonC({ inline: asInline = false, children: headlineArg, onClick: hrefArg, className: cn = "", ...prp } : (
-    (Omit<React.ComponentPropsWithoutRef<"button">, `on${string}` > )
-    &
-    { inline ?: boolean ; onClick : Parameters<typeof translateCommonJsxAction>[0] ; }
-  ) ) {
+const useOrTranslateBtnCProps = (
+  function ({ inline: asInline = false, children: headlineArg, onClick: hrefArg, className: cn = "", ...otherJsxProps } : (
+    IXButtonProps
+  ))
+  {
+    ;
     const headline = (
       headlineArg
     ) ;
@@ -95,15 +99,25 @@ const Button = (
     const hrefAc = (
       translateCommonJsxAction(hrefArg )
     ) ;
-    return (
+    ;
+    const regularInlinePresentation = (
       (hrefAc instanceof UrlAction) ?
       (
         <a
         className={`studk-ui-dbca ${inlinenessClassName } ${cn}`}
         children={headline}
         href={hrefAc.href}
-        target='_blank'
-        {...prp}
+        // target='_blank'
+        {...(function (): Partial<JSX.IntrinsicElements["a"] > {
+          if (hrefAc.href.match(/^(data|blob|object):/u) ) {
+            return { download: "attachment", target: '_blank', } ;
+          }
+          if (((typeof URL !== "undefined") && new URL(hrefAc.href).origin ) === location?.origin ) {
+            return { } ;
+          }
+          return { target: '_blank' } ;
+        })() }
+        {...otherJsxProps}
         />
       )
       :
@@ -114,7 +128,7 @@ const Button = (
         children={headline}
         type='button'
         onClick={e => hrefAc.runMain(e) }
-        {...prp}
+        {...otherJsxProps}
         />
       )
       :
@@ -125,16 +139,47 @@ const Button = (
         children={headline}
         type='button'
         disabled
-        {...prp}
+        {...otherJsxProps}
         />
       )
       :
       <span
       className={`studk-ui-dbca ${inlinenessClassName } ${cn}`}
       children={headline}
-      {...prp}
+      {...otherJsxProps}
       />
     ) ;
+    ;
+    return {
+      asInline ,
+      headlineArg ,
+      hrefArg ,
+      cn ,
+      otherJsxProps ,
+      headline ,
+      inlinenessClassName ,
+      hrefAc,
+      regularInlinePresentation ,
+    } as const ;
+  }
+) ;
+
+interface IXButtonProps extends Omit<(
+  (Omit<React.ComponentPropsWithoutRef<"button">, `on${string}` > )
+  &
+  { inline ?: boolean ; onClick : Parameters<typeof translateCommonJsxAction>[0] ; }
+), never>
+{}
+
+const ButtonC = (
+  // ☺☘⚾❌☑⛲⚛⛰♏☐♐❣❤❇→♠
+  describeComponent(function ButtonC(props : (
+    IXButtonProps
+  ) ) {
+    const {
+      regularInlinePresentation ,
+    } = useOrTranslateBtnCProps(props) ;
+    return regularInlinePresentation ;
   })
 ) ;
 
