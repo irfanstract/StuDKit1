@@ -21,10 +21,27 @@ import {
 
 import * as React from "react" ;
 
+import * as DEC from "studk-ui-componentdefinition/src/dec.tsx" ;
+
+import {
+  Button ,
+  Span ,
+} from 'studk-ui/src/meta/react/dbc.tsx'; ;
+
+// import NxImage from "next/image";
 
 
 
 
+
+
+export const describeComponent = (
+  DEC.describeComponent
+) ;
+
+export const describeHtmlComponent = (
+  describeComponent
+) ;
 
 // import dynamicComponent from "next/dynamic";
 const dynamicComponent: (
@@ -87,17 +104,11 @@ export {
   AppLinkAsLi ,
 } ;
 
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/meta/react/dbc.tsx'; ;
-
 export {
   Button ,
   Span ,
 } ;
 
-// import NxImage from "next/image";
 const Image: (
   | React.ElementType<JSX.IntrinsicElements["img"] >
   | (typeof import("next/image") )
