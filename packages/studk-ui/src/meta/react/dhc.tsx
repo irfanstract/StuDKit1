@@ -35,7 +35,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 
 
@@ -173,7 +178,7 @@ export function describeWorksheet(...[{ heading, children, style = {}, ...prps }
  */
 const XHC = (
   // TODO
-  describeComponent(function XHCRend({ children: c, } : { children: React.ReactNode & {} ; } ) {
+  describeHtmlComponent(function XHCRend({ children: c, } : { children: React.ReactNode & {} ; } ) {
     return (
       //
       <p children={<b children={c} /> } />
