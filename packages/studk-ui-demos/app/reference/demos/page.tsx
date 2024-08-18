@@ -129,9 +129,27 @@ export default function App()
             <DiscogrDemoC />
           ) }
           { true && (
-            <I3DDemoC />
+            <ThreeReactJsDemoC />
           ) }
-          { null && (
+          { true && (
+            <TArmsDemoC />
+          ) }
+          { true && (
+            <ThreeReactJsNavigaDemoC />
+          ) }
+          { ((e: React.ReactElement) => {
+            return null ;
+          } )((
+            <I3DDemoC />
+          )) }
+          { ((e: React.ReactElement) => {
+            e = (
+              <AsResettibleBlockC
+              children={e}
+              />
+            ) ;
+            return e ;
+          } )(
             <TimeDomainedImgListFigureC
             />
           ) }
@@ -149,6 +167,49 @@ export default function App()
   ) ;
 } ;
 
+const AsResettibleBlockC = (
+  function AsResettibleBlockCImpl({ children, } : React.PropsWithChildren)
+  {
+    const [c, setC] = (
+      React.useState<number>(1)
+    ) ;
+    const runIncrButtonAction = (
+      function () {
+        setC(c => c + 1) ;
+      }
+    ) ;
+    const resetBtn = (
+      <button
+      type="button"
+      children={`Reset`}
+      onClick={e => runIncrButtonAction() }
+      />
+    ) ;
+    return (
+      <React.Fragment
+      key={c}
+      children={(
+        <div
+        style={{
+          display: "flex",
+          flexDirection: "column-reverse",
+        }}
+        >
+          <div>
+          { children }
+          </div>
+          <div>
+          <p>
+            { resetBtn }
+          </p>
+          </div>
+        </div>
+      )}
+      />
+    ) ;
+  }
+) ;
+
 import LDCWGOC from "@/components/spcl/longTextDocWithGraphicalOverlaysDemo"; ;
 
 import TbmcDemoImpl from "studk-ui/src/tabularUi/reactjs/tbmcdemo.tsx" ;
@@ -162,6 +223,18 @@ function TbmcDemo()
 import {
   I3DDemoC ,
 } from "studk-ui-encore/src/StI3dPresenters/I3DDemoC.tsx" ;
+
+import {
+  ThreeReactJsDemoC,
+} from "studk-ui-encore/src/ThreeReactJsUi/trdemo.tsx" ;
+
+import {
+  ThreeReactJsNavigaDemoC,
+} from "studk-ui-encore/src/ThreeReactJsUi/trnavigade" ;
+
+import {
+  TArmsDemoC ,
+} from "studk-ui-encore/src/ThreeReactJsUi/tarm.tsx" ;
 
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
