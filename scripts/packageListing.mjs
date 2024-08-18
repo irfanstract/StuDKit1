@@ -163,7 +163,7 @@ export const nonPlainJsPkgs = (
 
       yield* (
         pkgs
-        .filter(nm => nm.startsWith('studpresenters') )
+        .filter(nm => nm.match(/^studpresent(?:ed|ers)/u) )
       ) ;
 
       /* internal FW packages */

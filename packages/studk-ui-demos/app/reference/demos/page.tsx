@@ -121,13 +121,28 @@ export default function App()
             Graphical Overlays
             </Span>
           </p>
-          { 0 && <LDCWGOC /> }
-          { 0 && (
+          { null && <LDCWGOC /> }
+          { null && (
             <AudioNodeBeepDemo />
           ) }
-          { (
+          { true && (
             <DiscogrDemoC />
           ) }
+          { true && (
+            <I3DDemoC />
+          ) }
+          { null && (
+            <TimeDomainedImgListFigureC
+            />
+          ) }
+          <div>
+            <div style={{ blockSize: `50vh`, border: `1px solid blue`, }} >
+              &nbsp;
+            </div>
+            <div style={{ blockSize: `50vh`, border: `1px solid black`, }} >
+              &nbsp;
+            </div>
+          </div>
         </div>
       ) ,
     })
@@ -144,6 +159,10 @@ function TbmcDemo()
   return <div /> ;
 }
 
+import {
+  I3DDemoC ,
+} from "studk-ui-encore/src/StI3dPresenters/I3DDemoC.tsx" ;
+
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
 function AudioNodeBeepDemo()
@@ -159,6 +178,10 @@ function DiscogrDemoC() {
     <DiscogrDemoImpl />
   ) ;
 }
+
+import {
+  TimeDomainedImgListFigureC ,
+} from "studk-ui-encore/src/SequencedMediaUi/TimeDomainBreakthruUi.tsx" ;
 
 
 

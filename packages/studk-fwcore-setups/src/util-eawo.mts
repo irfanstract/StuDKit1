@@ -114,6 +114,14 @@ type EitherPropertyOf<opts extends object> = (
 ) ;
 
 /**
+ * {@link Partial} for select names
+ * 
+ */
+type PartializedPartially<opts extends object, k1 extends keyof opts> = (
+  Partial<opts> & Required<Omit<opts, k1> >
+) ;
+
+/**
  * {@link Required} for select names
  * 
  */
@@ -155,6 +163,7 @@ type IIndexOfItemOf<T1 extends readonly unknown[] > = (
 export type {
   AllOrNever as AllOrNever1,
   EitherPropertyOf ,
+  PartializedPartially,
   RequiredPartially,
 } ;
 export type {
