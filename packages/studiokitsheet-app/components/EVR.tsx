@@ -42,6 +42,16 @@ import type {
 
 
 
+import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
+
+;
+
+
+
+;
+
+
+
 
 
 
@@ -75,13 +85,9 @@ const useClientSideOnlyCompute = (
   }
 ) ;
 
-
-
-import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
-
-;
-
-
+import {
+  CFaBku ,
+} from "studk-ui-fwcore/src/reactjs/helpers/CFa" ;
 
 
 
@@ -181,6 +187,27 @@ export const EvrC = (
   ))
 ) ;
 
+const TsAstDisplayCAlt = (
+  function TsAstDisplayCAltCImpl(props: React.ComponentProps<typeof TsAstDisplayC>)
+  {
+    const astRenderRetryK = (
+      React.useMemo(() => Math.random() , [props.value] )
+    ) ;
+    return (
+      <div>
+        <p>AST:</p>
+        <CFaBku
+        key={astRenderRetryK}
+        >
+        <TsAstDisplayC
+        { ...props }
+        />
+        </CFaBku>
+      </div>
+    ) ;
+  }
+) ;
+
 const EvrCPos = (
   describeHtmlComponent((
     function EvrCPosImpl(props : (
@@ -203,8 +230,11 @@ const EvrCPos = (
           &&
           function (...[chgEvt] : [TsAstDisplayEvents.SelfTotalReplacingChgEventDesc ]) {
             ;
+
             // TODO
             console["log"]({ chgEvt, }) ;
+
+            onChgArg({ newValue: chgEvt.newValue, }) ;
           }
         ) ;
 
@@ -216,7 +246,7 @@ const EvrCPos = (
                 <div>
                   <p>The Defining Script</p>
                   <p>TypeScript</p>
-                  <TsAstDisplayC
+                  <TsAstDisplayCAlt
                   value={value}
                   onChange={handleChgEvt}
                   />
