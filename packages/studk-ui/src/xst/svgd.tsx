@@ -27,20 +27,11 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   RequiredPartially,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
-
-import type {
-  // ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 
 
@@ -48,10 +39,6 @@ import type {
 
 
 import * as React from "react" ;
-
-
-
-
 
 import {
   describeComponent,
@@ -64,7 +51,7 @@ import {
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   SingleChildDiv,
@@ -74,8 +61,6 @@ import {
   Button ,
   Span ,
 } from 'studk-ui/src/meta/react/dbc.tsx'; ;
-
-// import Link from "next/link" ;
 
 
 
