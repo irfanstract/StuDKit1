@@ -30,7 +30,13 @@ import type {
   Extend,
 } from 'studk-fwcore/src/util/C1.ts'
 
-import TS from "typescript" ;
+import { TS, } from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsLib.ts" ;
+
+const getNodeTypeLabelTxt = (nd: TS.Node) => (
+    `${TS.SyntaxKind[nd.kind] }`
+) ;
+
+import type * as TsServer from "typescript/lib/tsserver.js" ;
 
 
 
@@ -58,6 +64,10 @@ import {
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
+
+import {
+  withExtraSemanticProperties ,
+} from 'studk-ui-fwcore/src/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
 
 import {
   SingleChildDiv,
@@ -91,16 +101,34 @@ import {
 
 // }
 
+const getSpclDefaultClvMd = () => (
+  // <p><code>{nodeTypeLabelTxt }</code></p>
+  CLV.forIsTerminaNdFnc()
+) ;
+
 export const TsAstDisplayC = (
-  describeHtmlComponent((function TsAstDisplayCImpl(props : { value: TS.Node } )
+  describeHtmlComponent((function TsAstDisplayCImpl(props : (
+    {
+      value: TS.Node ,
+      clvMd ?: CLV,
+      onChange ?: (evt: { newValue: TS.Node, }) => void ,
+    }
+  ) )
   {
-    const { value: nd, } = props ;
+    const {
+      value: nd,
+      clvMd = (
+        // <p><code>{nodeTypeLabelTxt }</code></p>
+        getSpclDefaultClvMd()
+      ) ,
+      onChange: runOnChgHandler ,
+    } = props ;
 
     const ndCtor = (
       (Object.getPrototypeOf(nd) as (Object | null ))?.constructor
     ) ;
     const nodeTypeLabelTxt = (
-      (ndCtor ? `${TS.SyntaxKind[nd.kind] }` : null)
+      getNodeTypeLabelTxt(nd)
       ??
       `Node Type ${nd.kind }`
     ) ;
@@ -109,8 +137,17 @@ export const TsAstDisplayC = (
       useIsClientSide()
     ) ;
 
+    const asTerminalMdlNode = (
+      TS.isToken(nd)
+      || TS.isLiteralExpression(nd)
+    ) ;
+
     const childListDView = (() => {
-      if (ncs) {
+      if (!ncs) {
+        return <></> ;
+      }
+
+      if (!asTerminalMdlNode ) {
         ;
 
         const ndChildren = (
@@ -123,9 +160,10 @@ export const TsAstDisplayC = (
             zoom: `95%` ,
           }}
           >
-          <p>Children (<code>{ ndChildren.length }</code>):</p>
           <TsAllChildNodesListDisplayC
           value={ndChildren }
+          clvMd={clvMd}
+          // srcNd={nd }
           />
           </div>
         ) ;
@@ -134,41 +172,221 @@ export const TsAstDisplayC = (
       }
     })() ;
 
+    const e = (() => {
+      ;
+      
+      if (clvMd.asDbWhen() ) {
+        if (asTerminalMdlNode) {
+          const ndSrcTxt = nd.getText() ;
+          switch (ndSrcTxt ) {
+            // ════
+            case "(" : return <code><>╭━━━━━━╮</></code> ;
+            case ")" : return <code><>╰━━━━━━╯</></code> ;
+            case "[" : return <code><>┏════════┓</></code> ;
+            case "]" : return <code><>┗════════┛</></code> ;
+            case "{" : return <code><>╭════^════╮</></code> ;
+            case "}" : return <code><>╰════v════╯</></code> ;
+            case "<" : return <code><>{ "<   <   <" }</></code> ;
+            case ">" : return <code><>{ ">   >   >" }</></code> ;
+          }
+          if ((
+            getNodeTypeLabelTxt(nd).endsWith("Keyword")
+          ) ) {
+            return (
+              <strong>
+                <code>{ ndSrcTxt }</code>
+              </strong>
+            ) ;
+          }
+        }
+        const bord = (() => {
+          if ((
+            TS.isJsxOpeningLikeElement(nd)
+          )) { return true ; }
+          return false ;
+        })() ;
+        const e1 = (
+          <div
+          style={{
+            zoom: `99%` ,
+            border: bord ? `0.05em solid currentcolor` : undefined ,
+          }}
+          >
+            { asTerminalMdlNode && clvMd.getHeadlineImpl(nd) }
+            { (asTerminalMdlNode === false) && (
+              <div
+              style={{ paddingInlineStart: `1.0ex`, }}
+              >
+                { childListDView }
+              </div>
+            ) }
+          </div>
+        ) ;
+        return (
+          <div
+          style={{
+            // display: "inline-block" ,
+          }}
+          >
+            <div
+            style={{
+              display: "flex" ,
+              flexDirection: "column-reverse",
+            }}
+            >
+              { e1 }
+              <div>
+              { (
+                (runOnChgHandler && (TS.isExpression(nd) || TS.isStatement(nd) ) )
+                &&
+                <Button
+                title='Replace This Expression/Statement With...'
+                children={<>☯</>}
+                onClick={false}
+                />
+              ) }
+              </div>
+            </div>
+          </div>
+        ) ;
+      }
+      return (
+        <div
+        style={{
+          zoom: `95%` ,
+        }}
+        >
+          { clvMd.getHeadlineImpl(nd) }
+          { childListDView }
+        </div>
+      ) ;
+    })() ;
     return (
-      <div
-      style={{
-        zoom: `95%` ,
-      }}
-      >
-        <p><code>{nodeTypeLabelTxt }</code></p>
-        { childListDView }
-      </div>
+      e
     ) ;
   }))
 ) ;
 
-export const TsAllChildNodesListDisplayC = (
-  describeHtmlComponent((function TsNodeListDisplayCImpl(props : { value: ReadonlyArray<TS.Node> } )
+class CLV
+{
+
+  static forIsTerminaNdFnc(...[
+    isTerminalNd = (e) => {
+      if (TS.isSourceFile(e) ) {
+        return false ;
+      }
+      if (TS.isToken(e) || TS.isLiteralExpression(e) ) {
+        return true ;
+      }
+      return false ;
+    } ,
+  ] : [isTerminalNd ?: (e: TS.Node) => boolean ]) {
+    return (
+      // <p><code>{nodeTypeLabelTxt }</code></p>
+      CLV.fromGetHeadlineImpl(e => {
+        if (isTerminalNd(e) ) {
+          return (
+            <p>
+              <code>{ e.getText() }</code>
+            </p>
+          ) ;
+        }
+        return (
+          <p>
+            (a Node <code>{ getNodeTypeLabelTxt(e) }</code>)
+          </p>
+        ) ;
+      } , { skipToTerminalDecendants: (e) => (
+        // TS.isToken(e) || TS.isLiteralExpression(e)
+        // true
+        isTerminalNd(e) === false
+      ) , } )
+    )
+  }
+
+  static fromGetHeadlineImpl(...args : (
+    ArgsWithOptions<[getHeadlineImpl: (e: TS.Node) => React.ReactElement] , (
+      { skipToTerminalDecendants ?: (e: TS.Node) => boolean , }
+    )>
+  ) )
   {
-    const { value: ndChildren, } = props ;
+    const [
+      getHeadlineImpl,
+      {
+        skipToTerminalDecendants = (e: unknown) => false,
+      } = {} ,
+    ] = args ;
+    return new CLV(
+      getHeadlineImpl , skipToTerminalDecendants ,
+      () => true ,
+    ) ;
+  }
+
+  private constructor(
+    //
+    public readonly getHeadlineImpl: (e: TS.Node) => React.ReactElement  ,
+    public readonly skipToTerminalDecendantsFor : (e: TS.Node) => boolean ,
+    public readonly asDbWhen : () => boolean = () => false ,
+  )
+  {}
+}
+
+export const TsAllChildNodesListDisplayC = (
+  describeHtmlComponent((function TsNodeListDisplayCImpl(props : (
+    & { value: ReadonlyArray<TS.Node>, clvMd ?: CLV, }
+    & {
+      // // TODO
+      // /** @deprecated */
+      // srcNd: TS.Node ,
+    }
+  ) )
+  {
+    const {
+      clvMd = getSpclDefaultClvMd() ,
+      value: ndChildren,
+      // srcNd ,
+    } = props ;
+
+    const childrenAsLs = (
+      <ul>
+      { (
+        ndChildren
+        .map((nd, i) => (
+          <li
+          key={i }
+          children={(
+            <TsAstDisplayC
+            value={nd}
+            clvMd={clvMd}
+            />
+          )}
+          />
+        ))
+      ) }
+      </ul>
+    ) ;
+
+    if (clvMd.asDbWhen() ) {
+      return (
+        <div>
+          { (
+            withExtraSemanticProperties({
+              classNames: ["studk-ui-encoretsnodedisp-inline-children-l"] ,
+            } , childrenAsLs)
+          ) }
+        </div>
+      ) ;
+    }
     return (
       <div>
-        <p>Children:</p>
-        <ul>
         { (
-          ndChildren
-          .map((nd, i) => (
-            <React.Fragment
-            key={i }
-            children={(
-              <TsAstDisplayC
-              value={nd}
-              />
-            )}
-            />
-          ))
+          <p><code>{ ndChildren.length }</code> child(en)</p>
         ) }
-        </ul>
+        { (
+          withExtraSemanticProperties({
+            classNames: ["studk-ui-encoretsnodedisp-blocklevel-children-l"] ,
+          } , childrenAsLs)
+        ) }
       </div>
     ) ;
   }))
@@ -186,6 +404,8 @@ export const TsSrcFileInfoDisplayC = (
     ) ;
   })
 ) ;
+
+import "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/tsd.scss" ;
 
 
 
