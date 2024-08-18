@@ -80,7 +80,7 @@ export const getSampleTsSourceFile = (
          * 
          */
         true
-      ), TS.ScriptKind.TS )
+      ), TS.ScriptKind.TSX )
     ) ;
     return sf ;
   }
