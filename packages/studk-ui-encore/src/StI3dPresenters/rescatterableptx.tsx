@@ -50,7 +50,7 @@ import React, {
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'
+} from 'studk-ui-componentdefinition/src/dec.tsx'
 
 import {
   describeSvgComponent ,
