@@ -129,6 +129,9 @@ export default function App()
             <DiscogrDemoC />
           ) }
           { true && (
+            <ThreeReactJsDemoC />
+          ) }
+          { true && (
             <I3DDemoC />
           ) }
           { null && (
@@ -205,6 +208,10 @@ function TbmcDemo()
 import {
   I3DDemoC ,
 } from "studk-ui-encore/src/StI3dPresenters/I3DDemoC.tsx" ;
+
+import {
+  ThreeReactJsDemoC,
+} from "studk-ui-encore/src/ThreeReactJsUi/trdemo.tsx" ;
 
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
