@@ -29,7 +29,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 
 
@@ -44,7 +44,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -74,7 +74,7 @@ import {
   T_BY_HMS ,
   T_STRING ,
   T_WALLC_PROTAC ,
-} from "studk-ui-encore/src/SpclTStampFmtFncs.tsx" ;
+} from "studk-ui-core/src/TByHms.tsx" ;
 
 export const EllapsedTValueC = (
   describeComponent(function EllapsedTValueCImpl({
