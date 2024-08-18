@@ -88,11 +88,13 @@ import "./kmcbsRootLayout1.scss" ;
 
 export const KmcbsRootLayoutC = function RootLayoutComp({
   children,
+  footerSecContents: footerSecContentsArg,
   subsiteLogo: subsiteLogoArg ,
   organisingTeamLogo: organisingTeamLogoArg ,
   version: versionArg ,
 }: {
   children: React.ReactNode ,
+  footerSecContents ?: React.ReactElement ,
   subsiteLogo ?: React.ReactElement ,
   organisingTeamLogo ?: React.ReactElement ,
   version ?: (
@@ -121,7 +123,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
   const asClsVerTag = (
     `studk-kmcbsrootmnvf-of-version${String(version).replace(/\./g, "p") }`
   );
-  const footerSecContents = (
+  const footerSecContents = footerSecContentsArg ?? (
     <menu>
       <span>
         { organisingTeamLogo }
