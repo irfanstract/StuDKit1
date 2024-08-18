@@ -72,7 +72,7 @@ import {
 import type {
   //
   NcpSupportedElem ,
-} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101" ;
+} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101.tsx" ;
 
 const useExistingNativeCompBoundingBoxViaRef = (
   function (...[syncReferee, syncedGraphicalBoundsRel = ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
