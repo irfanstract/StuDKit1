@@ -26,8 +26,12 @@ import {
 import "@/public/global1.scss" ;
 
 (async () => {
+
   if (typeof window !== "undefined")
-  { await import("studk-fwcore-setups/src/nav/autorefresh-main.mjs") ; }
+  {
+    console["info"](`importing 'autorefresh-main.mjs'`) ;
+    await import("studk-fwcore-setups/src/nav/autorefresh-main.mjs") ;
+  }
   else {
     /* on server */
     ;
