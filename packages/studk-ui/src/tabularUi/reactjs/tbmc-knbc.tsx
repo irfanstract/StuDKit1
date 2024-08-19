@@ -192,6 +192,11 @@ const useTbmcKnbCProps = (
               fontSize: `75%` ,
             }}
             >
+            { " " && (
+              <p>
+                (ID: <code>{ msd.id }</code> )
+              </p>
+            ) }
             <p
             >
               Spn
