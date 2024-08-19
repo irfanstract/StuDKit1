@@ -150,6 +150,24 @@ interface SdsFncImpl<out R>
 
 }
 
+interface ASVN {
+  //
+  assumedViewportNode : (
+    // Document | Element
+    GCOIbleNode
+  ),
+  assumedPositionalParentNode : (
+    // Document | Element
+    GCOIbleNode
+  ),
+}
+function ASVN(props : ASVN )
+: ASVN
+{
+  return props ;
+}
+export { ASVN, } ;
+
 export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
   function (...args : (
 
@@ -161,17 +179,31 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
         // Document | Element
         GCOIbleNode
       ),
+      aSVn?: ASVN ,
     } >
 
   )) : TbmcKnbSpclScrollHandler
   {
   ;
+
   const [
     rootNode,
     {
       lookupRootNode: altLookupRootNode = rootNode,
-    } = {} ,
+      aSVn: {
+        //
+        assumedPositionalParentNode = rootNode ,
+        assumedViewportNode = rootNode ,
+      } = {} satisfies AllOrNever1<ASVN> ,
+    } = null ?? {} ,
   ] = args ;
+
+  const processAdrdException = (
+    // console["error"](String(z) )
+    util.L.throttle((z: unknown) => (
+      console["error"](String(z) )
+    ) , (100 * 1000 ) )
+  ) ;
 
   return (
     ((
@@ -207,19 +239,25 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
                 if (0) {
                   return true ;
                 }
+                // TODO
                 return (
-                  0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, } ).x
+                  0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: assumedPositionalParentNode, } ).x
                   &&
-                  (1 || -23.0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, }).y )
+                  (1 || -23.0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: assumedPositionalParentNode, }).y )
                 ) ;
               } )
 
               .map(({ rnk, e, }) => {
-                const cp = GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, }) ;
+                const cp = GET_LOCALOFFSET_OF(e, { referenceDiv: (assumedPositionalParentNode ), }) ;
+                const vp = GET_LOCALOFFSET_OF(e, { referenceDiv: (assumedViewportNode         ), }) ;
                 return {
                   startT: -1 ,
                   rnk,
-                  etc: { rnk, cp, } ,
+                  etc: {
+                    rnk,
+                    cp,
+                    vp,
+                  } ,
                 } as const ;
               } )
 
@@ -250,7 +288,7 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
                         TbmcKnbCDisplayed.getSegmentDisplayRowsByRnk(rnk)
                       ) ;
                     } catch (z: any) {
-                      console["error"](String(z) ) ;
+                      processAdrdException(z) ;
                       return [] ;
                     }
                   })() )
