@@ -58,12 +58,19 @@ import {
 
 ;
 
-interface ScdStateDerivable extends Extract<(
-  ReturnType<typeof describeSsva>
+interface ScdStateDerivable<S extends {} = any> extends Extract<(
+  ReturnType<typeof describeSsva<S >>
 ), any>
 {}
 
-namespace ScdStateDerivable { ; }
+namespace ScdStateDerivable {
+  ;
+
+  export type WithStateT<S extends {}> = (
+    ScdStateDerivable<S>
+  ) ;
+
+}
 
 export {
 
@@ -124,7 +131,8 @@ const getScdSProvCtxStack = (
   ))
 ) ;
 
-interface ScdStateProvCtx extends Extract<ScdStateDerivable, any>
+interface ScdStateProvCtx<St extends {} = any > extends
+Extract<ScdStateDerivable.WithStateT<St>, any>
 {}
 
 namespace ScdStateProvCtx { ; }
