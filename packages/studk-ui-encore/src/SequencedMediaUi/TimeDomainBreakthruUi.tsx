@@ -55,7 +55,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -113,16 +118,43 @@ import {
   // useDebouncedScdStateWrapper1A ,
 } from "studk-ui-encore/src/PaginatedUi/ScrollingCompStateScd.tsx" ;
 
-interface TimeDomainedImgListFigureCProps
+// TODO
+/**
+ * 
+ * WIP/TBD
+ * 
+ * @deprecated
+ * 
+ */
+export const TimeDomainedImgListFigureC = (
+  describeHtmlComponent((
+    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
+    {
+      ;
+
+      return (
+        <div>
+          <p>
+            <strong>
+            Time-domained Image List FIgure
+            </strong>
+          </p>
+        </div>
+      ) ;
+    }
+  ))
+) ;
+
+interface TimeDomainedMultiChnlInspectiveFigureCProps
 {
   scrollingConfig ?: {
     revertToRawPositioning ?: boolean ;
   } ,
 }
 
-export const TimeDomainedImgListFigureC = (
-  describeComponent((
-    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedImgListFigureCProps)
+export const TimeDomainedMultiChnlInspectiveFigureC = (
+  describeHtmlComponent((
+    function TimeDomainedImgListFigureCBiggerImpl({ ...props } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
 
@@ -132,7 +164,7 @@ export const TimeDomainedImgListFigureC = (
             return e ;
           }
         ))((
-          <TimeDomainedImgListFigureC11
+          <TimeDomainedMultiChnlInspectiveFigureC11
           {...props}
           />
         ))
@@ -142,14 +174,14 @@ export const TimeDomainedImgListFigureC = (
 ) ;
 
 // TODO
-const TimeDomainedImgListFigureC11 = (
-  describeComponent((
+const TimeDomainedMultiChnlInspectiveFigureC11 = (
+  describeHtmlComponent((
     function TimeDomainedImgListFigureCInnerImpl({
       scrollingConfig: {
         revertToRawPositioning: scRevertToRawPositioning = false ,
       } = {} ,
       ...otherProps
-    } : TimeDomainedImgListFigureCProps)
+    } : TimeDomainedMultiChnlInspectiveFigureCProps)
     {
       ;
 
@@ -208,7 +240,7 @@ const TimeDomainedImgListFigureC11 = (
  * @deprecated this is a WIP.
  */
 export const TimeDomainedImgListSpanC = (
-  describeComponent((
+  describeHtmlComponent((
     //
     function TimeDomainedImgListSpanCImpl({} : {})
     {
@@ -219,7 +251,7 @@ export const TimeDomainedImgListSpanC = (
 ) ;
 
 export const TimeDomainedImgListSpC = (
-  describeComponent((
+  describeHtmlComponent((
     function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg } : { hc ?: ScCHorizonConfigPropsDesc, })
     {
       ;
@@ -292,7 +324,7 @@ const computeDefaultHorizonConfig = (
 ) ;
 
 const WithSsc1D = (
-  describeComponent((
+  describeHtmlComponent((
     function WithSsc1DImpl({ children, revertToRawScrollSavePos, } : React.PropsWithChildren<{ revertToRawScrollSavePos: boolean ; }>)
     {
       ;
@@ -324,7 +356,7 @@ const WithSsc1D = (
 ) ;
 
 const WithSsc1DInner = (
-  describeComponent((
+  describeHtmlComponent((
     function WithSsc1DInnerImpl({ children, } : React.PropsWithChildren)
     {
       ;
@@ -388,7 +420,7 @@ const WithSsc1DInner = (
 ) ;
 
 export const WithSpclisedScdOverrides1C = (
-  describeComponent((
+  describeHtmlComponent((
     function WithSpclisedOverrides1CImpl({ children, } : React.PropsWithChildren)
     {
       ;
