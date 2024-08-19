@@ -3,13 +3,23 @@
 
 
 
-import assert from "assert";
+import {
+  assert ,
+} from "./Assert.mjs";
 
 export { assert } ;
 
-export const throwTypeError = /** @satisfies {(...a: ConstructorParameters<typeof Error> ) => never } */ (...a) => { throw new TypeError(...a) ; } ;
+import {
+  throwTypeError ,
+  throwAssertionError ,
+} from "./ThrowTypeError1.mjs";
 
-export const throwAssertionError = /** @satisfies {(...a: ConstructorParameters<typeof Error> ) => never } */ (...a) => { throw new Error(...a) ; } ;
+export {
+  throwTypeError ,
+  throwAssertionError ,
+} ;
+
+// import type {} from "typexpe-commons/src/ArrayPrototypeIncludes.mts" ;
 
 /**
  * nonlocally-returning ev
@@ -102,23 +112,36 @@ export const EntryOfPlain = {} ;
 
 
 
+import {
+  isNonNull ,
+} from "./IsNonNull.mjs" ;
+
 const iterateNonNull = /** @type {<const A>(x: A) => ([A & {}] | []) } */ (x) => (
   isNonNull(x) ?
   [x] : []
 ) ;
 
-const isNonNull = /** @type {<const A>(x: A) => x is (A & {})} */ (x) => (
-  (x ?? null) === null
+const iteratePositives = (
+  /** @type {<const A extends true | Object, actualFalseT extends false | null>(x: A | actualFalseT) => ([A & {}] | []) } */
+  (x) => (
+    (x) ?
+    [x] : []
+  )
 ) ;
 
-export { iterateNonNull, isNonNull, } ;
+export {
+  iteratePositives ,
+  iterateNonNull,
+  isNonNull,
+} ;
 
 
 
 
 ;
 
-import * as L from "./lodash-es-min.mjs" ;
+// import * as L from "./lodash-es-min.mjs" ;
+import * as L from "lodash-es" ;
 
 import * as Immutable from "immutable" ;
 
@@ -126,6 +149,141 @@ export {
   /** @deprecated */
   L as lodash,
   L ,
+} ;
+
+const unfoldPro = (
+  /**
+   * 
+   * @template E
+   * @template {E} ER
+   * 
+   * @template initialStateT
+   * 
+   * @param {[opts: { digest: ( (s: ER | initialStateT) => E ) , initialState: initialStateT , shallContWith: (state: E) => state is ER, } ] } args
+   * 
+   */
+  (...[{
+    digest,
+    initialState,
+    shallContWith ,
+  }]) => (
+    reiterable(function * ()
+    {
+      /** @type {ER | initialStateT } */
+      let sv = initialState ;
+
+      LOOP :
+      for (;;) {
+        ;
+
+        const state0 = sv ;
+        const state1 = digest(state0) ;
+        if (shallContWith(state1) ) {
+
+          const yv = state1 ;
+
+          try {
+
+            yield yv ;
+  
+          } finally {
+            sv = state1 ;
+          }
+        } else {
+          break LOOP ;
+        }
+
+      }
+    })
+  )
+) ;
+
+const unfoldConjPro = (
+  /**
+   * 
+   * @template {object | true} E
+   * @template {E} E1
+   * @template {E} ER
+   * 
+   * @template {false | null} usedFalseT
+   * 
+   * @template initialStateT
+   * 
+   * @param {[opts: { digest: ( (s: ER | initialStateT) => E1 ) , initialState: initialStateT , shallContWith: (state: E1) => (ER | usedFalseT), } ] } args
+   * 
+   */
+  (...[{
+    digest,
+    initialState,
+    shallContWith ,
+  }]) => (
+    reiterable(function * ()
+    {
+      /** @type {ER | initialStateT } */
+      let sv = initialState ;
+
+      LOOP :
+      for (;;) {
+        ;
+
+        const state0 = sv ;
+        const state01 = digest(state0) ;
+        yield state01 ;
+
+        const state1 = shallContWith(state01) ;
+
+        if (state1 ) {
+
+          const yv = state1 ;
+
+          try {
+
+            yield yv ;
+  
+          } finally {
+            sv = state1 ;
+          }
+        } else {
+          break LOOP ;
+        }
+
+      }
+    })
+  )
+) ;
+
+const unfoldWhileTruePro = (
+  //
+  /**
+   * 
+   * @template {object | `${number | boolean | null | undefined}${string }` | symbol | true} E
+   * @template {E} ER
+   * 
+   * @template {false | null} usedFalseT
+   * 
+   * @param {[opts: { digest: ( (s: E) => (E | usedFalseT) ) , initialState: NoInfer<E> , } ]} args
+   * 
+   */
+  (...[{
+    digest,
+    initialState,
+  }]) => {
+    /** @typedef {E } AsE */
+    ;
+    return (
+      unfoldPro({
+        digest: /** @type {(x: AsE) => (AsE | usedFalseT) } */ (e) => digest(e) ,
+        initialState ,
+        shallContWith: /** @type {(x: AsE | usedFalseT) => x is AsE } */ ((e) => !!e) ,
+      })
+    )
+  }
+);
+
+export {
+  unfoldPro ,
+  unfoldWhileTruePro ,
+  unfoldConjPro ,
 } ;
 
 /**
@@ -155,7 +313,7 @@ export const arrayFromAsyncFac = /** @template E @param {() => AsyncIterable<E> 
  * equivalent to `Array.from(reiterable(x) )`, except possibly additionally `freeze`ed .
  * 
  */
-export const reiterated = /** @template E @param {() => Generator<E, void, void> } x @return {ReadonlyArray<E> } */ (x) => {
+export const reiterated = /** @type {<const E>(...args: [() => Generator<E, void, void> ] ) => ReadonlyArray<E> } */ (x) => {
   return (
     Object.freeze((
       Array.from(reiterable(x) )
@@ -266,6 +424,40 @@ export const asMentioned = /** @template E @param {() => Generator<E, void, void
   ) ;
 } ;
 
+/**
+ * Constant Array
+ * 
+ */
+const SEQ = (
+  /**
+   * @type {<const IA extends readonly unknown[]>(values: IA) => typeof values }
+   * 
+   */
+  function (vs) {
+    // TODO
+    Object.freeze(vs) ;
+    return vs ;
+  }
+) ;
+
+export { SEQ , } ;
+
+/**
+ * Constant
+ * 
+ */
+export const asConst = (
+  /**
+   * @type {<const IA >(values: IA) => typeof values }
+   * 
+   */
+  function (vs) {
+    // TODO
+    Object.freeze(vs) ;
+    return vs ;
+  }
+) ;
+
 export {
   range ,
   // memoize ,
@@ -276,6 +468,42 @@ export {
 export {
   Immutable ,
 } ;
+
+const TRY_CHECK_FROM_ARRAY = (
+  /**
+   * 
+   * @template {object | symbol | true} E
+   * 
+   * @template {false | null} actualFalseT
+   * 
+   * @param {[src: readonly (E | actualFalseT)[] ]} args
+   * 
+   */
+  function (...[a0]) {
+    if (a0[0] ) {
+      const aNext = a0[0]
+      return /** @type {const} */ ([aNext, a0.slice(1) ]) ;
+    } else {
+      return false ;
+    }
+  }
+) ;
+
+export {
+  TRY_CHECK_FROM_ARRAY ,
+} ;
+
+;
+
+/* `allocateKeyInternedObjectPool` */
+export {
+  allocateKeyInternedObjectPool ,
+} from 'typexpe-commons/src/ort.mjs';
+
+/* `createInterningSubclass` */
+export {
+  createInterningSubclass ,
+} from 'typexpe-commons/src/ortEdConstructors.mjs';
 
 /** @type {{ <T extends (...args: [...argsT]) => any, const argsT extends any[]>(func: T, resolver: ((...args: Parameters<T>) => any) | undefined): ReturnType<(typeof L.memoize<T>)>; } } */
 export const xMemoize = (
@@ -306,7 +534,7 @@ export {
  * @template {{}} A
  * 
  */
-function Deferred()
+function Resolvable()
 {
   this.out = (new Promise(/** @param {(x: A) => void } resolve */ (resolve, reject) => {
     this.resolve = resolve ;
@@ -317,7 +545,15 @@ function Deferred()
   this.resolve ;
 }
 
-export { Deferred, } ;
+export {
+  Resolvable ,
+  /** @deprecated alias of {@link Resolvable }. */
+  Resolvable as Deferred,
+} ;
+
+if (typeof setImmediate === "undefined") {
+  globalThis.setImmediate ??= queueMicrotask ;
+}
 
 export { startTimeout, } ;
 
