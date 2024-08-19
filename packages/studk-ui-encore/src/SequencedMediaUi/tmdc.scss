@@ -25,6 +25,8 @@ $studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
 
 
 
+$tbmcdebug : 0 ;
+
 @layer defaults
 {
   //
@@ -44,6 +46,11 @@ $studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
     --table-cell-orientation: vertical-lr ;
 
   }
+
+  @if $tbmcdebug <= 0 {
+  //
+
+  //
 
   :is(
     :is(#{$studk-ui-sequemi-maintableelemselector } ) > * > tr 
@@ -157,6 +164,9 @@ $studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
 
     }
 
+  }
+
+  //
   }
 
   // :is(table.studk-tbmctableelem > * > tr > td):is(*[data-src-col-id])
@@ -306,15 +316,12 @@ $studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
 
 %debug-bordw {
   //
-  border: 0.795ex solid black ;
+  border: 0.295ex solid black ;
   padding: 0.6095  ;
 }
 
-@if true {
+@if 1 <= $tbmcdebug {
   //
-
-  $paddw: 1.095ex ;
-  $bordw: 0.3095ex ;
 
   $uninteres-saturrate: 51.93% ;
 
