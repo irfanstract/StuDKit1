@@ -48,7 +48,7 @@
 
 .studk-ui-tblbyrow-rtdcl-row-h {
   position: sticky;
-  inset-inline-start: 0;
+  inset-block-start: 0;
 }
 
 .studk-ui-table
@@ -59,9 +59,43 @@
     & > :is(tbody, thead) > tr > :is(td, th):is(:nth-child(1) ) ,
     #---e
   ) {
-    position: sticky;
-    inset-block-start: 0;
-    inset-inline-start: 0;
+
+    @if true {
+      //
+
+      // position: sticky;
+      &:is(tr:is(:nth-child(1) ) > * , :nth-child(1) ) {
+        position: sticky;
+        inset-block-start: auto;
+        inset-inline-start: auto;
+      }
+      &:is(tr:is(:nth-child(1) ) > * ) {
+        inset-block-start: 0;
+      }
+      &:is(:nth-child(1) ) {
+        inset-inline-start: 0;
+      }
+    }
+    // &:is(tr:is(:nth-child(1) ) > *:nth-child(1) ) {
+    //   //
+    //   position: sticky;
+    //   inset-block-start: 0;
+    //   inset-inline-start: 0;
+    // }
+
+    /* see above and below */
+    & > * {
+      //
+      &:is(:first-child:last-child) {
+        //
+      }
+      &:not(:first-child:last-child):not(:first-child) {
+        display: none !important ;
+      }
+      margin: 0 ;
+    }
+    padding: 0 !important ;
+
   }
 }
 
@@ -100,7 +134,16 @@
   table.studk-enhancedtableelement {
     writing-mode: var(--table-cell-orientation, inherit) !important ;
     & :is(th, td) {
-      writing-mode: var(--ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval) ;
+      & > * {
+        &:is(:first-child:last-child) {
+          writing-mode: var(--ovcbxassigned-studkenhancedtableelementprops-originalwritingdircssval) ;
+        }
+        // &:not(:first-child:last-child):not(:first-child) {
+        //   display: none !important ;
+        // }
+        // margin: 0 ;
+      }
+      // padding: 0 !important ;
     }
   }
 
