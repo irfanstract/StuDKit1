@@ -18,7 +18,7 @@
     "jsx": "react",
   },
   "references": [
-    { "path": "../../packages/typexpe-commons", } ,
+    { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
     { "path": "../../packages/studk-util", } ,
     { "path": "../../packages/studk-simulations-commons", } ,
     { "path": "../../packages/studk-ui-fwcore", } ,
