@@ -38,7 +38,7 @@ import type {
   BrowsibleHref ,
   LinkableHref ,
   FullDocHref ,
-} from "studk-ui-core/src/hrefLinkable" ;
+} from "studk-ui-fwcore/src/hrefLinkable" ;
 
 
 

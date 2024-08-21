@@ -62,14 +62,14 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui-core/src/xt/ovc-util.tsx" ;
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   withRef ,
-} from "studk-ui-core/src/reactjs/helpers/withAdHocRefs.tsx" ;
+} from "studk-ui-fwcore/src/reactjs/helpers/withAdHocRefs.tsx" ;
 
 
 
@@ -86,12 +86,12 @@ import {
   doNativeCompDisplayedOffsetsAnalysis,
   useIsNativeCompHoveredOrFocused,
   useNativeCompDisplayedOffsetsAnalysis,
-} from "studk-ui-core/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import {
   useExistingNativeCompBoundingBoxViaRef ,
   NCPSR ,
-} from "studk-ui-core/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 import {
   OVCO ,
