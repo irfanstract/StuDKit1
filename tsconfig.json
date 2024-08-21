@@ -127,7 +127,8 @@
 
     /* CONFIG FILES */
     
-    ".eslintrc.mjs" ,
+    // ".eslintrc.cjs" ,
+    // ".eslintrc.mjs" ,
     "next.config.mjs" ,
   ],
   "references": [
@@ -148,6 +149,10 @@
   
   "ts-node": {
 
+    /* Node no longer use custom inspect on abort on uncaught exceptions, but */
+    /* `ts-node` kept doing that */
+    "logError": true,
+
     /*
      * we need to disable `transpileOnly` to avoid run-time `ReferenceError`s and thelike, since
      * it's possible some src-file(s) were written under `isolatedModules: false` and relies on type-checking (eg `const enum`s)
@@ -156,6 +161,9 @@
 
     /* https://typestrong.org/ts-node/docs/troubleshooting/#missing-types */
     "files": true,
+
+    /* try to avoid those issues with import-path file-extension(s) */
+    "experimentalResolver": true,
     
     "esm": true,
 

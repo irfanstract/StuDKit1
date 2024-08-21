@@ -180,22 +180,17 @@ export const matrixAssign = /** @satisfies {<T extends {}>(...args: [T, Partial<
  * @type {<const n extends 2 | 3 | 4 | 5, const I extends [1, 2, 3?, 4?, 5?][number] >(...args: [length: n, ] ) => Matrix<n> }
  * 
  */
-export function identityMatForLength(lengthArg)
-{
-  switch (lengthArg) {
-    case 3 : return IDENTITYMATRIX3 ;
-    case 4 : return IDENTITYMATRIX4 ;
-    default: return identityMatForLengthUncached(lengthArg) ;
-  }
-}
-
-/*
- * with assumption of immutability
- * we cache matrices.
- */
-
-const IDENTITYMATRIX3 = identityMatForLengthUncached(3) ;
-const IDENTITYMATRIX4 = identityMatForLengthUncached(4) ;
+export const identityMatForLength = (
+  /*
+   * due to being a hot-spot,
+   * with assumption of immutability
+   * we cache matrices.
+   */
+  
+  util.L.memoize((lengthArg) => (
+    identityMatForLengthUncached(lengthArg)
+  ) , (e) => e )
+) ;
 
 /**
  * identity matrix (ie on diagonal are all `1`s, and elsewhere `0`s).

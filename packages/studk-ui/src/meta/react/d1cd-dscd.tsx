@@ -28,7 +28,14 @@ import * as React from "react" ;
 
 export const SingleChildDiv = (({ style, ...props }) => {
   return (
-     <div {...props} style={{ display: "grid", grid: `"a"`, ...style } } />
+     <div
+     {...props}
+     style={{
+      // display: "grid", grid: `"a"`,
+      display: "flex", flexDirection: "column",
+      ...style
+     } }
+     />
   ) ;
 }) satisfies React.FC<JSX.IntrinsicElements["div"] > ;
 

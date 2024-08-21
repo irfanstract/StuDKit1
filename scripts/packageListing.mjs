@@ -64,13 +64,21 @@ export const pkgs = (
   IO.readdirSync(pkgsDirActualPath)
 ) ;
 
-export { describeExpectedPkgNames, } ;
+export {
+  describeExpectedPkgNames,
+} ;
 
-/** @type {(x: PackageNames) => ((typeof x)) } */
-function describeExpectedPkgNames(xPkgs)
+/**
+ * {@link describeExpectedPkgNames} .
+ * 
+ * @type {(...x: import("./util-eawo.mts").ArgsWithOptions<[PackageNames ], import("./util-eawo.mts").AllOrNever1<({ sort: boolean ; deduplicate: boolean })>> ) => PackageNames }
+ * 
+ */
+function describeExpectedPkgNames(...[xPkgs, xpo = {}])
 {
+  xpo ;
   return (
-    util.L.intersection(xPkgs, pkgs)
+    util.L.intersection(pkgs, xPkgs)
     .toSorted()
   ) ;
 }
@@ -94,6 +102,17 @@ export const nonPlainJsPkgs = (
   describeExpectedPkgNames((
     util.reiterated(function* () {
 
+      /* utility package(s) */
+
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk-util\b/u) )
+      ) ;
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^typexpe-commons\b/u) )
+      ) ;
+      
       /* helper packages each for using the corresponding library */
 
       yield* (
@@ -106,20 +125,61 @@ export const nonPlainJsPkgs = (
         .filter(nm => nm.startsWith('studk-fbreact') )
       ) ;
 
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk-dom\b/u) )
+      ) ;
+      
       /* our official reusable packages */
-
-      yield 'studk-ui' ;
 
       {
         yield* (
           pkgs
-          .filter(nm => nm.startsWith('studk-i3d') )
-        ) ;
-        yield* (
-          pkgs
-          .filter(nm => nm.match(/\bencore\b/g ) )
+          .filter(nm => nm.match(/\b(common|encore)\b/g ) )
         ) ;
       }
+
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-uieditmgmt') )
+      ) ;
+      yield 'studk-ui' ;
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-ui') )
+      ) ;
+
+      yield 'studk-uieditmgmt' ;
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-i3d') )
+      ) ;
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-audio') )
+      ) ;
+
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studpresent(?:ed|ers)/u) )
+      ) ;
+
+      /* internal FW packages */
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk\b/u) )
+      ) ;
+
+      {
+        yield* (
+          pkgs
+          .filter(nm => nm.match(/\b(core|fwcore)\b/g ) )
+        ) ;
+      }
+
     })
   ))
 ) ;
@@ -135,15 +195,23 @@ export const internalFwPackages = (
   ))
 ) ;
 
-export const reactDevServerAppPkgs = (
-  describeExpectedPkgNames([
-    'studk-demos' ,
-  ])
+/**
+ * packages which are
+ * __application__(s) built on "yyy dev server" (eg `next`, `vite`, `webpack-dev-server`, etc)
+ * 
+ */
+export const webFwkDevServedAppPkgs = (
+  describeExpectedPkgNames((
+    util.reiterated(function* () {
+      yield 'studk-demos' ;
+      yield 'studk-ui-demos' ;
+    })
+  ))
 ) ;
 
 export const internallyNonImportiblePkgs = (
   describeExpectedPkgNames([
-    ...reactDevServerAppPkgs ,
+    ...webFwkDevServedAppPkgs ,
   ])
 ) ;
 
@@ -170,7 +238,7 @@ export const externallyNonReusablePkgs = (
   describeExpectedPkgNames([
     ...internalFwPackages ,
     ...internallyNonImportiblePkgs ,
-    ...reactDevServerAppPkgs ,
+    ...webFwkDevServedAppPkgs ,
   ])
 ) ;
 
