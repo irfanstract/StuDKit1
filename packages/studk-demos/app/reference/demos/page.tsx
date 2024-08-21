@@ -21,7 +21,7 @@ import "@/appInternalScripts/env" ;
 export const metadata = {
   title: 'Demos Of StuDK',
   description: 'Demo Applets Building On StuDK.',
-}
+};
 
 function renderPictureCard(...[{ titleElem, contents, }] : [{ titleElem: React.ReactElement | string, contents: React.ReactElement | null, }])
 {
