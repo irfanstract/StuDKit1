@@ -32,11 +32,15 @@
      "recharts": "^2.10.1"
      ,
      "victory": "^36.6.12"
+     ,"@react-spring/three"  : "9.7.3"
+     ,"@react-spring/web"    : "9.7.3"
 
+     ,"@stitches/react": "1.2.8"
      ,
      "@types/three": "0.165.0"
      ,
      "@react-three/fiber": "8.16.8"
+     ,"@react-three/drei": "9.107.0"
      ,
      "@types/d3": "7.4.3"
      ,
