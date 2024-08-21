@@ -198,27 +198,27 @@ export const TbmcKnbC: {
         const mainTable = (
           renderTableByRowDtListAndColumnList.renderAsTransposed(chnlDataList , {
 
-            getRowHash: (v, i) => `item ${i}-th`
+            getRowHash: (v, i) => `content-layer-${i}`
             ,
 
             perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
               yield {
                 renderHead: () => <i children={`name`} /> ,
                 renderContent: (v) => <code children={`${v.id}`} /> ,
-                id: `itemId`,
+                id: `itemident`,
               } ;
 
               yield {
                 renderHead: () => <i children={`kind letter`} /> ,
                 renderContent: (v) => <code children={`${v.kind}`} /> ,
-                id: `itemKind`,
+                id: `itemkind`,
               } ;
 
               for (const msd of hoSegmentDescs)
               {
                 const { srcSpan, id: colId, } = msd ;
                 yield {
-                  id: `Horizon Segment ${colId}`,
+                  id: `plotsegment-${colId}`,
                   classNames: ['studk-ui-tbmc-timewatchcolumncell'],
                   renderHead: () => (
                     <div
@@ -226,16 +226,19 @@ export const TbmcKnbC: {
                     data-t-end={srcSpan.endPos }
                     style={{
                       inlineSize: `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ,
-                      contain: `layout`,
+                      minBlockSize: `2em`,
+                      contain: `layout inline-size`,
+                      overflow: "hidden",
                       ...({
                         ["--t-start"]: `attr(data-t-start)` ,
                         ["--t-end"  ]: `attr(data-t-end  )` ,
                         ["--sc"]: 1 ,
                       }),
                     }}
-                    >
-                      { renderTSegLabel({ msd, }) }
-                    </div>
+                    children={(
+                      renderTSegLabel({ msd, })
+                    ) }
+                    />
                   ) ,
                   renderContent: (v) => (
                     <div
@@ -265,6 +268,51 @@ export const TbmcKnbC: {
     ;
   } )
 ) ;
+
+export namespace TbmcKnbCDisplayed
+{
+
+  /**
+   * WIP/TBD
+   * 
+   * @deprecated
+   */
+  export function searchSegmentDisplayNodes<Mpe>(...[root = document, { flatTranslate: flm, }]: ArgsWithOptions<[host ?: Element | Document], { flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) }> ) {
+    return (
+      Array.from(root.querySelectorAll(`.studk-sequemi-tlwalkthruappcomp :is(tr)[data-src-row-id^=plotsegment]`) )
+      .flatMap(e => {
+        return (
+          flm(S_EHE1(e) )
+        ) ;
+      })
+    )  ;
+  }
+  const S_EHE1 = (e: Element) => {
+    ;
+    const rnk = (
+      e.getAttribute("data-src-row-id")
+    ) ;
+    return {
+      e ,
+      rnk ,
+    } ;
+  } ;
+
+  /**
+   * WIP/TBD - `rnk` supposed to come from `ctx` given as ctx for that one callback required for {@link searchSegmentDisplayNodes}
+   * 
+   * @deprecated
+   */
+  export const getSegmentDisplayRowsByRnk = (
+    function (...[rnk]: [rnk: string])
+    {
+      return (
+        Array.from(document.querySelectorAll(`[data-src-row-id=${rnk }] `) )
+      ) ;
+    }
+  ) ;
+
+}
 
 
 
