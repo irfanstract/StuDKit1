@@ -45,6 +45,14 @@ import {
 
 import * as React from "react" ;
 
+/* cannot import from `ReactJsBased.ts` because that'd lead to cycle */
+
+import {
+  ReactSetStateActionHelpers ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseReactSetStateAction.tsx" ;
+
+;
+
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
@@ -65,16 +73,30 @@ export const asHidden = (
   }
 ) ;
 
+interface PrependableSemanticProperties {
+  //
+
+  /** __replaces__ the existing `key`. */
+  key ?: (React.Key | Extract<React.SetStateAction<React.Key | null > , (...a: any) => any > ) ,
+
+  /** adds into {@link HTMLElement.className `className`}. */
+  classNames ?: readonly string[],
+  hidden ?: boolean,
+  props ?: JSX.IntrinsicElements["div"] ,
+  /** `data-<key-name>` . note -- please omit the leading `data-` it'll be added automtclly. */
+  customDataProperties ?: Record<string, any> ,
+
+  style ?: React.CSSProperties ,
+  /** `--some-prop` . note -- please include the leading suffix `--` . */
+  customStyleProperties ?: Record<string, any> ,
+
+}
+
 export const withExtraSemanticProperties = (
   function (...args : (
     [...(
       ArgsWithOptions<[], (
-        {
-          classNames ?: readonly string[],
-          hidden ?: boolean,
-          style ?: React.CSSProperties ,
-          props ?: JSX.IntrinsicElements["div"] ,
-        }
+        PrependableSemanticProperties
       )>
     ) , ...[React.ReactElement]]
   ))
@@ -82,16 +104,27 @@ export const withExtraSemanticProperties = (
   {
     const [
       {
+        key: ovdKeyVal = null,
         classNames: extraClassNames = [] as const,
         hidden: hidden1 = false,
         style: styleProps1 = {} ,
+        customDataProperties: cdp = {} ,
+        customStyleProperties: cssp = {} ,
         props: opaquePropsArg = {} ,
-      } = {},
-      e,
+      } = null ?? {},
+      e0,
     ] = args ;
 
+    const e = (
+      1 ?
+      e0
+      : (
+        expandElemt1(e0)
+      )
+    ) ;
+
     const {
-      key ,
+      key: orignlKey ,
       type ,
       ref ,
       otherProps: props0 ,
@@ -109,9 +142,18 @@ export const withExtraSemanticProperties = (
       ({
         className: `${extraClassNames.join(" ") } ${cnm0 ?? " " } ` ,
         hidden: hidden0 || hidden1 ,
-        style: { ...(styleProps0), ...(styleProps1), } ,
+        style: { ...(styleProps0), ...(styleProps1), ...(cssp), } ,
+        ...(
+          Object.fromEntries((
+            Object.entries(cdp)
+            .map(([k, v]) => (
+              [`data-${k}` as const, v] satisfies [any, any]
+            ))
+          ))
+        ),
         ...(otherProps) ,
         ...(opaquePropsArg) ,
+        // ...({ key: ovdKeyVal , }) ,
         children ,
       } satisfies JSX.IntrinsicElements["div" | "g"] )
     ) ;
@@ -120,12 +162,76 @@ export const withExtraSemanticProperties = (
       React.createElement(
         type ,
         {
-          key ,
+          key: (ovdKeyVal) ? ReactSetStateActionHelpers.asDigestFnc(ovdKeyVal)(orignlKey ) : orignlKey ,
           ref ,
           ...props2 ,
         } ,
       )
     ) ;
+  }
+) ;
+
+/**
+ * incase the `ReactElement` is Fragment or Component Elemt then
+ * actually call the func-or-constructor, and dive, and return the resulting JSX
+ * 
+ */
+const expandElemt1 = (
+  function (...[e0]: [React.ReactElement]): React.ReactElement {
+
+    EC : {
+      ;
+      const C = e0.type ;
+
+      if (typeof C === "function") {
+
+        const e01 = (
+          ((): { value: React.ReactNode, } | false => {
+            // TODO
+            try {
+              return { value: C(e0.props), } ;
+            } catch (z) {
+              return false ;
+            }
+          })()
+        ) ;
+
+        if (e01) {
+          ;
+
+          const e0110 = (
+            e01.value
+          ) ;
+
+          const e011: React.ReactElement = (
+            e0110 && (typeof e0110 === "object") && ("props" in e0110) ?
+            e0110
+            :
+            <>{ e0110 }</>
+          ) ;
+
+          const e10 : React.ReactElement = {
+            ...e011 ,
+            key: e0.key ,
+          } ;
+
+          if (1) {
+            ;
+            return (
+              expandElemt1(e10)
+            ) ;
+          }
+
+        } else if (e01 === false) {
+
+          break EC ;
+
+        }
+      }
+
+    }
+
+    return e0 ;
   }
 ) ;
 
