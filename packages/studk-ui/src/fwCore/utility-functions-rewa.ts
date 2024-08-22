@@ -45,7 +45,7 @@ import {
 
 import type {
   ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs'; ;
 
 import {
   allocateKeyInternedObjectPool ,
