@@ -22,7 +22,7 @@ import {
 
 import {
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 /**
  * note:
@@ -36,7 +36,7 @@ import {
 import type {
   ArgsWithOptions ,
   ArgsGetOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import {
   random,
