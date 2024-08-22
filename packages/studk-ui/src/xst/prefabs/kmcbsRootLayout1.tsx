@@ -134,7 +134,11 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
           Home
           </Link>
           --
-          <Link href="credits/">
+          <Link href="/reference/demos/">
+          Demo Pages
+          </Link>
+          --
+          <Link href="/credits/">
           credits
           </Link>
           --

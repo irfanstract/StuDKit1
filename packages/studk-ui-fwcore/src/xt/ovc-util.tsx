@@ -45,10 +45,6 @@ import {
 } from "studk-util/src/math/point-all.mjs" ;
 
 
-
-
-
-
 const TIMEOUT = (
   (tMillis: number) => (
     new Promise<void>(resume => (
@@ -61,8 +57,25 @@ export {
   TIMEOUT ,
 } ;
 
+import type EventEmitter from 'events';
+
+;
+
+
+
+
+
+
 import * as React from "react" ;
 
+/**
+ * to be able to *properly* call *event-handler(s)* __(or other callbacks u're okay it may change anytime)__ from within `useYyyEffect` handlers
+ * you'll *really* need this wrapper.
+ * 
+ * this is  a substitute of "experimental API that has not yet been released" `useEffectEvent` (not available yet),
+ * see "Separating Events From Effects" (https://19.react.dev/learn/separating-events-from-effects ).
+ * 
+ */
 export const useRefreshedCallback = (
   function <argsT extends readonly unknown[], const R>(...[upstreamImpl] : [impl: (...args: argsT) => R ])
   {
@@ -75,6 +88,14 @@ export const useRefreshedCallback = (
   }
 ) ;
 
+/**
+ * to be able to *properly* call *event-handler(s)* from within `useYyyEffect` handlers
+ * you'll *really* need this wrapper.
+ * 
+ * this is  a substitute of "experimental API that has not yet been released" `useEffectEvent` (not available yet),
+ * see "Separating Events From Effects" (https://19.react.dev/learn/separating-events-from-effects ).
+ * 
+ */
 export const useEventDispatchCallback = (() => {
   ;
   function useEventDispatchCallbackImpl(...args : [impl: () => void ] ) : () => void ;
@@ -280,6 +301,55 @@ export {
 } ;
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
+
+export const useEventEmitterListener = (
+  function <hostT extends EventEmitter, typ extends string>(...[receiver, [evtnm, cbk], dependencyList] : (
+    [host: hostT, Parameters<typeof EventEmitter.prototype.on >, React.DependencyList ]
+  ))
+  {
+
+    type ActualEvt = Event ;
+
+    React["useLayoutEffect"](() => {
+      const fnc = (
+        cbk
+      ) ;
+      receiver.on(evtnm, fnc, ) ;
+      return () => {
+        ;
+        receiver.off(evtnm, fnc, ) ;
+      } ;
+    } , dependencyList) ;
+  }
+) ;
+
+function useEventTargetListener<hostT extends EventTarget, >(...args : (
+  [host: hostT, Parameters<typeof EventTarget.prototype.addEventListener >, React.DependencyList ]
+)) : void ;
+function useEventTargetListener<hostT extends HTMLElement, typ extends keyof HTMLElementEventMap>(...args : (
+  [host: hostT, Parameters<typeof HTMLElement.prototype.addEventListener<typ> >, React.DependencyList ]
+)) : void ;
+
+function useEventTargetListener<hostT extends EventTarget, typ extends string>(...[receiver, [evtnm, cbk, optns,], dependencyList] : (
+  [host: hostT, Parameters<typeof EventTarget.prototype.addEventListener >, React.DependencyList ]
+))
+{
+
+  type ActualEvt = Event ;
+
+  React["useLayoutEffect"](() => {
+    const fnc = (
+      cbk
+    ) ;
+    receiver.addEventListener(evtnm, fnc, optns ) ;
+    return () => {
+      ;
+      receiver.removeEventListener(evtnm, fnc, optns ) ;
+    } ;
+  } , dependencyList) ;
+}
+
+export { useEventTargetListener , } ;
 
 
 
