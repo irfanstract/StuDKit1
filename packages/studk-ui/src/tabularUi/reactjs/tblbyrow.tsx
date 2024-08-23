@@ -21,7 +21,7 @@ import {
 
 import {
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 /**
  * note:
@@ -35,7 +35,7 @@ import {
 import type {
   ArgsWithOptions ,
   ArgsGetOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import {
   random,
@@ -55,16 +55,16 @@ import * as React from "react" ;
 import {
   describeComponent,
   mkClasses,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   Button ,
   Span ,
-} from '#currentPkg/src/meta/react/dbc.tsx'; ;
+} from 'studk-ui/src/meta/react/dbc.tsx'; ;
 
 import {
   EnhancedTableC ,
@@ -432,7 +432,7 @@ namespace renderTableByRowDtListAndColumnList
   ) ;
 }
 
-// #currentPkg/src/fwCore/ewo.ts
+// studk-ui-fwcore/src/util/EWithOpt.ts
 import "./tbl-default1.scss" ;
  
 
