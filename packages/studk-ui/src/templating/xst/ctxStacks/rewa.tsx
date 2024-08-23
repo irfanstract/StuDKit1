@@ -30,7 +30,7 @@ import {
   ArgsGetOptions ,
   allocateKeyInternedObjectPool ,
   TIMEOUT ,
-} from "studk-ui/src/fwCore/utility-functions-rewa.ts" ;
+} from "studk-ui-fwcore/src/util/ReWaPkgConvnt.ts" ;
 
 
 
