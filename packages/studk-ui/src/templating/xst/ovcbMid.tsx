@@ -31,16 +31,16 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
 
 const TIMEOUT = (
   (tMillis: number) => (
@@ -88,7 +88,7 @@ import {
 
 import {
   OVCB, 
-} from '#currentPkg/src/templating/xst/ovcb.tsx';
+} from 'studk-ui/src/templating/xst/ovcb.tsx';
 
 ;
 
