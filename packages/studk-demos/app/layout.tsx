@@ -6,27 +6,26 @@ import * as React from "react" ;
 
 
 
-/* import needs to be pre/repeated preceding the imports of component defs, as work-around to the naive approach the platform takes to bundle CSS */
-// console["log"](new Error("l") ) ;
-import "@/public/global.css" ;
-import "@/appInternalScripts/env" ;
+/**
+ * trying to make module `@/appInternalScripts/env` run .
+ * it seems like the FW refuses to re-run this file `layout.tsx` on Client-Side, so
+ * we need to make the module define-and-export a Client Component and actually put the exported Component into display ;
+ * otherwise, the module's code will never run, since nothing else will ever cause the module's code to run
+ * 
+ */
+import {
+  EnvTsxMainDummyC,
+} from "@/appInternalScripts/env" ;
+
+import "@/public/global1.scss" ;
+
+
 
 import {
-  SingleChildDiv,
-} from "@/components/SingularComponent1"; ;
-
-import { MainAndNavAndFinaleC, } from "@/components/mainAndAside" ;
-
-import Link from "next/link" ;
-
-import {
-  NavigateBackButton,
-  NavigateForwardButton ,
-} from "@/components/NavigateButtons"; ;
-
-
-
-import "@/appInternalScripts/env" ;
+  pagesConventions,
+  describeHeadlinedWidget, 
+  RPC,
+} from "@/appInternalScripts/appPagesConvention"; ;
 
 import { allFonts, } from "@/appInternalScripts/fonts" ;
 
@@ -39,6 +38,14 @@ import "./layout.css" ;
 
 
 
+import {
+} from "./layoutComponents" ;
+
+import {
+  NavigateBackButton,
+  NavigateForwardButton ,
+} from "@/components/NavigateButtons"; ;
+
 import { KmcbsRootLayoutC, } from "studk-ui/src/xst/prefabs/kmcbsRootLayout1.tsx" ;
 
 export default function RootLayout({
@@ -48,6 +55,8 @@ export default function RootLayout({
 })
 {
   return (
+    <>
+    <EnvTsxMainDummyC />
     <html lang="en" style={{ }}>
       <body
       className={(
@@ -67,22 +76,12 @@ export default function RootLayout({
         overflowX: "clip",
       }}
       >
-      <KmcbsRootLayoutC
-      children={children }
-      />
+      <RPC children={children} />
       </body>
     </html>
+    </>
   )
 }
-
-import {
-  SpclCurrentlyPathDisplay ,
-} from "./layoutComponents" ;
-
-import {
-  pagesConventions,
-  describeHeadlinedWidget ,
-} from "@/appInternalScripts/appPagesConvention"; ;
 
 
 
