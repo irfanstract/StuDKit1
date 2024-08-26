@@ -3,11 +3,6 @@
 
 
 
-
-
-
-
-
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -18,7 +13,6 @@
  * 
  * */
 "use client" ;
-
 
 
 
@@ -36,6 +30,16 @@ import type {
   Extend,
 } from 'studk-fwcore/src/util/C1.ts'
 
+import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
+
+const getNodeTypeLabelTxt = (nd: TS.Node) => (
+    `${TS.SyntaxKind[nd.kind] }`
+) ;
+
+import {
+  NodeListKcn,
+  getKcn ,
+} from "studk-ts-codeanalysis/src/TsDeriva.ts" ;
 
 
 
@@ -47,13 +51,13 @@ import type {
 import * as React from "react" ;
 
 
+
+
+
+
 import {
   describeComponent,
 } from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
-
-import {
-  CFaBku ,
-} from "studk-ui-fwcore/src/reactjs/helpers/CFa.tsx" ;
 
 import {
   describeHtmlComponent,
@@ -65,6 +69,10 @@ import {
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
+  withExtraSemanticProperties ,
+} from 'studk-ui-fwcore/src/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
+
+import {
   SingleChildDiv,
 } from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
@@ -73,49 +81,21 @@ import {
   Span ,
 } from 'studk-ui/src/xst/dbc.tsx'; ;
 
+const useIsClientSide = (): boolean => (
+  React.useSyncExternalStore(() => (() => {}) , () => true, () => false )
+) ;
+
 // import Link from "next/link" ;
 
 import {
   describeCallbackAssignedStyleProps,
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
-;
-
-
-
 
 
 
 ;
 
-export const AccrdListC = (
-  describeHtmlComponent((
-    function AccordionCImpl({ children, } : React.PropsWithChildren)
-    {
-      ;
-      
-      return (
-        <div>
-          <ul
-          className='studk-ui-accrdnlc'
-          >
-            { (
-              React.Children.toArray(children)
-              .map((e, i) => (
-                <CFaBku
-                key={i}
-                children={e }
-                />
-              ))
-            ) }
-          </ul>
-        </div>
-      ) ;
-    }
-  ))
-) ;
-
-;
 
 
 
@@ -123,7 +103,8 @@ export const AccrdListC = (
 
 
 
-import "studk-ui-encore/src/PaginatedUi/wl.scss" ;
+
+
 
 
 

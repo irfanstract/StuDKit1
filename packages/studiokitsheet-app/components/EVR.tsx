@@ -42,6 +42,16 @@ import type {
 
 
 
+import { TS, } from "studk-fwcore/src/scripting/TsLib.ts" ;
+
+;
+
+
+
+;
+
+
+
 
 
 
@@ -56,18 +66,28 @@ const useCLientSideOnly = (
   ) , () => true, () => false )
 ) ;
 
-const useClientSideOnlyCompute = (
+const useClientSideInitOnlyState = (
   function <const R extends true | object > (...[recompute]: [() => R] )
   {
     const [s, setS] = React.useState<R | null>(() => null) ;
     React["useEffect"](() => {
       setS(v0 => (v0 ?? recompute() ) ) ;
     }) ;
+    return [s, setS] as const ;
+  }
+) ;
+
+const useClientSideOnlyCompute = (
+  function <const R extends true | object > (...[recompute]: [() => R] )
+  {
+    const [s, setS] = useClientSideInitOnlyState(recompute) ;
     return s ;
   }
 ) ;
 
-
+import {
+  CFaBku ,
+} from "studk-ui-fwcore/src/reactjs/helpers/CFa" ;
 
 
 
@@ -89,6 +109,7 @@ import {
 
 import {
   TsAstDisplayC,
+  TsAstDisplayEvents,
   TsSrcFileInfoDisplayC ,
 } from "studk-ui-encore/src/CommonParsedMarkupFileDisplayUi/TsAstDisplay" ;
 
@@ -102,8 +123,8 @@ export const EvrC = (
     function EvrCImpl()
     {
 
-      const vAndE = (
-        useClientSideOnlyCompute((): (
+      const [vAndE, setVAndE] = (
+        useClientSideInitOnlyState((): (
           | { value: ReturnType<typeof getSampleDocument>, err?: null, }
           | { err: Error, value?: false | null, }
         ) => {
@@ -129,7 +150,20 @@ export const EvrC = (
         if (value) {
           ;
           return (
-            <EvrCPos value={value} />
+            <EvrCPos
+            value={value}
+            onChange={e => (
+              setVAndE(v0 => {
+                const { newValue, } = e ;
+                if (TS.isSourceFile(newValue) ) {
+                  ;
+                  console["warn"](`'newValue' is  arbitrary Node but we can only accept SourceFile(s). ignoring the submitted chg evt, not committing it. `, { newValue, } ) ;
+                  return { value: newValue , } ;
+                }
+                return v0 ;
+              } )
+            ) }
+            />
           ) ;
         } else {
           ;
@@ -153,27 +187,75 @@ export const EvrC = (
   ))
 ) ;
 
+const TsAstDisplayCAlt = (
+  function TsAstDisplayCAltCImpl(props: React.ComponentProps<typeof TsAstDisplayC>)
+  {
+    const astRenderRetryK = (
+      React.useMemo(() => Math.random() , [props.value] )
+    ) ;
+    return (
+      <div>
+        <p>AST:</p>
+        <CFaBku
+        key={astRenderRetryK}
+        >
+        <TsAstDisplayC
+        { ...props }
+        />
+        </CFaBku>
+      </div>
+    ) ;
+  }
+) ;
+
 const EvrCPos = (
   describeHtmlComponent((
-    function EvrCPosImpl({ value, } : { value: import('typescript').SourceFile } )
+    function EvrCPosImpl(props : (
+      & {
+        value: import('typescript').SourceFile ,
+        onChange ?: (evt: { newValue: TS.Node }) => void ,
+      }
+    ) )
     {
+      const {
+        value,
+        onChange: onChgArg ,
+      } = props ;
 
-      const definingScriptViewFrame = (
-        ((
-          describeHeadlinedWidget({
-            heading: <>The Defining Script</> ,
-            children: (
-              <div>
-                <p>The Defining Script</p>
-                <p>TypeScript</p>
-                <TsAstDisplayC
-                value={value}
-                />
-              </div>
-            ) ,
-          })
-        ))
-      ) ;
+      const definingScriptViewFrame = (() => {
+        ;
+
+        const handleChgEvt = (
+          onChgArg
+          &&
+          function (...[chgEvt] : [TsAstDisplayEvents.SelfTotalReplacingChgEventDesc ]) {
+            ;
+
+            // TODO
+            console["log"]({ chgEvt, }) ;
+
+            onChgArg({ newValue: chgEvt.newValue, }) ;
+          }
+        ) ;
+
+        return (
+          ((
+            describeHeadlinedWidget({
+              heading: <>The Defining Script</> ,
+              children: (
+                <div>
+                  <p>The Defining Script</p>
+                  <p>TypeScript</p>
+                  <TsAstDisplayCAlt
+                  value={value}
+                  onChange={handleChgEvt}
+                  />
+                </div>
+              ) ,
+            })
+          ))
+        ) ;
+      })() ;
 
       const structureExploringFrame = (
         ((
