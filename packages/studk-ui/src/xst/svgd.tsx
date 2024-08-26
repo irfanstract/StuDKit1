@@ -42,7 +42,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -112,7 +117,7 @@ interface IdealSvgProps extends RequiredPartially<JSX.IntrinsicElements["svg"], 
 {}
 
 export const BlockLvlSvgC = (
-  describeComponent(function BlockLvlSvgCImpl ({ style, ...remProps } : IdealSvgProps ) {
+  describeHtmlComponent(function BlockLvlSvgCImpl ({ style, ...remProps } : IdealSvgProps ) {
     return (
       <InlineLvlSvgC
       style={{
@@ -128,7 +133,7 @@ export const BlockLvlSvgC = (
 ) ;
 
 export const InlineLvlSvgC = (
-  describeComponent(function InlineLvlSvgCImpl ({
+  describeHtmlComponent(function InlineLvlSvgCImpl ({
     children: c ,
     style: {
       // width: w,
