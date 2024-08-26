@@ -24,8 +24,9 @@ import {
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-import type { PartializedPartially, RequiredPartially, } from 'studk-fwcore-setups/src/util-eawo.mjs';
+  PartializedPartially,
+  RequiredPartially,
+} from 'studk-fwcore/src/util/C1.ts';
 
 import type {
   ContinuousLinearRange ,
@@ -47,7 +48,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
