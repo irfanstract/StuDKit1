@@ -150,13 +150,29 @@ export {
 };
 
 function IncrButtonC<A extends number> ({ value, onClick = Object, } : { value: A ; onClick?: (e: { value: A, }) => void ; }) {
-  const cde = `${String(Math.sign(value)).replace(/\w+$/g, () => "") }${Math.abs(value) }` ;
+  const signStr = (
+    String(Math.sign(value)).replace(/\w+$/g, () => "") 
+  ) ;
+  const cde = `${signStr }${Math.abs(value) }` ;
   return (
-    <button type="button" onClick={() => onClick({ value: value, }) } >
+    <Button
+    className='studk-i3ddemo-incrementingbuttoncomp'
+    title={`incr by ${cde}` }
+    onClick={() => onClick({ value: value, }) }
+    children={(
+      <>
       <code>
         {cde}
       </code>
-    </button>
+      </>
+    )}
+    style={{
+      minInlineSize: `4em` ,
+      contain: `inline-size`,
+      textAlign: "end",
+      overflow: "clip",
+    }}
+    />
   ) ;
 } ;
 
