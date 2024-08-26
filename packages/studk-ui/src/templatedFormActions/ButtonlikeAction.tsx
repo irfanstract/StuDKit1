@@ -38,7 +38,7 @@ import type {
   BrowsibleHref ,
   LinkableHref ,
   FullDocHref ,
-} from "studk-ui-core/src/hrefLinkable" ;
+} from "studk-ui-fwcore/src/hrefLinkable" ;
 
 
 
@@ -47,78 +47,85 @@ import type {
 
 ;
 
-class UrlAction
-{
-  constructor (
-    public readonly method  : Request["method"] ,
-    public readonly href    : LinkableHref ,
-  ) {}
-}
+// class UrlAction
+// {
+//   constructor (
+//     public readonly method  : Request["method"] ,
+//     public readonly href    : LinkableHref ,
+//   ) {}
+// }
 
-class SynchronousCallbackAction
-{
-  constructor (
-    public readonly runMain : SynchronousCallbackAction.CbImpl
-    ,
-  ) {}
-}
+// class SynchronousCallbackAction
+// {
+//   constructor (
+//     public readonly runMain : SynchronousCallbackAction.CbImpl
+//     ,
+//   ) {}
+// }
 
-namespace SynchronousCallbackAction { ; }
-namespace SynchronousCallbackAction
-{
-  export interface CbImpl {
-    (e: (
-      // | Event
-      | React.SyntheticEvent
-    ) ): void ;
-  }
-}
+// namespace SynchronousCallbackAction { ; }
+// namespace SynchronousCallbackAction
+// {
+//   export interface CbImpl {
+//     (e: (
+//       // | Event
+//       | React.SyntheticEvent
+//     ) ): void ;
+//   }
+// }
 
-class DisabledBtnActionReprImpl {}
+// class DisabledBtnActionReprImpl {}
 
-class NoOpActionReprImpl {}
+// class NoOpActionReprImpl {}
 
-const disabledButtonAction = (new DisabledBtnActionReprImpl ) ;
+// const disabledButtonAction = (new DisabledBtnActionReprImpl ) ;
 
-const noOpAction = (new NoOpActionReprImpl ) ;
+// const noOpAction = (new NoOpActionReprImpl ) ;
 
-export {
-  UrlAction ,
-  SynchronousCallbackAction,
+// export {
+//   UrlAction ,
+//   SynchronousCallbackAction,
 
-  disabledButtonAction ,
-  noOpAction,
-  /** @deprecated */
-  DisabledBtnActionReprImpl ,
-  /** @deprecated */
-  NoOpActionReprImpl ,
-} ;
-
-
+//   disabledButtonAction ,
+//   noOpAction,
+//   /** @deprecated */
+//   DisabledBtnActionReprImpl ,
+//   /** @deprecated */
+//   NoOpActionReprImpl ,
+// } ;
 
 
-function getAction1(href: LinkableHref | SynchronousCallbackAction.CbImpl | null | false )
-{
-  if (typeof href === "string") {
-    return (
-      new UrlAction("GET", href)
-    ) ;
-  }
-  if (typeof href === "function") {
-    return (
-      new SynchronousCallbackAction(href)
-    ) ;
-  }
-  if (href === false ) {
-    return disabledButtonAction ;
-  }
-  if ((href === null) || 1 ) {
-    return noOpAction ;
-  }
-  return util.throwTypeError(`unsupported syntactic action type: ${href}`) ;
-}
 
-export { getAction1 as translateCommonJsxAction, } ;
+
+// function getAction1(href: LinkableHref | SynchronousCallbackAction.CbImpl | null | false )
+// {
+//   if (typeof href === "string") {
+//     return (
+//       new UrlAction("GET", href)
+//     ) ;
+//   }
+//   if (typeof href === "function") {
+//     return (
+//       new SynchronousCallbackAction(href)
+//     ) ;
+//   }
+//   if (href === false ) {
+//     return disabledButtonAction ;
+//   }
+//   if ((href === null) || 1 ) {
+//     return noOpAction ;
+//   }
+//   return util.throwTypeError(`unsupported syntactic action type: ${href}`) ;
+// }
+
+// export { getAction1 as translateCommonJsxAction, } ;
+
+
+
+
+
+
+export * from "studk-ui-coreinteractivitymodels/src/ButtonlikeAction.tsx" ;
 
 
 
