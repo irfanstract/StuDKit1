@@ -36,6 +36,8 @@ import {
   Button ,
   Span, 
   withExtraSemanticProperties,
+  describeCallbackAssignedStyleProps,
+  ButtonC,
 } from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
 import {
@@ -87,7 +89,8 @@ import {
 import {
   TbmcModelState,
   TbmcBreakthruColumnsRendering ,
-  getSuggestedSccMastPlotter ,
+  getSuggestedSccMastPlotter, 
+  SccMastPlotter,
 } from 'studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx' ;
 
 export {} ;
@@ -96,12 +99,26 @@ export type TbmcHc = {
   range: ContinuousLinearRange ,
 }
 
-interface TbmcKnbCProps extends Extract<{
+interface TbmcKnbCPropsImpl extends Extract<{
   //
+
   horizonConfig: TbmcHc ,
+
   value?: TbmcKnsBasedModelState ,
+  mainPlotters ?: {
+    primaryStreamPlotter ?: SccMastPlotter.RegularAppletifyingInstance ,
+  } ,
+
+  rowHeadCollDescs?: readonly renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps>[] ,
+
 }, any>
 {}
+
+/**
+ * WIP/TBD
+ * 
+ */
+export type TbmcKnbCProps = TbmcKnbCPropsImpl ;
 
 const getTbmcKnbDefaultSpecimen = util.L.once(function ()
 {
@@ -117,16 +134,28 @@ const useTbmcKnbCProps = (
     ;
 
     const {
+
       horizonConfig ,
+
       value: valueArg = getTbmcKnbDefaultSpecimen() ,
+
+      rowHeadCollDescs : rhcdArg ,
+
+      mainPlotters: {
+        primaryStreamPlotter = getSuggestedSccMastPlotter() ,
+      } = null ?? {} ,
+
     } = null ?? props ;
 
     const {
-      effectiveWindowSeq: hoSegmentDescs ,
+      effectiveWindowSeq: ddsds ,
+      segmenterConfig,
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
     } = (
+
       TbmcBreakthruColumnsRendering.describeSuggestedConfig11({
+
         horizonConfig: {
           range: horizonConfig.range ,
           samplingConfig: {
@@ -136,18 +165,23 @@ const useTbmcKnbCProps = (
             ) ,
           } ,
         } ,
+
+        primaryStreamSegmtPlotter: primaryStreamPlotter ,
+
       })
+
     ) ;
 
     const chnlDataList = (
-      valueArg.layerStates
-    ) satisfies TbmcModelState["layerStates"] ;
+      TbmcKnsBasedModelState.asFixed(valueArg).layerStatesImtb!
+      // .valueSeq()
+    ) ;
 
     {
       ;
 
       const renderTSegHeadLabelDiv : (
-        (props: { msd: (typeof hoSegmentDescs)[number], }) => React.ReactElement
+        (props: { msd: (typeof segmenterConfig.effectiveWindowSeq)[number], }) => React.ReactElement
       ) = (
         function ({ msd, }) {
           ;
@@ -159,6 +193,11 @@ const useTbmcKnbCProps = (
               fontSize: `75%` ,
             }}
             >
+            { " " && (
+              <p>
+                (ID: <code>{ msd.id }</code> )
+              </p>
+            ) }
             <p
             >
               Spn
@@ -175,8 +214,13 @@ const useTbmcKnbCProps = (
         }
       ) ;
 
-      const renderChPlotSeg : React.FC<{ v: (typeof chnlDataList)[number], msd: (typeof hoSegmentDescs)[number], }> = (
-        function ({ v, msd, })
+      const renderChPlotSeg : (
+        React.FC<{
+          chnlDesc: (typeof valueArg.layerStates)[number],
+          directionalLocDesc: (typeof segmenterConfig.effectiveWindowSeq)[number],
+        }>
+      ) = (
+        function ({ chnlDesc: v, directionalLocDesc: msd, })
         {
           return (
             renderPerChannelPlotAsWrInlineContent(v, msd )
@@ -186,8 +230,11 @@ const useTbmcKnbCProps = (
 
       return {
         horizonConfig,
+        segmenterConfig,
         valueArg ,
-        hoSegmentDescs ,
+        rhcdArg,
+        /** {@link segmenterConfig.effectiveWindowSeq} */
+        directionalDomainWindowDescs: ddsds ,
         renderPerChannelPlotAsUnitApplet ,
         renderPerChannelPlotAsWrInlineContent ,
         chnlDataList,
@@ -213,7 +260,8 @@ export const TbmcKnbC: {
     const {
       horizonConfig,
       valueArg ,
-      hoSegmentDescs ,
+      rhcdArg,
+      directionalDomainWindowDescs: ddsds ,
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
       chnlDataList,
@@ -227,49 +275,99 @@ export const TbmcKnbC: {
         ;
 
         const withSpclTbmcTdCssAnnotation = (
-          function (...[e, srcSpan]: [React.ReactElement, ((typeof hoSegmentDescs)[number] )["srcSpan"] ] )
+          function (...[e, srcSpan]: [React.ReactElement, ((typeof ddsds)[number] )["srcSpan"] ] )
           {
   
             return (
   
               withExtraSemanticProperties({
-                style: {
-                  //
-                  inlineSize: `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ,
-                  ...({
-                    ["--t-start"]: srcSpan.startPos ,
-                    ["--t-end"  ]: srcSpan.endPos ,
-                    ["--sc"]: 1 ,
-                  }),
-                } ,
+                style: (
+                  describeCallbackAssignedStyleProps(c => {
+                    if (0) {
+                      c.inlineSize = `calc((var(--t-end) - var(--t-start) ) * var(--sc, 1) * 1ex)` ;
+                    }
+                    c.minInlineSize = `9ex` ;
+                    void 0 ; (c as any )["--t-start"] = srcSpan.startPos ;
+                    void 0 ; (c as any )["--t-end"  ] = srcSpan.endPos ;
+                    void 0 ; (c as any )["--sc"     ] = 1 ;
+                  } )
+                ) ,
               } , e )
             ) ;
           }
         ) ;
-  
-        const mainTable = (
-          renderTableByRowDtListAndColumnList.renderAsTransposed(chnlDataList , {
 
-            getRowHash: (v, i) => `content-layer-${i}`
-            ,
+        const rowHeadCollDescs = (
+          rhcdArg
+          ??
+          util.reiterated<(
+            renderTableByRowDtListAndColumnList.PerColumnPrImpl<TbmcKnsBasedModelState.LayerStateOps >
+          ) >(function* () {
+              ;
 
-            perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
+              // ⬆️⬇️☯️
 
               yield {
                 id: `itemident`,
                 renderHead: () => <i children={`name`} /> ,
-                renderContent: (v) => <code children={`${v.id}`} /> ,
+                renderContent: (v) => (
+                  <div
+                  style={{
+                    minInlineSize: `12ex`,
+                  }}
+                  >
+                    <p>
+                      <i children={v.id} />
+                    </p>
+                  </div>
+                ) ,
+                asRowHeader: true,
               } ;
 
               yield {
                 id: `itemkind`,
                 renderHead: () => <i children={`kind letter`} /> ,
-                renderContent: (v) => <code children={`${v.kind}`} /> ,
+                renderContent: (v) => (
+                  <div>
+                    <p>
+                      <code children={`${v.kind}`} />
+                    </p>
+                  </div>
+                ) ,
+                asRowHeader: true,
               } ;
 
-              for (const msd of hoSegmentDescs)
+          })
+        ) ;
+  
+        const mainTable = (
+          renderTableByRowDtListAndColumnList.renderAsTransposed((
+            chnlDataList
+            .valueSeq()
+            .toArray()
+          ) , {
+
+            getRowHash: (v, displayedI) => {
+              const i = (
+                (
+                  chnlDataList
+                  .sortBy((vle, key) => vle.id )
+                )
+                .valueSeq().indexOf(v)
+              ) ;
+              return (
+                `content-layer-${i}` as const
+              ) ;
+            }
+            ,
+
+            perRowCellRenderers: renderTableByRowDtListAndColumnList.generateColumns(function* () {
+
+              yield* rowHeadCollDescs ;
+
+              for (const ddsd of ddsds)
               {
-                const { srcSpan, id: colId, } = msd ;
+                const { srcSpan, id: colId, } = ddsd ;
 
                 yield {
                   id: `plotsegment-${colId}`,
@@ -287,7 +385,7 @@ export const TbmcKnbC: {
                         overflow: "hidden",
                       }}
                       children={(
-                        renderTSegHeadLabelDiv({ msd, })
+                        renderTSegHeadLabelDiv({ msd: ddsd, })
                       ) }
                       />
                     ) , srcSpan )
@@ -302,7 +400,7 @@ export const TbmcKnbC: {
                       inlineSize: `100%`,
                     }}
                     >
-                      { renderChPlotSeg({ v, msd, } ) }
+                      { renderChPlotSeg({ chnlDesc: v, directionalLocDesc: ddsd, } ) }
                     </div>
                   )
                   ,
@@ -334,9 +432,62 @@ export namespace TbmcKnbCDisplayed
    * 
    * @deprecated
    */
-  export function searchSegmentDisplayNodes<Mpe>(...[root = document, { flatTranslate: flm, }]: ArgsWithOptions<[host ?: Element | Document], { flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) }> ) {
+  export function searchSegmentDisplayNodes<Mpe>(...args: (
+    ArgsWithOptions<[host ?: Element | Document], {
+      flatTranslate: (ctx: ReturnType<typeof S_EHE1>) => ([Mpe ] | []) ,
+    }>
+  ) )
+  {
+    const [
+      root0 = document,
+      {
+        flatTranslate: flm,
+      },
+    ] = args ;
+
+    const root = (
+      (function (): Element {
+        if ("matches" in root0) {
+          return root0 ;
+        }
+        if ("documentElement" in root0) {
+          return root0.documentElement ;
+        }
+        return (
+          util.throwTypeError()
+        ) ;
+      } )()
+    ) ;
+
     return (
-      Array.from(root.querySelectorAll(`.studk-sequemi-tlwalkthruappcomp :is(tr)[data-src-row-id^=plotsegment]`) )
+
+      // TODO
+      (
+        (function () {
+
+          const s0 = (
+            // `.studk-sequemi-tlwalkthruappcomp`
+            `* `
+          );
+          const s1 = `:is(tr)[data-src-row-id^=plotsegment]`;
+
+          return (
+            root.matches(s0) ?
+            (
+              Array.from((
+                root.querySelectorAll(`:is(${s1 })`)
+              ) )
+            )
+            :
+            (
+              Array.from((
+                root.querySelectorAll(`:is(${s0 }) :is(${s1 })`)
+              ) )
+            )
+          ) ;
+        })()
+      )
+
       .flatMap(e => {
         return (
           flm(S_EHE1(e) )
