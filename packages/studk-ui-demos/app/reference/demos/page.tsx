@@ -132,6 +132,9 @@ export default function App()
             <ThreeReactJsDemoC />
           ) }
           { true && (
+            <TArmsDemoC />
+          ) }
+          { true && (
             <ThreeReactJsNavigaDemoC />
           ) }
           { ((e: React.ReactElement) => {
@@ -228,6 +231,10 @@ import {
 import {
   ThreeReactJsNavigaDemoC,
 } from "studk-ui-encore/src/ThreeReactJsUi/trnavigade" ;
+
+import {
+  TArmsDemoC ,
+} from "studk-ui-encore/src/ThreeReactJsUi/tarm.tsx" ;
 
 import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
 
