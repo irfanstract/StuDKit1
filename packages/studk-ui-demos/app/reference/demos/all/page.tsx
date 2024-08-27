@@ -53,7 +53,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   Button ,
@@ -150,7 +155,7 @@ export default function App()
             ) ;
             return e ;
           } )(
-            <TimeDomainedImgListFigureC
+            <TimeDomainedMultiChnlInspectiveFigureC
             />
           ) }
           <div>
@@ -212,7 +217,7 @@ const AsResettibleBlockC = (
 
 import LDCWGOC from "@/components/spcl/longTextDocWithGraphicalOverlaysDemo"; ;
 
-import TbmcDemoImpl from "studk-ui/src/tabularUi/reactjs/tbmcdemo.tsx" ;
+import TbmcDemoImpl from "studk-ui-encore/src/xtras/tbmcdemo.tsx" ;
 
 function TbmcDemo()
 {
@@ -253,7 +258,7 @@ function DiscogrDemoC() {
 }
 
 import {
-  TimeDomainedImgListFigureC ,
+  TimeDomainedMultiChnlInspectiveFigureC ,
 } from "studk-ui-encore/src/SequencedMediaUi/TimeDomainBreakthruUi.tsx" ;
 
 
