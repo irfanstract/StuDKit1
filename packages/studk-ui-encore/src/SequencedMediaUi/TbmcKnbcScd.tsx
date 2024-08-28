@@ -65,10 +65,20 @@ import {
   getFullDocBodySrcBasedSvgDataUrl,
 } from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
 
-const GET_CLIENTOFFSET_OF = (
-  (e: Element) => ({
-    x: e.getBoundingClientRect().left,
-    y: e.getBoundingClientRect().top,
+interface GCOIbleNode extends Extract<Element, any> {}
+export type {
+  /** @deprecated this is a WIP/TBD. */
+  GCOIbleNode ,
+};
+
+const GET_LOCALOFFSET_OF = (
+  (...[e, { referenceDiv, }] : (
+    ArgsWithOptions<[main: Element,] , (
+      & { referenceDiv: GCOIbleNode, }
+    ) >
+  ) ) => ({
+    x: (e.getBoundingClientRect().left) - ((referenceDiv.getBoundingClientRect().left) + -(referenceDiv.scrollLeft) ) ,
+    y: (e.getBoundingClientRect().top ) - ((referenceDiv.getBoundingClientRect().top ) + -(referenceDiv.scrollTop ) ) ,
   })
 ) ;
 
@@ -101,10 +111,8 @@ import {
 export interface TbmcKnbSpclScrollHandler extends Extract<{}, any>
 {
   isSpclScrollHandler ?: true ;
-  searchDisplayedSegs: {
-    (ctx: (
-      & ({ e: Element } | { pt: { x: number, y: number, } })
-    )): (
+  searchDisplayedSegs: (
+    SdsFncImpl<(
       ReadonlyArray<(
         & {
           readonly startT: number,
@@ -113,8 +121,8 @@ export interface TbmcKnbSpclScrollHandler extends Extract<{}, any>
         & { rnk: string | null, }
         & { etc ?: {} | null, }
       )>
-    ) ;
-  } ;
+    )>
+  ) ;
   analyseDisplayedSegsSearchReturnedDescs: (ctx: readonly (ReturnType<TbmcKnbSpclScrollHandler["searchDisplayedSegs"] >[number] )[] ) => (
     ReadonlyArray<(
       { pt: { x: number, y: number, } }
@@ -122,9 +130,46 @@ export interface TbmcKnbSpclScrollHandler extends Extract<{}, any>
   ) ;
 }
 
-export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
-  util.L.once(function (): TbmcKnbSpclScrollHandler | null {
-    return (typeof document !== "undefined") ? ((
+interface SdsFncImpl<out R>
+{
+  //
+  (...ctx: (
+    ArgsWithOptions<(
+      ArgsWithOptions<[], (
+        & ({ e: Element } | { pt: { x: number, y: number, } })
+        & ({ searchScope: GCOIbleNode, })
+      )>
+    ) , {  }>
+  )): R ;
+
+  /** @deprecated */
+  (...ctx: (
+    ArgsWithOptions<(
+      ArgsWithOptions<[], (
+        & ({ e: Element } | { pt: { x: number, y: number, } })
+        & ({ searchScope?: never, })
+      )>
+    ) , {}>
+  )): R ;
+}
+
+export const getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor = (
+  function (...args : (
+    ArgsWithOptions<[rootNode: (
+      // Document | Element
+      GCOIbleNode
+    )], {
+      lookupRootNode ?: (
+        // Document | Element
+        GCOIbleNode
+      ),
+    } >
+  )) : TbmcKnbSpclScrollHandler
+  {
+  ;
+  const [rootNode, { lookupRootNode: altLookupRootNode = rootNode, } = {} ,] = args ;
+  return (
+    ((
       {
         searchDisplayedSegs: (ctx) => {
           if (0) {
@@ -132,8 +177,14 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
           }
           if (1)
           {
+            const {
+              searchScope: customRootDiv = rootNode ,
+            } = ctx ;
+            const {
+              searchScope: lookupRootNode = altLookupRootNode ,
+            } = ctx ;
             return (
-              TbmcKnbCDisplayed.searchSegmentDisplayNodes(document, {
+              TbmcKnbCDisplayed.searchSegmentDisplayNodes(lookupRootNode, {
                 flatTranslate: ({ e, rnk: rnk, }) => {
                   return [
                     { e, rnk, } ,
@@ -145,13 +196,13 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
                   return true ;
                 }
                 return (
-                  0 <= GET_CLIENTOFFSET_OF(e).x
+                  0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, } ).x
                   &&
-                  (1 || -23.0 <= GET_CLIENTOFFSET_OF(e).y )
+                  (1 || -23.0 <= GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, }).y )
                 ) ;
               } )
               .map(({ rnk, e, }) => {
-                const cp = GET_CLIENTOFFSET_OF(e) ;
+                const cp = GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, }) ;
                 return {
                   startT: -1 ,
                   rnk,
@@ -164,6 +215,7 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
         } ,
         analyseDisplayedSegsSearchReturnedDescs: (ctxs) => {
           // TODO
+          const customRootDiv = rootNode;
           return (
             ctxs
             .flatMap(({ rnk, }) => (
@@ -180,7 +232,7 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
                     }
                   })() )
                   {
-                    const poi = GET_CLIENTOFFSET_OF(e) ;
+                    const poi = GET_LOCALOFFSET_OF(e, { referenceDiv: customRootDiv, }) ;
                     yield { poi, } as const ;
                   }
                 }
@@ -191,6 +243,15 @@ export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
           return [] ;
         } ,
       }
+    ) satisfies TbmcKnbSpclScrollHandler)
+  ) ;
+  }
+) ;
+
+export const getPreferredSpclisedTbmcKnbSpclScrollHandler = (
+  util.L.once(function (): TbmcKnbSpclScrollHandler | null {
+    return (typeof document !== "undefined") ? ((
+      getPreferredSpclisedTbmcKnbSpclScrollHandlerUncachedFor(document.documentElement)
     ) satisfies TbmcKnbSpclScrollHandler) : null ;
   })
 ) ;
