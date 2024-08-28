@@ -30,6 +30,7 @@
     { "path": "../../packages/studk-fwcore/tsconfig.build.json", } ,
     { "path": "../../packages/studk-fwcore-setups", } , /* because we're using some types from there */
     { "path": "../../packages/studk-ui-core", } ,
+    { "path": "../../packages/studk-ui-fwcore/tsconfig.build.json", } ,
     { "path": "../../packages/studk-fbreact-all", } ,
     { "path": "../../packages/studk-dom-util/tsconfig.build.json", } ,
     { "path": "../../packages/studk-ui-coresemanticelems/tsconfig.build.json", } ,
