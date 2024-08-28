@@ -37,8 +37,10 @@ const getNodeTypeLabelTxt = (nd: TS.Node) => (
 ) ;
 
 import {
+  KeywordAlikeKcn,
   NodeListKcn,
-  getKcn ,
+  getKcn, 
+  getRlKcn,
 } from "studk-ts-codeanalysis/src/TsDeriva.ts" ;
 
 
@@ -139,7 +141,7 @@ export const TsAstDisplayC = (
         // <p><code>{nodeTypeLabelTxt }</code></p>
         getSpclDefaultClvMd()
       ) ,
-      onChange: runOnChgHandler ,
+      onChange: runWholeTreeChgHandler ,
     } = props ;
 
     ;
@@ -166,25 +168,34 @@ export const TsAstDisplayC = (
     ) ;
 
     const renderSubTerm = (
-      function (...[e] : [TS.Node])
+      function (...[e, { onChange, } = {} ] : (
+        ArgsWithOptions<[TS.Node] , {
+          onChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
+        } >
+      ))
       {
         return (
           <TsAstDisplayC
           value={e }
           clvMd={clvMd}
           // TODO
-          onChange={undefined}
+          onChange={onChange}
           />
         ) ;
       }
     ) ;
 
     const renderJsxExpression = (
-      function (...[e] : [TS.JsxExpression & { readonly expression : TS.Node, }])
+      function (...[e, { onValueChange, } = {}] : (
+        ArgsWithOptions<[TS.JsxExpression & { readonly expression : TS.Node, }] , {
+          //
+          onValueChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
+        } >
+      ))
       {
 
         const e1 = (
-          renderSubTerm(e.expression )
+          renderSubTerm(e.expression , { onChange: onValueChange, } )
         ) ;
 
         if (1) {
@@ -214,7 +225,12 @@ export const TsAstDisplayC = (
     ) ;
     
     const renderPropertylike = (
-      function (...[nd] : [TS.VariableDeclaration | TS.JsxAttribute])
+      function (...[nd, { onValueChange: runOnChgCb, } = {}] : (
+        ArgsWithOptions<[TS.VariableDeclaration | TS.JsxAttribute] , {
+          // onChange ?:
+          onValueChange ?: (evt: TsAstDisplayEvents.SelfTotalReplacingChgEventDesc) => void ,
+        } >
+      ))
       {
         ;
         
@@ -240,7 +256,9 @@ export const TsAstDisplayC = (
                     (() => {
                       if (TS.isJsxExpression(initializer) && initializer.expression ) {
                         return (
-                          renderJsxExpression(initializer)
+                          renderJsxExpression(initializer , {
+                            onValueChange: runOnChgCb,
+                          } )
                         ) ;
                       }
                       return (
@@ -275,7 +293,9 @@ export const TsAstDisplayC = (
                   { (
                     renderJsxExpression((
                       TS.factory.createJsxExpression(undefined, initializer )
-                    ))
+                    ) , {
+                      onValueChange: runOnChgCb ,
+                    } )
                   ) }
                   </>
                 ) : null
@@ -337,7 +357,7 @@ export const TsAstDisplayC = (
     ) ;
 
     const sptdKcn = (
-      getKcn(nd.kind)
+      getRlKcn(nd)
     ) ;
 
     const childListDView = (() => {
@@ -349,7 +369,26 @@ export const TsAstDisplayC = (
         ;
 
         const ndChildren = (
-          nd.getChildren()
+          ((): readonly TS.Node[] => {
+            /**
+             * note --
+             * TS Node methods failed with programmatically-constructed Node(s) so
+             * there arises need for `try-catch`
+             * 
+             */
+            {
+              ;
+              if (TS.isSourceFile(nd) ) {
+                return nd.statements ;
+              }
+              if (TS.isBlock(nd) ) {
+                return nd.statements ;
+              }
+              return (
+                nd.getChildren()
+              ) ;
+            }
+          })()
         ) ;
     
         return (
@@ -362,14 +401,14 @@ export const TsAstDisplayC = (
           value={ndChildren }
           clvMd={clvMd}
           // srcNd={nd }
-          onChange={runOnChgHandler && (
+          onChange={runWholeTreeChgHandler && (
             (sptdKcn instanceof NodeListKcn)
             ?
             (({ newValue: newChildrenList, }) => {
               const newv = (
                 sptdKcn.withReplacedChildren(nd, newChildrenList )
               ) ;
-              runOnChgHandler({ newValue: newv }) ;
+              runWholeTreeChgHandler({ newValue: newv }) ;
             } )
             : undefined
           )}
@@ -410,6 +449,42 @@ export const TsAstDisplayC = (
               <strong>
                 <code>{ ndSrcTxt }</code>
               </strong>
+            ) ;
+          }
+
+          if (TS.isIdentifier(nd) || TS.isLiteralExpression(nd) ) {
+            return (
+              <div
+              title={`value: ${ndSrcTxt}`}
+              >
+              <p>
+                { (() => {
+                  if (runWholeTreeChgHandler && sptdKcn ) {
+                    if (sptdKcn instanceof KeywordAlikeKcn) {
+                      return (
+                        <input
+                        value={ndSrcTxt}
+                        onChange={evt => {
+                          const { value, } = evt.target ;
+
+                          const newNd = sptdKcn.compileLiteral(value) ;
+
+                          console["log"]({ newNd, }) ;
+
+                          runWholeTreeChgHandler({ newValue: newNd, }) ;
+
+                          ;
+                        } }
+                        />
+                      ) ;
+                    }
+                  }
+                  return (
+                    <code>{ ndSrcTxt }</code>
+                  ) ;
+                })() }
+              </p>
+              </div>
             ) ;
           }
         }
@@ -514,16 +589,16 @@ export const TsAstDisplayC = (
             <div
             style={{
               display: "flex" ,
-              flexDirection: "column-reverse",
+              flexDirection: "column",
             }}
             >
               { e1 }
               <div>
               { (
-                (runOnChgHandler && (sptdKcn ) )
+                (runWholeTreeChgHandler && (sptdKcn ) )
                 &&
                 <Button
-                title='Replace This Expression/Statement With...'
+                title={`Replace This ${getNodeTypeLabelTxt(nd) ?? `Expression/Statement` } With...`}
                 children={<>☯</>}
                 onClick={() => {
                   // const newNd = (() => {
