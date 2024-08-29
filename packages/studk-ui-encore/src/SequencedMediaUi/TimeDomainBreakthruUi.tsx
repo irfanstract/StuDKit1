@@ -88,25 +88,94 @@ import {
 
 ;
 
+import {
+  ScCHorizonConfigPropsDesc,
+  SpclCoreC,
+  TbmcKnsBasedModelState,
+} from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
+
+import {
+  ScdC ,
+  useDebouncedScdState1 ,
+} from "studk-ui-encore/src/PaginatedUi/Scd.tsx" ;
+
 export const TimeDomainedImgListFigureC = (
   describeComponent((
-    function TimeDomainedImgListFigureCImpl({} : {}) {
+    function TimeDomainedImgListFigureCImpl({} : {})
+    {
+      ;
+
+      const [lsce, { setLsce, setLsceDebcd, }] = useDebouncedScdState1() ;
+
+      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
+        computeDefaultHorizonConfig()
+      ) , [] ) ;
+
       return (
         <div className='studk-sequemi-tlwalkthruappcomp'>
           <p>
-            Timeslice
+            Time-domain plot of <code>movie.mp4</code>
           </p>
-          <TimeDomainedImgListSpanC
+          <ScdC
+          children={(
+            <TimeDomainedImgListSpC
+            hc={horizonConfig }
+            />
+          )}
+          cv={lsce.x }
+          onScroll={e => { setLsceDebcd(e.newVals) ; } }
           />
+          <p>
+            Scrolled at <code>{ JSON.stringify(lsce) }</code>
+          </p>
         </div>
       ) ;
     }
   ))
 ) ;
 
+/**
+ * 
+ * @deprecated this is a WIP.
+ */
 export const TimeDomainedImgListSpanC = (
   describeComponent((
-    function TimeDomainedImgListSpanCImpl({} : {}) {
+    //
+    function TimeDomainedImgListSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
+
+export const TimeDomainedImgListSpC = (
+  describeComponent((
+    function TimeDomainedImgListSpCImpl({ hc: horizonConfigArg } : { hc ?: ScCHorizonConfigPropsDesc, })
+    {
+      ;
+      
+      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => (
+        horizonConfigArg ??
+        computeDefaultHorizonConfig()
+      ) , [horizonConfigArg] ) ;
+
+      const ls = (
+        React.useMemo((): TbmcKnsBasedModelState => {
+          return (
+            TbmcKnsBasedModelState.getCmnInstance({
+              layerStates: (
+                util.reiterated(function* (): Generator<TbmcKnsBasedModelState.LayerStateOps> {
+                  for (const i of util.range(0, 3) ) {
+                    yield { id: `chnl ${i}`, kind: "XLayer", } ;
+                  }
+                } )
+              ) ,
+            })
+          ) ;
+        } , [] )
+      ) ;
+
       const tdSnpMap = (
         util.Immutable.Range(0, T_BY_HMS(0, 45, 3 ) , 7.5 )
         .toMap().mapEntries(([, pTStamp]) => {
@@ -127,20 +196,26 @@ export const TimeDomainedImgListSpanC = (
           ) ;
         } )
       ) ;
+
       return (
         <div className='studk-sequemi-tlwalkthruinlinecomp'>
-          <ul>
-            <li>
-              t=
-            </li>
-            <li>
-              t=
-            </li>
-          </ul>
+          <SpclCoreC
+          horizonConfig={horizonConfig}
+          value={ls}
+          />
         </div>
       ) ;
     }
   ))
+) ;
+
+const computeDefaultHorizonConfig = (
+  (): ScCHorizonConfigPropsDesc => ({
+    range: {
+      startPos: T_BY_HMS(0, 0, -15) ,
+      endPos: T_BY_HMS(0, 45, 30) ,
+    } ,
+  })
 ) ;
 
 import "studk-ui-encore/src/SequencedMediaUi/tmdc.scss" ;
