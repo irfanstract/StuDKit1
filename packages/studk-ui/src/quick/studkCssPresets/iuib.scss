@@ -1,0 +1,76 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* RECOMMENDED PER-COMPONENT DEFAULTS */
+
+@layer defaults {
+  
+  button {
+    
+    font-family: inherit;
+  }
+
+}
+
+@layer defaults {
+  /* */
+
+  :is(button, a):not(:disabled) {
+    cursor: pointer;
+  }
+  :is(button, a) {
+    opacity: 1;
+    filter: none;
+  }
+  :is(button, a):disabled
+  {
+    opacity: 0.576;
+    .studk-ui-pageoverall-main:not(:focus-within, :hover) &
+    {
+      opacity: 0.263;
+      // opacity: 0.002;
+    }
+
+    filter: contrast(0.3);
+    filter: contrast(0.3) blur(0.035em);
+
+  }
+  :is(button, a):disabled
+  {
+    text-decoration: line-through;
+    text-decoration: line-through double ;
+  }
+
+
+}
+
+@layer defaults {
+  
+  a {
+    text-decoration-thickness: 0.05em ;
+    text-decoration-style: dotted ;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
