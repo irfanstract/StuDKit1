@@ -79,6 +79,22 @@ type EitherPropertyOf<opts extends object> = (
   ) ; }>
 ) ;
 
+type RequiredPartially<opts extends object, k1 extends keyof opts> = (
+  opts & Required<Pick<opts, k1> >
+) ;
+
+type Extend<T1, T2 extends Partial<T1> > = (
+  T1 & T2
+) ;
+
+type EA<T1 extends readonly unknown[] > = (
+  EffectiveParameters<[]>[0]
+) ;
+
+// type ExtendAll<T1 extends readonly unknown[], T2 extends Partial<T1> > = (
+//   Extend<T1, T2>
+// ) ;
+
 
 
 /**
@@ -89,11 +105,18 @@ type EffectiveParameters<T extends object> = (
   [T] extends [(...args: infer P) => any] ? P : never
 ) ;
 
+type IIndexOfItemOf<T1 extends readonly unknown[] > = (
+  Extract<keyof T1, number | `${number}`>
+) ;
 
 
 export type {
   AllOrNever as AllOrNever1,
   EitherPropertyOf ,
+  RequiredPartially,
+} ;
+export type {
+  Extend,
 } ;
 
 export type {
