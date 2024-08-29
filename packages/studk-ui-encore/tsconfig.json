@@ -21,12 +21,19 @@
     { "path": "../../packages/typexpe-commons", } ,
     { "path": "../../packages/studk-util", } ,
     { "path": "../../packages/studk-simulations-commons", } ,
+    { "path": "../../packages/studk-ui-core", } ,
+    { "path": "../../packages/studk-dom-util", } ,
+    { "path": "../../packages/studk-fbreact-all", } ,
+    { "path": "../../packages/studk-ui-coresemanticelems", } ,
     { "path": "../../packages/studk-ui", } ,
   ] ,
   "include": [
     "src" ,
   ],
-  // "exclude": [
-  //   "src/**/*" ,
-  // ],
+  "exclude": [
+    // "src/**/*" ,
+    // "../../node_modules/@types/draft-js/node_modules/**/*" ,
+    // "../../node_modules/@types/draft-js/node_modules/immutable/**/*" ,
+    // "../../node_modules/@types/draft-js/**/*" ,
+  ],
 }
