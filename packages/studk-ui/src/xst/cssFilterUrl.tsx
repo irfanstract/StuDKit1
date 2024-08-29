@@ -60,6 +60,11 @@ export const getSvgDataUrl = (
 /**
  * generic (non-SVG) CSS filter URL based on `innerHTML` of SVG `<filter>`
  * 
+ * ```
+ * c.contain = `layout ` ;
+ * c.filter = `url("${getSvgFilterAsCssFilterUrlFast(... ...) }")` ;
+ * ```
+ * 
  */
 const getSvgFilterAsCssFilterUrlFast = (
   function (...[{} = {}, d]: [...ArgsWithOptions<[], {}>, src: string]) {
@@ -83,8 +88,34 @@ const getSvgFilterAsCssFilterUrlFast = (
   }
 ) ;
 
-export { /** @deprecated */ getSvgFilterAsCssFilterUrlFast , } ;
-export { /** @deprecated */ getSvgFilterAsCssFilterUrlFast as getSvgFilterBySvmlAsCssFilterUrl , } ;
+/**
+ * generic (non-SVG) CSS filter spec based on `innerHTML` of SVG `<filter>`
+ * 
+ * ```
+ * c.contain = `layout ` ;
+ * c.filter = getSvgFilterAsCssFilterSpecFast(... ...) ;
+ * ```
+ * 
+ */
+const getSvgFilterAsCssFilterSpecFast = (
+  function (...args: Parameters<typeof getSvgFilterAsCssFilterUrlFast> )
+  {
+    return (
+      `url("${ getSvgFilterAsCssFilterUrlFast(...args) }")`
+    ) ;
+  }
+) ;
+
+export {
+  /** @deprecated */
+  getSvgFilterAsCssFilterUrlFast ,
+  getSvgFilterAsCssFilterSpecFast ,
+} ;
+
+export {
+  /** @deprecated */
+  getSvgFilterAsCssFilterUrlFast as getSvgFilterBySvmlAsCssFilterUrl ,
+} ;
 
 export const getGsSharpenFltUrl = (
   util.memoize((
@@ -107,6 +138,17 @@ export const getGsSharpenFltUrl = (
     }
   ) , opts => JSON.stringify(opts) )
 ) ;
+
+// `url("${getGsSharpenFltUrl() }") `
+export const getGsSharpenFltAsSpec = (
+  function (...args: Parameters<typeof getGsSharpenFltUrl> )
+  {
+    return (
+      `url("${ getGsSharpenFltUrl(...args) }")`
+    ) ;
+  }
+) ;
+;
 
 ;
 
