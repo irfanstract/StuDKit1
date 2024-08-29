@@ -28,63 +28,38 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
-  ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-import type {
-  // ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+  ArgsWithOptions, 
+  Extend,
+} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
 
 
 
 
 
 
-export const getSvgDataUrl = (
-  function (...[{} = {}, d]: [...ArgsWithOptions<[], {}>, src: string]) {
-    return (
-      (
-        "data:image/svg+xml," + encodeURIComponent(d)
-      )
-    ) ;
-  }
-) ;
+import {
+  getSvgDataUrl ,
+} from "studk-dom-util/src/SvgDocUrlFmt1.tsx" ;
 
-/**
- * generic (non-SVG) CSS filter URL based on `innerHTML` of SVG `<filter>`
- * 
- */
-const getSvgFilterAsCssFilterUrlFast = (
-  function (...[{} = {}, d]: [...ArgsWithOptions<[], {}>, src: string]) {
-    return (
-      (
-        getSvgDataUrl({}, `
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-        >
-          <defs>
-          <filter id="main">
-            ${d }
-          </filter>
-          </defs>
-        `)
-      )
-      +
-      "#main"
-    ) ;
-  }
-) ;
+export { getSvgDataUrl, } ;
 
-export { /** @deprecated */ getSvgFilterAsCssFilterUrlFast , } ;
-export { /** @deprecated */ getSvgFilterAsCssFilterUrlFast as getSvgFilterBySvmlAsCssFilterUrl , } ;
+import {
+  getSvgFilterAsCssFilterUrlFast ,
+  getSvgFilterAsCssFilterSpecFast ,
+} from "studk-dom-util/src/CssFilterUrlFmt" ;
+
+export {
+  /** @deprecated */
+  getSvgFilterAsCssFilterUrlFast ,
+  getSvgFilterAsCssFilterSpecFast ,
+} ;
+
+export {
+  /** @deprecated */
+  getSvgFilterAsCssFilterUrlFast as getSvgFilterBySvmlAsCssFilterUrl ,
+} ;
 
 export const getGsSharpenFltUrl = (
   util.memoize((
@@ -107,6 +82,17 @@ export const getGsSharpenFltUrl = (
     }
   ) , opts => JSON.stringify(opts) )
 ) ;
+
+// `url("${getGsSharpenFltUrl() }") `
+export const getGsSharpenFltAsSpec = (
+  function (...args: Parameters<typeof getGsSharpenFltUrl> )
+  {
+    return (
+      `url("${ getGsSharpenFltUrl(...args) }")`
+    ) ;
+  }
+) ;
+;
 
 ;
 
