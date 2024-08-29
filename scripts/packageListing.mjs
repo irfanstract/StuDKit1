@@ -102,6 +102,17 @@ export const nonPlainJsPkgs = (
   describeExpectedPkgNames((
     util.reiterated(function* () {
 
+      /* utility package(s) */
+
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk-util\b/u) )
+      ) ;
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^typexpe-commons\b/u) )
+      ) ;
+      
       /* helper packages each for using the corresponding library */
 
       yield* (
@@ -114,27 +125,61 @@ export const nonPlainJsPkgs = (
         .filter(nm => nm.startsWith('studk-fbreact') )
       ) ;
 
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk-dom\b/u) )
+      ) ;
+      
       /* our official reusable packages */
 
-      yield 'studk-ui' ;
+      {
+        yield* (
+          pkgs
+          .filter(nm => nm.match(/\b(common|encore)\b/g ) )
+        ) ;
+      }
 
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-uieditmgmt') )
+      ) ;
+      yield 'studk-ui' ;
       yield* (
         pkgs
         .filter(nm => nm.startsWith('studk-ui') )
       ) ;
 
       yield 'studk-uieditmgmt' ;
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-i3d') )
+      ) ;
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-audio') )
+      ) ;
+
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studpresenters') )
+      ) ;
+
+      /* internal FW packages */
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk\b/u) )
+      ) ;
 
       {
         yield* (
           pkgs
-          .filter(nm => nm.startsWith('studk-i3d') )
-        ) ;
-        yield* (
-          pkgs
-          .filter(nm => nm.match(/\bencore\b/g ) )
+          .filter(nm => nm.match(/\b(core|fwcore)\b/g ) )
         ) ;
       }
+
     })
   ))
 ) ;
