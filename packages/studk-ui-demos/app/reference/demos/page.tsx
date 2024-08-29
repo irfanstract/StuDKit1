@@ -121,11 +121,11 @@ export default function App()
             Graphical Overlays
             </Span>
           </p>
-          { 0 && <LDCWGOC /> }
-          { 0 && (
+          { null && <LDCWGOC /> }
+          { null && (
             <AudioNodeBeepDemo />
           ) }
-          { (
+          { true && (
             <DiscogrDemoC />
           ) }
           <TimeDomainedImgListFigureC
