@@ -48,7 +48,7 @@ import {
   NoOpActionReprImpl,
   DisabledBtnActionReprImpl,
   translateCommonJsxAction,
-} from 'studk-ui/src/ui/dbcAc.tsx'; ;
+} from 'studk-ui/src/templatedFormActions/ButtonlikeAction.tsx'; ;
 
 
 
