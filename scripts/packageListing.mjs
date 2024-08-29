@@ -64,13 +64,21 @@ export const pkgs = (
   IO.readdirSync(pkgsDirActualPath)
 ) ;
 
-export { describeExpectedPkgNames, } ;
+export {
+  describeExpectedPkgNames,
+} ;
 
-/** @type {(x: PackageNames) => ((typeof x)) } */
-function describeExpectedPkgNames(xPkgs)
+/**
+ * {@link describeExpectedPkgNames} .
+ * 
+ * @type {(...x: import("./util-eawo.mts").ArgsWithOptions<[PackageNames ], import("./util-eawo.mts").AllOrNever1<({ sort: boolean ; deduplicate: boolean })>> ) => PackageNames }
+ * 
+ */
+function describeExpectedPkgNames(...[xPkgs, xpo = {}])
 {
+  xpo ;
   return (
-    util.L.intersection(xPkgs, pkgs)
+    util.L.intersection(pkgs, xPkgs)
     .toSorted()
   ) ;
 }
@@ -110,6 +118,13 @@ export const nonPlainJsPkgs = (
 
       yield 'studk-ui' ;
 
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-ui') )
+      ) ;
+
+      yield 'studk-uieditmgmt' ;
+
       {
         yield* (
           pkgs
@@ -135,7 +150,12 @@ export const internalFwPackages = (
   ))
 ) ;
 
-export const reactDevServerAppPkgs = (
+/**
+ * packages which are
+ * __application__(s) built on "yyy dev server" (eg `next`, `vite`, `webpack-dev-server`, etc)
+ * 
+ */
+export const webFwkDevServedAppPkgs = (
   describeExpectedPkgNames([
     'studk-demos' ,
   ])
@@ -143,7 +163,7 @@ export const reactDevServerAppPkgs = (
 
 export const internallyNonImportiblePkgs = (
   describeExpectedPkgNames([
-    ...reactDevServerAppPkgs ,
+    ...webFwkDevServedAppPkgs ,
   ])
 ) ;
 
@@ -170,7 +190,7 @@ export const externallyNonReusablePkgs = (
   describeExpectedPkgNames([
     ...internalFwPackages ,
     ...internallyNonImportiblePkgs ,
-    ...reactDevServerAppPkgs ,
+    ...webFwkDevServedAppPkgs ,
   ])
 ) ;
 
