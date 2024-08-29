@@ -59,6 +59,18 @@ import {
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 import {
+  describeComponent,
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
+
+import {
+  useIntervalEffect ,
+  useIntervalScan ,
+  useMutableRefObjState ,
+  useRefState ,
+} from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
+
+import {
+  WithElementBoundingBoxHighlightingC,
   WithOvcLevelleRefGoodiesC,
   WithOverlaySupportC,
 } from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
@@ -77,136 +89,45 @@ export default function App()
       children: (
         <div>
           <p>
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-            The packages we're developing here in this monorepo
-            are brought into usage in these demos.
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
+            Long Text Doc With Graphical Overlays
           </p>
-          <p>
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-            The packages we're developing here in this monorepo
-            are brought into usage in these demos.
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-          </p>
-          <WithOvcLevelleRefGoodiesC
-          children={({ ref, }) => (
-            <button ref={ref}>
-              paragraph
-            </button>
-          )}
-          />
-          <p>
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-            The packages we're developing here in this monorepo
-            are brought into usage in these demos.
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-          </p>
-          <p>
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-            The packages we're developing here in this monorepo
-            are brought into usage in these demos.
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-          </p>
-          <WithOvcLevelleRefGoodiesC
-          children={({ ref, }) => (
-            <button ref={ref}>
-              paragraph
-            </button>
-          )}
-          />
-          <p>
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-            The packages we're developing here in this monorepo
-            are brought into usage in these demos.
-            The packages we're developing here in this monorepo
-            are tried out in these demos.
-          </p>
-          <iframe
-          style={{
-            blockSize: `75vh`,
-          }}
-          />
-          <details>
-            <p>
-              The packages we're developing here in this monorepo
-              are tried out in these demos.
-              The packages we're developing here in this monorepo
-              are brought into usage in these demos.
-              The packages we're developing here in this monorepo
-              are tried out in these demos.
-            </p>
-            <WithOvcLevelleRefGoodiesC
-            children={({ ref, }) => (
-              <button ref={ref}>
-                paragraph
-              </button>
-            )}
-            />
-            <iframe
-            style={{
-              blockSize: `75vh`,
-            }}
-            />
-          </details>
-          <details>
-            <p>
-              The packages we're developing here in this monorepo
-              are tried out in these demos.
-              The packages we're developing here in this monorepo
-              are brought into usage in these demos.
-              The packages we're developing here in this monorepo
-              are tried out in these demos.
-            </p>
-            <WithOvcLevelleRefGoodiesC
-            children={({ ref, }) => (
-              <button ref={ref}>
-                paragraph
-              </button>
-            )}
-            />
-            <iframe
-            style={{
-              blockSize: `75vh`,
-            }}
-            />
-          </details>
-          <TbmcDemo
-          />
-          <iframe
-          style={{
-            blockSize: `75vh`,
-          }}
-          />
+          { 0 && <LDCWGOC /> }
+          { 0 && (
+            <AudioNodeBeepDemo />
+          ) }
+          { (
+            <DiscogrDemoC />
+          ) }
         </div>
       ) ,
     })
   ) ;
 } ;
 
-import {
-  default as TbmcDemoImpl,
-} from "studk-ui/src/tabularUi/reactjs/tbmcdemo.tsx" ;
+import LDCWGOC from "@/components/spcl/longTextDocWithGraphicalOverlaysDemo"; ;
+
+import TbmcDemoImpl from "studk-ui/src/tabularUi/reactjs/tbmcdemo.tsx" ;
 
 function TbmcDemo()
 {
   return <TbmcDemoImpl /> ;
-  // return (
-  //   <WithOvcLevelleRefGoodiesC
-  //   children={({ ref, }) => (
-  //     <TbmcDemoImpl />
-  //   )}
-  //   />
-  // ) ;
   return <div /> ;
+}
+
+import AudioNodeBeepDemiImpl from "@/components/spcl/rAudioNodeCtxBeepDemo"; ;
+
+function AudioNodeBeepDemo()
+{
+  return <AudioNodeBeepDemiImpl /> ;
+  return <div /> ;
+}
+
+import { DiscogrDemoC as DiscogrDemoImpl, } from "@/components/spcl/spHitsMeAppDiscogrDemo"; ;
+
+function DiscogrDemoC() {
+  return (
+    <DiscogrDemoImpl />
+  ) ;
 }
 
 
