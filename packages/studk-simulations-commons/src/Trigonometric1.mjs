@@ -12,7 +12,12 @@ import { util, } from "typexpe-commons/src/common_sv.mjs" ;
 
 
 
-/** @type {(x: number) => number} */
+/**
+ * normalise degrees ; supports negatively-signed values
+ * 
+ * @type {(x: number) => number}
+ * 
+ */
 export function normaliseAngDeg(aDArg)
 {
   return (
@@ -42,7 +47,7 @@ export const Angle = {
   /* needs hard-wiring via `@type`, due to the recursivity */
 
   /**
-   * *(trigonometric) angle, in degrees*
+   * *(trigonometric) angle, in degrees, normalised*
    * 
    * @type {(...args: [x: number] ) => Angle }
    * 
