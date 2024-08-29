@@ -97,24 +97,23 @@ export {
 
 function getAction1(href: LinkableHref | SynchronousCallbackAction.CbImpl | null | false )
 {
-  return (
-    (typeof href === "string") ?
-    (
+  if (typeof href === "string") {
+    return (
       new UrlAction("GET", href)
-    )
-    :
-    (typeof href === "function") ?
-    (
+    ) ;
+  }
+  if (typeof href === "function") {
+    return (
       new SynchronousCallbackAction(href)
-    )
-    :
-    (href === false) ?
-    (
-      disabledButtonAction
-    )
-    :
-    noOpAction
-  ) ;
+    ) ;
+  }
+  if (href === false ) {
+    return disabledButtonAction ;
+  }
+  if ((href === null) || 1 ) {
+    return noOpAction ;
+  }
+  return util.throwTypeError(`unsupported syntactic action type: ${href}`) ;
 }
 
 export { getAction1 as translateCommonJsxAction, } ;

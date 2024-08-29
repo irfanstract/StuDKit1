@@ -28,19 +28,14 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
 
 import type {
   ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui/src/fwCore/linearValues.ts'; ;
 
 import {
   allocateKeyInternedObjectPool ,
@@ -66,52 +61,188 @@ import {
 
 ;
 
+/**
+ * {@link isNativeElementNotHidden}
+ * 
+ */
+const isNativeElementNotHidden = (
+  function (...[x, opts = {}] : ArgsWithOptions<[Element], { }> )
+  {
+    return (
+      x.matches(`:not(*[hidden], *[hidden] *, details:not(details[open]) *, head, head *)`)
+      &&
+      (isDescendantOfOrItselfEffectivelyDisplayNone(x) === false )
+    ) ;
+  }
+) ;
+
+/**
+ * whether
+ * it's
+ * descendant of, or itself,
+ * Element whose {@link getComputedStyle `getComputedStyle` yields `display: none` }
+ * 
+ * note: this may be performance-intensive
+ * 
+ * @see https://stackoverflow.com/questions/46786663/is-there-a-selector-to-exclude-display-none-elements?rq=3 
+ * 
+ */
+const isDescendantOfOrItselfEffectivelyDisplayNone: { (x: Element): boolean ; } = (
+  (self) => {
+    {
+      if (getComputedStyle(self).display === "none" ) {
+        return true ;
+      }
+    }
+    {
+      const parent = self.parentElement ;
+      if (parent) {
+        if (isDescendantOfOrItselfEffectivelyDisplayNone(parent) ) {
+          return true ;
+        }
+      } else {
+      }
+    }
+    return false ;
+  }
+) ;
+
+const getEffectiveZoom: { (x: Element): number ; } = (
+  (self) => {
+    let r : number = 1 ;
+    {
+      r *= (getComputedStyle(self).zoom ?? 1 ) ;
+    }
+    {
+      const parent = self.parentElement ;
+      if (parent) {
+        r *= getEffectiveZoom(parent)
+      } else {
+      }
+    }
+    return r ;
+  }
+) ;
+
+export {
+  isNativeElementNotHidden ,
+  isDescendantOfOrItselfEffectivelyDisplayNone ,
+  getEffectiveZoom ,
+} ;
+
+
+
+
 const getNativeCompPosition = (
-  function (...[x, opts = {}] : ArgsWithOptions<[HTMLElement | SVGElement], { }> )
+  function (...[x, opts = {}] : ArgsWithOptions<[HTMLElement | SVGElement], { }> ) : NCOP_DAT_ITC | null
   {
 
-    const cr = (
-      x.getBoundingClientRect()
-    ) ;
+    /* if element not proprly visible, don't bother */
+    if (isNativeElementNotHidden(x) )
+    {
+      const gcsZoomVal = (
+        getEffectiveZoom(x)
+      ) ;
 
-    const pos = (
-      0 ?
-      Point2D({ x: 0, y: 0, }) :
-      Point2D({ x: cr.left, y: cr.top })
-    ) ;
-    return (
-      NCOP_DAT.GET({
-        origin: Point2D({ x: cr.left, y: cr.top }) ,
-        bottomPos: cr.bottom ,
-      })
-    ) ;
+      const cr = (
+        x.getBoundingClientRect()
+      ) ;
+  
+      const {
+        left: rLeft ,
+        top: rTop ,
+        right: rRight ,
+        bottom: rBottom,
+      } = cr ;
+  
+      return (
+        NCOP_DAT.GET({
+          pos: Point2D({ x: gcsZoomVal * rLeft, y: gcsZoomVal * rTop }) ,
+          // TODO
+          bottomPos: gcsZoomVal * rBottom ,
+          rightPos: gcsZoomVal * rRight ,
+        })
+      ) ;
+    }
+    else {
+      ;
+      return (
+        NCOP_DAT.GET({
+          pos: Point2D({ x: -320, y: -320 }) ,
+          // TODO
+          bottomPos: -320 ,
+          rightPos: -320 ,
+        })
+      ) ;
+    }
   }
 ) ;
 
 interface NCOP_DAT_ITC {
   readonly pos: Point2D,
   readonly bottomPos: number,
+  readonly rightPos: number,
 }
 
 const NCOP_DAT = (
   allocateKeyInternedObjectPool({
-    recreate: (x: { readonly origin: Point2D, readonly bottomPos: number, } ): NCOP_DAT_ITC => ({
-      pos: x.origin ,
+    recreate: (x: Required<NCOP_DAT_ITC> ): NCOP_DAT_ITC => ({
+      pos: x.pos ,
       bottomPos: x.bottomPos ,
+      rightPos: x.rightPos ,
     }) ,
   } , {
     convToCacheKey: e => JSON.stringify(e) ,
   } )
 ) ;
 
+type NcpSupportedElem = (
+  Parameters<typeof getNativeCompPosition> extends readonly [infer T, ...(infer T1) ] ?
+  T
+  : never
+) ;
+
+const getMouseEvtPosition = (
+  function (...[xE] : [(MouseEvent | PointerEvent) & { target: NcpSupportedElem }])
+  {
+    ;
+
+    const x = xE.target ;
+    
+    if (x)
+    {
+      const gcsZoomVal = (
+        getEffectiveZoom(x)
+      ) ;
+
+      return (
+        Point2D({
+          x: gcsZoomVal * xE.clientX,
+          y: gcsZoomVal * xE.clientY,
+        })
+      ) ;
+    }
+
+    return null ;
+  }
+) ;
+
+
 export {
   getNativeCompPosition ,
+  getMouseEvtPosition ,
 } ;
 
 export {
   /** @deprecated */
   NCOP_DAT ,
 } ;
+
+export type {
+  // /** @deprecated */
+  // NCOP_DAT_ITC ,
+  NcpSupportedElem ,
+} ;;
 
 ;
 
