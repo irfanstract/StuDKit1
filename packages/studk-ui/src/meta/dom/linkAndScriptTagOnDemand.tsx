@@ -19,15 +19,10 @@ import {
   util,
 } from "typexpe-commons/src/common_sv.mjs";
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
 
 
 
