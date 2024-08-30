@@ -11,14 +11,16 @@ export function closeResource<T extends { close(): void ; }>(x: T) {
   x.close() ;
 }
 
-export function useResource<T extends Parameters<typeof closeResource>[0] & {}>(realloc: () => T, dp: React.DependencyList ) {
-  const [exposedRes , setExposedRes] = (React.useState<T >()) ;
+export function useResource<T extends (Parameters<typeof closeResource>[0] & {} ) | null >(realloc: () => T, dp: React.DependencyList ) {
+  const [exposedRes , setExposedRes] = (React.useState<T | null >(null) ) ;
 
   React.useEffect(() => {
     const res = realloc() ;
     setExposedRes(() => res) ;
     return () => {
-      closeResource(res) ;
+      if (res) {
+        closeResource(res) ;
+      }
     } ;
   }, dp ) ;
 
