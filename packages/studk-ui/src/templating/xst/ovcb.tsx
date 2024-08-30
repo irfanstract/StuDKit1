@@ -103,6 +103,7 @@ namespace OVCB
             yield `height: 100vh ;` ;
             yield `overflow: hidden ;` ;
             yield `overflow: clip ;` ;
+            yield `pointer-events: none ;` ;
           })
         )) ;
         return nd ;
