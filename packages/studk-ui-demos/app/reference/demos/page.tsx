@@ -59,6 +59,7 @@ import {
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 import {
+  WithElementBoundingBoxHighlightingC,
   WithOvcLevelleRefGoodiesC,
   WithOverlaySupportC,
 } from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
@@ -92,9 +93,9 @@ export default function App()
             The packages we're developing here in this monorepo
             are tried out in these demos.
           </p>
-          <WithOvcLevelleRefGoodiesC
-          children={({ ref, }) => (
-            <button ref={ref}>
+          <WithElementBoundingBoxHighlightingC
+          children={(
+            <button>
               paragraph
             </button>
           )}
@@ -115,9 +116,9 @@ export default function App()
             The packages we're developing here in this monorepo
             are tried out in these demos.
           </p>
-          <WithOvcLevelleRefGoodiesC
-          children={({ ref, }) => (
-            <button ref={ref}>
+          <WithElementBoundingBoxHighlightingC
+          children={(
+            <button>
               paragraph
             </button>
           )}
@@ -144,9 +145,9 @@ export default function App()
               The packages we're developing here in this monorepo
               are tried out in these demos.
             </p>
-            <WithOvcLevelleRefGoodiesC
-            children={({ ref, }) => (
-              <button ref={ref}>
+            <WithElementBoundingBoxHighlightingC
+            children={(
+              <button>
                 paragraph
               </button>
             )}
@@ -166,9 +167,9 @@ export default function App()
               The packages we're developing here in this monorepo
               are tried out in these demos.
             </p>
-            <WithOvcLevelleRefGoodiesC
-            children={({ ref, }) => (
-              <button ref={ref}>
+            <WithElementBoundingBoxHighlightingC
+            children={(
+              <button>
                 paragraph
               </button>
             )}
