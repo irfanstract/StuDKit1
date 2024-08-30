@@ -87,8 +87,9 @@ import type {
   NcpSupportedElem ,
 } from "studk-ui/src/meta/dom/computedstyles1.tsx" ;
 
-const useNativeCompPositionSyncRef = (
-  function (...[e, mde] : [NcpSupportedElem, NCPSR.Subject] )
+const useExistingNativeCompBoundingBoxViaRef = (
+  function (...[e, mde = NCPSR.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
+  : React.Ref<HTMLDivElement>
   {
     ;
 
@@ -145,12 +146,14 @@ namespace NCPSR
 }
 
 export {
-  useNativeCompPositionSyncRef ,
+  useExistingNativeCompBoundingBoxViaRef ,
+  /** @deprecated alias of {@link useExistingNativeCompBoundingBoxViaRef} */
+  useExistingNativeCompBoundingBoxViaRef as useNativeCompPositionSyncRef ,
   NCPSR ,
 } ;
 
 export type {
-  // /** @deprecated */
+  // /** @deprecated use direct import from `studk-ui/src/meta/dom/computedstyles1.tsx`. */
   NcpSupportedElem ,
 } ;
 
