@@ -18,6 +18,7 @@
     { "path": "../../packages/typexpe-commons", } ,
     { "path": "../../packages/studk-util", } ,
     // { "path": "../../packages/studk-simulations-commons", } ,
+    { "path": "../../packages/studk-dom-util", } ,
   ] ,
   "include": [
     "src" ,
