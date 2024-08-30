@@ -91,6 +91,7 @@ import {
 import {
   ScCHorizonConfigPropsDesc,
   SpclCoreC,
+  TbmcKnsBasedModelState,
 } from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
 
 export const TimeDomainedImgListFigureC = (
@@ -101,26 +102,64 @@ export const TimeDomainedImgListFigureC = (
           <p>
             Time-domain plot of <code>movie.mp4</code>
           </p>
-          <TimeDomainedImgListSpanC
+          <div
+          style={{
+            contain: "layout" ,
+            overflow: "auto" ,
+          }}
+          >
+          <TimeDomainedImgListSpC
           />
+          </div>
         </div>
       ) ;
     }
   ))
 ) ;
 
+/**
+ * 
+ * @deprecated this is a WIP.
+ */
 export const TimeDomainedImgListSpanC = (
   describeComponent((
+    //
     function TimeDomainedImgListSpanCImpl({} : {})
+    {
+      // TODO
+      return <></> ;
+    }
+  ))
+) ;
+
+export const TimeDomainedImgListSpC = (
+  describeComponent((
+    function TimeDomainedImgListSpCImpl({} : {})
     {
       ;
       
       const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => ({
         range: {
-          startPos: -5 ,
-          endPos: 5 ,
+          startPos: T_BY_HMS(0, 0, -15) ,
+          endPos: T_BY_HMS(0, 45, 30) ,
         } ,
       }) , [] ) ;
+
+      const ls = (
+        React.useMemo((): TbmcKnsBasedModelState => {
+          return (
+            TbmcKnsBasedModelState.getCmnInstance({
+              layerStates: (
+                util.reiterated(function* (): Generator<TbmcKnsBasedModelState.LayerStateOps> {
+                  for (const i of util.range(0, 3) ) {
+                    yield { id: `chnl ${i}`, kind: "XLayer", } ;
+                  }
+                } )
+              ) ,
+            })
+          ) ;
+        } , [] )
+      ) ;
 
       const tdSnpMap = (
         util.Immutable.Range(0, T_BY_HMS(0, 45, 3 ) , 7.5 )
@@ -147,6 +186,7 @@ export const TimeDomainedImgListSpanC = (
         <div className='studk-sequemi-tlwalkthruinlinecomp'>
           <SpclCoreC
           horizonConfig={horizonConfig}
+          value={ls}
           />
         </div>
       ) ;
