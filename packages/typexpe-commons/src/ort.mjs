@@ -34,17 +34,17 @@ import {
 const allocateKeyInternedObjectPool = (
   /**
    * 
-   * @template {Exclude<import("./eawo1.mjs").XJson.IAny, null | undefined > } KeyT
+   * @template {{} } KeyT
    * @template {object} WrpT
    * 
-   * @param {import("./eawo1.mjs").ArgsWithOptions<import("./eawo1.mjs").ArgsWithOptions<[], { recreate: (x: KeyT) => WrpT, extract?: NoInfer<(x: WrpT) => KeyT >, }>, { convToCacheKey ?: NoInfer<(x: KeyT) => (keyof any)> } >} args
+   * @param {import("./eawo1.mjs").ArgsWithOptions<import("./eawo1.mjs").ArgsWithOptions<[], { recreate: (x: KeyT) => WrpT, extract?: NoInfer<(x: WrpT) => KeyT >, }>, { convToCacheKey : NoInfer<(x: KeyT) => (keyof any)> } >} args
    * 
    */
-  function (...[{ recreate: constructFor, extract, }, opts = {} ])
+  function (...[{ recreate: constructFor, extract, }, opts ])
   {
 
     const {
-      convToCacheKey = (x) => JSON.stringify(x),
+      convToCacheKey = throwTypeError(`unspecified 'convToCacheKey'`),
     } = opts;
 
     const {
