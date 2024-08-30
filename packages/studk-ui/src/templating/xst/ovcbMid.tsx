@@ -74,11 +74,11 @@ import {
 } from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
 
 
-import * as ReactDOM from "react-dom" ;
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   withRef ,
-} from "studk-ui/src/meta/react/withAdHocRefs.tsx" ;
+} from "studk-ui-core/src/reactjs/helpers/withAdHocRefs.tsx" ;
 
 
 
@@ -120,19 +120,19 @@ export { ovcbMid, } ;
 ;
 
 import {
-  getNativeCompPosition,
-  useNativeCompPosition,
-} from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
+  doNativeCompDisplayedOffsetsAnalysis,
+  useNativeCompDisplayedOffsetsAnalysis,
+} from "studk-ui-core/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import type {
   //
   NcpSupportedElem ,
-} from "studk-ui/src/meta/dom/computedstyles1.tsx" ;
+} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101.tsx" ;
 
 import {
   useExistingNativeCompBoundingBoxViaRef ,
   NCPSR ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
+} from "studk-ui-core/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 type IRenderNativeElemOverlaySupported = (
   NcpSupportedElem
