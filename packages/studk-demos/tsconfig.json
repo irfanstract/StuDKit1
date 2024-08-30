@@ -75,6 +75,7 @@
     /* https://github.com/microsoft/TypeScript/pull/51669 */
     /* we already have `noEmit: true` here and the runtime uses alternative compiler/transpiler */
     "allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
     "resolveJsonModule": true,
 
     
@@ -142,8 +143,11 @@
     "src" ,
     /* for some reason omitting these caused the type-checker to fail resolving custom-paths */
     "app/**/*" ,
+    "appInternalScripts/**/*" ,
     "components/**/*" ,
 
+    /* otherwise `next-env.d.ts` has no effect */
+    "next-env.d.ts" ,
     /* https://nextjs.org/docs/app/building-your-application/configuring/typescript#custom-type-declarations */
     ".next/types/**/*.ts" ,
   ],
