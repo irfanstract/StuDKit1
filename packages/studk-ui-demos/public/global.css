@@ -88,40 +88,6 @@ body {
 
 
 
-@media screen {
-
-  :is(h1, h2, h3, h4, h5, h6)
-  {
-
-    position: sticky;
-    top : 0.25em ;
-    offset-block-start : 0.25em ;
-    left: 0.25em ;
-    offset-inline-start: 0.25em ;
-
-    z-index: var(--layers-headings);
-
-  }
-
-}
-
-body {
-  --layers-headnav   : 38000 ;
-  --layers-footer    : 50000 ;
-  --layers-headings  : 38500 ;
-}
-
-:is(h1, h2, h3, h4, h5, h6) {
-  transform: none;
-
-  &:hover, body:has(.studk-mnavf-header:is(:focus-within, :hover)) & {
-    top : 2.25em ;
-    background: white;
-    color: hsl(207, 100%, 76%);
-    opacity: 1;
-  }
-}
-
 table {
   position: sticky;
 }
