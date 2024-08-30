@@ -95,12 +95,15 @@ export {
 
 const MainAndNavAndFinaleC = (
   describeComponent((
-    function MainAndNavAndFinaleCImpl({ main: mainComp, nav1 = <div />, finale = <div />, } : (
-      { main: React.ReactNode ; nav1?: React.ReactElement ; finale?: React.ReactElement ; }
+    function MainAndNavAndFinaleCImpl({ main: mainComp, nav1 = <div />, finale = <div />, className = ``, } : (
+      & { main: React.ReactNode ; nav1?: React.ReactElement ; finale?: React.ReactElement ; }
+      & Pick<JSX.IntrinsicElements["div"], "className" >
     )) {
       ;
       return (
-        <div style={{
+        <div
+        className={className}
+        style={{
           position: "relative",
           // display: "flex",
           // flexDirection: "column",
@@ -111,7 +114,8 @@ const MainAndNavAndFinaleC = (
           // inlineSize: `100vw`,
           overflowInline: "clip",
           overflowX: "clip",
-        }}>
+        }}
+        >
           <div style={{
             // position: "relative",
             display: "flex",
