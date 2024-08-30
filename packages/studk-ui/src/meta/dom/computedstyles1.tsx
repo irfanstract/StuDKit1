@@ -64,58 +64,58 @@ import {
 
 
 
-import * as React from "react" ;
-
-import {
-  useIntervalEffect ,
-  useIntervalScan ,
-  useMutableRefObjState ,
-  useRefState ,
-} from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
-
-import * as ReactDOM from "react-dom" ;
-
-import {
-  describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
-
-
-
-
-
 ;
 
-import {
-  OVCB, 
-} from '#currentPkg/src/templating/xst/ovcb.tsx';
-
-import {
-  getNativeCompPosition,
-  NCOP_DAT ,
-} from "studk-ui/src/meta/dom/computedstyles1.tsx" ;
-
-const useNativeCompPosition = (
-  function (...[x, opts = {}] : ArgsWithOptions<[HTMLElement | SVGElement], { latencyMillis ?: number ; }> )
+const getNativeCompPosition = (
+  function (...[x, opts = {}] : ArgsWithOptions<[HTMLElement | SVGElement], { }> )
   {
-    const { latencyMillis = 500, } = opts ;
 
+    const cr = (
+      x.getBoundingClientRect()
+    ) ;
+
+    const pos = (
+      0 ?
+      Point2D({ x: 0, y: 0, }) :
+      Point2D({ x: cr.left, y: cr.top })
+    ) ;
     return (
-      //
-      useIntervalScan(() =>
-      {
-
-        return (
-          getNativeCompPosition(x)
-        ) ;
-      } , { latencyMillis, }, )
+      NCOP_DAT.GET({
+        origin: Point2D({ x: cr.left, y: cr.top }) ,
+        bottomPos: cr.bottom ,
+      })
     ) ;
   }
 ) ;
 
+interface NCOP_DAT_ITC {
+  readonly pos: Point2D,
+  readonly bottomPos: number,
+}
+
+const NCOP_DAT = (
+  allocateKeyInternedObjectPool({
+    recreate: (x: { readonly origin: Point2D, readonly bottomPos: number, } ): NCOP_DAT_ITC => ({
+      pos: x.origin ,
+      bottomPos: x.bottomPos ,
+    }) ,
+  } , {
+    convToCacheKey: e => JSON.stringify(e) ,
+  } )
+) ;
+
 export {
-  useNativeCompPosition ,
   getNativeCompPosition ,
 } ;
+
+export {
+  /** @deprecated */
+  NCOP_DAT ,
+} ;
+
+;
+
+
 
 
 
