@@ -89,6 +89,13 @@ export {
   ThreeEmFigureC,
 } ;
 
+import {
+  WithOverlayHighlightingC,
+  WithOvcLevelleGoodiesC ,
+  WithElementBoundingBoxHighlightingC ,
+  NCPSR ,
+} from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
+
 
 
 
@@ -195,15 +202,56 @@ namespace TbmcBreakthruColumnsRendering
     })() ;
 
     const {
-      renderChPlotIframe ,
+      renderChannelPlotAsUnitApplet ,
     } = (
       getSuggestedSccMastPlotter()
     ) ;
 
+    const renderChannelPlotAsWrInlineContent = (...args: Parameters<typeof renderChannelPlotAsUnitApplet>) => {
+      ;
+      return (
+        <WithOvcLevelleGoodiesC
+        children={({ asSpclFinalElement, renderNativeElemBoundingBoxSpc, }) => (
+          //
+          <>
+          { asSpclFinalElement((
+            <span
+            children={(
+              renderChannelPlotAsUnitApplet(...args )
+            )}
+            style={{
+              inlineSize: `7em`,
+              blockSize: `1.70em`,
+              // blockSize: `100%`,
+              display: "grid",
+              // margin: `0.7ex` ,
+              overflow: "hidden",
+            }}
+            />
+          )) }
+          { renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOUNDINGBOX, children: (
+            <div
+            style={{
+              background: `black`,
+              color: `white`,
+            }}
+            >
+            <p>
+              Stream Slice
+            </p>
+            </div>
+          ) }) }
+          </>
+        ) }
+        />
+      ) ;
+    } ;
+
     return {
       partitioningConfig ,
       effectiveWindowSeq: partitioningConfig.effectiveWindowSeq ,
-      renderChPlotIframe ,
+      renderChannelPlotAsUnitApplet ,
+      renderChannelPlotAsWrInlineContent ,
     } as const ;
   }
 
@@ -248,7 +296,8 @@ const SCC = (
 
     const {
       effectiveWindowSeq: hoSegmentDescs ,
-      renderChPlotIframe ,
+      renderChannelPlotAsUnitApplet ,
+      renderChannelPlotAsWrInlineContent ,
     } = (
       TbmcBreakthruColumnsRendering.describeSuggestedConfig1({ horizonConfig, })
     ) ;
@@ -296,19 +345,7 @@ const SCC = (
                     </span>
                   ) ,
                   renderContent: (v) => (
-                    <span
-                    children={(
-                      renderChPlotIframe(v, msd )
-                    )}
-                    style={{
-                      inlineSize: `7em`,
-                      blockSize: `1.70em`,
-                      // blockSize: `100%`,
-                      display: "grid",
-                      // margin: `0.7ex` ,
-                      overflow: "hidden",
-                    }}
-                    />
+                    renderChannelPlotAsWrInlineContent(v, msd )
                   )
                   ,
                 } ;
@@ -329,7 +366,7 @@ const SCC = (
 function getSuggestedSccMastPlotter()
 {
   ;
-  function renderChPlotIframe(...[v, ispan]: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] )
+  function renderChannelPlotAsUnitApplet(...[v, ispan]: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] )
   {
     return (
       <Svg
@@ -353,7 +390,7 @@ function getSuggestedSccMastPlotter()
     ) ;
   }
   return {
-    renderChPlotIframe ,
+    renderChannelPlotAsUnitApplet ,
   } ;
 }
 
