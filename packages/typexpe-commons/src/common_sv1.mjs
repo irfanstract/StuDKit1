@@ -277,7 +277,7 @@ export const stringLinesConcat = /** @template {String} E @param {() => Generato
 /** @module */
 const SlcSpecifiedItem = {} ;
 
-import * as L from "lodash-es" ;
+import * as L from "./lodash-es-min.mjs" ;
 
 export {
   /** @deprecated */
