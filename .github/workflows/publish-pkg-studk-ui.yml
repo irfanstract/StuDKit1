@@ -1,0 +1,55 @@
+
+
+# note: to change/amend the workflow title, be sure to change the 'name' below as well!
+
+
+name: Run `Build Package 'studk-ui' `
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # node-version: [14.x, 16.x, 18.x]
+        node-version: [20.x, 21.x, 20.9 ]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Run `nBuild Package 'studk-ui' `
+      run: |
+        npm ci
+        # npm install
+
+        # NPM-RUN-TEST(s)
+
+        cd packages/studk-ui
+        npm run test
+        cd ../../
+        
+        # TSC-BUILD(s)
+
+        cd packages/studk-ui
+        tsc --build 
+        cd ../../
+        
+        # NPM-RUN-TEST(s)
+
+        cd packages/studk-ui
+        npm run test
+        cd ../../
+        
+
+
