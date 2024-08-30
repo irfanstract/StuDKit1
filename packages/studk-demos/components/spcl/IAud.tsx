@@ -22,7 +22,7 @@ import {
 import {
   NativeButton ,
   Button ,
-} from "studk-ui/src/meta/react/dbc.tsx" ;
+} from "studk-ui/src/xst/dbc.tsx" ;
 console["log"]({ NativeButton, }) ;
 
 import dynamicComponent from "next/dynamic";
