@@ -69,7 +69,7 @@ import {
   useRefState ,
 } from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
 
-import * as ReactDOM from "react-dom" ;
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   describeComponent,
@@ -82,8 +82,8 @@ import {
 ;
 
 import {
-  getNativeCompPosition,
-  useNativeCompPosition,
+  doNativeCompDisplayedOffsetsAnalysis,
+  useNativeCompDisplayedOffsetsAnalysis,
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
 import {
