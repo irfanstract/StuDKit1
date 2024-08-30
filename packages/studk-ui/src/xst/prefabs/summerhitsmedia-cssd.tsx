@@ -62,6 +62,10 @@ type MutableCSSProperties = (
   ) : never
 ) ;
 
+export type {
+  MutableCSSProperties ,
+} ;
+
 export const describeCallbackAssignedStyleProps = (
   function (...[init] : [(self: MutableCSSProperties) => void ])
   : React.CSSProperties
@@ -87,10 +91,22 @@ export const describeByCssStringStyleProps = (
     e.setAttribute("style", c) ;
     return (
       /* object possibly leaked somewhere else. */
-      { ...(e.style) } as const
+      { ...((
+        Object.fromEntries((
+          Object.entries(e.style)
+          .filter(([k, v]) => (
+            Number.isNaN(+k )
+          ))
+        ))
+      )) } as const
     ) ;
   }
 ) ;
+
+
+
+
+;
 
 
 
