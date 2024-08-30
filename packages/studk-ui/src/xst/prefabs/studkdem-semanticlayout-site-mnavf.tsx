@@ -108,7 +108,7 @@ const MainAndNavAndFinaleC = (
       ;
       return (
         <div
-        className={className}
+        className={`studk-mnavf-wholediv ${className}`}
         style={{
           position: "relative",
           // display: "flex",
