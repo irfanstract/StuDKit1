@@ -85,7 +85,9 @@ export const describeByCssStringStyleProps = (
   {
     const e = (
       document.createElement("div") as (
-        Extend<Pick<HTMLElement, "setAttribute">, { style: MutableCSSProperties, } >
+        Extend<Pick<HTMLElement, "setAttribute">, {} > & { style: MutableCSSProperties | CSSStyleDeclaration, }
+      ) as (
+        Extend<Pick<HTMLElement, "setAttribute">, {} > & { style: MutableCSSProperties, }
       )
     ) ;
     e.setAttribute("style", c) ;
