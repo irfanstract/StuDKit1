@@ -30,11 +30,16 @@
 
   @media print {
 
-    :is(studk-spmea-phrasalblock) {
-      background-color: white;
-      color: black;
+    :not(.studk-printexactmode *):is(studk-spmea-phrasalblock) {
+      // background-color: white;
+      // color: black;
+      border: 0.1ex solid black;
     }
 
+  }
+
+  studk-spmea-phrasalblock {
+    padding-inline: 0.5ex;
   }
 
   /* MSP-STACKING */
@@ -60,7 +65,12 @@
   }
 
   :is(studk-spmea-backgroundandcaption) {
-    border: 0.15ex solid black ;
+    box-sizing: content-box;
+    box-sizing: padding-box;
+  }
+
+  :is(studk-spmea-backgroundandcaption) {
+    border: 0.25ex solid black ;
     border-radius: 0.5ex;
   }
 
