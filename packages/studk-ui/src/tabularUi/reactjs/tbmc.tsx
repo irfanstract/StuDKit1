@@ -211,7 +211,7 @@ namespace TbmcBreakthruColumnsRendering
       ;
       return (
         <WithOvcLevelleGoodiesC
-        children={({ asSpclFinalElement, renderNativeElemBoundingBoxSpc, }) => (
+        children={({ asSpclFinalElement, renderNativeElemBoundingBoxSpc, utcs, }) => (
           //
           <>
           { asSpclFinalElement((
@@ -229,18 +229,20 @@ namespace TbmcBreakthruColumnsRendering
             }}
             />
           )) }
-          { renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOUNDINGBOX, children: (
-            <div
-            style={{
-              background: `black`,
-              color: `white`,
-            }}
-            >
-            <p>
-              Stream Slice
-            </p>
-            </div>
-          ) }) }
+          { utcs && (
+            renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOUNDINGBOX, children: (
+              <div
+              style={{
+                background: `black`,
+                color: `white`,
+              }}
+              >
+              <p>
+                Stream Slice
+              </p>
+              </div>
+            ) })
+          ) }
           </>
         ) }
         />

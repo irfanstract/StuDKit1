@@ -91,7 +91,9 @@ import {
 } from '#currentPkg/src/templating/xst/ovcb.tsx';
 
 import {
+  UserToElementActivityState,
   getNativeCompPosition,
+  useIsNativeCompHoveredOrFocused,
   useNativeCompPosition,
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
@@ -368,6 +370,10 @@ const useOvcLevelleGoodies = () => {
     ref: mainRef ,
   } = props ;
 
+  const utcs = (
+    useIsNativeCompHoveredOrFocused(mainRefEd)
+  ) ;
+
   return (() => {
     return {
       ...((
@@ -428,6 +434,9 @@ const useOvcLevelleGoodies = () => {
       asSpclFinalElement: (children: React.ReactElement) => (
         withRef(mainRef, children)
       ) ,
+      ...(({
+        utcs ,
+      }) ) ,
     } as const ;
   })() ;
 } ;
