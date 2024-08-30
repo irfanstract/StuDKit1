@@ -51,7 +51,7 @@ import type {
 
 import * as React from "react" ;
 
-import * as ReactDOM from "react-dom" ;
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   describeComponent,
