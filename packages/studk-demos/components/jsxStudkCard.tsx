@@ -12,31 +12,25 @@ export {} ;
 
 
 
-import "./intrinsifiedStudkCard.css" ;
+// import "./intrinsifiedStudkCard.css" ;
+// 
+// 
+// 
+// /**
+//  * private
+//  */
+// interface IntrinsifiedStudkCardElements {
+//   ["studk-card"]: JSX.IntrinsicElements["div"] ,
+// }
+// 
+// declare global {
+//   export namespace JSX {
+//     export interface IntrinsicElements extends IntrinsifiedStudkCardElements {
+//     }
+//   }
+// }
 
-
-
-/**
- * private
- */
-interface IntrinsifiedStudkCardElements {
-  ["studk-card"]: JSX.IntrinsicElements["div"] ,
-}
-
-/* assigning to `@types/react` nor `@types/react/jsx-runtime` nor `react` doesn't work, must use `react/jsx-runtime` instead */
-declare module "react/jsx-runtime" {
-  export namespace JSX {
-    export interface IntrinsicElements extends IntrinsifiedStudkCardElements {
-    }
-  }
-}
-
-declare global {
-  export namespace JSX {
-    export interface IntrinsicElements extends IntrinsifiedStudkCardElements {
-    }
-  }
-}
+import "studk-ui/src/st-ce/studk-card.tsx" ;
 
 
 
