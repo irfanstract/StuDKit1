@@ -66,6 +66,11 @@ import {
   Span ,
 } from '#currentPkg/src/meta/react/dbc.tsx'; ;
 
+import {
+  WithOvcLevelleRefGoodiesC,
+  WithOverlaySupportC,
+} from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
+
 // TODO
 class TableRowsetRendererOpsImpl <in argsT extends unknown[], out eTr extends "thead" | "tbody" | "tr" >
 {
@@ -166,8 +171,12 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
   perRowCellRenderers ?: never ;
 }> )
 {
-  return (
-    <table className='studk-ui-table' >
+  return ((...[e]: [(ref: React.Ref<HTMLElement | SVGElement> ) => React.ReactElement] ) => (
+    <WithOvcLevelleRefGoodiesC
+    children={({ ref, }) => e(ref) }
+    />
+  ) )((ref) => (
+    <table ref={ref} className='studk-ui-table' >
       <thead>
         { renderHead?.render.renderContent() }
       </thead>
@@ -185,7 +194,7 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
         ) }
       </tbody>
     </table>
-  ) ;
+  )) ;
 }
 
 namespace renderTableByRowDtListAndRowRenderer1
