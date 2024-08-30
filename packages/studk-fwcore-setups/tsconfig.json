@@ -14,11 +14,14 @@
   },
   "include": [
     "src" ,
+
+    "**/corejs.d.ts",
   ],
   // "exclude": [
   //   "src/**/*" ,
   // ],
-  // "references": [
-  //   { "path": "../../packages/typexpe-commons", } ,
-  // ] ,
+  "references": [
+    { "path": "../../packages/typexpe-commons", } ,
+    { "path": "../../packages/studk-util", } ,
+  ] ,
 }

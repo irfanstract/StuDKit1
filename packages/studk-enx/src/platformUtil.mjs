@@ -21,14 +21,14 @@ import {
 
 
 
+/**
+ * 
+ * @returns {Promise<void> }
+ */
 function onPlatformReady()
 {
   return (
-    new Promise((/** @type {() => void } */ resolve) => {
-      ;
-      // TODO
-      app.once("ready", () => resolve() ) ;
-    } )
+    app.whenReady()
   ) ;
 }
 
