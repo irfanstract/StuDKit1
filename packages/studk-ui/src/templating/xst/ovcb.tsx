@@ -63,57 +63,10 @@ import {
 
 ;
 
-namespace OVCB { ; }
-
-namespace OVCB
-{
-
-  /** TODO/WIP */
-  export function getMainNode() : HTMLElement | SVGGElement ;
-  export function getMainNode()
-  {
-    return (
-      GMN_IMPL()
-    ) ;
-  }
-
-  const GMN_IMPL = (
-    util.L.once(() => {
-      ;
-      // return (
-      //   document.querySelector("#studk-ui-ovcb-main")!
-      // ) ;
-      {
-        const nd = document.createElement("div") ;
-        document.body.appendChild(nd) ;
-        // Object.assign(nd.style, {
-        //   position: "fixed",
-        //   top: 0 ,
-        //   left: 0 ,
-        //   width: `100vw`,
-        //   height: `100vh`,
-        // } satisfies React.CSSProperties ) ;
-        nd.setAttribute("style", (
-          util.stringLinesConcat(function* (): Generator<(React.CSSProperties extends infer CSSP ? RecordValue<{ [k in Extract<keyof CSSP, string>]: `${k}: ${Extract<CSSP[k], string | number | bigint | boolean | null | undefined>} ;` }> : never) , void> {
-            // yield* [] ;
-            yield `position: fixed ;` ;
-            yield `top: 0 ;` ;
-            yield `left: 0 ;` ;
-            yield `width: 100vw ;` ;
-            yield `height: 100vh ;` ;
-            yield `overflow: hidden ;` ;
-            yield `overflow: clip ;` ;
-            yield `pointer-events: none ;` ;
-          })
-        )) ;
-        return nd ;
-      }
-    })
-  ) ;
-
-}
-
-export { OVCB, } ;
+export {
+  /** @deprecated import directly from `ctxStacks/ovcb.tsx` */
+  OVCB ,
+} from 'studk-ui/src/templating/xst/ctxStacks/ovcb.tsx' ;
 
 
 
