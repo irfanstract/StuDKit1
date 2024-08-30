@@ -26,6 +26,18 @@ import "@/public/global.css" ;
 
 import "studk-fwcore-setups/src/nav/autorefresh-main.mjs" ;
 
+import {
+  describeComponent,
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
+
+console["log"](`env.tsx reloaded`) ;
+
+export const EnvTsxMainDummyC = (
+  describeComponent(function EnvTsxMainDummyCImpl () {
+    return <></> ;
+  })
+) ;
+
 
 
 
