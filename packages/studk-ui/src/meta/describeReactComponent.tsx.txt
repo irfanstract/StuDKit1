@@ -1,0 +1,34 @@
+
+
+
+
+
+import * as React from "react" ;
+
+
+
+
+
+export {
+  /**
+   * @deprecated
+   */
+  ReactX ,
+} ;
+
+namespace ReactX
+{
+
+  export function describeProperFunctionComponent(...[a] : [(...args: [] ) => React.ReactElement] ): React.FC ;
+  export function describeProperFunctionComponent<Props>(...[a] : [(...args: [props: Props] ) => React.ReactElement] ): React.FC<Props> ;
+  export function describeProperFunctionComponent<Props>(...[a] : [(...args: [props: Props] | [] ) => React.ReactElement] )
+  {
+    return a ;
+  }
+
+}
+
+
+
+
+
