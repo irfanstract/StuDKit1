@@ -144,7 +144,7 @@ const OVCO_INNER : React.JSXElementConstructor<{ value: IRenderNativeElemOverlay
     const { tagName, } = e ;
     ;
 
-    const ncp = useNativeCompPosition(e , { latencyMillis: 250, } ) ;
+    const ncp = useNativeCompPosition(e , { latencyMillis: 0.58 * 1000 , } ) ;
     ;
 
     if (0) {
