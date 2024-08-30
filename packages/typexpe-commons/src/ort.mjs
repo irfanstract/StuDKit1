@@ -26,6 +26,11 @@ import {
 
 ;
 
+/**
+ * 
+ * a facility implementing identity-interned data-structure constructor(s)
+ * 
+ */
 const allocateKeyInternedObjectPool = (
   /**
    * 
@@ -101,6 +106,18 @@ const AKIOP = (
   function (...[])
   {
 
+    /**
+     * the storage for (`WeakReference`-proxied ) references to the deliverable `object`s
+     * 
+     * using {@link Record} is quite inefficent, yet
+     * can't use {@link Map} since presently (May 2024) {@link Map} is not quite ergonomic for this.
+     * hoping to get the Stage-2 Proposal `Map.prototype.emplace` promoted soon (see Tc39's GH page)
+     * so I can avoid using {@link Record} here.
+     * another reason is
+     * using {@link Map} can lead programmers the wrong way as in ES/JS "array literal"s result in fresh different mutable objects so
+     * leading to various hard-to-identify, typo-based bugs.
+     * 
+     */
     const refDict = /** @type {Record<PayloadKey , WeakRef<Payload > > } */ ({ } ) ;
     
     // TODO
