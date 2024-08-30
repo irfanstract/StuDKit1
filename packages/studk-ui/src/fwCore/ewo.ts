@@ -38,9 +38,15 @@ import {
  * ```
  * 
  */
-export type ArgsWithOptions<mainArgsT extends readonly any[], optsT extends object | null | undefined > = (
+type ArgsWithOptions<mainArgsT extends readonly any[], optsT extends object | null | undefined > = (
   readonly [...mainArgsT, ...(({} & object) extends optsT ? [options?: optsT] : [options: optsT ] ) ]
 ) ;
+
+namespace ArgsWithOptions { ; }
+
+export { ArgsWithOptions, }
+
+namespace ArgsGetOptions { ; }
 
 /**
  * 
@@ -48,7 +54,7 @@ export type ArgsWithOptions<mainArgsT extends readonly any[], optsT extends obje
  * __assuming that `options` were the last parameter__, restores `options`'s type
  * 
  */
-export type ArgsGetOptions<argsT extends readonly any[]> = (
+type ArgsGetOptions<argsT extends readonly any[]> = (
   /**
    * note:
    * if {@link argsT} were plain `readonly T[]` then
@@ -78,6 +84,8 @@ export type ArgsGetOptions<argsT extends readonly any[]> = (
     AGO_NOT_REDUCED
   )
 ) ;
+
+export { ArgsGetOptions , } ;
 
 type AGO_NOT_REDUCED = unknown ;
 
