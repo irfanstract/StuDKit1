@@ -25,6 +25,7 @@ import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
 } from 'studk-ui/src/fwCore/ewo.ts'; ;
+import type { PartializedPartially, RequiredPartially, } from 'studk-fwcore-setups/src/util-eawo.mjs';
 
 import type {
   ContinuousLinearRange ,
@@ -32,15 +33,16 @@ import type {
 
 export namespace XUtil { ; }
 
+import {
+  T_STRING ,
+} from "studk-ui-encore/src/SpclTStampFmtFncs.tsx" ;
+
 
 
 
 
 
 import * as React from "react" ;
-
-
-
 
 
 import {
@@ -55,6 +57,10 @@ import {
   Button ,
   Span ,
 } from 'studk-ui/src/meta/react/dbc.tsx'; ;
+
+import {
+  EllapsedTValueC ,
+} from "studk-ui-encore/src/SpclTStampFmtComps" ;
 
 import {
   renderTableByRowDtListAndPresenter ,
@@ -106,15 +112,29 @@ export type TbmcHc = {
   range: ContinuousLinearRange ,
 }
 
-export const TbmcKnbC = (
-  describeComponent(function KnBasedTimeTableMC({
-    horizonConfig ,
-    value: valueArg ,
-  } : {
-    //
+interface TbmcKnbCProps extends Extract<{
+  //
   horizonConfig: TbmcHc ,
   value?: TbmcKnsBasedModelState ,
-  } ) {
+}, any>
+{}
+
+const getTbmcKnbDefaultSpecimen = util.L.once(function ()
+{
+  return (
+    TbmcKnsBasedModelState.getDemoInstance()
+  ) ;
+}) ;
+
+export const TbmcKnbC: {
+  /** @deprecated please make `value` non-null. */
+  (props: PartializedPartially<TbmcKnbCProps, "value">): React.JSX.Element ;
+  (props: TbmcKnbCProps): React.JSX.Element ;
+} = (
+  describeComponent(function KnBasedTimeTableMC({
+    horizonConfig ,
+    value: valueArg = getTbmcKnbDefaultSpecimen() ,
+  } : TbmcKnbCProps ) {
     ;
 
     const {
@@ -122,16 +142,21 @@ export const TbmcKnbC = (
       renderPerChannelPlotAsUnitApplet ,
       renderPerChannelPlotAsWrInlineContent ,
     } = (
-      TbmcBreakthruColumnsRendering.describeSuggestedConfig1({ horizonConfig, })
+      TbmcBreakthruColumnsRendering.describeSuggestedConfig11({
+        horizonConfig: {
+          range: horizonConfig.range ,
+          samplingConfig: {
+            perWindowSpan: (
+              // TODO
+              15.0
+            ) ,
+          } ,
+        } ,
+      })
     ) ;
 
     const chnlDataList = (
-      valueArg?.layerStates ??
-      mkArray(function* () {
-        for (const i of util.range(0, 10) ) {
-          yield { kind: "X", id: `chnl-${i}`, } satisfies TbmcModelState.KnLayerStateOpsImpl ;
-        }
-      } )
+      valueArg.layerStates
     ) satisfies TbmcModelState["layerStates"] ;
 
     {
@@ -164,7 +189,14 @@ export const TbmcKnbC = (
                   classNames: ['studk-ui-tbmc-timewatchcolumncell'],
                   renderHead: () => (
                     <span>
-                      { `(Hor ${`${srcSpan.startPos} to ${srcSpan.endPos}` })` }
+                      Spn
+                      <span>
+                        (
+                          <EllapsedTValueC value={srcSpan.startPos} maxUnit='hours' />
+                          to
+                          <EllapsedTValueC value={srcSpan.endPos} maxUnit='hours' />
+                        )
+                      </span>
                     </span>
                   ) ,
                   renderContent: (v) => (
