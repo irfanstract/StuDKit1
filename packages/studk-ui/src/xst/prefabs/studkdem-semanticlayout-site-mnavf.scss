@@ -12,7 +12,7 @@
 
 
 
-@layer stmnavfdefaults01, stmnavfdefaults02, stmnavfdefaults03, stmnavfdefaults04, defaults ;
+@layer stmnavfdefaults01, stmnavfdefaults02, stmnavfdefaults025, stmnavfdefaults03, stmnavfdefaults04, defaults ;
 
 @layer stmnavfdefaults01 {
   //
@@ -21,6 +21,12 @@
 @layer stmnavfdefaults02 {
   
   /* */
+
+  .studk-mnavf-maindiv,
+  .studk-mnavf-header,
+  .studk-mnavf-footer {
+    contain: layout;
+  }
 
   .studk-mnavf-header {
     z-index: var(--layers-headnav) ;
@@ -66,6 +72,63 @@
     }
   }
   
+}
+
+/* MEDIA-BASED PROGRESSIVE ENHANCEMENT(s) */
+
+@layer stmnavfdefaults02 {
+  //
+
+  .studk-mnavf-maindiv {
+    font-size: 16px;
+  }
+  @each $vw in (
+    // 8000000
+    640,
+    560,
+    480,
+    440,
+    400,
+    360,
+    320,
+    280 ,
+    240,
+    200 ,
+    180,
+    160,
+  ) {
+    //
+    @media (max-width: #{$vw}) {
+      .studk-mnavf-maindiv {
+        font-size: #{(
+          calc((
+            min(16px, (
+              pow(($vw / 320), 1 / 2 )
+              * 15.05
+            ) * 1px )
+          ))
+        ) };
+      }
+    }
+  }
+  
+  @media screen and (max-width: 550px) {
+    .studk-mnavf-footer {
+      inset-block-end: revert;
+    }
+  }
+  
+}
+
+@layer stmnavfdefaults025 {
+  //
+
+  :is(.studk-mnavf-header, .studk-mnavf-footer) {
+    &, & * {
+      transition-duration: 5em;
+      transition-timing-function: linear;
+    }
+  }
 }
 
 @layer stmnavfdefaults04
