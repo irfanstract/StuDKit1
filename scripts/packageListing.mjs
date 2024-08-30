@@ -114,6 +114,11 @@ export const nonPlainJsPkgs = (
         .filter(nm => nm.startsWith('studk-fbreact') )
       ) ;
 
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk-dom\b/u) )
+      ) ;
+      
       /* our official reusable packages */
 
       yield 'studk-ui' ;
@@ -135,6 +140,12 @@ export const nonPlainJsPkgs = (
           .filter(nm => nm.match(/\bencore\b/g ) )
         ) ;
       }
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studpresenters') )
+      ) ;
+
     })
   ))
 ) ;
