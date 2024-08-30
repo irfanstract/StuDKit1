@@ -112,12 +112,16 @@ export namespace SPHMEA
   {
     return (
       <div
-      style={{
-        display: "table-cell",
-        inlineSize: `39ex` ,
-        blockSize : `39ex` ,
-        // contain : `size` ,
-      }}
+      style={(
+        describeCallbackAssignedStyleProps(function (s) {
+          s.display = "table-cell" ;
+          s.display = "inline-block" ;
+          s.width = `39ex` ;
+          s.height = `39ex` ;
+          s.contain = "size";
+          s.contain = "content";
+        })
+      )}
       children={srcE}
       />
     ) ;
@@ -259,6 +263,11 @@ export namespace SPHMEA
           </li>
           <li>
             <img
+            src={hryStsAsWsImg.src }
+            />
+          </li>
+          <li>
+            <img
             src={vbvImg.src }
             />
           </li>
@@ -365,8 +374,9 @@ export namespace SPHMEA
 
 import vbvImg from "studk-ui-encore/src/venicebienvenue.png" ;
 
-import kzwImg from "studk-ui-encore/src/edmkreamzoharabetterwater.png" ;
+import hryStsAsWsImg from "studk-ui-encore/src/hrystylesalbumasitwas.png" ;
 
+import kzwImg from "studk-ui-encore/src/edmkreamzoharabetterwater.png" ;
 
 
 
