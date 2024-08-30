@@ -20,6 +20,8 @@
 
 
 
+@layer defaults {
+  
 studk-card {
   border: 0.05em solid currentColor;
   /* display: inline-block; */
@@ -36,6 +38,22 @@ studk-card {
   padding: 0.5em;
   padding-block: 0.03em 1.5em;
   margin-inline-start: -0.3em;
+}
+
+studk-card {
+  padding-block: 0.7em 1.5em;
+  margin-block: 1em ;
+  margin-block-end: 1.5em;
+  box-shadow: 0 0 0.35em rgba(0 0 0 / 0.5 ) ;
+}
+
+studk-card {
+  box-shadow: 0 0 0.2035em rgba(0 0 0 / 0.5 ) ;
+}
+
+}
+studk-card {
+  border-radius: 0.475em;
 }
 
 

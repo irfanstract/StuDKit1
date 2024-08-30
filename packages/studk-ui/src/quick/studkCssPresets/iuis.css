@@ -1,0 +1,291 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* RECOMMENDED PER-COMPONENT DEFAULTS */
+
+@layer defaults {
+    
+  details {
+    zoom: 82%;
+  }
+    
+  details {
+    border: 0.05em solid currentColor;
+    border-color: black;
+    border-width: 0.125em ;
+    padding-block: 0.5em ;
+    /* padding-block: 0.7em 1.5em; */
+    /* margin-block: 1em ;
+    margin-block-end: 1.5em; */
+    box-shadow: 0 0 0.35em rgba(0 0 0 / 0.5 ) ;
+    background: rgba(128 128 128 / 0.7 );
+  }
+  details {
+    cursor: pointer;
+  }
+
+}
+
+@layer defaults {
+  details {
+    background: hsla(240, 20%, 35%, 0.995);
+    color: white;
+  }
+}
+
+@layer defaults {
+  
+  img {
+    border-radius: 2%;
+    filter: blur(0.5px);
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+
+  img {
+    border: 0.20em solid black ;
+  }
+
+}
+
+@layer defaults {
+  
+  studk-card {
+    filter: blur(0.01px);
+  }
+
+}
+
+@layer defaults {
+  
+  details {
+    background: hsla(240, 20%, 25%, 0.4526);
+    color: inherit;
+    zoom: 80%;
+  }
+  details {
+    border-width: 0.05em ;
+  }
+    
+  details
+  {
+    opacity: 1;
+  }
+  .studk-ui-pageoverall-main:not(:focus-within, :hover) details:not([open])
+  {
+    opacity: 0.75;
+  }
+}
+
+
+
+
+
+h1, h2, h3, h4, h5, h6
+{
+
+  font-family: sans-serif;
+ 
+}
+
+h1, h2, h3, h4, h5, h6
+{
+  backdrop-filter: blur(1em) ;
+
+  display: block;
+  display: block flow-root;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+
+  padding-block: 0.5em;
+}
+
+
+
+
+
+
+
+button {
+}
+
+button {
+  font-family: inherit;
+  /* background: canvas; */
+  -webkit-margin-end: 0.5em;
+  margin-inline-end: 0.5em;
+}
+button:not(.studk-ui-dbc-subsntcspan) {
+  background: black;
+  color: white;
+}
+button:not(.studk-ui-dbc-subsntcspan) {
+  padding: 0.3em 0.2em;
+  border-radius: 0.2em;
+}
+button:not(.studk-ui-dbc-subsntcspan)
+, .studk-ui-dbc-standalonespan:is(a)
+{
+  /* border-radius: 0.5em; */
+  padding-block: 0.25em 0.4em;
+}
+button:not(.studk-ui-dbc-subsntcspan) {
+}
+
+.card {
+  border: 0.05em solid currentColor;
+  /* display: inline-block; */
+  display: block;
+  display: flow-root;
+  padding: 0.3em 0.2em;
+  margin-block-end: 0.5em;
+  margin-inline-end: 0.5em;
+  border-radius: 0.25em;
+  backdrop-filter: blur(0.9em);
+}
+
+studk-card {
+  zoom: 92%;
+}
+
+studk-card {
+  /* overflow-inline: hidden; */
+  overflow-x: hidden;
+}
+
+button:not(.studk-ui-dbc-subsntcspan)
+, .studk-ui-dbc-standalonespan:is(a)
+{
+  /* font-weight: 500; */
+  font-weight: bold;
+}
+button:is(.studk-ui-dbc-subsntcspan) {
+  font-weight: 590;
+}
+
+button:is(.studk-ui-dbc-subsntcspan) {
+  background: hsl(0, 0%, 68%);
+  color: rgb(10, 10, 10);
+  border-color: transparent;
+}
+button:is(.studk-ui-dbc-subsntcspan) {
+  background: hsla(0, 0%, 68%, 0.349);
+}
+button:is(.studk-ui-dbc-subsntcspan)
+{
+  background: transparent;
+}
+button:not(.studk-ui-dbc-subsntcspan)
+, .studk-ui-pageoverall-main:is(:focus-within, :hover) button
+{
+  border-color: hsl(240 20% 40% / 1);
+  background-color: hsl(240 20% 40% / 1);
+  color: hsl(240 20% 95% / 1);
+}
+button:not(.studk-ui-dbc-subsntcspan) {
+}
+
+.studk-ui-pageoverall-main:not(:focus-within, :hover) .studk-ui-dbc-standalonespan:is(button, a ) {
+  opacity: 0.18;
+
+  &:is(:disabled) {
+    opacity: 0;
+  }
+}
+
+button:not(.studk-ui-dbc-subsntcspan) {
+  /* font-size: 75%; */
+  font-size: 90% ;
+}
+button:is(.studk-ui-dbc-subsntcspan) {
+  font-size: 95% ;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Inter", "Roboto", "Microsoft Sans Serif", sans-serif;
+}
+
+pre, code, kbd {
+  font-family: 'Consolas', 'Monaco', 'Fira Code', 'Inconsolata', monospace ;
+}
+
+a[href] {
+  color: rgba(96 128 192 / 1);
+}
+a[href]:is(.studk-ui-pageoverall-main:is(:focus-within, :hover) *) {
+  color: blue;
+}
+h1
+/* , h2, h3, h4, h5, h6 */
+{
+  z-index: 2;
+  border-radius: 0.35em;
+}
+
+h1 {
+  position: sticky;
+}
+
+
+
+
+/* that's it */
+
+
+
+
+
+
+
+/* TODO: move this into new file */
+
+/* RECOMMENDED PAGE METRICS DEFAULTS */
+
+@layer defaults {
+
+  body {
+    margin: 0 ;
+  }
+
+  body {
+  
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+    font-weight: 500;
+  }
+  
+}
+
+@layer defaults {
+  
+  body {
+    user-select: none;
+  }
+  .studk-ui-pageoverall-main {
+    user-select: text;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+

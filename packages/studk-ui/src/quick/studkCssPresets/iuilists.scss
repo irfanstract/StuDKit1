@@ -1,0 +1,63 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* RECOMMENDED PER-COMPONENT DEFAULTS */
+
+@layer defaults {
+  
+  ul, ol {
+    padding-inline-start: 0.85em;
+    /* list-style-type: disc;
+    marker: "-"; */
+  }
+
+  ul > li::marker,
+  ol > li::marker,
+  #-----e {
+    /* font-size: 85%; */
+  }
+
+  ul, ol {
+    border: none;
+    border-inline-start: 0.025em dashed currentColor;
+    border-inline-start-color: gray;
+  }
+
+  ul, ol {
+    zoom: 93%;
+  }
+
+  ul, ol {
+    border-inline-start-width: 0.05em;
+  }
+
+  ol > li::marker {
+    // font-family: "Consolas", "Monaco", monospace ;
+    // letter-spacing: 0.1ex;
+    font-family: 'Times New Roman', Times, serif;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
