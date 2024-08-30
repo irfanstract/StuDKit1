@@ -21,7 +21,7 @@
 
 
 
-export * from "studk-ui-core/src/reactjs/helpers/withAdHocRefs.tsx" ;
+export * from "studk-ui-fwcore/src/reactjs/helpers/withAdHocRefs.tsx" ;
 
 
 
