@@ -4,6 +4,8 @@
 
 
 
+
+
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -32,11 +34,11 @@ import {
 
 import * as React from "react" ;
 
-type FullDocHref = `${Location["origin"]}${Location["pathname"]}` ;
-
-type BrowsibleHref = Location["href"] ;
-
-type LinkableHref = HTMLAnchorElement["href"] & {} ;
+import type {
+  BrowsibleHref ,
+  LinkableHref ,
+  FullDocHref ,
+} from "studk-ui-core/src/hrefLinkable" ;
 
 
 
