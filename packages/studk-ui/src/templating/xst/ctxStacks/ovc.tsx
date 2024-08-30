@@ -86,34 +86,81 @@ import {
 } from '#currentPkg/src/templating/xst/ovcb.tsx';
 
 import {
+  getNativeCompPosition,
   useNativeCompPosition,
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
 const OVCO : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
-  function ({ value: e, }) {
-    const ncp = useNativeCompPosition(e , { latencyMillis: 250, } ) ;
-    ;
+  function ({ value: e, })
+  {
     /** `tagName` will always stays the same for its lifetime. */
     const { tagName, } = e ;
+    ;
+
+    const ncpRef = React.useRef<HTMLDivElement | null>(null) ;
+    useIntervalEffect(() => {
+      const e1 = ncpRef.current ;
+      if (e1) {
+        const ncp = getNativeCompPosition(e) ;
+        Object.assign(e1.style, {
+          //
+          top : `${`${ncp.bottomPos }px` } ` , 
+          left: `${`${ncp.pos["x"] }px` } ` , 
+        } ) ;
+      }
+    } , 0.0551 * 1000 , [ncpRef] ) ;
+    ;
+
     if (0) {
       return <div /> ;
     }
+
+    return (
+      <div
+      ref={ncpRef}
+      style={{
+        position: "fixed",
+        // top : `${`${ncp.bottomPos }px` } ` , 
+        // left: `${`${ncp.pos["x"] }px` } ` , 
+        background: `black`,
+        color: `white`,
+        transition: `all 0.205s ease-out` ,
+        // transition: `initial` ,
+        fontWeight: `550` ,
+      }}
+      >
+        <OVCO_INNER
+        value={e}
+        />
+      </div>
+    ) ;
+  }
+) ;
+
+const OVCO_INNER : React.JSXElementConstructor<{ value: IRenderNativeElemOverlaySupported, }> = (
+  function ({ value: e, })
+  {
+    /** `tagName` will always stays the same for its lifetime. */
+    const { tagName, } = e ;
+    ;
+
+    const ncp = useNativeCompPosition(e , { latencyMillis: 250, } ) ;
+    ;
+
+    if (0) {
+      return <div /> ;
+    }
+
     return (
       ncp ?
       (
         <div
         style={{
-          position: "fixed",
-          top : `${`${ncp.pos["y"] }px` } ` , 
-          left: `${`${ncp.pos["x"] }px` } ` , 
-          background: `black`,
-          color: `white`,
-          transition: `all 0.75s ease-out` ,
         }}
         >
           <p>
-            Element <code>{ `${tagName}` }</code>
-            positioned at <code>{ JSON.stringify(ncp.pos ) }</code>
+            Element <code>{ `${tagName}` }</code> {}
+            positioned at <code>{ JSON.stringify(ncp.pos ) }</code> {}
           </p>
         </div>
       )
