@@ -1,5 +1,5 @@
 {
-  "extends": "../../scripts/tsEnabledSampleProjects/customTsNodePackage/tsconfig.json",
+  "extends": "../../tsconfig.json" ,
 
   "compilerOptions": {
     
@@ -10,10 +10,21 @@
     /* https://stackoverflow.com/a/61513685 */
     "rootDir": "src" ,
     "outDir": "dist",
+    "checkJs": true,
+
+    // "declaration": false,
 
   },
   
   "include": [
     "src" ,
   ],
+  
+  "references": [
+    { "path": "../../packages/typexpe-commons", } ,
+    { "path": "../../packages/studk-util", } ,
+    { "path": "../../packages/studk-simulations-commons", } ,
+    
+    { "path": "../../packages/studk-ui", } ,
+  ] ,
 }
