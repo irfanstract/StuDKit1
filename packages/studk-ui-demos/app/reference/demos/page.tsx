@@ -92,8 +92,11 @@ export default function App()
             Long Text Doc With Graphical Overlays
           </p>
           { 0 && <LDCWGOC /> }
-          { (
+          { 0 && (
             <AudioNodeBeepDemo />
+          ) }
+          { (
+            <DiscogrDemoC />
           ) }
         </div>
       ) ,
@@ -117,6 +120,14 @@ function AudioNodeBeepDemo()
 {
   return <AudioNodeBeepDemiImpl /> ;
   return <div /> ;
+}
+
+import { DiscogrDemoC as DiscogrDemoImpl, } from "@/components/spcl/spHitsMeAppDiscogrDemo"; ;
+
+function DiscogrDemoC() {
+  return (
+    <DiscogrDemoImpl />
+  ) ;
 }
 
 
