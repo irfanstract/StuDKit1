@@ -52,6 +52,7 @@ export function asNonlocalReturnBasedRun(impl)
 } ;
 
 /**
+ * lite variant of {@link asNonlocalReturnBasedRun} expecting *reference throwable* to be specified
  * 
  * @template {void} R
  * @param {[{ referenceEvtObj: Error, }, () => R, ]} args
@@ -72,6 +73,7 @@ export function SINGLETNLR(...[{ referenceEvtObj, }, runMainThing,])
 }
 
 /**
+ * async version of {@link SINGLETNLR}
  * 
  * @template {void} R
  * @param {[{ referenceEvtObj: Error, }, () => Promise<R>, ]} args
@@ -119,6 +121,7 @@ export { iterateNonNull, isNonNull, } ;
  * 
  * @class
  * @template {{}} A
+ * 
  */
 function Deferred()
 {
@@ -132,6 +135,23 @@ function Deferred()
 }
 
 export { Deferred, } ;
+
+export { startTimeout, } ;
+
+/**
+ * 
+ * starts a new timeout in terms of {@link setTimeout }
+ * 
+ * @param {[delayMillis: number, ]} args
+ * 
+ */
+function startTimeout(...[delayMillis]) {
+  return (
+    new Promise((/** @type {(x: () => void ) => void } */ resolve) => (
+      setTimeout(resolve, delayMillis )
+    ) )
+  ) ;
+}
 
 /**
  * Array from async-generator.
@@ -155,6 +175,18 @@ export const arrayFromAsync = /** @template E @param {AsyncIterable<E> } x */ as
  */
 export const arrayFromAsyncFac = /** @template E @param {() => AsyncIterable<E> } x */ (x) => arrayFromAsync(x() ) ;
 
+/**
+ * by a generator-function, render a readonly array.
+ * equivalent to `Array.from(reiterable(x) )`, except possibly additionally `freeze`ed .
+ * 
+ */
+export const reiterated = /** @template E @param {() => Generator<E, void, void> } x @return {ReadonlyArray<E> } */ (x) => {
+  return (
+    Object.freeze((
+      Array.from(reiterable(x) )
+    ) )
+  ) ;
+} ;
 /**
  * by a generator-function, describe a {@link Iterable re-iterable}:
  * ```
@@ -207,10 +239,10 @@ export const asyncReiterable = /** @template E @param {() => AsyncGenerator<E> }
  * async version of {@link stringLinesConcat }
  * 
  */
-export const stringLinesConcatAsync = /** @template {String} E @param {() => AsyncGenerator<E> } x */ async (x) => (
-  (await arrayFromAsync(x() ) )
-  .join("\r\n")
-) ;
+export const stringLinesConcatAsync = /** @template {String} E @param {() => AsyncGenerator<SlcSpecifiedItem<E>, void, void> } x */ async (x) => {
+  const x1 = (await arrayFromAsync(x() ) ) ;
+  return stringLinesConcat(function* () { yield* x1 ; }) ;
+} ;
 /**
  * build string by concatenating, with CRLF, lines from `x`.
  * 
@@ -231,10 +263,92 @@ export const stringLinesConcatAsync = /** @template {String} E @param {() => Asy
  * ```
  * 
  */
-export const stringLinesConcat = /** @template {String} E @param {() => Generator<E> } x */ (x) => (
+export const stringLinesConcat = /** @template {String} E @param {() => Generator<SlcSpecifiedItem<E>, void, void> } x */ (x) => (
   [...reiterable(x) ]
+  .map(lne => (lne ?? "" ))
   .join("\r\n")
 ) ;
+
+/**
+ * @typedef {E | void }
+ * @template {string} [E = string]
+ * 
+ */
+/** @module */
+const SlcSpecifiedItem = {} ;
+
+import * as L from "lodash-es" ;
+
+export {
+  /** @deprecated */
+  L as lodash,
+  L ,
+} ;
+
+/** @type {(...x: [string, number]) => string} */
+export function indent(x, n) {
+  return (
+    x
+    .split(/\r?\n/g)
+    .map(x => ("".padStart(n) + x) )
+    .join("\r\n")
+  ) ;
+}
+
+const {
+  debounce,
+} = L ;
+
+/** @type {{ <T extends (...args: [...argsT]) => any, const argsT extends any[]>(func: T, resolver: ((...args: Parameters<T>) => any) | undefined): ReturnType<(typeof L.memoize<T>)>; } } */
+export const xMemoize = (
+  function (...[f, r])
+  {
+    const newF = (
+      L.memoize(f, r ?? throwTypeError(`missing 'resolver'.`) )
+    ) ;
+    return newF ;
+  }
+) ;
+
+export {
+  xMemoize as memoize ,
+  debounce ,
+  // throt
+}  ;
+export {
+  range ,
+  // memoize ,
+  // debounce ,
+  // throt
+} from "lodash-es" ; ;
+
+export const asMentioned = /** @template E @param {() => Generator<E, void, void> } x @return {ReadonlyArray<E> } */ (x) => {
+  return (
+    reiterated(function* () {
+      yield* (
+        new Map((
+          reiterated(x)
+          .map(e => [e, true] )
+        ))
+        .keys()
+      ) ;
+    })
+  ) ;
+} ;
+
+/**
+ * 
+ * quote given string as `code` for MD.
+ * 
+ * @satisfies {(x: string) => string}
+ * 
+ */
+export const mdQuoteCode = (
+  x => (
+    ["", x, ""].join("`")
+  )
+) ;
+
 
 
 
