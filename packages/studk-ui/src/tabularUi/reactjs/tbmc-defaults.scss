@@ -1,0 +1,57 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@layer defaults, tbmcdefaults ;
+
+@layer tbmcdefaults {
+/* */
+ 
+.studk-ui-tbmc-timewatchcolumncell {
+  padding-inline: 0 ;
+}
+
+tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
+  padding-block: 0.1em ;
+}
+
+table:has(.studk-ui-tbmc-timewatchcolumncell) {
+  position: relative;
+}
+
+:is(tbody, thead) > * > td {
+  z-index: 10;
+}
+
+tbody > * > td.studk-ui-tbmc-timewatchcolumncell + .studk-ui-tbmc-timewatchcolumncell {
+  border-inline-start: none ;
+}
+tbody > * > td.studk-ui-tbmc-timewatchcolumncell:has(+ .studk-ui-tbmc-timewatchcolumncell) {
+  border-inline-end: none ;
+}
+
+tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
+  opacity: 0.5;
+}
+
+tbody > * > td.studk-ui-tbmc-timewatchcolumncell {
+  background: black;
+}
+
+}
+
+
+
+
+
+
