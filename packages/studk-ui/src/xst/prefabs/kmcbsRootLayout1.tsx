@@ -143,6 +143,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
   ) ;
   return (
       <MainAndNavAndFinaleC
+      className={`studk-kmcbsrootmnvf-whole ${asClsVerTag} `}
       main={(
         //
         (() => {
