@@ -136,6 +136,8 @@ export {
 } ;
 
 
+
+
 const getNativeCompPosition = (
   function (...[x, opts = {}] : ArgsWithOptions<[HTMLElement | SVGElement], { }> ) : NCOP_DAT_ITC | null
   {
@@ -205,8 +207,35 @@ type NcpSupportedElem = (
   : never
 ) ;
 
+const getMouseEvtPosition = (
+  function (...[xE] : [(MouseEvent | PointerEvent) & { target: NcpSupportedElem }])
+  {
+    ;
+
+    const x = xE.target ;
+    
+    if (x)
+    {
+      const gcsZoomVal = (
+        getEffectiveZoom(x)
+      ) ;
+
+      return (
+        Point2D({
+          x: gcsZoomVal * xE.clientX,
+          y: gcsZoomVal * xE.clientY,
+        })
+      ) ;
+    }
+
+    return null ;
+  }
+) ;
+
+
 export {
   getNativeCompPosition ,
+  getMouseEvtPosition ,
 } ;
 
 export {
