@@ -1,0 +1,48 @@
+{
+  "configurations": [
+    // {
+    //   "name": "studk-demos",
+    //   "cwd": "${workspaceFolder}/packages/studk-demos",
+    //   "command": "npm run dev",
+    //   "request": "launch",
+    //   "type": "node-terminal",
+    // },
+    {
+      "name": "studk-demos",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/studk-demos",
+      "runtimeArgs": [
+        "run",
+        "dev",
+      ],
+      "runtimeExecutable": "npm",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node" ,
+      "envFile": "${workspaceFolder}/dist/env.txt",
+    } ,
+    {
+      "name": "studk-ui-demos",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/studk-ui-demos",
+      "runtimeArgs": [
+        "run",
+        "dev",
+      ],
+      "runtimeExecutable": "npm",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node" ,
+      "envFile": "${workspaceFolder}/dist/env.txt",
+    } ,
+  ] ,
+
+  /**
+   * 
+   * further reading:
+   * - https://stackoverflow.com/a/64014146
+   * 
+   */
+}
