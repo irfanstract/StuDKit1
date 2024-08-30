@@ -1,0 +1,40 @@
+
+
+
+
+/*
+
+rules like that which imposes `* { transition: all 0.5s ease-out ; }`
+.
+
+*/
+
+
+
+
+
+
+
+
+
+
+/* RECOMMENDED PER-COMPONENT DEFAULTS */
+
+@layer defaults {
+
+  * {
+    transition: all 0.35s ease-out ;
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
