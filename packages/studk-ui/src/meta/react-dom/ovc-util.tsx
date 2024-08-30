@@ -73,6 +73,27 @@ export {
 
 import * as React from "react" ;
 
+export const useRefreshedCallback = (
+  function <argsT extends readonly unknown[], const R>(...[upstreamImpl] : [impl: (...args: argsT) => R ])
+  {
+    const iRef = (
+      React.useRef<(...x: argsT) => R>(() => util.throwAssertionError(`URC not initailsed yet`) )
+    ) ;
+    iRef.current = upstreamImpl ;
+
+    return (...a: argsT) => iRef.current(...a) ;
+  }
+) ;
+
+export const useEventDispatchCallback = (
+  function <E extends object>(...[upstreamImpl] : [impl: (x: E) => void ] )
+  {
+    return (
+      useRefreshedCallback(upstreamImpl)
+    ) ;
+  }
+) ;
+
 // /** TODO/WIP @deprecated */
 class IntervalSource extends ((
   createInterningSubclass((
@@ -176,10 +197,23 @@ export {
   useIntervalScan ,
 } ;
 
-/** TODO/TBD/WIP */
+type RefHookArgsImpl<valueT extends object | symbol> = (
+  ArgsWithOptions<[], { latencyMillis ?: number ; }>
+) ;
+
+/**
+ * use {@link React.useRef mutable-ref-pointed } value,
+ * forcing {@link React.useLayoutEffect re-render} when it (ie the value identity) changes.
+ * 
+ * __avoid using ref-maintained values as props since
+ * doing so will easily lead to buggy component implementation causing the renderer to hang.__
+ * 
+ * TODO/TBD/WIP
+ * 
+ */
 const useMutableRefObjState = (
   //
-  function <valueT extends object>(...[opts = {}] : ArgsWithOptions<[], { latencyMillis ?: number ; }> )
+  function <valueT extends object>(...[opts = {}] : RefHookArgsImpl<valueT> )
   {
     const { latencyMillis = 1000 , } = opts ;
 
@@ -188,12 +222,27 @@ const useMutableRefObjState = (
   }
 ) ;
 
-/** TODO/TBD/WIP */
-const useRefState = (
+/**
+ * use {@link React.Ref callback-ref-pointed} value,
+ * forcing {@link React.useLayoutEffect re-render} when it (ie the value identity) changes.
+ * 
+ * __avoid using ref-maintained values as props since
+ * doing so will easily lead to buggy component implementation causing the renderer to hang.__
+ * 
+ * TODO/TBD/WIP
+ * 
+ */
+const useCallbackRefState = (
   //
-  function <valueT extends object>(...[opts = {}] : ArgsWithOptions<[], { latencyMillis ?: number ; }> ) : [valueT | null, React.Ref<valueT>]
+  function <valueT extends object>(...[opts = {}] : RefHookArgsImpl<valueT> ) : [valueT | null, Extract<React.Ref<valueT>, Function>]
   {
-    const [mainRefEd, mainRef] = useMutableRefObjState<valueT>() ;
+    const {
+       latencyMillis ,
+    } = opts ;
+
+    const [mainRefEd, mainRef] = (
+      useMutableRefObjState<valueT>({ latencyMillis, })
+    ) ;
 
     return (
       [mainRefEd, (
@@ -208,13 +257,33 @@ const useRefState = (
   }
 ) ;
 
+/**
+ * use {@link React.Ref ref-pointed} value,
+ * forcing {@link React.useLayoutEffect re-render} when it (ie the value identity) changes.
+ * 
+ * __avoid using ref-maintained values as props since
+ * doing so will easily lead to buggy component implementation causing the renderer to hang.__
+ * 
+ * TODO/TBD/WIP
+ * 
+ */
+const useRefState = (
+  //
+  function <valueT extends object>(...args : RefHookArgsImpl<valueT> ) : [valueT | null, React.Ref<valueT>]
+  {
+    return (
+      useCallbackRefState<valueT>(...args)
+    ) ;
+  }
+) ;
+
 export {
   /** @deprecated */
   useMutableRefObjState ,
   useRefState ,
 } ;
 
-import * as ReactDOM from "react-dom" ;
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 
 
