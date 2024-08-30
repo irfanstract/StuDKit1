@@ -20,5 +20,7 @@
   ,
   "scripts": {
     "start": "npx electron@29.2.0 iem.mjs"
+    ,
+    "printNodeVersion": "npx electron@29.2.0 ./src/metaPrintNodeVersion.mjs"
   }
 }
