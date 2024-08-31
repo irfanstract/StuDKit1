@@ -84,6 +84,13 @@ import {
 } from 'studk-ui/src/meta/react/gec.tsx'; ;
 
 import {
+  describeByCssStringStyleProps,
+  describeCallbackAssignedStyleProps, 
+  withCssStringApplied,
+  withPresentationalGoodiesApplied,
+} from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd-adv.tsx'; ;
+
+import {
   WithOverlayHighlightingC,
   WithOvcLevelleGoodiesC ,
   WithElementBoundingBoxHighlightingC ,
@@ -193,29 +200,68 @@ namespace TbmcBreakthruColumnsRendering
             children={(
               renderPerChannelPlotAsUnitApplet(...args )
             )}
-            style={{
-              inlineSize: `7em`,
-              blockSize: `1.70em`,
-              // blockSize: `100%`,
-              display: "grid",
-              // margin: `0.7ex` ,
-              overflow: "hidden",
-            }}
+            style={(
+              describeCallbackAssignedStyleProps(function (s) {
+                s.inlineSize = `7em` ;
+                // s.blockSize = `100%` ;
+                s.minBlockSize = `1.70em` ;
+                s.display = "grid" ;
+                // s.margin = `0.7ex` ;
+                s.overflow = "hidden" ;
+                s.overflow = "clip" ;
+                s.paddingBlock = `0.66ex` ;
+              })
+            )}
             />
           )) }
-          { utcs && (
-            renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOUNDINGBOX, children: (
-              <div
-              style={{
-                background: `black`,
-                color: `white`,
-              }}
-              >
-              <p>
-                Stream Slice
-              </p>
-              </div>
-            ) })
+          { (utcs || null ) && (
+            <>
+            { (
+              renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOUNDINGBOX, children: (
+                (function () {
+                  return (
+                    <></>
+                  ) ;
+                } )()
+              ) })
+            ) }
+            { (
+              renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOTTOM, children: (
+                (function () {
+                  const c = (
+                    <div>
+                    <p>
+                      Stream Slice
+                    </p>
+                    </div>
+                  ) ;
+
+                  if (0)
+                  {
+                    return (
+                      <div
+                      style={{
+                        background: `black`,
+                        color: `white`,
+                      }}
+                      >
+                      { c }
+                      </div>
+                    ) ;
+                  }
+                  {
+                    return (
+                      <studk-spmea-phrasalblock
+                      style={{
+                      }}
+                      children={c}
+                      />
+                    ) ;
+                  }
+                } )()
+              ) })
+            ) }
+            </>
           ) }
           </>
         ) }
