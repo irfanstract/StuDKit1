@@ -12,6 +12,9 @@
   ,
 	"devDependencies": {
 	}
+  ,
+	"imports": {
+	}
 	,
 	"scripts": {
 		"test": "npx mocha"
