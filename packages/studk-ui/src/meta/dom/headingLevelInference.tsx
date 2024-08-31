@@ -60,10 +60,13 @@ const TIMEOUT = (
 import {
   getDirectChildren ,
   querySelectorAllAll ,
+} from "studk-dom-util/src/xst/DOmQuerySelectorAll.tsx" ;
+
+import {
   /** @deprecated */
   getPrecedingSiblings ,
   getPrecedingAllNodes ,
-} from "./nodeQuerySelectorAll.tsx" ;
+} from "studk-dom-util/src/xst/DOmQueryPrecedingNodes.tsx" ;
 
 
 
