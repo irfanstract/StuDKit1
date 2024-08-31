@@ -14,15 +14,23 @@
 @layer defaults, cmbdgewhoa ;
 
 @layer cmbdgewhoa {
-  //
 
   h1, h2 {
     /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
     font-family: 'Inter', Roboto, 'Helvetica Neue', sans-serif ;
   }
   
+}
+
+@layer cmbdgewhoa {
+  //
+
   @media screen {
-  
+
+    :is(h1) {
+      font-size: 1.5em ;
+    }
+
     :is(h1, h2, h3, h4, h5, h6)
     {
   
@@ -56,8 +64,8 @@
       {
         /* disable the floatingness, reverting back to being static */
         /* opacity: 0 !important; */
-        top: unset;
-        left: unset;
+        top : unset !important ;
+        left: unset !important ;
         z-index: unset;
       }
   
@@ -76,7 +84,41 @@
     }
   }
   
+  
   //
+}
+
+/* MEDIA-BASED PROGRESSIVE ENHANCEMENT(s) */
+
+@layer kmcbsrootlayoutdefaults033 {
+  @media screen and (max-width: 620) {
+    .studk-kmcbsrootmnvf-navdiv {
+      //
+      background: black;
+      // backdrop-filter: ;
+      color: white;
+      filter: none;
+    }
+  }
+}
+
+@layer cmbdgewhoa {
+  //
+  
+  @media (min-width: 620px) {
+    :is(h1) {
+      font-size: 1.95em ;
+    }
+  }
+  @media (max-width: 620px) {
+    //
+    :is(h1, h2, h3, h4, h5, h6) {
+      //
+      top : 0.95em ;
+      offset-block-start : 0.95em ;
+    }
+  }
+
 }
 
 

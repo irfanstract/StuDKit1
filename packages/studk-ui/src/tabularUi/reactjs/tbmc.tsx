@@ -14,16 +14,16 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui/src/fwCore/ewo.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui/src/fwCore/ewo.ts'; ;
 
 import type {
   ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui/src/fwCore/linearValues.ts'; ;
 
 export namespace XUtil { ; }
 
@@ -40,16 +40,16 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   Button ,
   Span ,
-} from '#currentPkg/src/meta/react/dbc.tsx'; ;
+} from 'studk-ui/src/meta/react/dbc.tsx'; ;
 
 import {
   renderTableByRowDtListAndPresenter ,
@@ -57,37 +57,13 @@ import {
   TableHeadRendererMono ,
   TableRowRendererMono ,
   TableRowsetRendererOpsImpl ,
-} from '#currentPkg/src/tabularUi/reactjs/tblbyrow.tsx'; ;
+} from 'studk-ui/src/tabularUi/reactjs/tblbyrow.tsx'; ;
 
 import {
   Svg ,
   describeSvg ,
   describeSvgContent ,
-} from '#currentPkg/src/meta/react/gec.tsx'; ;
-
-/**
- * 
- * @deprecated
- */
-const ThreeEmFigureC = (
-  describeComponent(function ThreeEmFigureCImpl() {
-    return (
-      <canvas
-      style={{
-        width: `3em`,
-        height: `3em`,
-      }}
-      />
-    ) ;
-  } )
-) ;
-
-export {
-  /**
-   * @deprecated
-   */
-  ThreeEmFigureC,
-} ;
+} from 'studk-ui/src/meta/react/gec.tsx'; ;
 
 import {
   WithOverlayHighlightingC,
@@ -104,181 +80,30 @@ import {
 
 
 
-class TbmcModelState extends Object
-{
-  readonly layerStates!: (
-    ReadonlyArray<TbmcModelState.LayerStateOps >
-  ) ;
-
-  protected constructor()
-  { super() ; }
-}
-namespace TbmcModelState { ; }
-
-namespace TbmcModelState
-{
-  export class LayerStateOps
-  {
-    declare readonly kind: string ;
-    declare readonly id: string ;
-    protected constructor() {}
-  }
-
-  export class KnLayerStateOpsImpl extends LayerStateOps
-  {
-    declare readonly kind: "X" ;
-    protected constructor() { super() ; }
-  }
-
-}
+/* can't use `const TbmcModelState = ... ... ;` */
+import TbmcModelState = TbmcKnsBasedModelState ;
 
 export { TbmcModelState , } ;
+
+import {
+  TbmcKnsBasedModelState ,
+} from 'studk-ui/src/tabularUi/tbmc-knsb.tsx' ;
+
+export {
+  TbmcKnsBasedModelState ,
+} ;
+
+;
 
 
 
 
 export { SCC as SpclCoreC, } ;
 
-namespace TbmcBreakthruColumnsRendering { ; }
-namespace TbmcBreakthruColumnsRendering
-{
-  ;
-
-  export function describeSuggestedConfig1(...[
-    {
-      horizonConfig,
-    } ,
-  ] : ArgsWithOptions<[], (
-    {
-      horizonConfig: {
-        range: ContinuousLinearRange ,
-      } ,
-    }
-  ) >)
-  {
-    return describeSuggestedConfig11({
-      horizonConfig: {
-        range: horizonConfig.range
-        ,
-        samplingConfig: {
-          perWindowSpan: 2,
-        } ,
-      },
-    })
-  }
-
-  function describeSuggestedConfig11(...[
-    {
-      horizonConfig,
-    } ,
-  ] : ArgsWithOptions<[], ( 
-    {
-      horizonConfig: {
-        range: ContinuousLinearRange
-        ,
-        samplingConfig: describeSuggestedConfig11.PartitionedSamplingConfigOps ,
-      } ,
-    }
-  ) >)
-  {
-    ;
-    
-    const partitioningConfig = (() => {
-      ;
-      const effectiveWindowSeq = (
-        util.range(horizonConfig.range.startPos, horizonConfig.range.endPos + 0.01, horizonConfig.samplingConfig.perWindowSpan )
-        .map(p => ({
-          id: (
-            // TODO
-            Math.floor(p)
-          ) ,
-          srcSpan: { startPos: p, endPos: p + horizonConfig.samplingConfig.perWindowSpan, } satisfies ContinuousLinearRange
-          ,
-        }) satisfies describeSuggestedConfig11.EWindowSpan )
-      ) ;
-      return {
-        effectiveWindowSeq ,
-      } ;
-    })() ;
-
-    const {
-      renderChannelPlotAsUnitApplet ,
-    } = (
-      getSuggestedSccMastPlotter()
-    ) ;
-
-    const renderChannelPlotAsWrInlineContent = (...args: Parameters<typeof renderChannelPlotAsUnitApplet>) => {
-      ;
-      return (
-        <WithOvcLevelleGoodiesC
-        children={({ asSpclFinalElement, renderNativeElemBoundingBoxSpc, utcs, }) => (
-          //
-          <>
-          { asSpclFinalElement((
-            <span
-            children={(
-              renderChannelPlotAsUnitApplet(...args )
-            )}
-            style={{
-              inlineSize: `7em`,
-              blockSize: `1.70em`,
-              // blockSize: `100%`,
-              display: "grid",
-              // margin: `0.7ex` ,
-              overflow: "hidden",
-            }}
-            />
-          )) }
-          { utcs && (
-            renderNativeElemBoundingBoxSpc({ s: NCPSR.Subject.BOUNDINGBOX, children: (
-              <div
-              style={{
-                background: `black`,
-                color: `white`,
-              }}
-              >
-              <p>
-                Stream Slice
-              </p>
-              </div>
-            ) })
-          ) }
-          </>
-        ) }
-        />
-      ) ;
-    } ;
-
-    return {
-      partitioningConfig ,
-      effectiveWindowSeq: partitioningConfig.effectiveWindowSeq ,
-      renderChannelPlotAsUnitApplet ,
-      renderChannelPlotAsWrInlineContent ,
-    } as const ;
-  }
-
-  namespace describeSuggestedConfig11 { ; }
-  
-  namespace describeSuggestedConfig11
-  {
-    export interface PartitionedSamplingConfigOps
-    {
-      perWindowSpan: number ,
-    }
-
-    export interface EWindowSpan extends NonNullable<(EWS[number])>
-    {}
-      
-  }
-
-  export type EWS = (
-    ReadonlyArray<{
-      readonly id: Extract<React.Key, string | number | bigint> ,
-      readonly srcSpan: ContinuousLinearRange ,
-    }>
-  ) ;
-
-}
+import {
+  TbmcBreakthruColumnsRendering ,
+  getSuggestedSccMastPlotter ,
+} from 'studk-ui/src/tabularUi/tbmc-breakthrusdisplay.tsx' ;
 
 export {} ;
 
@@ -294,12 +119,32 @@ const SCC = (
     horizonConfig ,
     value: valueArg ,
   } : ScCProps ) {
+    return (
+      <TbmcKnbC
+      horizonConfig={horizonConfig}
+      value={valueArg}
+      />
+    ) ;
+  })
+) ;
+
+const TbmcKnbC = (
+  describeComponent(function KnBasedTimeTableMC({
+    horizonConfig ,
+    value: valueArg ,
+  } : {
+    //
+  horizonConfig: {
+    range: ContinuousLinearRange ,
+  } ,
+  value?: TbmcKnsBasedModelState ,
+  } ) {
     ;
 
     const {
       effectiveWindowSeq: hoSegmentDescs ,
-      renderChannelPlotAsUnitApplet ,
-      renderChannelPlotAsWrInlineContent ,
+      renderPerChannelPlotAsUnitApplet ,
+      renderPerChannelPlotAsWrInlineContent ,
     } = (
       TbmcBreakthruColumnsRendering.describeSuggestedConfig1({ horizonConfig, })
     ) ;
@@ -347,7 +192,7 @@ const SCC = (
                     </span>
                   ) ,
                   renderContent: (v) => (
-                    renderChannelPlotAsWrInlineContent(v, msd )
+                    renderPerChannelPlotAsWrInlineContent(v, msd )
                   )
                   ,
                 } ;
@@ -362,44 +207,14 @@ const SCC = (
           mainTable
         ) ;
     }
-  })
+    ;
+  } )
 ) ;
 
-function getSuggestedSccMastPlotter()
-{
-  ;
-  function renderChannelPlotAsUnitApplet(...[v, ispan]: [(TbmcModelState["layerStates"] )[number], TbmcBreakthruColumnsRendering.EWS[number] & {}, ] )
-  {
-    return (
-      <Svg
-      viewBox={`0 0 30 10 `}
-      children={(
-        <rect
-        width={10}
-        height={6}
-        y={2}
-        x={0}
-        style={{
-          fill: `rgba(192 192 192 / 0.5 )`,
-        }}
-        />
-      )}
-      style={{
-        background: `black`,
-        // height: `100%`,
-      }}
-      />
-    ) ;
-  }
-  return {
-    renderChannelPlotAsUnitApplet ,
-  } ;
-}
 
 
 
-
-import '#currentPkg/src/tabularUi/reactjs/tbmc-defaults.scss' ;
+import 'studk-ui/src/tabularUi/reactjs/tbmc-defaults.scss' ;
 
 
 
