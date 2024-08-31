@@ -24,7 +24,14 @@ import "studk-ui/src/quick/studkCssPresets/iui.tsx" ;
 
 import "@/public/global.css" ;
 
-import "studk-fwcore-setups/src/nav/autorefresh-main.mjs" ;
+(async () => {
+  if (typeof window !== "undefined")
+  { await import("studk-fwcore-setups/src/nav/autorefresh-main.mjs") ; }
+  else {
+    /* on server */
+    ;
+  }
+} )() ;
 
 import {
   describeComponent,
