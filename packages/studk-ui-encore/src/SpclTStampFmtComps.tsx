@@ -86,11 +86,12 @@ export const EllapsedTValueC = (
     const hps = T_WALLC_PROTAC(+t.toFixed(3) ) ;
     
     return <span style={{ fontFamily: `math, serif`, display: "inline-block", }}>{ (
-      (
+      React.createElement(React.Fragment, null, ...(
         util.reiterated(function* () {
+          yield `"` ;
           yield PADDEDNUMERIC(Math.floor(60 * hps.sPos), 2 ) ;
     
-          yield `:` ;
+          yield `'` ;
           if (md === "minutes") {
             yield `${Math.floor(t / 60 ) }`;
             return ;
@@ -99,10 +100,10 @@ export const EllapsedTValueC = (
           }
     
           yield ` ` ;
-          yield <sup>hrs</sup> ;
+          yield <span>hr</span> ;
           if (md === "hours") {
             ;
-            yield PADDEDNUMERIC(Math.floor(t / (60 * 60) ), 2 );
+            yield PADDEDNUMERIC(Math.floor(t / (60 * 60) ), 1 );
             return ;
           } else {
             ;
@@ -110,7 +111,7 @@ export const EllapsedTValueC = (
           }
         })
         .toReversed()
-      )
+      ))
     ) }</span> ;
   })
 ) ;
