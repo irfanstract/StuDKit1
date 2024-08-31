@@ -88,7 +88,10 @@ import {
 
 ;
 
-import { SpclCoreC, } from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
+import {
+  ScCHorizonConfigPropsDesc,
+  SpclCoreC,
+} from "studk-ui/src/tabularUi/reactjs/tbmc.tsx" ;
 
 export const TimeDomainedImgListFigureC = (
   describeComponent((
@@ -96,7 +99,7 @@ export const TimeDomainedImgListFigureC = (
       return (
         <div className='studk-sequemi-tlwalkthruappcomp'>
           <p>
-            Timeslice
+            Time-domain plot of <code>movie.mp4</code>
           </p>
           <TimeDomainedImgListSpanC
           />
@@ -112,7 +115,7 @@ export const TimeDomainedImgListSpanC = (
     {
       ;
       
-      const horizonConfig = React.useMemo(() => ({
+      const horizonConfig = React.useMemo((): ScCHorizonConfigPropsDesc => ({
         range: {
           startPos: -5 ,
           endPos: 5 ,
