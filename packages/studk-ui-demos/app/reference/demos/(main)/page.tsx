@@ -52,57 +52,57 @@ import * as React from "react" ;
 
 
 import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+
+import {
+  describeHeadlinedArticle ,
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
+
+import {
+  Button ,
+  Span ,
+} from 'studk-ui/src/xst/dbc.tsx'; ;
+
+import {
   pagesConventions,
   dynamicComponent,
   AppLink,
   Image,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
+
+
+
+
+
+
+
 export default function App()
 {
-  ;
-
-  return (
-    pagesConventions.describeArticlePage({
-      heading: (
-        <span>
-          The Workbook
-        </span>
-      ) ,
-      children: (
-        <div>
-          { (
-            <EvrC />
-            // (0 && <EvrC /> )
-            // null
-          ) }
-        </div>
-      ) ,
-    })
-  ) ;
-} ;
-
-// import {
-//   EvrC ,
-// } from "@/components/EVR"; ;
-/* https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading */
-const EvrC = dynamicComponent(async () => {
-  const { EvrC: C , } = await import("@/components/EVR") ;
-  return C ;
-} , { ssr: false, loading: function EvrCStillLoadingFallbackCompImpl() {
   return (
     <div>
       <p>
-      <strong><code>EvrC</code> (<code>@/components/EVR</code>) is still loading...</strong>
+        please open:
       </p>
+      <ul>
+        <li>
+          <AppLink
+          href="/reference/demos/all/"
+          children={<code>all</code> }
+          />
+        </li>
+        <li>
+          <AppLink
+          href="/reference/demos/sim3d/"
+          children={<><i>Simulation 3D</i></> }
+          />
+        </li>
+      </ul>
     </div>
-  ) ;
-} , } ) ;
-
-
-
-
-
+  )
+}
 
 
 
