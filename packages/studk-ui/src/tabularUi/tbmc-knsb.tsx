@@ -16,19 +16,10 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 export namespace XUtil { ; }
 
@@ -45,7 +36,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -89,19 +80,61 @@ class TbmcKnsBasedModelState extends Object
 {
   readonly isTbmcKnsBasedModelState !: true ;
 
-  static getCmnInstance(...[{ layerStates, }] : ArgsWithOptions<[], {
+  static getCmnInstance(...[opts] : ArgsWithOptions<[], {
     //
     layerStates: (
-      ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
+      | ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
+      |  util.Immutable.Collection<any, TbmcKnsBasedModelState.LayerStateOps>
     ) ,
   }>) {
-    return new TbmcKnsBasedModelState(layerStates) ;
+
+    const {
+      layerStates: ls0,
+    } = opts ;
+
+    const layerStates = (
+      /**
+       * cannot use {@link Array.isArray} since
+       * that method would set `E` to `any`.
+       * 
+       */
+      (ls0 instanceof Array ) ?
+      util.Immutable.Seq(ls0)
+      : ls0
+    ) ;
+
+    return (
+          new TbmcKnsBasedModelState(
+            layerStates.valueSeq().toArray() ,
+            layerStates ,
+          )
+    ) ;
   }
 
-  protected constructor(public layerStates: (
-    ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
-  ) )
+  private constructor(
+
+    /** @deprecated */
+    public readonly layerStates: (
+      ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
+    ) ,
+    // TODO remove the '?'-mark
+    public readonly layerStatesImtb?: (
+      // | ReadonlyArray<TbmcKnsBasedModelState.LayerStateOps >
+      util.Immutable.Collection<any, TbmcKnsBasedModelState.LayerStateOps>
+    ) ,
+
+  )
   { super() ; }
+
+  static asFixed(v0: TbmcKnsBasedModelState )
+  {
+    return (
+      v0.layerStatesImtb ?
+      v0
+      : TbmcKnsBasedModelState.getCmnInstance({ layerStates: v0.layerStates, })
+    ) ;
+  }
+
 }
 namespace TbmcKnsBasedModelState { ; }
 
