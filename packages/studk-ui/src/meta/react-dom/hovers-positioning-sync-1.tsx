@@ -54,7 +54,7 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui-core/src/xt/ovc-util.tsx" ;
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
@@ -67,7 +67,7 @@ import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 import {
   doNativeCompDisplayedOffsetsAnalysis,
   useNativeCompDisplayedOffsetsAnalysis,
-} from "studk-ui-core/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import type {
   //
@@ -78,7 +78,7 @@ import {
   useExistingNativeCompBoundingBoxViaRef ,
   ToNativeDomElementSyncing ,
   NCPSR ,
-} from "studk-ui-core/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 export {
   useExistingNativeCompBoundingBoxViaRef ,
@@ -90,7 +90,7 @@ export {
 } ;
 
 export type {
-  // /** @deprecated use direct import from `studk-ui/src/meta/dom/computedstyles1.tsx`. */
+  /** @deprecated use direct import from `studk-dom-util/src/xst/DOmRenderedClientOffsets101`. */
   NcpSupportedElem ,
 } ;
 
