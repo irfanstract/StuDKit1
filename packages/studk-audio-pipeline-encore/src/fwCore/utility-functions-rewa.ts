@@ -22,7 +22,7 @@
 
 ;
 
-export * from "studk-ui/src/fwCore/utility-functions-rewa.ts" ;
+export * from "studk-ui-fwcore/src/util/ReWaPkgConvnt.ts" ;
 
 ;
 
