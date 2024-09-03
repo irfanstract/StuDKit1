@@ -22,44 +22,35 @@ import {
 
 import "studk-ui/src/quick/studkCssPresets/iui.tsx" ;
 
-import "@/public/global.css" ;
+import "@/public/global1.scss" ;
 
 import "@/components/jsxStudkCard" ;
 
 /** "the development server has disconnected. refresh the page if necessary." */
-{
-  const sPeriodInSecs = 0.5 * 60 * 60 ;
+(async () => {
 
-  /** note: the timing will be `Date.now()`, not `p.now()` */
+  if (typeof window !== "undefined")
   {
-    console["warn"](`page will automatically refresh in ${`${sPeriodInSecs } secs` }`) ;
-
-    (async () => {
-      await (
-        util.startTimeout(sPeriodInSecs * 1000 )
-      ) ;
-
-      /**
-       * in addition to the delay by {@link sPeriodInSecs} above,
-       * an additional delay will be necessary
-       * to ensure that
-       * client device wake-ups
-       * don't get suddenly thrashed by 'reload's which can be CPU-consuming and thereby risking system stability issues
-       * .
-       * 
-       */
-      {
-        await (
-          util.startTimeout(2 * 1000 )
-        ) ;
-        await (
-          util.startTimeout(20 * 1000 )
-        ) ;
-      }
-      location.reload() ;
-    })() ;
+    console["info"](`importing 'autorefresh-main.mjs'`) ;
+    await import("studk-fwcore-setups/src/nav/autorefresh-main.mjs") ;
   }
-}
+  else {
+    /* on server */
+    ;
+  }
+} )() ;
+
+import {
+  describeComponent,
+} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
+
+console["log"](`env.tsx reloaded`) ;
+
+export const EnvTsxMainDummyC = (
+  describeComponent(function EnvTsxMainDummyCImpl () {
+    return <></> ;
+  })
+) ;
 
 
 
