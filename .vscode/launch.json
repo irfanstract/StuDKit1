@@ -20,6 +20,7 @@
         "<node_internals>/**"
       ],
       "type": "node" ,
+      "envFile": "${workspaceFolder}/dist/env.txt",
     } ,
     {
       "name": "studk-ui-demos",
@@ -34,6 +35,29 @@
         "<node_internals>/**"
       ],
       "type": "node" ,
+      "envFile": "${workspaceFolder}/dist/env.txt",
+    } ,
+    {
+      "name": "studiokitsheet-app",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/studiokitsheet-app",
+      "runtimeArgs": [
+        "run",
+        "dev",
+      ],
+      "runtimeExecutable": "npm",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node" ,
+      "envFile": "${workspaceFolder}/dist/env.txt",
     } ,
   ] ,
+
+  /**
+   * 
+   * further reading:
+   * - https://stackoverflow.com/a/64014146
+   * 
+   */
 }

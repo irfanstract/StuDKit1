@@ -28,22 +28,13 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-  MapEntrySpec,
   ObjectFromEntry, 
   RecordValue,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+  MapEntrySpec,
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 type OptionalSingleLineWhiteSpace = (
   OLSW
@@ -141,7 +132,10 @@ const cssStringLinesConcat = (
 ) ;
 
 export {
-  cssStringLinesConcat ,
+  /**
+   * @deprecated switch to `getCallbackAssignedCssProps` followed by `Object.assign(nd.style, sd1)`.
+   */
+  cssStringLinesConcat as cssStringLinesConcat ,
 } ;
 
 

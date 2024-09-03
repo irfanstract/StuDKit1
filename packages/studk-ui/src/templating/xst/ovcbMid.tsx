@@ -31,16 +31,16 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
 
 const TIMEOUT = (
   (tMillis: number) => (
@@ -64,21 +64,21 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
 
 import {
   useIntervalEffect ,
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 
-import * as ReactDOM from "react-dom" ;
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   withRef ,
-} from "studk-ui/src/meta/react/withAdHocRefs.tsx" ;
+} from "studk-ui-fwcore/src/reactjs/helpers/withAdHocRefs.tsx" ;
 
 
 
@@ -88,7 +88,7 @@ import {
 
 import {
   OVCB, 
-} from '#currentPkg/src/templating/xst/ovcb.tsx';
+} from 'studk-ui/src/templating/xst/ovcb.tsx';
 
 ;
 
@@ -120,19 +120,19 @@ export { ovcbMid, } ;
 ;
 
 import {
-  getNativeCompPosition,
-  useNativeCompPosition,
-} from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
+  doNativeCompDisplayedOffsetsAnalysis,
+  useNativeCompDisplayedOffsetsAnalysis,
+} from "studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import type {
   //
   NcpSupportedElem ,
-} from "studk-ui/src/meta/dom/computedstyles1.tsx" ;
+} from "studk-dom-util/src/xst/DOmRenderedClientOffsets101.tsx" ;
 
 import {
   useExistingNativeCompBoundingBoxViaRef ,
   NCPSR ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 type IRenderNativeElemOverlaySupported = (
   NcpSupportedElem
@@ -175,24 +175,45 @@ const ElementHoveringHtmlC : React.JSXElementConstructor<(
               // transition: `initial` ,
             }}
             >
-              <div
-              ref={boxRef}
-              style={{
-                //
-                background: `black`,
-                color: `white`,
-                fontWeight: `550` ,
-                zoom: `82%` ,
-              }}
-              >
-                <div
-                style={{
-                  //
-                }}
-                >
-                  { children }
-                </div>
-              </div>
+              { (function () {
+                const c = (
+                  <div
+                  style={{
+                    //
+                    fontWeight: `550` ,
+                    zoom: `82%` ,
+                  }}
+                  >
+                    { children }
+                  </div>
+                ) ;
+
+                if (0)
+                {
+                  return (
+                    <div
+                    ref={boxRef}
+                    style={{
+                      //
+                      background: `black`,
+                      color: `white`,
+                    }}
+                    >
+                      { c }
+                    </div>
+                  ) ;
+                }
+                {
+                  return (
+                    <studk-spmea-phrasalblock
+                    ref={boxRef}
+                    children={(
+                      c
+                    ) }
+                    />
+                  ) ;
+                }
+              })() }
             </div>
             </>
           ) ;
