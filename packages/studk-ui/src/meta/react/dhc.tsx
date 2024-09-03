@@ -35,7 +35,23 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  withExtraSemanticProperties ,
+  asHidden ,
+} from 'studk-ui-fwcore/src/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx';
+
+import {
+  getFromClassNameProp ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased';
+
+;
 
 
 
@@ -100,28 +116,61 @@ interface DhaCommonProps extends Pick<JSX.IntrinsicElements["div"] , "style" >
  * acquire automatic means for *automatically assigning h-level(s) properly for these "heading"s* .
  * 
  */
-function describeArticleImpl(...[{ heading: headingArg = null , children, classNameProp = ``, restProps: prps, }] : [{
+function describeArticleImpl(...[props] : [{
   heading: React.ReactElement | null,
   children: React.ReactElement | React.ReactElement[] ,
   classNameProp?: string ,
   restProps: DhaCommonProps ,
+  efnd ?: EFND ,
 } ])
 {
+
+  const {
+    heading: headingArg = null ,
+    children,
+    classNameProp = ``,
+    efnd = EFND.getInstance() ,
+
+    restProps: prps,
+  } = props;
+
   return (
-    <section className={`${classNameProp } studk-ui-dhc-sectionboundary `} {...prps}>
-      { (headingArg !== null) && (
-        <XHC children={headingArg } />
-      ) }
-      <div>
-        { children }
-      </div>
-    </section>
+    withExtraSemanticProperties({
+      classNames: (
+        getFromClassNameProp(classNameProp )
+      ) ,
+    } , (
+      efnd.asFullSecElemJsx((
+
+        <section className={`studk-ui-dhc-sec `} {...prps}>
+          { (headingArg !== null) && (
+            <XHC children={headingArg } />
+          ) }
+          <div>
+            { children }
+          </div>
+        </section>
+
+      ))
+    ))
   ) ;
+
 }
 namespace describeArticleImpl { ; }
 
 namespace describeArticleImpl
 {
+
+}
+
+class EFND {
+  //
+
+  static getInstance() {
+    return new EFND() ;
+  }
+
+  traverser = DhcSpecificTraverser.getInstance() ;
 
   /**
    * `true` IOIF
@@ -130,11 +179,90 @@ namespace describeArticleImpl
    * .
    * 
    */
-  export function isFullSecElemPeer(e: HTMLElement | SVGElement) : boolean
-  export function isFullSecElemPeer(e: HTMLElement | SVGElement)
+  isFullSecElemPeer(e: HTMLElement | SVGElement)
+  : boolean
   {
     return e.matches(`.studk-ui-dhc-sectionboundary`) ;
   }
+
+  asFullSecElemJsx(...[e] : [React.ReactElement] )
+  : React.ReactElement
+  {
+    return (
+
+      withExtraSemanticProperties({
+        classNames: ["studk-ui-dhc-sectionboundary"] ,
+      } , e )
+    ) ;
+  }
+
+  getPrecedingBuiltInHeaTagsExcluding(...[self] : [self: Element] )
+  {
+    return (
+      this.traverser.getPrecedingBuiltInHeaTagsExcluding(self)
+    ) ;
+  }
+
+  private constructor()
+  {}
+
+}
+
+class DhcSpecificTraverser {
+  //
+
+  static getInstance() {
+    return new DhcSpecificTraverser() ;
+  }
+
+  iterableSelfAndDescendants(...[self] : [self: Element] )
+  : Iterable<Element>
+  {
+    const this1 = this ;
+    return (
+
+      util.reiterable(function* () {
+
+        yield self ;
+
+        for (const child of Array.from(self.children ) ) {
+          yield* this1.iterableSelfAndDescendants(child) ;
+        }
+
+      })
+    ) ;
+  }
+
+  getPrecedingStartTagsExcluding(...[self] : [self: Element] )
+  {
+
+    const allEs = (
+      Array.from(this.iterableSelfAndDescendants((
+        // TODO
+        self.getRootNode() as Element
+      )))
+    ) ;
+
+    return (
+      allEs.slice(0, (
+
+        allEs.length - (
+          Math.max(0, allEs.toReversed().indexOf(self) ) + 1
+        )
+      ) )
+    ) ;
+  }
+
+  getPrecedingBuiltInHeaTagsExcluding(...[self] : [self: Element] )
+  {
+    return (
+      this.getPrecedingStartTagsExcluding(self)
+      .filter(e => e.matches(`h1, h2, h3, h4, h5, h6`) )
+    ) ;
+  }
+
+  private constructor()
+  {}
 
 }
 
@@ -172,8 +300,41 @@ export function describeWorksheet(...[{ heading, children, style = {}, ...prps }
  * 
  */
 const XHC = (
+
   // TODO
-  describeComponent(function XHCRend({ children: c, } : { children: React.ReactNode & {} ; } ) {
+  describeHtmlComponent((
+    function XHCRend({ children: c, } : { children: React.ReactNode & {} ; } )
+    {
+
+      const [ResolvedC, setResolvedC] = (
+        React.useState<(React.ElementType<(
+          JSX.IntrinsicElements["div" | "body" | "section" | "p" | "span" ]
+        )> ) | null >(null )
+      ) ;
+
+      const C = (
+        ResolvedC ??
+        SimpleBoldenedParagraphC
+      ) ;
+
+      return (
+        //
+        <C children={c } />
+      ) ;
+    }
+  ))
+) ;
+
+export { XHC, } ;
+
+/**
+ * is component `<p><b>{ children }</b></p>`.
+ * 
+ */
+const SimpleBoldenedParagraphC = (
+
+  // TODO
+  describeHtmlComponent(function SimpleBoldenedParagraphCRend({ children: c, } : { children: React.ReactNode & {} ; } ) {
     return (
       //
       <p children={<b children={c} /> } />
@@ -181,7 +342,7 @@ const XHC = (
   })
 ) ;
 
-export { XHC, } ;
+;
 
 
 
