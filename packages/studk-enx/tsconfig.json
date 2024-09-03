@@ -19,7 +19,7 @@
   //   "src/**/*" ,
   // ],
   "references": [
-    { "path": "../../packages/typexpe-commons", } ,
+    { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
     { "path": "../studk-fwcore", } ,
   ] ,
 }
