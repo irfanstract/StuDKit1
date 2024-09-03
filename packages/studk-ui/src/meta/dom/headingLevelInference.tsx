@@ -29,19 +29,10 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
 
 import {
   allocateKeyInternedObjectPool ,
@@ -65,10 +56,13 @@ const TIMEOUT = (
 import {
   getDirectChildren ,
   querySelectorAllAll ,
+} from "studk-dom-util/src/xst/DOmQuerySelectorAll.tsx" ;
+
+import {
   /** @deprecated */
   getPrecedingSiblings ,
   getPrecedingAllNodes ,
-} from "./nodeQuerySelectorAll.tsx" ;
+} from "studk-dom-util/src/xst/DOmQueryPrecedingNodes.tsx" ;
 
 
 

@@ -16,4 +16,6 @@
 	"scripts": {
 		"test": "npx mocha"
 	}
+	,
+	"type": "module"
 }

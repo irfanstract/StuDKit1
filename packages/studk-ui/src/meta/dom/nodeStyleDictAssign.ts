@@ -28,19 +28,13 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+  ObjectFromEntry, 
+  RecordValue,
+  MapEntrySpec,
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 import {
   allocateKeyInternedObjectPool ,
