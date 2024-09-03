@@ -104,7 +104,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 import {
   describeSvgComponent ,
@@ -140,13 +140,137 @@ import {
   xI3dExtendedYardStarFieldGraphDemo ,
 } from "studk-i3d/src/xt/I3dExtendedYardFieldDemos1.tsx" ;
 
-export const I3DDemoC = (
+/**
+ * `true` only-if
+ * your code is client-side
+ * .
+ * 
+ */
+const useClientOnlyFeature = (
+  function useClientOnlyFeatureB() : (
+    // globalThis is Window
+    boolean
+  )
+  {
+    return (
+      React.useSyncExternalStore((
+        React.useCallback(function () {
+          return () => {} ;
+        }, [] )
+      ) , () => (
+        true
+      ), () => (
+        false
+      ) )
+    ) ;
+  }
+) ;
+
+export const I3DDemoC: typeof I3DDemoTrueC = (
+  /**
+   * NOTE --
+   * this branching is here because
+   * we needed it to debug spurious/unexpected, extended durations of high CPU usage by the server (the Dev Server)
+   * .
+   * 
+   */
+
+  (() => {
+    return (
+      /* HTML Component */
+      describeComponent((
+        function I3DDemoCompImpl(props : React.ComponentProps<typeof I3DDemoTrueC> )
+        {
+          const beingOnClientSide = (
+            useClientOnlyFeature()
+          ) ;
+
+          if (0) {
+            return (
+              <I3DDemoFakeC
+              { ...props }
+              />
+            ) ;
+          }
+
+          if (1) {
+            // TODO
+            {
+              return (
+                (
+                  beingOnClientSide
+                ) ? (
+                  <I3DDemoTrueC
+                  { ...props }
+                  />
+                ) : (
+                  <></>
+                )
+              ) ;
+            }
+          }
+
+          {
+            return (
+              <I3DDemoTrueC
+              { ...props }
+              />
+            ) ;
+          }
+        }
+      ))
+    ) ;
+  })()
+) ;
+
+const I3DDemoFakeC = (
   /* HTML Component */
   describeComponent((
-    function I3DDemoCompImpl() {
+    function I3DDemoFakeCompImpl(props : React.ComponentProps<typeof I3DDemoTrueC> )
+    {
+        ;
+        // const posAll = React.useMemo(() => (
+        //   xI3dExtendedYardStarFieldGraphDemo()
+        // ) , [xI3dExtendedYardStarFieldGraphDemo,] ) ;
+        const [ang, setPersp] = React.useState<Angle>(Angle.ByDegrees(0) ) ;
+        const persp = React.useMemo(() => (
+          describeXConZRotationFwd(ang)
+        ) , [ang] ) ;
+        return (
+          <div>
+            <div>
+              { (
+                <div>
+                  <p>
+                    <code>I3DDemoFakeCompImpl</code>
+                  </p>
+                </div>
+              ) }
+            </div>
+            <p>
+              <IAngularSliderComp
+              value={ang}
+              /* needa be `async` to avoid "violation, handler took t" issues */
+              propagateEdit={(e) => setTimeout(() => setPersp(e.newValue) , 0 ) }
+              />
+            </p>
+            <details key="details">
+              <section style={{ position: "relative", overflow: "auto", }}>
+                <p>no stuff to debug for now.</p>
+              </section>
+            </details>
+          </div>
+        ) ;
+    }
+  ))
+) ;
+const I3DDemoTrueC = (
+  /* HTML Component */
+  describeComponent((
+    function I3DDemoTrueCompImpl({} : {}) {
       const posAll = React.useMemo(() => (
         xI3dExtendedYardStarFieldGraphDemo()
-      ) , [] ) ;
+      ) , [xI3dExtendedYardStarFieldGraphDemo,] ) ;
       // const [tr, setPersp] = React.useState<LinTr3DMat>(identityMat4() ) ;
       const [ang, setPersp] = React.useState<Angle>(Angle.ByDegrees(0) ) ;
       const persp = React.useMemo(() => (
@@ -155,10 +279,18 @@ export const I3DDemoC = (
       return (
         <div>
           <div>
+            { true ? (
             <IndividuallyMarkedNodeListEnugFullSceneUnitAppletC
             content={posAll }
             perspective={persp}
             />
+            ) : (
+              <div>
+                <p>
+                  hidden for debugging
+                </p>
+              </div>
+            ) }
           </div>
           <p>
             <IAngularSliderComp
@@ -171,7 +303,6 @@ export const I3DDemoC = (
             <div style={{ position: "relative", overflow: "auto", }}>
             <pre style={{ whiteSpace: "pre-wrap" }} >
               { JSON.stringify({ persp, ang, }, null, 2) }
-              { /* debugging no longer necessary for now ; huge number of lines */ null && posAll.toDebugSnippet() }
             </pre>
             </div>
           </details>
