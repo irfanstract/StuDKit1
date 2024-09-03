@@ -33,17 +33,16 @@ import {
 
 import type {
   ArgsGetOptions ,
-  ArgsWithOptions ,
-} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'
 
 
 import {
   Point2D ,
 } from "studk-util/src/math/point-all.mjs" ;
-
-
-
-
 
 
 const TIMEOUT = (
@@ -58,125 +57,78 @@ export {
   TIMEOUT ,
 } ;
 
-import * as React from "react" ;
+import type EventEmitter from 'events';
 
+;
+
+
+
+
+
+
+// import * as React from "react" ;
+
+import {
+  useCallback ,
+  Ref, 
+  useLayoutEffect,
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+  useTransition,
+  useMemo,
+} from "react" ;
+
+import * as uedcs from "studk-ui-fwcore/src/util/StudkReactJsxEventListenerDispatchUtils.tsx" ;
+
+/**
+ * in this case,
+ * the returned Function will stay the same Function obj (IOW "the identity will not change");
+ * instead,
+ * the associated {@link Ref Ref }, supposed to be constantly updated to point to the specified Function obj arg,
+ * will be constantly updated such way, giving effect one'll refer as "constantly-refreshed callback";
+ * thereby eliminating the need for {@link useCallback }
+ * 
+ * to be able to *properly* call *event-handler(s)* __(or other callbacks u're okay it may change anytime)__ from within `useYyyEffect` handlers
+ * you'll *really* need this wrapper.
+ * this is  a substitute of "experimental API that has not yet been released" `useEffectEvent` (not available yet),
+ * see "Separating Events From Effects" (https://19.react.dev/learn/separating-events-from-effects ).
+ * 
+ */
 export const useRefreshedCallback = (
-  function <argsT extends readonly unknown[], const R>(...[upstreamImpl] : [impl: (...args: argsT) => R ])
-  {
-    const iRef = (
-      React.useRef<(...x: argsT) => R>(() => util.throwAssertionError(`URC not initailsed yet`) )
-    ) ;
-    iRef.current = upstreamImpl ;
-
-    return (...a: argsT) => iRef.current(...a) ;
-  }
+  
+  uedcs.useRefreshedCallback
 ) ;
 
+/**
+ * to be able to *properly* call *event-handler(s)* from within `useYyyEffect` handlers
+ * you'll *really* need this wrapper.
+ * 
+ * this is  a substitute of "experimental API that has not yet been released" `useEffectEvent` (not available yet),
+ * see "Separating Events From Effects" (https://19.react.dev/learn/separating-events-from-effects ).
+ * 
+ */
 export const useEventDispatchCallback = (
-  function <E extends object>(...[upstreamImpl] : [impl: (x: E) => void ] )
-  {
-    return (
-      useRefreshedCallback(upstreamImpl)
-    ) ;
-  }
+
+  uedcs.useEventDispatchCallback
 ) ;
 
-// /** TODO/WIP @deprecated */
-class IntervalSource extends ((
-  createInterningSubclass((
-    class MillisecsIntervalSourceImpl {
-      constructor (...[{ tMillis, }] : [{ tMillis: number, }] ) {
-        this.tMillis = tMillis ;
-      }
-      readonly tMillis !: number ;
-    }
-  ) , {
-    //
-    computeArgsHash: e => JSON.stringify(e) ,
-  } )
-)) {}
+import * as ietvs from "studk-ui-fwcore/src/reactjs/helpers/UsePeriodicScanningOrSideEffects.tsx" ;
+
+import IntervalSource = ietvs.IntervalSource ;
 
 export {
   /** @deprecated */
   IntervalSource ,
 } ;
 
-const useIntervalOrOnmessageEffect = (
-  function (...[mCb, mode, dependencyList] : ArgsWithOptions<[() => void, ...(
-    | [IntervalSource]
-    | [EventSource]
-  ), React.DependencyList], {} > )
-  {
-
-    React.useEffect(() =>
-    {
-      const s = new AbortController() ;
-
-      void (() => {
-        if (mode instanceof EventSource) {
-          return util.throwTypeError(`TODO`) ;
-        }
-
-        if (mode instanceof IntervalSource) {
-          ;
-          const { tMillis, } = mode ;
-  
-          void (function RESCHED() {
-            setTimeout(() =>
-            {
-              if (!(s.signal.aborted === false ) ) { return ; }
-              mCb() ;
-    
-              if (!(s.signal.aborted === false ) ) { return ; }
-              RESCHED() ;
-    
-            }, tMillis ) ;
-          })() ;
-
-          return ;
-        }
-        
-        return util.throwTypeError(`unsupported: ${mode }`) ;
-      })() ;
-
-      return () => {
-        s.abort() ;
-      } ;
-    } , dependencyList ) ;
-  }
-) ;
-
 const useIntervalEffect = (
-  function (...[mCb, timeoutMillis, dependencyList, opts] : ArgsWithOptions<[() => void, timeoutMillis: number, React.DependencyList], {} > )
-  {
-    return (
-      useIntervalOrOnmessageEffect(mCb, (
-        React.useMemo(() => new IntervalSource({ tMillis: timeoutMillis, }) , [timeoutMillis] )
-      ), dependencyList, opts)
-    ) ;
-  }
+
+  ietvs.useIntervalEffect
 ) ;
 
 const useIntervalScan = (
-  function <const valueT>(...[getSnpsh, opts] : ArgsWithOptions<[() => valueT], { latencyMillis : number ; getFallbackValue ?: () => valueT, }> ) : valueT
-  {
-    const {
-      latencyMillis = util.throwTypeError(`missing 'interval' in 'options'`) ,
-      getFallbackValue: getServerSnapshot ,
-    } = opts ;
-
-    const [ , startTransition ] = React.useTransition() ;
-
-    return (
-      React.useSyncExternalStore((
-        // LOL
-        React.useCallback(c => {
-          const intd = setInterval(c , latencyMillis) ;
-          return () => { clearInterval(intd) ; } ;
-        }, [latencyMillis, ] )
-      ), getSnpsh, getServerSnapshot )
-    ) ;
-  }
+  ietvs.useIntervalScan
 ) ;
 
 export {
@@ -199,13 +151,23 @@ type RefHookArgsImpl<valueT extends object | symbol> = (
  * 
  */
 const useMutableRefObjState = (
+
   //
   function <valueT extends object>(...[opts = {}] : RefHookArgsImpl<valueT> )
   {
+
     const { latencyMillis = 1000 , } = opts ;
 
-    const ref = React.useRef<valueT | null>(null ) ;
-    return [useIntervalScan(() => ref.current , { latencyMillis, getFallbackValue: () => null, } ) , ref] satisfies [any, any] ;
+    const ref = (
+      useRef<valueT | null>(null )
+    ) ;
+
+    return [
+      useIntervalScan(() => ref.current , { latencyMillis, getFallbackValue: () => null, } )
+      ,
+      ref,
+    ] satisfies [any, any] ;
+
   }
 ) ;
 
@@ -223,6 +185,7 @@ const useCallbackRefState = (
   //
   function <valueT extends object>(...[opts = {}] : RefHookArgsImpl<valueT> ) : [valueT | null, Extract<React.Ref<valueT>, Function>]
   {
+
     const {
        latencyMillis ,
     } = opts ;
@@ -232,14 +195,19 @@ const useCallbackRefState = (
     ) ;
 
     return (
-      [mainRefEd, (
-        React.useCallback(async (e: (valueT | null) ) => {
-          await (
-            TIMEOUT(0.5 * 1000 )
-          ) ;
-          mainRef.current = e ;
-        } , [mainRef, ] )
-      ) ] satisfies [any,any]
+      [
+        mainRefEd,
+
+        (
+          useCallback(async (e: (valueT | null) ) => {
+            await (
+              TIMEOUT(0.5 * 1000 )
+            ) ;
+            mainRef.current = e ;
+          } , [mainRef, ] )
+        ) ,
+
+      ] satisfies [any,any]
     ) ;
   }
 ) ;
@@ -271,6 +239,16 @@ export {
 } ;
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
+
+import {
+  useEventEmitterListener ,
+  useEventTargetListener ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseDOmOrNodeJsEventEmitters.ts" ;
+
+export {
+  useEventTargetListener ,
+  useEventEmitterListener,
+} ;
 
 
 
