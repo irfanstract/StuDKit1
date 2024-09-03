@@ -24,23 +24,15 @@ import {
   util,
 } from 'typexpe-commons/src/common_sv.mjs';
 
-import {
-  random,
-} from "lodash-es" ;
-
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
-  ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'
 
 const TIMEOUT = (
   (tMillis: number) => (
@@ -67,7 +59,7 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
@@ -84,7 +76,7 @@ import {
 import {
   doNativeCompDisplayedOffsetsAnalysis,
   useNativeCompDisplayedOffsetsAnalysis,
-} from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import {
   useNativeCompPositionSyncRef ,
