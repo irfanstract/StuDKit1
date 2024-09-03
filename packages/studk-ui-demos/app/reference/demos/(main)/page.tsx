@@ -52,8 +52,13 @@ import * as React from "react" ;
 
 
 import {
-  describeComponent,
-} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+
+import {
+  describeHeadlinedArticle ,
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   Button ,
@@ -67,40 +72,37 @@ import {
   Image,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
-// import {
-//   useIntervalEffect ,
-//   useIntervalScan ,
-//   useMutableRefObjState ,
-//   useRefState ,
-// } from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
-// import {
-//   WithElementBoundingBoxHighlightingC,
-//   WithOvcLevelleRefGoodiesC,
-//   WithOverlaySupportC,
-// } from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
+
+
+
+
+
 
 export default function App()
 {
-  ;
-
   return (
-    pagesConventions.describeArticlePage({
-      heading: (
-        <span>
-          a page with no demo
-        </span>
-      ) ,
-      children: (
-        <div>
-          <p>
-            a page with no demo.
-          </p>
-        </div>
-      ) ,
-    })
-  ) ;
-} ;
+    <div>
+      <p>
+        please open:
+      </p>
+      <ul>
+        <li>
+          <AppLink
+          href="/reference/demos/all/"
+          children={<code>all</code> }
+          />
+        </li>
+        <li>
+          <AppLink
+          href="/reference/demos/sim3d/"
+          children={<><i>Simulation 3D</i></> }
+          />
+        </li>
+      </ul>
+    </div>
+  )
+}
 
 
 
