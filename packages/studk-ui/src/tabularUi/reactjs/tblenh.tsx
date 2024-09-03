@@ -88,11 +88,41 @@ import {
 } from 'studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx'; ;
 
 import {
+  useEventDispatchCallback,
   useIntervalEffect ,
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
 } from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
+
+const useXChangingPeriodTimeoutEffect = (
+  function useDOmXEffectImpl(...[runMain0, getPeriodTM, dependencyList] : (
+    [cbk: () => void, getPeriodTMillis: () => number, React.DependencyList]
+  ))
+  {
+
+    React["useLayoutEffect"](() => {
+      const sC = new AbortController ;
+      const s = sC.signal;
+      void (function RESCHED() {
+        if (s.aborted) { return ; }
+        setTimeout(() => {
+          if (s.aborted) { return ; }
+          runMain0() ;
+          if (s.aborted) { return ; }
+          RESCHED() ;
+          if (s.aborted) { return ; }
+        } , (
+          getPeriodTM()
+        ) * 1000 ) ;
+      })() ;
+      return () => {
+        sC.abort() ;
+      } ;
+    } , dependencyList ) ;
+
+  }
+) ;
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
@@ -158,29 +188,54 @@ const useRefBasedDirectPresenter1 = (
 ) ;
 
 const useDOmXEffect = (
-  function useDOmXEffectImpl(...[runMain, dependencyList] : (
+  function useDOmXEffectImpl(...[runMain0, dependencyList] : (
     [cbk: () => void, React.DependencyList]
   ))
   {
-    React["useLayoutEffect"](() => {
-      const sC = new AbortController ;
-      const s = sC.signal;
-      void (function RESCHED() {
-        if (s.aborted) { return ; }
-        setTimeout(() => {
-          if (s.aborted) { return ; }
-          runMain() ;
-          if (s.aborted) { return ; }
-          RESCHED() ;
-          if (s.aborted) { return ; }
-        } , (
-          document.body.matches(`:not(:focus-within, :hover)`) ? 0.35 : 0.1
-        ) * 1000 ) ;
-      })() ;
-      return () => {
-        sC.abort() ;
-      } ;
+
+    /**
+     * `useEventDispatchCallback(runMain0)`
+     * 
+     */
+    const runMain = (
+      useEventDispatchCallback(runMain0)
+    ) ;
+
+    /**
+     * note --
+     * since there's already {@link dependencyList},
+     * we use the original unwrapped fnc {@link runMain0} instead
+     * 
+     */
+    const cteRe = useXChangingPeriodTimeoutEffect(runMain0, () => {
+
+      const beingActive = (
+        document.body.matches(`:is(:focus-within , :hover )`)
+      ) ;
+      const beingInactive = (
+        document.body.matches(`:not(:focus-within ):not(:hover )`)
+      ) ;
+
+      if (beingActive ) {
+        return 0.1 ;
+      }
+      if (beingInactive) {
+        return 0.6 ;
+      }
+
+      return 0.5 ;
     } , dependencyList ) ;
+
+    // TODO
+    /**
+     * since the above "interval" firing is likely to be delayed for a while initially,
+     * we'll need, as work-around, an immediate "quasi-synchronous" "initial call" like this
+     * 
+     */
+    React["useLayoutEffect"](() => {
+      runMain() ;
+    } , [runMain,] ) ;
+
   }
 ) ;
 
