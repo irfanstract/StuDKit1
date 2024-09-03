@@ -31,11 +31,10 @@ import {
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
+  ObjectFromEntry, 
+  RecordValue,
+  MapEntrySpec,
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 import {
   allocateKeyInternedObjectPool ,
