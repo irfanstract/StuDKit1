@@ -90,7 +90,7 @@ export {
 } ;
 
 export type {
-  // /** @deprecated use direct import from `studk-ui/src/meta/dom/computedstyles1.tsx`. */
+  /** @deprecated use direct import from `studk-dom-util/src/xst/DOmRenderedClientOffsets101`. */
   NcpSupportedElem ,
 } ;
 
