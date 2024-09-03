@@ -31,16 +31,16 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
 
 const TIMEOUT = (
   (tMillis: number) => (
@@ -73,7 +73,7 @@ import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 
 
@@ -87,16 +87,12 @@ import {
 } from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
 
 import {
-  useNativeCompPositionSyncRef ,
+  useExistingNativeCompBoundingBoxViaRef ,
   NCPSR ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
-
-import type {
-  NcpSupportedElem ,
-} from "studk-ui/src/meta/react-dom/hovers-positioning-sync-1.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 export {
-  useNativeCompPositionSyncRef ,
+  useExistingNativeCompBoundingBoxViaRef as useNativeCompPositionSyncRef ,
   /** @deprecated make the import direct to the source. */
   NCPSR ,
 } ;
