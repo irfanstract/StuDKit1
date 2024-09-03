@@ -8,7 +8,7 @@ import * as React from "react" ;
 
 /* import needs to be pre/repeated preceding the imports of component defs, as work-around to the naive approach the platform takes to bundle CSS */
 // console["log"](new Error("l") ) ;
-import "@/public/global.css" ;
+import "@/public/global1.scss" ;
 import "@/appInternalScripts/env" ;
 
 
