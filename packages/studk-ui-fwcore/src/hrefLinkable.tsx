@@ -24,7 +24,7 @@ export type {
   FullDocHref ,
   BrowsibleHref ,
   LinkableHref ,
-} from "studk-ui-coreinteractivitymodels/src/hrefLinkable" ;
+} from "studk-ui-coreinteractivitymodels/src/hrefLinkable.tsx" ;
 
 
 
