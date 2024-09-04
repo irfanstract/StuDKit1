@@ -32,7 +32,7 @@ import {
   allocateKeyInternedObjectPool ,
   createInterningSubclass ,
   TIMEOUT ,
-} from "studk-ui/src/fwCore/utility-functions-rewa.ts" ;
+} from "studk-ui-fwcore/src/util/ReWaPkgConvnt.ts" ;
 import type {
   AllOrNever1 ,
 } from 'studk-fwcore-setups/src/util-eawo.mts'; ;
