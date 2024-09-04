@@ -123,6 +123,19 @@ const fromLessthanPredicate = (
 ) ;
 
 
+const getItemDeduplicatedArray = (
+  /**
+   * 
+   * @type {<E>(x: readonly E[] ) => readonly E[] }
+   */
+  (x0) => {
+    const b = new Set(x0) ;
+    const x1 = Array.from(b) ;
+    return x1 ;
+  }
+) ;
+
+
 export {
   numericCompare,
   defaultCompare,
@@ -136,6 +149,11 @@ export {
   GenericComparator,
   PlainComparator,
   SpecificComparator ,
+} ;
+
+
+export {
+  getItemDeduplicatedArray ,
 } ;
 
 

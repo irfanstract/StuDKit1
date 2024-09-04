@@ -71,21 +71,6 @@ export const baseDirActualPath = (
   Path.join(scriptsDirActualPath, ".." )
 ) ;
 
-export const getGitRemoteUrl = (
-  /**
-   * @param {import("studk-fwcore-setups/src/util-eawo.mts").ArgsWithOptions<[nm?: string], {} >} args
-   */
-  (...[nm = "origin"]) => {
-    const cm = `git remote get-url ${nm}` ;
-    const o = (
-      execSync(cm, { cwd: baseDirActualPath, encoding: "utf-8" } )
-    ) ;
-    return (
-      o.match(/(\S+)/)?.[1] ?? util.throwTypeError(`cannot process the output of the '${cm}' run. make sure that running '${cm}' emits exactly a line containing URL, the right one`)
-    ) ;
-  }
-) ;
-
 export const pkgsDirActualPath = (
   Path.join(baseDirActualPath, "packages" )
 ) ;
@@ -110,7 +95,7 @@ export const getRootPackageManifest = () => {
  * @satisfies {(x: string) => import("studk-fwcore-setups/src/util-p.mts").PackageManifest }
  * 
  */
-export const getPackageManifest = (p) => {
+export const getNamedPackageManifest = (p) => {
   const { pJsonPath, } = getNamedPackagePaths(p) ;
   return loadPackageJson(pJsonPath) ;
 } ;
@@ -138,6 +123,36 @@ export const getRootPackagePaths = (
 ) ;
 
 /**
+ * try to get the actually-installed version of the named package (including own deliverable package)
+ * 
+ * @satisfies {(x: string) => (string | undefined) }
+ * 
+ */
+export const getNamedPackageActualVersion = (p) => {
+  return (
+    getNamedPackageManifest(p)
+    .version
+  ) ;
+} ;
+
+
+
+export const getGitRemoteUrl = (
+  /**
+   * @param {import("studk-fwcore-setups/src/util-eawo.mts").ArgsWithOptions<[nm?: string], {} >} args
+   */
+  (...[nm = "origin"]) => {
+    const cm = `git remote get-url ${nm}` ;
+    const o = (
+      execSync(cm, { cwd: baseDirActualPath, encoding: "utf-8" } )
+    ) ;
+    return (
+      o.match(/(\S+)/)?.[1] ?? util.throwTypeError(`cannot process the output of the '${cm}' run. make sure that running '${cm}' emits exactly a line containing URL, the right one`)
+    ) ;
+  }
+) ;
+
+/**
  * 
  * @type {() => string}
  */
@@ -146,6 +161,8 @@ export const getRepoOriginGitUrl = (
     getGitRemoteUrl("origin")
   )
 ) ;
+
+;
 
 
 
