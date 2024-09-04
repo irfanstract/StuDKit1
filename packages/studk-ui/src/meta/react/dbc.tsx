@@ -42,6 +42,14 @@ import {
   describeHeadlinedArticle ,
 } from '#currentPkg/src/meta/react/dhc.tsx'; ;
 
+import {
+  SynchronousCallbackAction,
+  UrlAction,
+  NoOpActionReprImpl,
+  DisabledBtnActionReprImpl,
+  translateCommonJsxAction,
+} from 'studk-ui/src/ui/dbcAc.tsx'; ;
+
 
 
 
@@ -73,10 +81,10 @@ type EffectiveXButtonProps = (
 
 const Button = (
   // ☺☘⚾❌☑⛲⚛⛰♏☐♐❣❤❇→♠
-  describeComponent(function ButtonC({ inline: asInline = false, children: headlineArg, onClick: href, className: cn = "", ...prp } : (
+  describeComponent(function ButtonC({ inline: asInline = false, children: headlineArg, onClick: hrefArg, className: cn = "", ...prp } : (
     (Omit<React.ComponentPropsWithoutRef<"button">, `on${string}` > )
     &
-    { inline ?: boolean ; onClick : (Required<JSX.IntrinsicElements["a"]>["href"] ) | ((e: React.SyntheticEvent) => void ) | null | false ; }
+    { inline ?: boolean ; onClick : Parameters<typeof translateCommonJsxAction>[0] ; }
   ) ) {
     const headline = (
       headlineArg
@@ -84,30 +92,33 @@ const Button = (
     const inlinenessClassName = (
       asInline ? "studk-ui-dbc-subsntcspan" : "studk-ui-dbc-standalonespan"
     ) ;
+    const hrefAc = (
+      translateCommonJsxAction(hrefArg )
+    ) ;
     return (
-      (typeof href === "string") ?
+      (hrefAc instanceof UrlAction) ?
       (
         <a
         className={`studk-ui-dbca ${inlinenessClassName } ${cn}`}
         children={headline}
-        href={href}
+        href={hrefAc.href}
         target='_blank'
         {...prp}
         />
       )
       :
-      (typeof href === "function") ?
+      (hrefAc instanceof SynchronousCallbackAction) ?
       (
         <button
         className={`studk-ui-dbcb ${inlinenessClassName } ${cn}`}
         children={headline}
         type='button'
-        onClick={e => href(e) }
+        onClick={e => hrefAc.runMain(e) }
         {...prp}
         />
       )
       :
-      (href === false) ?
+      (hrefAc instanceof DisabledBtnActionReprImpl) ?
       (
         <button
         className={`studk-ui-dbcb ${inlinenessClassName } ${cn}`}
