@@ -36,26 +36,22 @@ import {
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-  ObjectFromEntry, 
-  RecordValue,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+} from '#currentPkg/src/fwCore/ewo.ts'; ;
 
 import type {
   ContinuousLinearRange ,
 } from '#currentPkg/src/fwCore/linearValues.ts'; ;
 
+import {
+  allocateKeyInternedObjectPool ,
+} from 'typexpe-commons/src/ort.mjs';
 
-
-
-
-
-import * as React from "react" ;
-
-import * as ReactDOM from "react-dom" ;
 
 import {
-  describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+  Point2D ,
+} from "studk-util/src/math/point-all.mjs" ;
+
+
 
 
 
@@ -63,10 +59,15 @@ import {
 
 ;
 
-export {
-  /** @deprecated import directly from `ctxStacks/ovcb.tsx` */
-  OVCB ,
-} from 'studk-ui/src/templating/xst/ctxStacks/ovcb.tsx' ;
+const assignStylesOnto: {
+  <hostT extends ElementCSSInlineStyle, const R extends void>(...x: [receiver: hostT, (x: hostT["style"]) => R ] ): R ;
+} = (
+  function (nd, applyStls) {
+    return applyStls(nd.style) ;
+  }
+) ;
+
+export { assignStylesOnto, } ;
 
 
 
