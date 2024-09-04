@@ -131,7 +131,11 @@ const AKIOP = (
 
     const createAndRegFinlzTag = /** @type {(...x: [PayloadKey ]) => FinlzKey } */ (ck) => {
       ;
-      const tag = Symbol() ;
+      const tag = (
+        /* cannot use `symbol`s as it's not supported by most engines at time of writing this */
+        // Symbol()
+        new Object()
+      ) ;
       refEntryFinalizer.register(tag , ck, ) ;
       return tag ;
     } ;
