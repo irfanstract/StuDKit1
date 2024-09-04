@@ -24,7 +24,11 @@ import { IAudPage, } from "@/components/spcl/IAud";
 export default function App() {
   ;
   return (
-    <IAudPage />
+    <div>
+      <studk-card
+      children={<IAudPage /> }
+      />
+    </div>
   ) ;
 } ;
 
