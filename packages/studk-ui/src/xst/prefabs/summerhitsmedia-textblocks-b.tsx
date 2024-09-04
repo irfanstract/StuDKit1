@@ -46,7 +46,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+
+import {
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -131,7 +136,7 @@ declare global {
 import "./summerhitsmedia-textblocks-d.scss" ;
 
 const XH = (
-  describeComponent(function XHeadingCompImpl({ children, ...remProps } : JSX.IntrinsicElements["p"] ) {
+  describeHtmlComponent(function XHeadingCompImpl({ children, ...remProps } : JSX.IntrinsicElements["p"] ) {
     return (
       <p {...remProps}>
         <span
@@ -203,7 +208,7 @@ interface PbcPropsImpl<out icoT extends {}> {
 }
 
 export const BackgroundedBlockC = (
-  describeComponent(function BBlockCImpl({ children, ico: icoUrl, } : PbcPropsImpl<HTMLLinkElement["href"]> ) {
+  describeHtmlComponent(function BBlockCImpl({ children, ico: icoUrl, } : PbcPropsImpl<HTMLLinkElement["href"]> ) {
     return (
       <BackgroundedAdvBlockC
       ico={describeUrlIcoApplet(icoUrl) }
@@ -214,7 +219,7 @@ export const BackgroundedBlockC = (
 ) ;
 
 export const PicturingBlockC = (
-  describeComponent(function PicturingBlockCImpl({ children, ico: icoUrl, } : PbcPropsImpl<HTMLLinkElement["href"]> ) {
+  describeHtmlComponent(function PicturingBlockCImpl({ children, ico: icoUrl, } : PbcPropsImpl<HTMLLinkElement["href"]> ) {
     return (
       <PicturingAdvBlockC
       ico={describeUrlIcoApplet(icoUrl) }
@@ -225,7 +230,7 @@ export const PicturingBlockC = (
 ) ;
 
 export const BackgroundedAdvBlockC = (
-  describeComponent(function BcAdvBlockCImpl({ children, ico: icoApplet, } : PbcPropsImpl< React.ReactElement> ) {
+  describeHtmlComponent(function BcAdvBlockCImpl({ children, ico: icoApplet, } : PbcPropsImpl< React.ReactElement> ) {
     return (
       <studk-card
       children={(
@@ -248,7 +253,7 @@ export const BackgroundedAdvBlockC = (
 ) ;
 
 export const PicturingAdvBlockC = (
-  describeComponent(function PicturingAdvBlockCImpl({ children, ico: icoApplet, } : PbcPropsImpl<React.ReactElement> ) {
+  describeHtmlComponent(function PicturingAdvBlockCImpl({ children, ico: icoApplet, } : PbcPropsImpl<React.ReactElement> ) {
     return (
       <studk-card
       children={(
