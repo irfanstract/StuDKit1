@@ -13,24 +13,22 @@ import "@/appInternalScripts/env" ;
 
 import {
   SingleChildDiv,
-} from "@/components/SingularComponent1"; ;
+} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
-import { MainAndNavAndFinaleC, } from "@/components/mainAndAside" ;
+import { MainAndNavAndFinaleC, } from "studk-ui/src/xst/prefabs/studkdem-semanticlayout-site-mnavf.tsx" ;
 
 import Link from "next/link" ;
 
 import {
   NavigateBackButton,
   NavigateForwardButton ,
-} from "@/components/NavigateButtons"; ;
+} from "studk-ui/src/meta/react/uiNavigateBackForth.tsx"; ;
 
 
 
 import "@/appInternalScripts/env" ;
 
-import { allFonts, } from "@/appInternalScripts/fonts" ;
-
-import "./layout.css" ;
+import "./layout.scss" ;
 
 
 
@@ -40,6 +38,10 @@ import "./layout.css" ;
 
 
 import { KmcbsRootLayoutC, } from "studk-ui/src/xst/prefabs/kmcbsRootLayout1.tsx" ;
+
+import {
+  WithOverlaySupportC,
+} from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
 
 export default function RootLayout({
   children,
@@ -52,11 +54,6 @@ export default function RootLayout({
       <body
       className={(
         [
-          ...(
-            [...Object.values(allFonts) ]
-            .map(fnt => fnt.variable )
-          )
-          ,
         ]
         .join(" ")
       )}
@@ -67,17 +64,30 @@ export default function RootLayout({
         overflowX: "clip",
       }}
       >
-      <KmcbsRootLayoutC
-      children={children }
-      />
+        <WOSC>
+        <KmcbsRootLayoutC
+        children={children }
+        />
+        </WOSC>
       </body>
     </html>
-  )
+  ) ;
 }
 
-import {
-  SpclCurrentlyPathDisplay ,
-} from "./layoutComponents" ;
+const WOSC : React.JSXElementConstructor<React.PropsWithChildren> = (
+  function WOSComp({ children, })
+  {
+    return (
+      <WithOverlaySupportC>
+        { children }
+      </WithOverlaySupportC>
+    ) ;
+  }
+) ;
+
+// import {
+//   SpclCurrentlyPathDisplay ,
+// } from "./layoutComponents" ;
 
 import {
   pagesConventions,
