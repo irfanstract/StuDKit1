@@ -28,21 +28,14 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-  ObjectFromEntry, 
-  RecordValue,
-} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
 
 import type {
-  ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+  RecordValue,
+} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
 
 
 
@@ -51,11 +44,17 @@ import type {
 
 import * as React from "react" ;
 
-import * as ReactDOM from "react-dom" ;
-
 import {
   describeComponent,
 } from 'studk-ui/src/meta/react/dec.tsx'; ;
+
+import {
+  type MutableCSSProperties ,
+  describeCallbackAssignedStyleProps ,
+  describeByCssStringStyleProps ,
+} from "studk-ui/src/xst/prefabs/summerhitsmedia-cssd.tsx" ;
+
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 
 
@@ -86,26 +85,18 @@ namespace OVCB
       {
         const nd = document.createElement("div") ;
         document.body.appendChild(nd) ;
-        // Object.assign(nd.style, {
-        //   position: "fixed",
-        //   top: 0 ,
-        //   left: 0 ,
-        //   width: `100vw`,
-        //   height: `100vh`,
-        // } satisfies React.CSSProperties ) ;
-        nd.setAttribute("style", (
-          util.stringLinesConcat(function* (): Generator<(React.CSSProperties extends infer CSSP ? RecordValue<{ [k in Extract<keyof CSSP, string>]: `${k}: ${Extract<CSSP[k], string | number | bigint | boolean | null | undefined>} ;` }> : never) , void> {
-            // yield* [] ;
-            yield `position: fixed ;` ;
-            yield `top: 0 ;` ;
-            yield `left: 0 ;` ;
-            yield `width: 100vw ;` ;
-            yield `height: 100vh ;` ;
-            yield `overflow: hidden ;` ;
-            yield `overflow: clip ;` ;
-            yield `pointer-events: none ;` ;
+        Object.assign(nd.style, (
+          describeCallbackAssignedStyleProps((s) => {
+            s.position = "fixed" ;
+            s.top = 0 ;
+            s.left = 0 ;
+            s.width = `100vw` ;
+            s.height = `100vh` ;
+            s.overflow = "hidden" ;
+            s.overflow = "clip" ;
+            s.pointerEvents = "none" ;
           })
-        )) ;
+        ) ) ;
         return nd ;
       }
     })
