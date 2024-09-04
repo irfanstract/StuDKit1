@@ -30,7 +30,7 @@
   }
   ,
   "scripts": {
-    "dev": "npm run runDevApp102"
+    "dev": "npm run runDevServer"
     ,
     "runDevServer": "next dev"
     ,
