@@ -7,7 +7,7 @@
 
 
 
-import { throwTypeError } from "typexpe-commons/src/common_sv1.mjs";;
+import { throwTypeError } from "typexpe-commons/src/ThrowTypeError1.mjs";;
 
 import {
   allocateKeyInternedObjectPool ,
