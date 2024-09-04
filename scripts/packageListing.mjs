@@ -156,9 +156,12 @@ export const internalFwPackages = (
  * 
  */
 export const webFwkDevServedAppPkgs = (
-  describeExpectedPkgNames([
-    'studk-demos' ,
-  ])
+  describeExpectedPkgNames((
+    util.reiterated(function* () {
+      yield 'studk-demos' ;
+      yield 'studk-ui-demos' ;
+    })
+  ))
 ) ;
 
 export const internallyNonImportiblePkgs = (
