@@ -53,9 +53,10 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-/.vscode/*
-!/.vscode/extensions.json
-!/.vscode/launch.json
+# /.vscode/*
+# !/.vscode/extensions.json
+# !/.vscode/launch.json
+/.vscode/settings.json
 .idea
 
 # Platform-specifiques 
@@ -68,7 +69,7 @@ yarn-error.log*
 *.sln
 *.sw?
 *.swp
-/test/
+# /test/
 /src/_x/numeric*
 # /.env
 *.local
