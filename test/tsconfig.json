@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json" ,
+  "compilerOptions": {
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true ,
+    "noEmit": true,
+
+    "paths": {
+      //
+      "*" : [
+        "../packages/*" ,
+      ] ,
+    } ,
+  },
+}
