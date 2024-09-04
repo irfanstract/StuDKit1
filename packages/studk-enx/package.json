@@ -1,0 +1,26 @@
+{
+  "private": false
+  ,
+  "license": "LGPL-3.0-only"
+  ,
+  "main": "index.mjs"
+  ,
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12"
+    ,
+    "@types/react": "18.2.55"
+    ,
+    "@types/react-dom": "18.2.19"
+    ,
+    "@types/node": "20.11.17"
+  }
+  ,
+  "dependencies": {
+  }
+  ,
+  "scripts": {
+    "start": "npx electron@29.2.0 iem.mjs"
+    ,
+    "printNodeVersion": "npx electron@29.2.0 ./src/metaPrintNodeVersion.mjs"
+  }
+}
