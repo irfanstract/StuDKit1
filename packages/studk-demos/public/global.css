@@ -1,0 +1,199 @@
+
+
+
+
+
+
+
+
+
+
+body {
+  margin: 0 ;
+}
+
+body {
+  
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+  font-weight: 500;
+}
+
+body {
+  
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+button {
+  
+  font-family: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  position: sticky;
+  top : 0.25em ;
+  offset-block-start : 0.25em ;
+  left: 0.25em ;
+  offset-inline-start: 0.25em ;
+
+  backdrop-filter: blur(1em) ;
+
+  font-family: sans-serif;
+
+  display: block;
+  display: block flow-root;
+  padding-block: 0.5em;
+}
+
+h1::before, h2::before, h3::before {
+  content: "§";
+  color: rgba(128 128 128 / 0.5 );
+}
+
+h1:hover::before, h2:hover::before {
+  color: rgba(0 96 255 / 0.5 );
+}
+
+
+
+dialog[open] {
+  position: sticky;
+  position: fixed;
+  inset-block-start: 0;
+}
+
+dialog[open] {
+  border-radius: 0.5em ;
+}
+dialog[open]::backdrop {
+  background: rgba(0 0 0 / 0.5 ) ;
+  backdrop-filter: blur(0.35em) ;
+}
+
+dialog:not([open]) {
+  opacity: 0 ;
+}
+dialog[open] {
+  opacity: 1 ;
+}
+@starting-style {
+  dialog[open] {
+    opacity: 0 ;
+  }
+}
+
+dialog {
+  transition-behavior: allow-discrete ;
+}
+
+
+
+* {
+  transition: all 0.35s ease-out ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+button {
+}
+
+button {
+  font-family: inherit;
+  /* background: canvas; */
+  -webkit-margin-end: 0.5em;
+  margin-inline-end: 0.5em;
+  background: black;
+  color: white;
+  padding: 0.3em 0.2em;
+  border-radius: 0.2em;
+  /* border-radius: 0.5em; */
+  padding-block: 0.25em 0.4em;
+}
+
+.card {
+  border: 0.05em solid currentColor;
+  /* display: inline-block; */
+  display: block;
+  display: flow-root;
+  padding: 0.3em 0.2em;
+  margin-block-end: 0.5em;
+  margin-inline-end: 0.5em;
+  border-radius: 0.25em;
+  backdrop-filter: blur(0.9em);
+}
+
+studk-card {
+  /* overflow-inline: hidden; */
+  overflow-x: hidden;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+button {
+  opacity: 1;
+  filter: none;
+}
+button:disabled {
+  opacity: 0.5;
+  filter: contrast(0.3);
+  filter: contrast(0.3) blur(0.035em);
+}
+
+button {
+  font-weight: 500;
+  font-weight: bold;
+  border-color: hsl(240 20% 40% / 1);
+  background-color: hsl(240 20% 40% / 1);
+  color: hsl(240 20% 95% / 1);
+  font-size: 75%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Inter", "Roboto", "Microsoft Sans Serif", sans-serif;
+}
+
+ul, ol {
+  padding-inline-start: 0.85em;
+  /* list-style-type: disc;
+  marker: "-"; */
+}
+
+ul > li::marker,
+ol > li::marker,
+#-----e {
+  font-size: 85%;
+}
+
+img {
+  border-radius: 2%;
+  filter: blur(0.5px);
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+img {
+  border: 0.20em solid black ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
