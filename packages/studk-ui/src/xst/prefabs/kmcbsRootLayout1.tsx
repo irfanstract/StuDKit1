@@ -100,7 +100,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
 {
   const metaProviderLogo = (
     <span>
-    KMC Book Studio
+    ☘ KMC Book Studio ⚾
     </span>
   ) ;
   const subsiteLogo = (
@@ -181,7 +181,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
         </SingleChildDiv>
       )}
       />
-  )
+  );
 } ;
 
 
