@@ -61,6 +61,11 @@ import {
 
 import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
+import {
+  setDataProperty ,
+  setCustomCssPrp ,
+} from "studk-ui-fwcore/src/dom/helpers/DOmNodeCustomProperty" ;
+
 
 
 
@@ -157,10 +162,39 @@ export const captureStyleValuesAOf = (
         })()
         ?? null
       ) ;
-      receiver.style.setProperty("--ovcbxassigned-" + newName, capturedVal )
+      RSSP(receiver, newName, capturedVal ) ;
     }
   }
 ) ;
+
+/**
+ * {@link RSSP}
+ * 
+ * currently impl-ed as
+ * `receiver.style.setProperty("--ovcbxassigned-" + newName, capturedVal )`.
+ * 
+ */
+const RSSP = (
+  function (...[receiver, mdlspaceName, newValue ] : (
+    ArgsWithOptions<[CsvaIbleElement, newName: string, string | null ] , {} >
+  ) )
+  {
+
+    const userspaceName = (
+      "--ovcbxassigned-" + mdlspaceName
+    ) ;
+
+    void (
+      setCustomCssPrp(receiver.style, userspaceName, newValue )
+    ) ;
+
+  }
+) ;
+
+export {
+  /** @deprecated this is a WIP. */
+  RSSP ,
+} ;
 
 ;
 
