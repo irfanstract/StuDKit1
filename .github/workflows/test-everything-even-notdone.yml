@@ -1,0 +1,88 @@
+name: Test Everything Including Stuffs Still Negative
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # node-version: [14.x, 16.x, 18.x]
+        node-version: [20.x, 21.x, 20.9 ]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Test Everything Including Stuffs Still Negative
+      run: |
+        npm ci
+        # npm install
+
+        # NPM-RUN-TEST(s)
+
+        npm run test
+        
+        cd packages/typexpe-commons
+        npm run test
+        cd ../../
+        
+        cd packages/studk-fwcore
+        npm run test
+        cd ../../
+        
+        cd packages/studk-video-fwcore
+        npm run test
+        cd ../../
+        
+        cd packages/studk-audio-fwcore
+        npm run test
+        cd ../../
+
+        # TSC-BUILD(s)
+
+        cd packages/typexpe-commons
+        tsc --build 
+        cd ../../
+        
+        cd packages/studk-fwcore
+        tsc --build 
+        cd ../../
+        
+        cd packages/studk-video-fwcore
+        tsc --build 
+        cd ../../
+        
+        cd packages/studk-audio-fwcore
+        tsc --build 
+        cd ../../
+        
+        cd packages/studpresenters
+        tsc --build 
+        cd ../../
+        
+        # # NPM-RUN-TEST AFTER TSC-BUILD
+
+        # tsc --build 
+        
+        # npm run test
+        
+        # cd packages/typexpe-commons
+        # npm run test
+        # cd ../../
+
+        # cd packages/typexpe-commons
+        # tsc --build 
+        # cd ../../
+        
+
+

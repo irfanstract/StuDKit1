@@ -1,0 +1,27 @@
+{
+  "configurations": [
+    // {
+    //   "name": "studk-demos",
+    //   "cwd": "${workspaceFolder}/packages/studk-demos",
+    //   "command": "npm run dev",
+    //   "request": "launch",
+    //   "type": "node-terminal",
+    // },
+    {
+      "name": "studk-demos",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/studk-demos",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        // "--",
+        // "--help",
+      ],
+      "runtimeExecutable": "npm",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node" ,
+    } ,
+  ] ,
+}

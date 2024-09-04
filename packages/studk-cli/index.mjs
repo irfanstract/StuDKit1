@@ -4,11 +4,9 @@ import { reiterable } from 'typexpe-commons/src/common_sv1.mjs';
 
 import { pathToFileURL, } from 'node:url' ;
 
-import { isMainModuleImportMeta } from 'typexpe-commons/src/isImportMetaObjForMainModule.mjs';
+import { isMainModuleByMeta } from 'typexpe-commons/src/isImportMetaObjForMainModule.mjs';
 
 import { bashMainImpl } from './src/cli-main.mjs';
-
-import { startReadEvalLoop, runReadEvalLoop, } from './src/cli-repl.mjs';
 
 
 
@@ -18,7 +16,7 @@ import { startReadEvalLoop, runReadEvalLoop, } from './src/cli-repl.mjs';
 // TODO
 if ((
   /* whether this is being run as the main module */
-  isMainModuleImportMeta(import.meta )
+  isMainModuleByMeta(import.meta )
 )) {
   ;
   console.warn(`'typexpe-cli' invoked as main module`) ;

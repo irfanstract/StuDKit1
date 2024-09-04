@@ -85,10 +85,17 @@
     
     /* https://stackoverflow.com/a/57273280 . */
     "paths": {
-      "typexpe-commons/*"        : ["./packages/typexpe-commons/*"] ,
-      "typexpe-compiler-fwcore/*": ["./packages/typexpe-compiler-fwcore/*"] ,
-      "typexpe-compiler-chain/*" : ["./packages/typexpe-compiler-chain/*"] ,
-      "typexpe-typesystem/*"     : ["./packages/typexpe-typesystem/*"] ,
+      // "typexpe-commons/*"        : ["./packages/typexpe-commons/*"] ,
+      // "studk-fwcore/*"           : ["./packages/studk-fwcore/*"] ,
+      /*
+       * repetition like above wouldn't scale well, and is prone to bugs including `ENOENT`s and soundness issues
+       */
+      /*
+       * https://www.typescriptlang.org/docs/handbook/modules/reference.html#wildcard-substitutions 
+       */
+      "*" : [
+        "./packages/*" ,
+      ] ,
     } ,
     
     // "outDir": "dist", /* didn't work as expected */
@@ -96,12 +103,25 @@
     
     
   },
+  /**
+   * Referenced Projects And `include`s.
+   * see also https://stackoverflow.com/a/60933948 .
+   */
   "include": [
     "packages" ,
+    // "packages/*/src" ,
     // "src" ,
     // ".next/types/**/*.ts" ,
   ],
   "references": [
+    // { "path": "./packages/studk-demos", } ,
+    // { "path": "./packages/studk-cli"            , } ,
+    { "path": "./packages/typexpe-commons"      , } ,
+    { "path": "./packages/studk-fwcore"         , } ,
+    { "path": "./packages/studk-video-fwcore"   , } ,
+    { "path": "./packages/studk-audio-fwcore"   , } ,
+    { "path": "./packages/studpresenters"       , } ,
+    { "path": "./packages/studk-dom-mediarecorder"   , } ,
   ] ,
 
   "ts-node": {
