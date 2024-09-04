@@ -22,6 +22,8 @@
    }
    ,
    "exports": {
+      "./package.json": "./package.json"
+      ,
       "./src/*": "./src/*"
       ,
       "./msrc/*": "./src/*"

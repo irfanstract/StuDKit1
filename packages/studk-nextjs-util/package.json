@@ -1,6 +1,5 @@
 {
-	"description": "StuDKit Simulations Commons",
-	"license": "MIT",
+	"license": "Apache-2.0",
 	"version": "0.0.1"
   ,
 	"dependencies": {
@@ -12,6 +11,10 @@
 	}
   ,
 	"devDependencies": {
+	}
+  ,
+	"imports": {
+		"#currentPkg/*": "./*"
 	}
 	,
 	"scripts": {
