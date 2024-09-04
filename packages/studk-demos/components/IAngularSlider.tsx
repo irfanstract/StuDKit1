@@ -40,9 +40,9 @@ export function IAngularSliderComp({ value: valueExisting, propagateEdit, }: {
 } ) {
   ;
   return (
-    <span>
+    <span style={{ display: "grid", gridTemplateAreas: `"a" "b" `, gridTemplateColumns: `5em 5em ` }}>
       <code>
-        {valueExisting }
+        {`${Angle.getDegrees(valueExisting) }deg` }
       </code>
       { propagateEdit && <IAngularSliderShiftComp value={valueExisting} propagateEdit={propagateEdit} /> }
     </span>
@@ -73,16 +73,17 @@ export function IAngularSliderShiftComp({ value: valueExisting, propagateEdit, }
 
 function AngularIncrButton<A extends Angle> ({ value, onClick: passClick, } : { value: A ; onClick: (e: { value: Angle, }) => void ; }) {
   const valueDeg = Angle.getDegrees(value) ;
+  const displayValDegs = (180 < valueDeg) ? (-360 + valueDeg) : valueDeg;
   return (
     <IncrButton
-    value={valueDeg}
+    value={displayValDegs }
     onClick={e => passClick({ value: Angle.ByDegrees(e.value), }) }
     />
   ) ;
 } ;
 
 function IncrButton<A extends number> ({ value, onClick = Object, } : { value: A ; onClick?: (e: { value: A, }) => void ; }) {
-  const cde = `${Math.sign(value) }${Math.abs(value) }` ;
+  const cde = `${String(Math.sign(value)).replace(/\w+$/g, () => "") }${Math.abs(value) }` ;
   return (
     <button type="button" onClick={() => onClick({ value: value, }) } >
       <code>
