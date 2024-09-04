@@ -5,6 +5,13 @@
 
 
 
+import {
+  util,
+} from "typexpe-commons/src/common_sv.mjs";
+
+
+
+
 
 import * as React from "react" ;
 
@@ -12,41 +19,79 @@ import {
   useResource,
 } from "@/components/useEffectAlt";
 
+import {
+  NativeButton ,
+  Button ,
+} from "studk-ui/src/xst/dbc.tsx" ;
+console["log"]({ NativeButton, }) ;
+
+import dynamicComponent from "next/dynamic";
+
+import Link from "next/link";
 
 
 
+
+
+import {
+  pagesConventions,
+} from "@/appInternalScripts/appPagesConvention"; ;
 
 export function IAudPage()
 {
   ;
-  const c = (
-    <div>
-      <h1>
-      StuDK's Audio Pipeline Demo
-      </h1>
-      <p>
-        <q>
-          This is StuDK's Audio Pipeline Demo.
-          Click on the <i>init</i> button to start it play!
-        </q>
-      </p>
-      <IAudStudioComp />
-    </div>
-  ) ;
   return (
-    <div style={{ display: "block flow-root", paddingBlock: "2em 3em", paddingInline: "1em 3em", minBlockSize: "45em" }} >
-        { c }
-    </div>
+    pagesConventions.describeArticlePage({
+      heading: (
+        <span>
+          StuDK's Audio Pipeline Demo
+        </span>
+      ) ,
+      children: (
+        <div>
+        <p>
+          <i>
+            this is StuDK's Audio Pipeline Demo.
+            click on the <i>init</i> button to get it started!
+          </i>
+        </p>
+        <studk-card>
+          <IAudStudioComp />
+          <details>
+            <p>
+              <em>
+                regarding why we need the "init" button:
+              </em>
+              according to the platform spec
+              AudioContext(s) will be paused unless at-least a user gesture has taken place ;
+              this means that
+              we need an explicit user-done pointer-click to get the engine started.
+              yeah
+            </p>
+          </details>
+        </studk-card>
+        <p>
+          This is
+          a demo app
+          developed to demonstrate various applets building on StuDK.
+          The packages carried by this monorepo
+          are put into usage in these demos.
+          This is
+          a demo app
+          developed to demonstrate various applets building on StuDK.
+          The packages carried by this monorepo
+          are put into usage in these demos.
+        </p>
+      </div>
+      ) ,
+    })
   ) ;
 } ;
 
 
 
 
-import dynamicComponent from "next/dynamic";
-
-import Link from "next/link";
-
+;
 
 
 
@@ -59,15 +104,17 @@ function IAudStudioComp()
   return c ? (
     <div>
       <p>
-      <button type="button" >Running</button>
+      <Button onClick={false} >
+        Running
+      </Button>
       </p>
       <IAudStudioActiveComp c={c} />
     </div>
   ) : (
     <p>
-      <button type="button" onClick={e => initC(e.nativeEvent) } >
+      <Button onClick={e => initC(e.nativeEvent) } >
         Initialise
-      </button>
+      </Button>
     </p>
   ) ;
 }
