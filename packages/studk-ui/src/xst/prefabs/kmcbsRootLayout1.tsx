@@ -100,7 +100,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
 {
   const metaProviderLogo = (
     <span>
-    KMC Book Studio
+    ☘ KMC Book Studio ⚾
     </span>
   ) ;
   const subsiteLogo = (
@@ -114,8 +114,36 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
     )
   ) ;
   const version = versionArg ?? "1.1";
+  const asClsVerTag = (
+    `studk-kmcbsrootmnvf-of-version${String(version).replace(/\./g, "p") }`
+  );
+  const footerSecContents = (
+    <menu>
+      <span>
+        { organisingTeamLogo }
+      </span>
+      --
+      <React.Fragment>
+          <Link href="/" >
+          Home
+          </Link>
+          --
+          <Link href="credits/">
+          credits
+          </Link>
+          --
+          <Link href="about:blank">
+          <code>about:blank</code>
+          </Link>
+          --
+          <NavigateBackButton />
+          <NavigateForwardButton />
+      </React.Fragment>
+    </menu>
+  ) ;
   return (
       <MainAndNavAndFinaleC
+      className={`studk-kmcbsrootmnvf-whole ${asClsVerTag} `}
       main={(
         //
         (() => {
@@ -126,7 +154,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
           return (
             //
             <div
-            className="arbrd-d1 studk-kmcbsrootmnvf-main "
+            className={`arbrd-d1 studk-kmcbsrootmnvf-main ${asClsVerTag}`}
             style={{
               //
             }}
@@ -138,12 +166,8 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
       )}
       nav1={(
         <SingleChildDiv
-        className="studk-kmcbsrootmnvf-aside "
+        className={`studk-kmcbsrootmnvf-aside studk-kmcbsrootmnvf-navdiv ${asClsVerTag} `}
         style={{
-          background: (1.1 <= Number(version)) ? `rgba(0 0 0 / 0.6)` : "black",
-          color: "white",
-          fontWeight: "650" ,
-          backdropFilter: `blur(0.75em)`,
         }}
         >
           <menu>
@@ -153,35 +177,16 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
       )}
       finale={(
         <SingleChildDiv
-        className="studk-kmcbsrootmnvf-aside "
-        style={{ background: "black", color: "white", fontWeight: "650" }}
+        className={`studk-kmcbsrootmnvf-aside studk-kmcbsrootmnvf-footerdiv ${asClsVerTag} `}
+        style={{
+          //
+        }}
         >
-            <menu>
-              <span>
-                { organisingTeamLogo }
-              </span>
-              --
-              <React.Fragment>
-                  <Link href="/" >
-                  Home
-                  </Link>
-                  --
-                  <Link href="credits/">
-                  credits
-                  </Link>
-                  --
-                  <Link href="about:blank">
-                  <code>about:blank</code>
-                  </Link>
-                  --
-                  <NavigateBackButton />
-                  <NavigateForwardButton />
-              </React.Fragment>
-            </menu>
+          { footerSecContents }
         </SingleChildDiv>
       )}
       />
-  )
+  );
 } ;
 
 
