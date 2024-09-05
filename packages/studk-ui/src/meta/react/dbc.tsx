@@ -42,6 +42,14 @@ import {
   describeHeadlinedArticle ,
 } from '#currentPkg/src/meta/react/dhc.tsx'; ;
 
+import {
+  SynchronousCallbackAction,
+  UrlAction,
+  NoOpActionReprImpl,
+  DisabledBtnActionReprImpl,
+  translateCommonJsxAction,
+} from 'studk-ui/src/templatedFormActions/ButtonlikeAction.tsx'; ;
+
 
 
 
@@ -53,12 +61,17 @@ const NativeButton: "button" = (
 
 import "./dbc.scss" ;
 
-export { Span, Button, } ;
+export {
+  SpanC ,
+  SpanC as Span,
+  ButtonC,
+  ButtonC as Button,
+} ;
 
-const Span = (
+const SpanC = (
   describeComponent(function SpanC({ onClick: href, ...prp } : (Omit<EffectiveXButtonProps, "inline" > & { } ) ) {
     return (
-      <Button
+      <ButtonC
       inline
       {...prp}
       onClick={href ?? null }
@@ -68,62 +81,105 @@ const Span = (
 ) ;
 
 type EffectiveXButtonProps = (
-  React.ComponentPropsWithoutRef<typeof Button>
+  React.ComponentPropsWithoutRef<typeof ButtonC>
 ) ;
 
-const Button = (
-  // ☺☘⚾❌☑⛲⚛⛰♏☐♐❣❤❇→♠
-  describeComponent(function ButtonC({ inline: asInline = false, children: headlineArg, onClick: href, className: cn = "", ...prp } : (
-    (Omit<React.ComponentPropsWithoutRef<"button">, `on${string}` > )
-    &
-    { inline ?: boolean ; onClick : (Required<JSX.IntrinsicElements["a"]>["href"] ) | ((e: React.SyntheticEvent) => void ) | null | false ; }
-  ) ) {
+const useOrTranslateBtnCProps = (
+  function ({ inline: asInline = false, children: headlineArg, onClick: hrefArg, className: cn = "", ...otherJsxProps } : (
+    IXButtonProps
+  ))
+  {
+    ;
     const headline = (
       headlineArg
     ) ;
     const inlinenessClassName = (
       asInline ? "studk-ui-dbc-subsntcspan" : "studk-ui-dbc-standalonespan"
     ) ;
-    return (
-      (typeof href === "string") ?
+    const hrefAc = (
+      translateCommonJsxAction(hrefArg )
+    ) ;
+    ;
+    const regularInlinePresentation = (
+      (hrefAc instanceof UrlAction) ?
       (
         <a
         className={`studk-ui-dbca ${inlinenessClassName } ${cn}`}
         children={headline}
-        href={href}
-        target='_blank'
-        {...prp}
+        href={hrefAc.href}
+        // target='_blank'
+        {...(function (): Partial<JSX.IntrinsicElements["a"] > {
+          if (hrefAc.href.match(/^(data|blob|object):/u) ) {
+            return { download: "attachment", target: '_blank', } ;
+          }
+          if (((typeof URL !== "undefined") && new URL(hrefAc.href).origin ) === location?.origin ) {
+            return { } ;
+          }
+          return { target: '_blank' } ;
+        })() }
+        {...otherJsxProps}
         />
       )
       :
-      (typeof href === "function") ?
+      (hrefAc instanceof SynchronousCallbackAction) ?
       (
         <button
         className={`studk-ui-dbcb ${inlinenessClassName } ${cn}`}
         children={headline}
         type='button'
-        onClick={e => href(e) }
-        {...prp}
+        onClick={e => hrefAc.runMain(e) }
+        {...otherJsxProps}
         />
       )
       :
-      (href === false) ?
+      (hrefAc instanceof DisabledBtnActionReprImpl) ?
       (
         <button
         className={`studk-ui-dbcb ${inlinenessClassName } ${cn}`}
         children={headline}
         type='button'
         disabled
-        {...prp}
+        {...otherJsxProps}
         />
       )
       :
       <span
       className={`studk-ui-dbca ${inlinenessClassName } ${cn}`}
       children={headline}
-      {...prp}
+      {...otherJsxProps}
       />
     ) ;
+    ;
+    return {
+      asInline ,
+      headlineArg ,
+      hrefArg ,
+      cn ,
+      otherJsxProps ,
+      headline ,
+      inlinenessClassName ,
+      hrefAc,
+      regularInlinePresentation ,
+    } as const ;
+  }
+) ;
+
+interface IXButtonProps extends Omit<(
+  (Omit<React.ComponentPropsWithoutRef<"button">, `on${string}` > )
+  &
+  { inline ?: boolean ; onClick : Parameters<typeof translateCommonJsxAction>[0] ; }
+), never>
+{}
+
+const ButtonC = (
+  // ☺☘⚾❌☑⛲⚛⛰♏☐♐❣❤❇→♠
+  describeComponent(function ButtonC(props : (
+    IXButtonProps
+  ) ) {
+    const {
+      regularInlinePresentation ,
+    } = useOrTranslateBtnCProps(props) ;
+    return regularInlinePresentation ;
   })
 ) ;
 
