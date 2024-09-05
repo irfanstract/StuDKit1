@@ -112,14 +112,15 @@ export namespace SPHMEA
   {
     return (
       <div
+      className='studk-sbzi-vinylgramdiv'
       style={(
         describeCallbackAssignedStyleProps(function (s) {
-          s.display = "table-cell" ;
-          s.display = "inline-block" ;
-          s.width = `39ex` ;
-          s.height = `39ex` ;
-          s.contain = "size";
-          s.contain = "content";
+          // s.display = "table-cell" ;
+          // s.display = "inline-block" ;
+          // s.width = `39ex` ;
+          // s.height = `39ex` ;
+          // s.contain = "size";
+          // s.contain = "content";
         })
       )}
       children={srcE}
