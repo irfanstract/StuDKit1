@@ -75,46 +75,77 @@ import type {
 } from "studk-dom-util/src/xst/DOmRenderedClientOffsets101" ;
 
 const useExistingNativeCompBoundingBoxViaRef = (
-  function (...[syncReferee, syncedGraphicalBoundsRel = NCPSR.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
+  function (...[syncReferee, syncedGraphicalBoundsRel = ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX] : [src: NcpSupportedElem, mode?: NCPSR.Subject] )
   : React.Ref<HTMLDivElement>
   {
     ;
 
-    const clientRef = React.useRef<HTMLDivElement | null>(null) ;
+    const clientRef = (
+      React.useRef<HTMLDivElement | null>(null)
+    ) ;
 
-    useIntervalEffect(() => {
-      const e1 = clientRef.current ;
-      if (e1) {
-        const ncp = doNativeCompDisplayedOffsetsAnalysis(syncReferee) ;
-        if ((e1.hidden = !(!!ncp) , ncp) )
-        {
-          C :
-          switch (syncedGraphicalBoundsRel) {
-            //
-            case NCPSR.Subject.BOTTOM :
+    const drivingPeer = (
+      React.useMemo(() => ({
+        applyRefresh: function () {
+          const e1 = clientRef.current ;
+          if (e1) {
+            const ncp = doNativeCompDisplayedOffsetsAnalysis(syncReferee) ;
+            if ((e1.hidden = !(!!ncp) , ncp) )
             {
               Object.assign(e1.style, {
+                transition: `all 0.2s ease-out, inset 0.005s ease-out`,
+              }) ;
+
+              C :
+              switch (syncedGraphicalBoundsRel) {
                 //
-                top : `${`${ncp.bottomPos }px` } ` , 
-                left: `${`${ncp.pos["x"] }px` } ` , 
-              } ) ;
-              break C ;
-            }
-            case NCPSR.Subject.BOUNDINGBOX :
-            {
-              Object.assign(e1.style, {
-                //
-                top : `${`${ncp.pos.y }px` } ` , 
-                left: `${`${ncp.pos["x"] }px` } ` , 
-                height : `${`${ncp.bottomPos - ncp.pos.y }px` } ` , 
-                width : `${`${ncp.rightPos - ncp.pos.x }px` } ` , 
-              } satisfies React.CSSProperties ) ;
-              break C ;
+                case ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOTTOM :
+                {
+                  Object.assign(e1.style, {
+                    //
+                    top : `${`${ncp.bottomPos }px` } ` , 
+                    left: `${`${ncp.pos["x"] }px` } ` , 
+                  } ) ;
+                  break C ;
+                }
+                case ToNativeDomElementSyncing.GraphicalBoundsSyncing.Subject.BOUNDINGBOX :
+                {
+                  Object.assign(e1.style, {
+                    //
+                    top : `${`${ncp.pos.y }px` } ` , 
+                    left: `${`${ncp.pos["x"] }px` } ` , 
+                    height : `${`${ncp.bottomPos - ncp.pos.y }px` } ` , 
+                    width : `${`${ncp.rightPos - ncp.pos.x }px` } ` , 
+                  } satisfies React.CSSProperties ) ;
+                  break C ;
+                }
+              }
             }
           }
-        }
+        } ,
+      }) , [clientRef] )
+    ) ;
+
+    /** the preferred refresh hook. caveat - switched to {@link React.useLayoutEffect} due to unacceptable delays on {@link React.useEffect }. */
+    React["useLayoutEffect"](() => {
+      const s = new AbortController() ;
+      {
+        const doMain = function () {
+          drivingPeer.applyRefresh() ;
+        } ;
+        doMain() ;
+        window.addEventListener("scroll", evt => {
+          doMain() ;
+        }, { signal: s.signal, } ) ;
       }
-    } , 0.0551 * 1000 , [clientRef] ) ;
+      return () => {
+        s.abort() ;
+      } ;
+    } , [drivingPeer,] ) ;
+    /** a fallback interval hook */
+    useIntervalEffect(() => (
+      drivingPeer.applyRefresh()
+    ) , 0.37551 * 1000 , [drivingPeer] ) ;
     ;
 
     return clientRef ;
@@ -130,6 +161,7 @@ namespace ToNativeDomElementSyncing
     ;
     export enum Subject {
       BOTTOM = 1 << 1 ,
+      // BEFORE = 1 << 2 ,
       BOUNDINGBOX = 1 << 3 ,
     }
   }
@@ -138,12 +170,14 @@ namespace ToNativeDomElementSyncing
 
 /** @deprecated alias of {@link ToNativeDomElementSyncing.GraphicalBoundsSyncing} */
 import NCPSR = ToNativeDomElementSyncing.GraphicalBoundsSyncing ;
+/** @deprecated alias of {@link ToNativeDomElementSyncing.GraphicalBoundsSyncing} */
+import NCPSRI = ToNativeDomElementSyncing.GraphicalBoundsSyncing ;
 
 export {
   useExistingNativeCompBoundingBoxViaRef ,
   /** @deprecated alias of {@link useExistingNativeCompBoundingBoxViaRef} */
   useExistingNativeCompBoundingBoxViaRef as useNativeCompPositionSyncRef ,
-  NCPSR ,
+  NCPSRI as NCPSR ,
   ToNativeDomElementSyncing ,
 } ;
 
