@@ -1,32 +1,7 @@
 {
   "extends": "../../tsconfig.json" ,
   
-  // "compilerOptions": {
-  //   "checkJs": true,
-  //   "allowSyntheticDefaultImports": true ,
-  //   "outDir": "dist",
-  //   "noEmit": true ,
-  //   "allowImportingTsExtensions": false ,
-  //   "moduleResolution": "NodeNext",
-  //
-  //   /* not sure if these're relevant for NextJS apps */
-  //
-  //   // /* https://www.typescriptlang.org/docs/handbook/project-references.html */
-  //   // "composite": true ,
-  //   // /* https://stackoverflow.com/a/61513685 */
-  //   // "rootDir": "src" ,
-  //
-  // },
-  //
-  // "include": [
-  //   "src" ,
-  // ],
-  // // "exclude": [
-  // //   "src/**/*" ,
-  // // ],
-  // // "references": [
-  // //   { "path": "../../packages/typexpe-commons", } ,
-  // // ] ,
+  /* copy-cats `tsconfig.json` in `studk-demos` */
 
   "compilerOptions": {
 
@@ -143,6 +118,7 @@
     "src" ,
     /* for some reason omitting these caused the type-checker to fail resolving custom-paths */
     "app/**/*" ,
+    "pages/**/*" ,
     "appInternalScripts/**/*" ,
     "components/**/*" ,
 
