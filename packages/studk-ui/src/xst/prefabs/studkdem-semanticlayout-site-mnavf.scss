@@ -22,6 +22,12 @@
   
   /* */
 
+  .studk-mnavf-maindiv,
+  .studk-mnavf-header,
+  .studk-mnavf-footer {
+    contain: layout;
+  }
+
   .studk-mnavf-header {
     z-index: var(--layers-headnav) ;
     font-size: 80% ;
