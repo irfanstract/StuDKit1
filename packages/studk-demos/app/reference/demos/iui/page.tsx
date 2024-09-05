@@ -21,7 +21,7 @@ import {
   NativeButton ,
   Button, 
   Span,
-} from "studk-ui/src/meta/react/dbc.tsx" ;
+} from "studk-ui/src/xst/dbc.tsx" ;
 console["log"]({ NativeButton, }) ;
 
 
