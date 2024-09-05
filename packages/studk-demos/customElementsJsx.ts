@@ -20,14 +20,17 @@ interface IntrinsicElementsExtsSpcl {
 }
 
 /* assigning to `@types/react` nor `@types/react/jsx-runtime` nor `react` doesn't work, must use `react/jsx-runtime` instead */
-declare module "react/jsx-runtime" {
+// @ts-ignore
+declare module "react/jsx-runtime"
+{
   export namespace JSX {
     export interface IntrinsicElements extends IntrinsicElementsExtsSpcl {
     }
   }
 }
 
-declare global {
+declare global
+{
   export namespace JSX {
     export interface IntrinsicElements extends IntrinsicElementsExtsSpcl {
     }
