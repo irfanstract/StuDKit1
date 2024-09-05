@@ -88,15 +88,8 @@ body {
 
 
 
-h1, h2, h3, h4, h5, h6
-{
-
+table {
   position: sticky;
-  top : 0.25em ;
-  offset-block-start : 0.25em ;
-  left: 0.25em ;
-  offset-inline-start: 0.25em ;
-
 }
 
 
