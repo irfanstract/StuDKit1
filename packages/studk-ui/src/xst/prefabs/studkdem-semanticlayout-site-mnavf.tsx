@@ -95,43 +95,82 @@ export {
 
 const MainAndNavAndFinaleC = (
   describeComponent((
-    function MainAndNavAndFinaleCImpl({ main: mainComp, nav1 = <div />, finale = <div />, } : (
-      { main: React.ReactNode ; nav1?: React.ReactElement ; finale?: React.ReactElement ; }
+    function MainAndNavAndFinaleCImpl({ main: mainComp, nav1 = <div />, finale = <div />, className = ``, } : (
+      & { main: React.ReactNode ; nav1?: React.ReactElement ; finale?: React.ReactElement ; }
+      & Pick<JSX.IntrinsicElements["div"], "className" >
     )) {
       ;
       return (
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
+        <div
+        className={className}
+        style={{
+          position: "relative",
+          // display: "flex",
+          // flexDirection: "column",
           // backgroundColor: "black",
           // color: "white",
           overflowBlock: "auto",
-          minBlockSize: `100vh`,
-          inlineSize: `100vw`,
+          // minBlockSize: `100vh`,
+          // inlineSize: `100vw`,
           overflowInline: "clip",
           overflowX: "clip",
-        }}>
-          <SCD
-          style={{
-            order: 1 ,
-            flex: "1 1 auto",
-            // backgroundColor: "white",
-            // color: "black",
-          }}
-          >
-              { mainComp }
-          </SCD>
-          <SCD style={{ order: 0, position: "sticky", insetBlockStart: 0, backgroundColor: "inherit", fontSize: `80%`, }} >
-              { nav1 }
-          </SCD>
-          <SCD style={{ order: 2 , position: "sticky", insetBlockEnd: 0, backgroundColor: "inherit", fontSize: `80%`, }}>
-              { finale }
-          </SCD>
+        }}
+        >
+          <div style={{
+            // position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            // backgroundColor: "black",
+            // color: "white",
+            // overflowBlock: "auto",
+            minBlockSize: `100vh`,
+            // inlineSize: `100vw`,
+            // overflowInline: "clip",
+            // overflowX: "clip",
+          }}>
+            <SCD
+            className="studk-mnavf-maindiv "
+            style={{
+              flex: "1 1 auto",
+              // order: 1 ,
+              // backgroundColor: "white",
+              // color: "black",
+            }}
+            >
+                { mainComp }
+            </SCD>
+            <SCD
+            className="studk-mnavf-header "
+            style={{
+              // order: 0,
+              // position: "sticky", insetBlockStart: 0,
+              // backgroundColor: "inherit",
+              // fontSize: `80%`,
+              // zIndex: `var(--layers-headnav)`,
+            }}
+            >
+                { nav1 }
+            </SCD>
+            <SCD
+            className="studk-mnavf-footer "
+            style={{
+              // order: 2 ,
+              // position: "sticky", insetBlockEnd: 0,
+              // backgroundColor: "inherit",
+              // fontSize: `80%`,
+              // zIndex: `var(--layers-footer)`,
+            }}
+            >
+                { finale }
+            </SCD>
+          </div>
         </div>
       ) ;
     }
   ))
 ) ;
+
+import "./studkdem-semanticlayout-site-mnavf.scss" ;
 
 export {
   MainAndNavAndFinaleC ,
