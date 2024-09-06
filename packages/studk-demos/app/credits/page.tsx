@@ -23,9 +23,6 @@ export default function CreditsPageApp() {
       <p>
           special thanks to contribs
       </p>
-      <div>
-        <LocalStorageEntryViewDemo ikey={"i need some local storage"} />
-      </div>
     </div>
   ) ;
 } ;
@@ -33,7 +30,6 @@ export default function CreditsPageApp() {
 
 
 
-import { LocalStorageEntryView, LocalStorageEntryViewDemo, } from "eonx-document-ui/src/usePeriodicSave.mjs" ;
 
 
 
