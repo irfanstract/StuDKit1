@@ -29,16 +29,16 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   // ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
 
 
 
@@ -53,11 +53,11 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   SingleChildDiv,
@@ -66,7 +66,7 @@ import {
 import {
   Button ,
   Span ,
-} from 'studk-ui/src/meta/react/dbc.tsx'; ;
+} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 // import Link from "next/link" ;
 

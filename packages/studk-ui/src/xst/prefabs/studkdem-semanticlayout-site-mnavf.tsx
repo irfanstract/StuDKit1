@@ -29,16 +29,16 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
 
 import type {
   // ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
 
 
 
@@ -53,20 +53,26 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from '#currentPkg/src/meta/react/dec.tsx'; ;
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   SingleChildDiv,
 } from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
 const SCD = (
-  describeComponent(function SCDWRP({ style, ...props }: JSX.IntrinsicElements["div"]) {
+  describeComponent(function SCDWRP({ style, ...remProps }: JSX.IntrinsicElements["div"]) {
     return (
-       <SingleChildDiv {...props} style={{ border: `0.05em solid black`, ...style } } />
+       <SingleChildDiv
+       {...remProps}
+       style={{
+        // border: `0.05em solid black`,
+        ...style
+       } }
+       />
     ) ;
   })
 ) ;
@@ -74,7 +80,7 @@ const SCD = (
 import {
   Button ,
   Span ,
-} from '#currentPkg/src/meta/react/dbc.tsx'; ;
+} from 'studk-ui/src/meta/react/dbc.tsx'; ;
 
 // import Link from "next/link" ;
 
@@ -95,12 +101,15 @@ export {
 
 const MainAndNavAndFinaleC = (
   describeComponent((
-    function MainAndNavAndFinaleCImpl({ main: mainComp, nav1 = <div />, finale = <div />, } : (
-      { main: React.ReactNode ; nav1?: React.ReactElement ; finale?: React.ReactElement ; }
+    function MainAndNavAndFinaleCImpl({ main: mainComp, nav1 = <div />, finale = <div />, className = ``, } : (
+      & { main: React.ReactNode ; nav1?: React.ReactElement ; finale?: React.ReactElement ; }
+      & Pick<JSX.IntrinsicElements["div"], "className" >
     )) {
       ;
       return (
-        <div style={{
+        <div
+        className={`studk-mnavf-wholediv ${className}`}
+        style={{
           position: "relative",
           // display: "flex",
           // flexDirection: "column",
@@ -111,7 +120,8 @@ const MainAndNavAndFinaleC = (
           // inlineSize: `100vw`,
           overflowInline: "clip",
           overflowX: "clip",
-        }}>
+        }}
+        >
           <div style={{
             // position: "relative",
             display: "flex",
@@ -125,9 +135,10 @@ const MainAndNavAndFinaleC = (
             // overflowX: "clip",
           }}>
             <SCD
+            className="studk-mnavf-maindiv studk-mnavf-maindiv1 "
             style={{
-              order: 1 ,
               flex: "1 1 auto",
+              // order: 1 ,
               // backgroundColor: "white",
               // color: "black",
             }}
@@ -137,8 +148,8 @@ const MainAndNavAndFinaleC = (
             <SCD
             className="studk-mnavf-header "
             style={{
-              order: 0,
-              position: "sticky", insetBlockStart: 0,
+              // order: 0,
+              // position: "sticky", insetBlockStart: 0,
               // backgroundColor: "inherit",
               // fontSize: `80%`,
               // zIndex: `var(--layers-headnav)`,
@@ -149,8 +160,8 @@ const MainAndNavAndFinaleC = (
             <SCD
             className="studk-mnavf-footer "
             style={{
-              order: 2 ,
-              position: "sticky", insetBlockEnd: 0,
+              // order: 2 ,
+              // position: "sticky", insetBlockEnd: 0,
               // backgroundColor: "inherit",
               // fontSize: `80%`,
               // zIndex: `var(--layers-footer)`,
