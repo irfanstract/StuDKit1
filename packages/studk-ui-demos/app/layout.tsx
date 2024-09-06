@@ -26,9 +26,9 @@ import {
 
 
 
-import "@/appInternalScripts/env" ;
+import { EnvTsxMainDummyC, } from "@/appInternalScripts/env" ;
 
-// import "./layout.css" ;
+import "./layout.scss" ;
 
 
 
@@ -69,6 +69,7 @@ export default function RootLayout({
         children={children }
         />
         </WOSC>
+        <EnvTsxMainDummyC />
       </body>
     </html>
   ) ;
