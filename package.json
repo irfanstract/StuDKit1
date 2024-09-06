@@ -52,5 +52,7 @@
      "versionOfNode": "node --version"
      ,
      "test": "npx mocha"
+     ,
+     "runNpxElectronLocalhost3000": "npx --yes electron@29.2.0 http://localhost:3000"
   }
 }
