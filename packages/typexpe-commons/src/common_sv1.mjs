@@ -239,10 +239,10 @@ export const asyncReiterable = /** @template E @param {() => AsyncGenerator<E> }
  * async version of {@link stringLinesConcat }
  * 
  */
-export const stringLinesConcatAsync = /** @template {String} E @param {() => AsyncGenerator<E> } x */ async (x) => (
-  (await arrayFromAsync(x() ) )
-  .join("\r\n")
-) ;
+export const stringLinesConcatAsync = /** @template {String} E @param {() => AsyncGenerator<SlcSpecifiedItem<E>, void, void> } x */ async (x) => {
+  const x1 = (await arrayFromAsync(x() ) ) ;
+  return stringLinesConcat(function* () { yield* x1 ; }) ;
+} ;
 /**
  * build string by concatenating, with CRLF, lines from `x`.
  * 
@@ -263,12 +263,21 @@ export const stringLinesConcatAsync = /** @template {String} E @param {() => Asy
  * ```
  * 
  */
-export const stringLinesConcat = /** @template {String} E @param {() => Generator<E> } x */ (x) => (
+export const stringLinesConcat = /** @template {String} E @param {() => Generator<SlcSpecifiedItem<E>, void, void> } x */ (x) => (
   [...reiterable(x) ]
+  .map(lne => (lne ?? "" ))
   .join("\r\n")
 ) ;
 
-import * as L from "lodash-es" ;
+/**
+ * @typedef {E | void }
+ * @template {string} [E = string]
+ * 
+ */
+/** @module */
+const SlcSpecifiedItem = {} ;
+
+import * as L from "./lodash-es-min.mjs" ;
 
 export {
   /** @deprecated */
@@ -312,6 +321,33 @@ export {
   // debounce ,
   // throt
 } from "lodash-es" ; ;
+
+export const asMentioned = /** @template E @param {() => Generator<E, void, void> } x @return {ReadonlyArray<E> } */ (x) => {
+  return (
+    reiterated(function* () {
+      yield* (
+        new Map((
+          reiterated(x)
+          .map(e => [e, true] )
+        ))
+        .keys()
+      ) ;
+    })
+  ) ;
+} ;
+
+/**
+ * 
+ * quote given string as `code` for MD.
+ * 
+ * @satisfies {(x: string) => string}
+ * 
+ */
+export const mdQuoteCode = (
+  x => (
+    ["", x, ""].join("`")
+  )
+) ;
 
 
 
