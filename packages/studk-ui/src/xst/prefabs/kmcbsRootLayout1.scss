@@ -1,0 +1,217 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@layer kmcbsrootlayoutdefaults01, kmcbsrootlayoutdefaults02, kmcbsrootlayoutdefaults025, kmcbsrootlayoutdefaults03, kmcbsrootlayoutdefaults033, defaults ;
+
+@layer kmcbsrootlayoutdefaults01 {
+
+  .studk-kmcbsrootmnvf-whole {
+    //
+    container-name: studk-kmcbsrootmnvf ;
+    container-type: normal;
+  }
+
+  .studk-kmcbsrootmnvf-whole.studk-kmcbsrootmnvf-of-version1p0 {
+    --version-later-than-1p0: 1 ;
+  }
+  
+  .studk-kmcbsrootmnvf-whole.studk-kmcbsrootmnvf-of-version1p1 {
+    --version-later-than-1p0: 1 ;
+    --version-later-than-1p1: 1 ;
+  }
+  
+  .studk-kmcbsrootmnvf-whole.studk-kmcbsrootmnvf-of-version1p125 {
+    --version-later-than-1p0  : 1 ;
+    --version-later-than-1p1  : 1 ;
+    --version-later-than-1p125: 1 ;
+  }
+  
+}
+
+@layer kmcbsrootlayoutdefaults02
+{
+  //
+
+  .studk-kmcbsrootmnvf-whole {
+    contain: layout;
+  }
+
+  .studk-kmcbsrootmnvf-navdiv,
+  .studk-kmcbsrootmnvf-footerdiv {
+    backdrop-filter: blur(0.75em) ;
+    //
+  }
+
+  .studk-kmcbsrootmnvf-navdiv {
+    font-weight: 650;
+  }
+  
+  .studk-kmcbsrootmnvf-footerdiv {
+    font-weight: 650;
+  }
+  
+  .studk-kmcbsrootmnvf-navdiv,
+  .studk-kmcbsrootmnvf-footerdiv {
+    background: black;
+    color: white;
+    //
+  }
+
+  .studk-kmcbsrootmnvf-navdiv,
+  .studk-kmcbsrootmnvf-footerdiv {
+    border: 0.05em solid black ;
+  }
+
+}
+
+@layer kmcbsrootlayoutdefaults025 {
+  //
+
+  @container studk-kmcbsrootmnvf style(--version-later-than-1p125: 1) {
+    //
+    .studk-kmcbsrootmnvf-navdiv,
+    .studk-kmcbsrootmnvf-footerdiv {
+      background: transparent;
+      // backdrop-filter: ;
+      color: black;
+      //
+      border: none;
+
+    }
+  }
+
+}
+
+@layer kmcbsrootlayoutdefaults02 {
+  @media print {
+    .studk-kmcbsrootmnvf-navdiv,
+    .studk-kmcbsrootmnvf-footerdiv {
+      background: white;
+      color: black;
+      //
+    }
+  }
+
+  @media print {
+    .studk-kmcbsrootmnvf-navdiv {
+      display: none !important;
+    }
+  }
+
+  @media screen {
+    //
+
+    @container studk-kmcbsrootmnvf style(--version-later-than-1p1: 1) {
+      //
+      .studk-kmcbsrootmnvf-navdiv
+      {
+        &:not(:is(:focus-within, :hover ) ):not(:root:has(:is(.studk-mnavf-header, .studk-mnavf-footer, h1):is(:focus-within, :hover ) ) * ) {
+          //
+          background: rgba($color: #000000, $alpha: 0.35);
+        }
+      }
+    }
+  }
+
+}
+
+@layer kmcbsrootlayoutdefaults025 {
+  //
+  
+  @media screen {
+    //
+
+    @container studk-kmcbsrootmnvf style(--version-later-than-1p125: 1) {
+      
+      .studk-kmcbsrootmnvf-navdiv,
+      .studk-kmcbsrootmnvf-footerdiv
+      {
+
+        &:is(:focus-within, :hover) ,
+        :is(
+          :root:has(
+            :is(.studk-mnavf-header, .studk-mnavf-footer)
+            :is(:focus-within, :hover)
+          ) & ,
+          /* touch-based devices (eg smartphones) doesn't have mouse/cursor/pointer, so we need to hold breath */
+          :not(:root:is(:focus-within, :hover ) * ):is(.studk-kmcbsrootmnvf-navdiv),
+          #-----e
+        ) ,
+        :is(:root:has(:is(h1):is(:focus-within, :hover) ) &:is(.studk-kmcbsrootmnvf-navdiv) ) ,
+        #-----e
+        {
+          background: white;
+          border: 0.1ex solid black ;
+          opacity: 1 !important ;
+
+          box-shadow: 0 0 0.95ex black ;
+        }
+      }
+    }
+
+  }
+
+}
+
+@layer kmcbsrootlayoutdefaults033 {
+}
+
+@layer kmcbsrootlayoutdefaults03
+{
+  //
+  
+  @container studk-kmcbsrootmnvf style(--version-later-than-1p1: 1) {
+    
+    .studk-kmcbsrootmnvf-navdiv {
+      zoom: 85%;
+    }
+    .studk-kmcbsrootmnvf-footerdiv {
+      zoom: 85%;
+    }
+
+    .studk-kmcbsrootmnvf-footerdiv {
+      filter: none;
+    }
+    @media screen {
+      :is(.studk-kmcbsrootmnvf-footerdiv, .studk-kmcbsrootmnvf-navdiv)
+      {
+        &:not(:is(:focus-within, :hover ) ):not(:is(/* touch-based devices (eg smartphones) doesn't have mouse/cursor/pointer, so we need to hold breath */ :not(:root:is(:focus-within, :hover ) * ):is(.studk-kmcbsrootmnvf-navdiv ), :root:has(:is(.studk-mnavf-header, .studk-mnavf-footer, h1):is(:focus-within, :hover ) ) * ) )
+        {
+          //
+          opacity: 0.27;
+          &:is(.studk-kmcbsrootmnvf-navdiv) {
+            opacity: 0.425;
+          }
+          filter: blur(0.1em);
+        }
+      }
+      .studk-kmcbsrootmnvf-footerdiv:not(:is(:focus-within, :hover ) ) {
+      }
+    }
+  }
+}
+
+@layer defaults {
+
+  :root:has(.nextjs-toast-errors) :is(.studk-kmcbsrootmnvf-navdiv, .studk-kmcbsrootmnvf-footerdiv) {
+    opacity: 0.25 !important;
+  }
+}
+
+
+
+
+
+
+
