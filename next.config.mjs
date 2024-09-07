@@ -32,7 +32,7 @@ import {
   describeExpectedPkgNames,
   pkgs ,
   nonPlainJsPkgs,
-  reactDevServerAppPkgs ,
+  webFwkDevServedAppPkgs ,
   internallyNonImportiblePkgs ,
   internallImportiblePkgs, 
   nextJsMustPreCompilePackageList,
