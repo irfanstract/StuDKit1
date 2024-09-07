@@ -79,6 +79,10 @@ export const nodeModulesDirActualPath = (
   Path.join(baseDirActualPath, "node_modules" )
 ) ;
 
+export const distDirActualPath = (
+  Path.join(baseDirActualPath, "dist" )
+) ;
+
 /**
  * load and parse the `package.json` {@link baseDirActualPath located exactly at root of the whole (mono)repo }.
  * 

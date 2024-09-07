@@ -6,6 +6,20 @@
 
 
 
+// import {
+//   util,
+// } from 'typexpe-commons/src/common_sv.mjs';
+
+// import {
+//   random,
+// } from "lodash-es" ;
+
+
+
+
+
+
+
 
 /** @type {import("eslint").ESLint.ConfigData } */
 module.exports = {
@@ -19,11 +33,15 @@ module.exports = {
     // "eslint-plugin-local-rules",
     "eslint-plugin-import",
   ],
+  "root": true,
+  "parser": "@typescript-eslint/parser",
   // "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": 2022
     ,
     "sourceType": "module"
+    ,
+    warnOnUnsupportedTypeScriptVersion: false,
   },
   "rules": {
     "import/no-cycle": [
@@ -66,7 +84,7 @@ module.exports = {
     /**
      * effectively disabling ESLint for now.
      */
-    { "files": ["*.tsx", "*.mtsx", ], },
+    { "files": [], },
 
     // /**
     //  * By default, the ESLint CLI only looks at .js files. But, it will also look at

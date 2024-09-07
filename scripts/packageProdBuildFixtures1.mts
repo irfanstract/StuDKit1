@@ -88,6 +88,16 @@ import {
   phoneticalNpmOrd,
 } from 'studk-fwcore-setups/src/codesemantics-dependography-all.mts';
 
+type SemVer = Extract<import("studk-fwcore-setups/src/util-p.mts").PackageManifest["version"], {}> ;
+
+function semverMonomorphed(...[x] : [SemVer] )
+{
+  return (
+    x
+    .replace(/^(\^|\~)(?=[01-9])/g, "" )
+  ) ;
+}
+
 /**
  * special value for `version`
  * to signify that
@@ -132,15 +142,33 @@ export {
 const atp0 = (
   Object.fromEntries((
     [
+      /* `devDependencies` */
       ...(
         Object.entries((
           getAllDependencies(rootPackageManifest, { includeDev: true, } )
         ))
+        /**
+         * close the doors from breakages by
+         * pinning all these packages to their exact version(s), the version(s) we've been living with
+         * .
+         * 
+         */
+        .map(([pkgName, pkgSpcfiedVer]) => (
+          ([pkgName, (
+            semverMonomorphed((
+              projectActualPaths.getNamedPackageActualVersion(pkgName)
+              ?? pkgSpcfiedVer
+            ))
+          ) ]) satisfies [any,any]
+        ))
       ) ,
+
+      /* `packages` */
       ...(
         packageListing.pkgs
         .map(e => ([e, SEMVER_SAMEREPO ] satisfies [any,any]) )
       ) ,
+
     ]
     .toSorted(Ordering.getKeyingComparator(e => e[0] , phoneticalNpmOrd ) )
   ) )
@@ -181,7 +209,10 @@ namespace prodBuildFixups
     ;
   
     export function getRepairedForNamedPackage(...[name]: [name: string] )
-    : object
+    : (
+      import("./util-eawo.mts").RequiredPartially<import("studk-fwcore-setups/src/util-p.mts").PackageManifest, "name" >
+      & { physicalPath ?: string ; }
+    )
     {
       ;
       const pMan = projectActualPaths.getNamedPackageManifest(name) ;
@@ -236,18 +267,6 @@ namespace prodBuildFixups
               ) ;
               
             } )
-            /**
-             * close the doors from breakages by
-             * pinning all these packages to their exact version(s), the version(s) we've been living with
-             * .
-             * 
-             */
-            .map(([pkgName, pkgSpcfiedVer]) => (
-              /** @satisfies {[any, any]} */ ([pkgName, (
-                (projectActualPaths.getNamedPackageActualVersion(pkgName) ?? pkgSpcfiedVer)
-                .replace(/^(\^|\~)(?=[01-9])/g, "" )
-              ) ])
-            ))
           ))
         ) ,
         license: 'LGPL-3.0-only',
@@ -282,29 +301,34 @@ namespace prodBuildFixups
 
 }
 
-if (1)
-{
-  const pkgsSummary = (
-    packageListing.pkgs
-    .filter(e => {
-      if (!(packageListing.externallyImportiblePkgs.includes(e) ) ) { return false ; }
-      return true ;
-    } )
-    .map(nm => ({
-      name: nm ,
-    }) )
-    .map(({ name, }) => prodBuildFixups.perPackageManifestFixups.getRepairedForNamedPackage(name) )
-  ) ;
-
-  console["info"]('pkgs summary:', (
-    pkgsSummary
-  )) ;
-}
-
 export {
   atp0,
   atp,
   prodBuildFixups,
+} ;
+
+if (1)
+{
+}
+
+const fixedUpPkgsSummary = (
+  packageListing.pkgs
+  .filter(e => {
+    if (!(packageListing.externallyImportiblePkgs.includes(e) ) ) { return false ; }
+    return true ;
+  } )
+  .map(nm => ({
+    name: nm ,
+  }) )
+  .map(({ name, }) => prodBuildFixups.perPackageManifestFixups.getRepairedForNamedPackage(name) )
+) ;
+
+console["info"]('pkgs summary:', (
+  fixedUpPkgsSummary
+)) ;
+
+export {
+  fixedUpPkgsSummary ,
 } ;
 
 
