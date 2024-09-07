@@ -27,20 +27,11 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions, 
   Extend,
 } from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
-
-import type {
-  // ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
 
 
 
@@ -59,7 +50,7 @@ import {
 
 import {
   describeHeadlinedArticle ,
-} from '#currentPkg/src/meta/react/dhc.tsx'; ;
+} from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
 import {
   SingleChildDiv,
@@ -161,7 +152,7 @@ export { XH as XH, } ;
 
 ;
 
-const describeSvgApplet = (
+const describeSvgViewboxedApplet = (
   function (...[{ viewBox: viewBoxArg, }, e ] : [{ viewBox: string, }, React.ReactElement])
   {
     return (
@@ -198,10 +189,10 @@ const describeUrlIcoApplet = (
 ) ;
 
 export {
-  /** @deprecated TODO/WIP */
   describeUrlIcoApplet ,
   /** @deprecated TODO/WIP */
-  describeSvgApplet ,
+  describeSvgViewboxedApplet as describeSvgApplet ,
+  describeSvgViewboxedApplet as describeViewboxedSvgApplet ,
 } ;
 
 type PbcProps = PbcPropsImpl<any> ;
