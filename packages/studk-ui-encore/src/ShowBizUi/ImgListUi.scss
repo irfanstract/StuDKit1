@@ -1,0 +1,55 @@
+
+
+
+
+
+
+
+
+@layer defaults {
+  //
+
+  :is(ul, ol ).studk-sbzi-imglistu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    & > li {
+      flex: 0 0 auto;
+      width:  12ex;
+      height: 12ex;
+    }
+    
+    & > li {
+      margin-block: 0.8ex 1.0ex;
+      margin-inline: 0 0.7ex;
+      // box-shadow: 0 0 0.6ex rgba(0, 0, 0, 0.436);
+    }
+
+    &:not(:root:is(:focus-within, :hover) * ) {
+      //
+      & > li {
+        box-shadow: 0 0 0.6ex rgba(0, 0, 0, 0.436);
+      }
+    }
+
+    & > li {
+      // max-block-size: 7em ;
+      contain: content;
+      // display: grid;
+      display: flex;
+    }
+
+    &:is(:focus-within, :is(:hover, /* fallback */ :has(*:hover) ) ) {
+      & > li {
+        filter: brightness(1.7905) saturate(1.87);
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
