@@ -78,7 +78,7 @@ import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   withRef ,
-} from "studk-ui-core/src/reactjs/helpers/withAdHocRefs.tsx" ;
+} from "studk-ui-fwcore/src/reactjs/helpers/withAdHocRefs.tsx" ;
 
 
 
@@ -122,7 +122,7 @@ export { ovcbMid, } ;
 import {
   doNativeCompDisplayedOffsetsAnalysis,
   useNativeCompDisplayedOffsetsAnalysis,
-} from "studk-ui-core/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import type {
   //
@@ -132,7 +132,7 @@ import type {
 import {
   useExistingNativeCompBoundingBoxViaRef ,
   NCPSR ,
-} from "studk-ui-core/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
+} from "studk-ui-fwcore/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 type IRenderNativeElemOverlaySupported = (
   NcpSupportedElem
@@ -175,24 +175,45 @@ const ElementHoveringHtmlC : React.JSXElementConstructor<(
               // transition: `initial` ,
             }}
             >
-              <div
-              ref={boxRef}
-              style={{
-                //
-                background: `black`,
-                color: `white`,
-                fontWeight: `550` ,
-                zoom: `82%` ,
-              }}
-              >
-                <div
-                style={{
-                  //
-                }}
-                >
-                  { children }
-                </div>
-              </div>
+              { (function () {
+                const c = (
+                  <div
+                  style={{
+                    //
+                    fontWeight: `550` ,
+                    zoom: `82%` ,
+                  }}
+                  >
+                    { children }
+                  </div>
+                ) ;
+
+                if (0)
+                {
+                  return (
+                    <div
+                    ref={boxRef}
+                    style={{
+                      //
+                      background: `black`,
+                      color: `white`,
+                    }}
+                    >
+                      { c }
+                    </div>
+                  ) ;
+                }
+                {
+                  return (
+                    <studk-spmea-phrasalblock
+                    ref={boxRef}
+                    children={(
+                      c
+                    ) }
+                    />
+                  ) ;
+                }
+              })() }
             </div>
             </>
           ) ;
