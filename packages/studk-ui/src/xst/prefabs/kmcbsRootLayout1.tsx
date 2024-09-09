@@ -95,7 +95,11 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
   children: React.ReactNode ,
   subsiteLogo ?: React.ReactElement ,
   organisingTeamLogo ?: React.ReactElement ,
-  version ?: "1.0" | "1.1" ,
+  version ?: (
+    | "1.0"
+    | "1.1"
+    | "1.125"
+  ) ,
 })
 {
   const metaProviderLogo = (
@@ -113,7 +117,7 @@ export const KmcbsRootLayoutC = function RootLayoutComp({
       metaProviderLogo
     )
   ) ;
-  const version = versionArg ?? "1.1";
+  const version = versionArg ?? "1.125";
   const asClsVerTag = (
     `studk-kmcbsrootmnvf-of-version${String(version).replace(/\./g, "p") }`
   );
