@@ -26,19 +26,15 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
-  ArgsWithOptions ,
-} from 'studk-ui/src/fwCore/ewo.ts'; ;
-
-import type {
-  // ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'
 
 
 
@@ -53,7 +49,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -66,7 +62,7 @@ import {
 import {
   Button ,
   Span ,
-} from 'studk-ui/src/meta/react/dbc.tsx'; ;
+} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 // import Link from "next/link" ;
 
