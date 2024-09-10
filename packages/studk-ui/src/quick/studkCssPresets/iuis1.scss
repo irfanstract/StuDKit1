@@ -1,0 +1,68 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.studk-sbzi-vinylgramdiv {
+  display: table-cell;
+  display: inline-block;
+  width : 39ex;
+  height: 39ex;
+  contain: size;
+  contain: content;
+}
+
+@if false {
+  //
+  
+  @each $vw in (
+    // 8000000
+    640,
+    560,
+    480,
+    440,
+    400,
+    360,
+    320,
+    280 ,
+    240,
+    200 ,
+    180,
+    160,
+  ) {
+    //
+    @media (max-width: #{$vw}) {
+      .studk-sbzi-vinylgramdiv {
+        --sbzs: #{(
+          calc((
+            min(39ex, (
+              ($vw / 560 )
+              * 39
+            ) * 1ex )
+          ))
+        ) };
+        width: var(--sbzs);
+        height: var(--sbzs);
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
