@@ -163,7 +163,7 @@ export const nonPlainJsPkgs = (
 
       yield* (
         pkgs
-        .filter(nm => nm.startsWith('studpresenters') )
+        .filter(nm => nm.match(/^studpresent(?:ed|ers)/u) )
       ) ;
 
       /* internal FW packages */
@@ -227,11 +227,30 @@ export const internallImportiblePkgs = (
  * see https://nextjs.org/docs/app/api-reference/next-config-js/transpilePackages .
  * 
  */
-export const nextJsMustPreCompilePackageList = (
-  describeExpectedPkgNames((
-    util.L.intersection(internallImportiblePkgs, nonPlainJsPkgs )
-  ))
-) ;
+export const nextJsMustPreCompilePackageList = (() => {
+
+  /**
+   * having to
+   * constantly update {@link nonPlainJsPkgs}
+   * everytime we need to "split packages into smaller" to do SOC (Separation Of Concerns)
+   * will easily lead to bugs (eg "module parse failed unexpected keyword type" )
+   * ;
+   * for now
+   * we'll just make `next` do Transpile for all pkg(s)
+   * 
+   */
+  if (0) {
+    return (
+      describeExpectedPkgNames((
+        util.L.intersection(internallImportiblePkgs, nonPlainJsPkgs )
+      ))
+    ) ;
+  }
+
+  return (
+    describeExpectedPkgNames(internallImportiblePkgs)
+  ) ;
+})() ;
 
 
 export const externallyNonReusablePkgs = (
