@@ -102,6 +102,17 @@ export const nonPlainJsPkgs = (
   describeExpectedPkgNames((
     util.reiterated(function* () {
 
+      /* utility package(s) */
+
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk-util\b/u) )
+      ) ;
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^typexpe-commons\b/u) )
+      ) ;
+      
       /* helper packages each for using the corresponding library */
 
       yield* (
@@ -121,30 +132,53 @@ export const nonPlainJsPkgs = (
       
       /* our official reusable packages */
 
-      yield 'studk-ui' ;
+      {
+        yield* (
+          pkgs
+          .filter(nm => nm.match(/\b(common|encore)\b/g ) )
+        ) ;
+      }
 
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-uieditmgmt') )
+      ) ;
+      yield 'studk-ui' ;
       yield* (
         pkgs
         .filter(nm => nm.startsWith('studk-ui') )
       ) ;
 
       yield 'studk-uieditmgmt' ;
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-i3d') )
+      ) ;
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.startsWith('studk-audio') )
+      ) ;
+
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studpresent(?:ed|ers)/u) )
+      ) ;
+
+      /* internal FW packages */
+      
+      yield* (
+        pkgs
+        .filter(nm => nm.match(/^studk\b/u) )
+      ) ;
 
       {
         yield* (
           pkgs
-          .filter(nm => nm.startsWith('studk-i3d') )
-        ) ;
-        yield* (
-          pkgs
-          .filter(nm => nm.match(/\bencore\b/g ) )
+          .filter(nm => nm.match(/\b(core|fwcore)\b/g ) )
         ) ;
       }
-      
-      yield* (
-        pkgs
-        .filter(nm => nm.startsWith('studpresenters') )
-      ) ;
 
     })
   ))
@@ -193,11 +227,30 @@ export const internallImportiblePkgs = (
  * see https://nextjs.org/docs/app/api-reference/next-config-js/transpilePackages .
  * 
  */
-export const nextJsMustPreCompilePackageList = (
-  describeExpectedPkgNames((
-    util.L.intersection(internallImportiblePkgs, nonPlainJsPkgs )
-  ))
-) ;
+export const nextJsMustPreCompilePackageList = (() => {
+
+  /**
+   * having to
+   * constantly update {@link nonPlainJsPkgs}
+   * everytime we need to "split packages into smaller" to do SOC (Separation Of Concerns)
+   * will easily lead to bugs (eg "module parse failed unexpected keyword type" )
+   * ;
+   * for now
+   * we'll just make `next` do Transpile for all pkg(s)
+   * 
+   */
+  if (0) {
+    return (
+      describeExpectedPkgNames((
+        util.L.intersection(internallImportiblePkgs, nonPlainJsPkgs )
+      ))
+    ) ;
+  }
+
+  return (
+    describeExpectedPkgNames(internallImportiblePkgs)
+  ) ;
+})() ;
 
 
 export const externallyNonReusablePkgs = (
