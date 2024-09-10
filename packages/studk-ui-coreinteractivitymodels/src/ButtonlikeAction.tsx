@@ -4,6 +4,8 @@
 
 
 
+
+
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -32,11 +34,11 @@ import {
 
 import * as React from "react" ;
 
-type FullDocHref = `${Location["origin"]}${Location["pathname"]}` ;
-
-type BrowsibleHref = Location["href"] ;
-
-type LinkableHref = HTMLAnchorElement["href"] & {} ;
+import type {
+  BrowsibleHref ,
+  LinkableHref ,
+  FullDocHref ,
+} from "studk-ui-coreinteractivitymodels/src/hrefLinkable" ;
 
 
 
@@ -97,24 +99,23 @@ export {
 
 function getAction1(href: LinkableHref | SynchronousCallbackAction.CbImpl | null | false )
 {
-  return (
-    (typeof href === "string") ?
-    (
+  if (typeof href === "string") {
+    return (
       new UrlAction("GET", href)
-    )
-    :
-    (typeof href === "function") ?
-    (
+    ) ;
+  }
+  if (typeof href === "function") {
+    return (
       new SynchronousCallbackAction(href)
-    )
-    :
-    (href === false) ?
-    (
-      disabledButtonAction
-    )
-    :
-    noOpAction
-  ) ;
+    ) ;
+  }
+  if (href === false ) {
+    return disabledButtonAction ;
+  }
+  if ((href === null) || 1 ) {
+    return noOpAction ;
+  }
+  return util.throwTypeError(`unsupported syntactic action type: ${href}`) ;
 }
 
 export { getAction1 as translateCommonJsxAction, } ;
