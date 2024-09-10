@@ -28,19 +28,10 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from '#currentPkg/src/fwCore/ewo.ts'; ;
-
-import type {
-  ContinuousLinearRange ,
-} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
 
 const TIMEOUT = (
   (tMillis: number) => (
@@ -71,14 +62,14 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui/src/meta/react-dom/ovc-util.tsx" ;
+} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
 
 
-import * as ReactDOM from "react-dom" ;
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   withRef ,
-} from "studk-ui/src/meta/react/withAdHocRefs.tsx" ;
+} from "studk-ui-fwcore/src/reactjs/helpers/withAdHocRefs.tsx" ;
 
 
 
@@ -86,21 +77,21 @@ import {
 
 ;
 
-import {
-  OVCB, 
-} from '#currentPkg/src/templating/xst/ovcb.tsx';
+// import {
+//   OVCB, 
+// } from '#currentPkg/src/templating/xst/ovcb.tsx';
 
 import {
   UserToElementActivityState,
-  getNativeCompPosition,
+  doNativeCompDisplayedOffsetsAnalysis,
   useIsNativeCompHoveredOrFocused,
-  useNativeCompPosition,
-} from "studk-ui/src/meta/react-dom/computedstyles1.tsx" ;
+  useNativeCompDisplayedOffsetsAnalysis,
+} from "studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import {
-  useNativeCompPositionSyncRef ,
-  NCPSR,
-} from 'studk-ui/src/templating/xst/react-dom/userModeElementHovers1.tsx'; ;
+  useExistingNativeCompBoundingBoxViaRef ,
+  NCPSR ,
+} from "studk-ui-fwcore/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 import {
   OVCO ,
@@ -112,7 +103,7 @@ export {
   /**
    * @deprecated import from `studk-ui/src/meta/react-dom/computedstyles1.tsx` directly
    */
-  useNativeCompPosition,
+  useNativeCompDisplayedOffsetsAnalysis as useNativeCompPosition,
 } ;
 
 ;
@@ -139,43 +130,6 @@ class OvcLevelleOps
     public readonly renderInAbsSpace: OvcLevelleOps.IRenderExterned ,
   )
   {}
-
-  // renderNativeElemOverlays: IRenderNativeElemOverlays = (
-  //   // TODO
-  //   (e ) => {
-  //     return (
-  //       this.renderInAbsSpace(this.renderNativeElemTypeInfoOverlay(e) )
-  //     ) ;
-  //   }
-  // ) ;
-  
-  // renderNativeElemTypeInfoOverlay : (
-  //   (e: HTMLElement | SVGElement) => React.ReactElement
-  // ) = (
-  //   // TODO
-  //   (e: Element) => {
-  //     if (1) {
-  //       CNC: {
-  //         if (e instanceof HTMLElement || e instanceof SVGElement)
-  //         {
-  //           if (0) {
-  //             break CNC ;
-  //           }
-  //           return (
-  //             <OVCO
-  //             value={e }
-  //             />
-  //           ) ;
-  //         }
-  //       }
-  //       return (
-  //         <></>
-  //       ) ;
-  //     }
-
-  //     return util.throwTypeError(`element [${e.namespaceURI}]${e.tagName}`) ;
-  //   }
-  // ) ;
 
   static get1(...[{ renderExterned, }]: ArgsWithOptions<[], { renderExterned: OvcLevelleOps.IRenderExterned , }>)
   {
