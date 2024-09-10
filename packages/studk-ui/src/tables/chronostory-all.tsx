@@ -23,7 +23,7 @@ import {
 import type {
   TRange,
   TStamp ,
-} from '#currentPkg/src/fwCore/timestamps-all.ts'; ;
+} from 'studk-ui/src/fwCore/timestamps-all.ts'; ;
 
 
 
