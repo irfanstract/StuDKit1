@@ -66,6 +66,12 @@ import {
   Span ,
 } from '#currentPkg/src/meta/react/dbc.tsx'; ;
 
+import {
+  WithOvcLevelleRefGoodiesC,
+  WithOverlayHighlightingC,
+  WithOverlaySupportC,
+} from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
+
 // TODO
 class TableRowsetRendererOpsImpl <in argsT extends unknown[], out eTr extends "thead" | "tbody" | "tr" >
 {
@@ -166,7 +172,7 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
   perRowCellRenderers ?: never ;
 }> )
 {
-  return (
+  const mainTable = (
     <table className='studk-ui-table' >
       <thead>
         { renderHead?.render.renderContent() }
@@ -185,6 +191,11 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
         ) }
       </tbody>
     </table>
+  ) ;
+  return (
+    <WithOverlayHighlightingC
+    children={mainTable}
+    />
   ) ;
 }
 
