@@ -64,9 +64,15 @@ import {
 } from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
 const SCD = (
-  describeComponent(function SCDWRP({ style, ...props }: JSX.IntrinsicElements["div"]) {
+  describeComponent(function SCDWRP({ style, ...remProps }: JSX.IntrinsicElements["div"]) {
     return (
-       <SingleChildDiv {...props} style={{ border: `0.05em solid black`, ...style } } />
+       <SingleChildDiv
+       {...remProps}
+       style={{
+        // border: `0.05em solid black`,
+        ...style
+       } }
+       />
     ) ;
   })
 ) ;
@@ -129,7 +135,7 @@ const MainAndNavAndFinaleC = (
             // overflowX: "clip",
           }}>
             <SCD
-            className="studk-mnavf-maindiv "
+            className="studk-mnavf-maindiv studk-mnavf-maindiv1 "
             style={{
               flex: "1 1 auto",
               // order: 1 ,

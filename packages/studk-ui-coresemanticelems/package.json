@@ -12,6 +12,10 @@
   ,
 	"devDependencies": {
 	}
+  ,
+	"imports": {
+		"#currentPkg/*": "./*"
+	}
 	,
 	"scripts": {
 		"test": "npx mocha"
