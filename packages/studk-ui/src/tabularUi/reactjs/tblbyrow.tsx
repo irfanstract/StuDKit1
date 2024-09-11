@@ -193,9 +193,9 @@ function renderTableByRowDtListAndRowRenderer1<T extends object | true | false |
     </table>
   ) ;
   return (
-    <WithOverlayHighlightingC
-    children={mainTable}
-    />
+  <WithOverlayHighlightingC
+  children={mainTable}
+  />
   ) ;
 }
 
