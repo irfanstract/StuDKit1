@@ -73,6 +73,27 @@ export {
 
 import * as React from "react" ;
 
+export const useRefreshedCallback = (
+  function <argsT extends readonly unknown[], const R>(...[upstreamImpl] : [impl: (...args: argsT) => R ])
+  {
+    const iRef = (
+      React.useRef<(...x: argsT) => R>(() => util.throwAssertionError(`URC not initailsed yet`) )
+    ) ;
+    iRef.current = upstreamImpl ;
+
+    return (...a: argsT) => iRef.current(...a) ;
+  }
+) ;
+
+export const useEventDispatchCallback = (
+  function <E extends object>(...[upstreamImpl] : [impl: (x: E) => void ] )
+  {
+    return (
+      useRefreshedCallback(upstreamImpl)
+    ) ;
+  }
+) ;
+
 // /** TODO/WIP @deprecated */
 class IntervalSource extends ((
   createInterningSubclass((
@@ -262,7 +283,7 @@ export {
   useRefState ,
 } ;
 
-import * as ReactDOM from "react-dom" ;
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 
 
