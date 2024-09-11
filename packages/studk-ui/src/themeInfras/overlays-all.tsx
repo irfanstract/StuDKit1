@@ -28,25 +28,30 @@ import {
   random,
 } from "lodash-es" ;
 
+import {
+  MNI_CTXTUALONLY ,
+  mkArray ,
+} from '#currentPkg/src/fwCore/ewo.ts'; ;
+
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mjs'; ;
+} from '#currentPkg/src/fwCore/ewo.ts'; ;
 
 import type {
   ContinuousLinearRange ,
-} from 'studk-ui/src/fwCore/linearValues.ts'; ;
+} from '#currentPkg/src/fwCore/linearValues.ts'; ;
+
+
+
+
+
+
+import * as React from "react" ;
 
 import {
-  allocateKeyInternedObjectPool ,
-} from 'typexpe-commons/src/ort.mjs';
-
-
-import {
-  Point2D ,
-} from "studk-util/src/math/point-all.mjs" ;
-
-
+  describeComponent,
+} from 'studk-ui/src/meta/react/dec.tsx'; ;
 
 
 
@@ -54,15 +59,26 @@ import {
 
 ;
 
-const assignStylesOnto: {
-  <hostT extends ElementCSSInlineStyle, const R extends void>(...x: [receiver: hostT, (x: hostT["style"]) => R ] ): R ;
-} = (
-  function (nd, applyStls) {
-    return applyStls(nd.style) ;
-  }
-) ;
+abstract class OverlCtxOps
+{}
 
-export { assignStylesOnto, } ;
+export { OverlCtxOps } ;
+
+
+
+
+import {
+  WithOverlayHighlightingC,
+  WithOvcLevelleGoodiesC,
+  WithOverlaySupportC ,
+  IRenderNativeElemOverlaySupported ,
+  IRenderNativeElemOverlays,
+} from 'studk-ui/src/templating/xst/ctxStacks/ovc.tsx';
+
+WithOverlayHighlightingC ;
+
+
+
 
 
 
