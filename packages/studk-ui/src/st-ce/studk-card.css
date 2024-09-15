@@ -1,0 +1,65 @@
+
+
+
+
+
+/**
+ * 
+ * this CSS
+ * builds on
+ * the fact that there's nothing to call `registerElement("studk-card")` and therefore `studk-card` remains a `div`-like element
+ * -
+ * we can't just extend this treatment to other elements in general as they might be "registered" elements behaving differently,
+ * hence isolating this CSS here away from `global.css`
+ * .
+ * 
+ */
+
+
+
+
+
+
+@layer defaults {
+  
+studk-card {
+  border: 0.05em solid currentColor;
+  /* display: inline-block; */
+  display: block;
+  display: flow-root;
+  padding: 0.3em 0.2em;
+  margin-block-end: 0.5em;
+  margin-inline-end: 0.5em;
+  border-radius: 0.25em;
+  backdrop-filter: blur(0.9em);
+}
+
+studk-card {
+  padding: 0.5em;
+  padding-block: 0.03em 1.5em;
+  margin-inline-start: -0.3em;
+}
+
+studk-card {
+  padding-block: 0.7em 1.5em;
+  margin-block: 1em ;
+  margin-block-end: 1.5em;
+  box-shadow: 0 0 0.35em rgba(0 0 0 / 0.5 ) ;
+}
+
+studk-card {
+  box-shadow: 0 0 0.2035em rgba(0 0 0 / 0.5 ) ;
+}
+
+}
+studk-card {
+  border-radius: 0.475em;
+}
+
+
+
+
+
+
+
+
