@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.json" ,
+  "compilerOptions": {
+    
+    /* https://www.typescriptlang.org/docs/handbook/project-references.html */
+    "composite": true ,
+    "emitDeclarationOnly": true, "noEmit": false,
+    "allowImportingTsExtensions": true ,
+    /* https://stackoverflow.com/a/61513685 */
+    "rootDir": "src" ,
+    "outDir": "dist",
+    "checkJs": true,
+
+  },
+  "references": [
+    { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-util", } ,
+    // { "path": "../../packages/studk-simulations-commons", } ,
+  ] ,
+  "include": [
+    "src" ,
+  ],
+  // "exclude": [
+  //   "src/**/*" ,
+  // ],
+}
