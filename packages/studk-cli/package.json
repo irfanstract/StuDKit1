@@ -22,11 +22,13 @@
 	}
 	,
 	"scripts": {
-		"vscode:prepublish": "npm run compile"
+		"run": "npm run compileAndRunIndexJs "
+		,"runWithoutCompile": "npm run runIndexJsWithoutCompile "
 		,
 		"compile"  			: "tsc --build --force --listEmittedFiles         ",
 		"watch"    			: "tsc --build --force --listEmittedFiles  -w     " ,
-		"compileAndTest": "npm run compile  && node ./dist/index.mjs "
+		"compileAndRunIndexJs": "npm run compile  && npm run runIndexJsWithoutCompile "
+		,"runIndexJsWithoutCompile": "node ./index.mjs "
 	}
   ,
 	"activationEvents": [
