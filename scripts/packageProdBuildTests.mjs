@@ -100,10 +100,19 @@ import {
   atp0,
   atp,
   prodBuildFixups ,
+  fixedUpPkgsSummary ,
 } from "./packageProdBuildFixtures1.mts" ;
 
 import "./packageProdBuildFixtures1.mts" ;
 
+import { fixupPackageManifest } from './prodBuildPackagesMnfOverwrites1.mjs';
+
+(
+  fixedUpPkgsSummary
+  .forEach(e => {
+    fixupPackageManifest(e.name, e ) ;
+  })
+) ;
 
 
 
