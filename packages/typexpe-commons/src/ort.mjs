@@ -26,20 +26,25 @@ import {
 
 ;
 
+/**
+ * 
+ * a facility implementing identity-interned data-structure constructor(s)
+ * 
+ */
 const allocateKeyInternedObjectPool = (
   /**
    * 
-   * @template {Exclude<import("./eawo1.mjs").XJson.IAny, null | undefined > } KeyT
+   * @template {{} } KeyT
    * @template {object} WrpT
    * 
-   * @param {import("./eawo1.mjs").ArgsWithOptions<import("./eawo1.mjs").ArgsWithOptions<[], { recreate: (x: KeyT) => WrpT, extract?: NoInfer<(x: WrpT) => KeyT >, }>, { convToCacheKey ?: NoInfer<(x: KeyT) => (keyof any)> } >} args
+   * @param {import("./eawo1.mjs").ArgsWithOptions<import("./eawo1.mjs").ArgsWithOptions<[], { recreate: (x: KeyT) => WrpT, extract?: NoInfer<(x: WrpT) => KeyT >, }>, { convToCacheKey : NoInfer<(x: KeyT) => (keyof any)> } >} args
    * 
    */
-  function (...[{ recreate: constructFor, extract, }, opts = {} ])
+  function (...[{ recreate: constructFor, extract, }, opts ])
   {
 
     const {
-      convToCacheKey = (x) => JSON.stringify(x),
+      convToCacheKey = throwTypeError(`unspecified 'convToCacheKey'`),
     } = opts;
 
     const {
@@ -101,6 +106,18 @@ const AKIOP = (
   function (...[])
   {
 
+    /**
+     * the storage for (`WeakReference`-proxied ) references to the deliverable `object`s
+     * 
+     * using {@link Record} is quite inefficent, yet
+     * can't use {@link Map} since presently (May 2024) {@link Map} is not quite ergonomic for this.
+     * hoping to get the Stage-2 Proposal `Map.prototype.emplace` promoted soon (see Tc39's GH page)
+     * so I can avoid using {@link Record} here.
+     * another reason is
+     * using {@link Map} can lead programmers the wrong way as in ES/JS "array literal"s result in fresh different mutable objects so
+     * leading to various hard-to-identify, typo-based bugs.
+     * 
+     */
     const refDict = /** @type {Record<PayloadKey , WeakRef<Payload > > } */ ({ } ) ;
     
     // TODO
@@ -114,7 +131,11 @@ const AKIOP = (
 
     const createAndRegFinlzTag = /** @type {(...x: [PayloadKey ]) => FinlzKey } */ (ck) => {
       ;
-      const tag = Symbol() ;
+      const tag = (
+        /* cannot use `symbol`s as it's not supported by most engines at time of writing this */
+        // Symbol()
+        new Object()
+      ) ;
       refEntryFinalizer.register(tag , ck, ) ;
       return tag ;
     } ;
