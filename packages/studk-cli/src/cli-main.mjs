@@ -14,10 +14,10 @@ import { pathToFileURL, } from 'node:url' ;
 
 
 
-const bashMainImpl = /** @satisfies {(args: String[] ) => any } */ (args ) => {
+const spclShMainImpl = /** @satisfies {(args: String[] ) => any } */ (args ) => {
   ;
   
-  1 && bashPrintSplashScreen() ;
+  1 && spclShPrintSplashScreen() ;
 
   // const swcths = reiterable((/** @param {String[]} [args1] */ function* PARSE(args1 = args ) {
   //   for (let c = args; c.length; )
@@ -32,13 +32,13 @@ const bashMainImpl = /** @satisfies {(args: String[] ) => any } */ (args ) => {
   if (mainTokens[0] === "help" )
   {
     return (
-      bashPrintHelp(mainTokens.slice(1) )
+      spclShPrintHelp(mainTokens.slice(1) )
     ) ;
   }
   else if ( (configTokens.includes("--help") || configTokens.includes("--h") || configTokens.includes("-h") ) )
   {
     return (
-      bashPrintHelp(mainTokens )
+      spclShPrintHelp(mainTokens )
     ) ;
   }
 
@@ -53,37 +53,40 @@ const bashMainImpl = /** @satisfies {(args: String[] ) => any } */ (args ) => {
   }
 
   {
-    0 && bashPrintSplashScreen() ;
+    0 && spclShPrintSplashScreen() ;
     console["error"](`Command Expected`) ;
     // console["warn"](`Usage: \n  repl [options]  \n  build-server start [options]  `) ;
-    bashPrintHelp([AS_COMMAND_EXPECTED_FALLBACK ]) ;
+    spclShPrintHelp([AS_COMMAND_EXPECTED_FALLBACK ]) ;
     // console["warn"](`use 'iexpx-cli help' or 'iexpx-cli --help' to get full help, or, \n better yet, run 'man iexpx-cli'  `) ;
     process.exitCode = 5 ;
     return ;
   }
 } ;
 
-export { bashMainImpl, } ;
+export { spclShMainImpl as spclShMainImpl, } ;
 
 const AS_COMMAND_EXPECTED_FALLBACK = "--as-commandexpectedfallback" ;
 
-const bashPrintSplashScreen = () => {
+const spclShPrintSplashScreen = () => {
   ;
   console["warn"](util.stringLinesConcat(function* () {
     ;
     yield (`THE STUDK TOOLKIT `) ;
-    yield (` `) ;
-    yield (`     /+   `) ;
-    yield (` +--+ |  XX  XX  XX  XX  XX   `) ;
-    yield (` |    |   ||  ||  ||  ||  ||  `) ;
-    yield (` |    |   ||  ||  ||  ||  ||  `) ;
-    yield (` +--+ |  //  //  //  //  //   `) ;
-    yield (`     X+  `) ;
-    yield (` `) ;
+    yield (`+================================== `) ;
+    yield (`|  `) ;
+    yield (`|      ▗▌   `) ;
+    yield (`|     ▄▉▌▌ NN  NN  NN  NN  NN   `) ;
+    yield (`|  ▐▉▉▉▉▌▐  ||  ||  ||  ||  ||  `) ;
+    yield (`|  ▐▉▉▉▉▌▐  ||  ||  ||  ||  ||  `) ;
+    yield (`|     ▀▉▌▌ //  //  //  //  //   `) ;
+    yield (`|      ▝▌  `) ;
+    yield (`|  `) ;
+    yield (`+================================== `) ;
+    // ☺a▀▄▉▗▝▐▟▌
   } )) ;
 } ;
 
-const bashPrintHelp = /** @satisfies {(args: String[] ) => any } */ (args ) => {
+const spclShPrintHelp = /** @satisfies {(args: String[] ) => any } */ (args ) => {
   ;
   
   const { configTokens, mainTokens, } = bashExtractPreFlags(args) ;
@@ -106,7 +109,7 @@ const bashPrintHelp = /** @satisfies {(args: String[] ) => any } */ (args ) => {
       configTokens.includes(AS_COMMAND_EXPECTED_FALLBACK )
     ) ;
   
-    return bashPrintGeneralHelp({ asCommandExpectedFallback, }) ;
+    return spclShPrintGeneralHelp({ asCommandExpectedFallback, }) ;
   }
 } ;
 
@@ -116,7 +119,7 @@ import {
   ShModuleHelpTopicImpl ,
 } from 'studk-fwcore/src/shModulesConvention.mjs';
 
-const bashPrintGeneralHelp = /** @satisfies {(options: { asCommandExpectedFallback: Boolean } ) => any } */ ({ asCommandExpectedFallback, } ) => {
+const spclShPrintGeneralHelp = /** @satisfies {(options: { asCommandExpectedFallback: Boolean } ) => any } */ ({ asCommandExpectedFallback, } ) => {
   ;
 
   const tag = (() => "iex-cli" )() ;
@@ -263,8 +266,6 @@ const bashPrintGeneralHelp = /** @satisfies {(options: { asCommandExpectedFallba
     console[dest](`use ${JSON.stringify(`${tag} help`) } or ${JSON.stringify(`${tag} --help`) } to get full help, or, \n better yet, run ${JSON.stringify(`man ${tag}`) }  `)
   ) ;
 } ;
-
-export { bashPrintHelp, } ;
 
 
 
