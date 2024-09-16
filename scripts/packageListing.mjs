@@ -61,7 +61,38 @@ import { PackageNames, } from './util-all.mjs';
 /** @type {PackageNames} */
 export const pkgs = (
   // TODO
+
+  /**
+   * `IO.readdirSync(pkgsDirActualPath)`
+   */
   IO.readdirSync(pkgsDirActualPath)
+
+  /**
+   * due to possibility of an item being `.git`, `.gitignore`, `.dprint`, `.gitattributes`, etc
+   * we'll need to check which conforms which doesn't
+   * 
+   */
+  .filter(itemName => {
+
+    /**
+     * albeit flawed
+     * most-of-the-time `package.json`-presence-or-not become the key factor
+     * 
+     */
+    const trueCasePJsonAbsolutePath = (
+      Path.join(pkgsDirActualPath, itemName, "package.json" )
+    ) ;
+
+    /**
+     * albeit flawed
+     * most-of-the-time `package.json`-presence-or-not become the key factor
+     * 
+     */
+    return (
+      IO.existsSync(trueCasePJsonAbsolutePath )
+    ) ;
+  } )
+
 ) ;
 
 export {
