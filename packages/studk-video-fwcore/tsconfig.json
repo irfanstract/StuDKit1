@@ -13,8 +13,9 @@
     "outDir": "dist",
   },
   "references": [
-    { "path": "../typexpe-commons", } ,
-    { "path": "../studk-fwcore", } ,
+    { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-fwcore", } ,
+    { "path": "../../packages/studk-simulations-commons", } ,
   ] ,
   "include": [
     "src" ,

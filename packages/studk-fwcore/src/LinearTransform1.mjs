@@ -171,6 +171,19 @@ export function linTrFromTranslateCoord3Matr({ x, y, z, })
   ) ;
 }
 
+/**
+ * 
+ * copies only the translational part
+ * 
+ * @type {(x: Matrix<4>) => Matrix<4> }
+ */
+export function linTrFromTr3DTranslatePart(offsettingTr)
+{
+  return (
+    linTrFromTranslateCoord3Matr({ x: offsettingTr["m1,4"], y:  offsettingTr["m2,4"]   , z: offsettingTr["m3,4"], })
+  ) ;
+}
+
 export function identityTr2D()
 {
   return linTrFromScaleCoord2({ x: 1, y: 1, }) ;
@@ -281,6 +294,22 @@ export function linTrScaled2D(m0, m1)
 }
 
 /**
+ * scaling with origin at "pt zero"
+ * 
+ * @param {[number] } args
+ */
+export function linTrUniformZeroPtCenteredScaling3DMat(...[sc] )
+{
+  return (
+    matrixAssign(identityMat4(), {
+      "m1,1": sc ,
+      "m2,2": sc,
+      "m3,3": sc,
+    } )
+  ) ;
+}
+
+/**
  * 
  * @param {[Angle] } args
  */
@@ -312,6 +341,17 @@ export function linTrRotation3DForXConZMat(...[ang] )
   ) ;
 }
 
+// TODO
+// /**
+//  * 
+//  * @param {[Angle, Angle] } args
+//  */
+// export function linTrRotation3DForCustomAxisMat(...[vAng, baseAng] )
+// {
+//   return (
+//   ) ;
+// }
+
 /**
  * 
  * @type {(x0: LinTr2D, x1: LinTr2D) => LinTr2D }
@@ -326,12 +366,13 @@ export function linTrConcat2D(m0, m1)
 
 /**
  * 
- * @type {(x0: Matrix<3>, x1: Matrix<3> ) => Matrix<3> }
+ * @type {(...x: readonly Matrix<3>[] ) => Matrix<3> }
  */
-export function linTrConcat2DMat(m3, m2)
+export function linTrConcat2DMat(...m)
 {
-  const m4 = multipliedMat3(m3, m2) ;
-  return (m4) ;
+  return (
+    m.reduce(multipliedMat3)
+  ) ;
 }
 
 /**
