@@ -1,61 +1,8 @@
+
 {
   "extends": "../../tsconfig.json" ,
-
-  // 	"compilerOptions": {
-  // 		"module": "commonjs",
-  // 		"target": "es2020",
-  // 		"lib": ["es2020"],
-  // 		"outDir": "out",
-  // 		"rootDir": "src",
-  // 		"sourceMap": true
-  // 	},
-  // 	"include": [
-  // 		"src"
-  // 	],
-  // 	"exclude": [
-  // 		"node_modules",
-  // 		".vscode-test"
-  // 	],
-  // 	"references": [
-  // 		{ "path": "./client" },
-  // 		{ "path": "./server" }
-  // 	]
-
-  "compilerOptions":
-  {
-
-    /* SEMANTIC SETTINGS */
-
-    // "rootDir": "src",
-    "module": "NodeNext" /* https://github.com/microsoft/TypeScript/pull/51669 */,
-    "moduleResolution": "NodeNext" /* https://github.com/microsoft/TypeScript/pull/51669 */,
-    "allowImportingTsExtensions": false,
-    "isolatedModules": false,
+  "compilerOptions": {
     "checkJs": true,
     "allowSyntheticDefaultImports": true ,
-
-    /* EMIT-SPECIFIC SETTINGS */
-
-    "outDir": "dist",
-    "noEmit": false,
-    "sourceMap": true ,
-
   },
-
-  "include": [
-    "src" ,
-  ],
-  // "files": [
-  //   "src/index.mts" ,
-  // ],
-  "references": [
-    // { "path": "typexpe-commons" } ,
-    { "path": "../../packages/typexpe-commons" } ,
-  ],
-  "exclude": [
-    "node_modules" ,
-    // "packages/typexpe-commons" ,
-    // "../../packages/typexpe-commons/**/*" ,
-    ".vscode-test" ,
-  ],
 }
