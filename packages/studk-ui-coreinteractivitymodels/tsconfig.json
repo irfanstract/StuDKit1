@@ -19,16 +19,10 @@
   },
   "references": [
     { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
-    { "path": "../../packages/studk-util/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-util", } ,
     { "path": "../../packages/studk-simulations-commons", } ,
-    { "path": "../../packages/studk-fwcore/tsconfig.build.json", } ,
-    { "path": "../../packages/studk-ui-fwcore/tsconfig.build.json", } ,
-    { "path": "../../packages/studk-ui-coresemanticelems/tsconfig.build.json", } ,
-    { "path": "../../packages/studk-ui-componentdefinition/tsconfig.build.json", } ,
-    { "path": "../../packages/studk-ui-core-ovcstack", } ,
     { "path": "../../packages/studk-ui-core", } ,
-    { "path": "../../packages/studk-ui-cssd/tsconfig.build.json", } ,
-    { "path": "../../packages/studk-dom-util/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-dom-util", } ,
     { "path": "../../packages/studk-fbreact-all", } ,
   ] ,
   "include": [
