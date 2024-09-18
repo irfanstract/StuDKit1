@@ -9,7 +9,8 @@
 
     /* `noEmit` and `isolatedModules` . enabling `noEmit` implies assumptions of being run in direct exec engine like Deno, Node, TS-Node, Vite, Next */
     
-    "noEmit": true /* using TS-Node or ESBuild, never the CLI `tsc` - https://github.com/microsoft/TypeScript/pull/51669 */ ,
+    /* using TS-Node or ESBuild, never the CLI `tsc` - https://github.com/microsoft/TypeScript/pull/51669 */
+    "noEmit": true ,
     "isolatedModules": true,
 
     /* `esModuleInterop` and `jsx` */
@@ -25,6 +26,7 @@
     
     // "baseUrl": ".",
     "moduleResolution": "NodeNext" /* https://github.com/microsoft/TypeScript/pull/51669 */,
+    "resolvePackageJsonExports": true,
     "forceConsistentCasingInFileNames": true,
     
     /* post-vendoring paths settings */
@@ -127,7 +129,8 @@
 
     /* CONFIG FILES */
     
-    ".eslintrc.mjs" ,
+    // ".eslintrc.cjs" ,
+    // ".eslintrc.mjs" ,
     "next.config.mjs" ,
   ],
   "references": [
@@ -148,15 +151,27 @@
   
   "ts-node": {
 
-    /*
-     * we need to disable `transpileOnly` to avoid run-time `ReferenceError`s and thelike, since
-     * it's possible some src-file(s) were written under `isolatedModules: false` and relies on type-checking (eg `const enum`s)
-     */
-    "transpileOnly": false,
+    /* https://github.com/TypeStrong/ts-node/issues/1934#issuecomment-1682786084 */
+
+    /* Node no longer use custom inspect on abort on uncaught exceptions, but */
+    /* `ts-node` kept doing that */
+    "logError": true,
+
+    "transpileOnly": true,
+    // /*
+    //  * we need to disable `transpileOnly` to avoid run-time `ReferenceError`s and thelike, since
+    //  * - it's possible some src-file(s) were written under `isolatedModules: false`, uses const-enum(s), and therefore necessitates type-checking in order to compile properly
+    //  * - to catch typo(s) early
+    //  */
+    // "transpileOnly": false,
 
     /* https://typestrong.org/ts-node/docs/troubleshooting/#missing-types */
     "files": true,
+
+    /* try to avoid those issues with import-path file-extension(s) */
+    "experimentalResolver": true,
     
+    /* avoid issues associated with ESM fmt usage, as explained in https://typestrong.org/ts-node/docs/imports#native-ecmascript-modules */
     "esm": true,
 
   } ,
