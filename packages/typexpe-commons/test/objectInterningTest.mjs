@@ -23,7 +23,9 @@ describe("Object Interning Test", () => {
 
     const {
       GET: getNamedItemAsBoxed,
-    } = allocateKeyInternedObjectPool({ recreate: /** @type {(x: String) => { value: Function, } } */ (key) => ({ value: getNamedItem(key) , }) , }) ;
+    } = allocateKeyInternedObjectPool({ recreate: /** @type {(x: String) => { value: Function, } } */ (key) => ({ value: getNamedItem(key) , }) , }, {
+      convToCacheKey: e => e ,
+    } ) ;
 
     return {
       getNamedItemAsBoxed,
