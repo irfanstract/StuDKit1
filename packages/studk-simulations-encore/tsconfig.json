@@ -1,0 +1,19 @@
+{
+  "extends": "../../scripts/tsEnabledSampleProjects/customTsNodePackage/tsconfig.json",
+
+  "compilerOptions": {
+    
+    /* https://www.typescriptlang.org/docs/handbook/project-references.html */
+    "composite": true ,
+    "emitDeclarationOnly": true, "noEmit": false, /* https://stackoverflow.com/a/77369498 */
+    "allowImportingTsExtensions": true ,
+    /* https://stackoverflow.com/a/61513685 */
+    "rootDir": "src" ,
+    "outDir": "dist",
+
+  },
+  
+  "include": [
+    "src" ,
+  ],
+}

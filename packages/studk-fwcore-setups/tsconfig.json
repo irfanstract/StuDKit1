@@ -1,12 +1,11 @@
 {
   "extends": "../../tsconfig.json" ,
   "compilerOptions": {
-    "moduleResolution": "Node16" /* DON'T USE "YyyNext" -- updates to the compiler will break compilation! */ ,
+    "moduleResolution": "Node16",
     "checkJs": true,
     "allowSyntheticDefaultImports": true ,
-    "module": "Node16" /* DON'T USE "YyyNext" -- updates to the compiler will break compilation! */ ,
+    "module": "NodeNext",
 
-    /* to avoid the so-called complaints "referenced file is not under root dir", we need to stick to Project References, */
     /* https://www.typescriptlang.org/docs/handbook/project-references.html */
     "composite": true ,
     /* yet, at the same time, work with Vite or Next.js, meaning that */
@@ -24,18 +23,15 @@
     "jsx": "react",
   },
   "references": [
-    // { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
-    { "path": "../../packages/studk-util", } ,
-
-    /* need these as some our files need these.  */
-    /* can't link to the "build" version of their `tsconfig`; only the "no-emit" version of */
-    { "path": "../../packages/studk-ui-fwcore", } ,
-
+    { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-util/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-ts-codeanalysis", } ,
+    { "path": "../../packages/studk-ui-fwcore/tsconfig.build.json", } ,
   ] ,
-  /* per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
   "include": [
     "src" ,
-    "test" , /* per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
+
+    "**/corejs.d.ts",
   ],
   // "exclude": [
   //   "src/**/*" ,
