@@ -61,6 +61,10 @@
      ,
      "@types/react-dom": "18.2.19"
      ,
+     "@types/gl": "6.0.5"
+     ,
+     "gl": "8.0.2"
+     ,
      "socket.io-client": "^4.7.5"
      ,
      "react-dom": "^18.2.0"
@@ -81,6 +85,10 @@
      "sass": "^1.75.0"
      ,
      "socket.io": "^4.7.5"
+     ,
+     "@tensorflow/tfjs": "^4.21"
+     ,
+     "@tensorflow/tfjs-node": "^4.21"
      ,
      "typescript": "^5.4.2"
      ,
