@@ -105,6 +105,82 @@ import {
   TceC ,
 } from "studk-ui-encore/src/RichTextComponents/TCE1" ;
 
+// export const EvTceC = (
+
+//   StudkReactJs.describeHtmlComponent((
+//     function EvTceCImpl()
+//     {
+const TceAdvC = (
+
+  StudkReactJs.describeHtmlComponent((
+    function TceAdvCImpl({ ...etcProps } : React.ComponentProps<typeof TceC> )
+    {
+      ;
+
+      return (
+        <div
+        style={(
+          describeCallbackAssignedStyleProps(function (s) {
+            s.margin = `0.9ex` ;
+          })
+        )}
+        >
+        <nav>
+          <Button
+          children={ <strong><code>{ `<b>` }</code></strong> }
+          onClick={e => {}}
+          />
+          <Button
+          children={ <strong><code>{ `<strong>` }</code></strong> }
+          onClick={e => {}}
+          />
+          <Button
+          children={ <em><code>{ `<em>` }</code></em> }
+          onClick={e => {}}
+          />
+          <Button
+          children={ <em><code>{ `<i>` }</code></em> }
+          onClick={e => {}}
+          />
+          <Button
+          children={ <em><code>{ `<u>` }</code></em> }
+          onClick={e => {}}
+          />
+          <Button
+          children={ <strong><code>{ `<del>` }</code></strong> }
+          onClick={e => {}}
+          />
+        </nav>
+        <div
+        style={(
+          describeCallbackAssignedStyleProps(function (s) {
+            s.maxBlockSize = `30ex` ;
+            s.overflowBlock = "auto" ;
+            s.overflowInline = "hidden" ;
+            s.overflow = "auto" ;
+            s.contain = `layout` ;
+            s.border = `0.1ex solid currentcolor` ;
+          })
+        )}
+        >
+        <TceC
+        // valueAsHtml={etcProps.valueAsHtml }
+        style={{
+          contain: `layout`,
+          // border: `0.1ex solid currentcolor` ,
+          paddingInline: `0.5ex` ,
+          paddingBlock: `0.8ex` ,
+          background: `canvas` ,
+        }}
+        {...etcProps }
+        />
+        </div>
+        </div>
+      ) ;
+    }
+  ))
+) ;
+
 export const EvTceC = (
 
   StudkReactJs.describeHtmlComponent((
@@ -181,44 +257,18 @@ export const EvTceC = (
                 })
               )}
               >
-              <nav>
-                <Button
-                children={ <strong><code>{ `<b>` }</code></strong> }
-                onClick={e => {}}
-                />
-                <Button
-                children={ <strong><code>{ `<strong>` }</code></strong> }
-                onClick={e => {}}
-                />
-                <Button
-                children={ <em><code>{ `<em>` }</code></em> }
-                onClick={e => {}}
-                />
-                <Button
-                children={ <em><code>{ `<i>` }</code></em> }
-                onClick={e => {}}
-                />
-                <Button
-                children={ <em><code>{ `<u>` }</code></em> }
-                onClick={e => {}}
-                />
-                <Button
-                children={ <strong><code>{ `<del>` }</code></strong> }
-                onClick={e => {}}
-                />
-              </nav>
               <div
               style={(
                 describeCallbackAssignedStyleProps(function (s) {
-                  s.maxBlockSize = `30ex` ;
-                  s.overflowBlock = "auto" ;
-                  s.overflowInline = "hidden" ;
-                  s.overflow = "auto" ;
-                  s.contain = `layout` ;
+                  // s.maxBlockSize = `30ex` ;
+                  // s.overflowBlock = "auto" ;
+                  // s.overflowInline = "hidden" ;
+                  // s.overflow = "auto" ;
+                  // s.contain = `layout` ;
                 })
               )}
               >
-              <TceC
+              <TceAdvC
               valueAsHtml={cInHtml }
               editable
               onChange={({ newValueInHtml, existingValueInHtml: eV0, }) => (
