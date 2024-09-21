@@ -102,7 +102,8 @@ import {
 } from "studk-ui-encore/src/PaginatedUi/Accrd1" ;
 
 import {
-  TceC ,
+  TceC, 
+  TceCompIRefValue,
 } from "studk-ui-encore/src/RichTextComponents/TCE1" ;
 
 // export const EvTceC = (
@@ -116,6 +117,10 @@ const TceAdvC = (
     function TceAdvCImpl({ ...etcProps } : React.ComponentProps<typeof TceC> )
     {
       ;
+
+      const edh = (
+        React.useRef<TceCompIRefValue | null >(null)
+      ) ;
 
       return (
         <div
@@ -164,6 +169,8 @@ const TceAdvC = (
         )}
         >
         <TceC
+        //
+        xRef={edh}
         // valueAsHtml={etcProps.valueAsHtml }
         style={{
           contain: `layout`,
