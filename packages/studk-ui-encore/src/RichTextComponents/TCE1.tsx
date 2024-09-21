@@ -79,18 +79,25 @@ const useDeferredAndTransitionalValue = (
 
     return (
       React.useMemo(() => ({
+        //
+
         specifiedValAsHtml ,
         specifiedValDeferredAsHtml ,
         transitionalValue ,
         setTransitionalValue ,
+
         fallbackValue ,
+
       } as const) , [
         //
+
         specifiedValAsHtml ,
         specifiedValDeferredAsHtml ,
         transitionalValue ,
         setTransitionalValue ,
+
         fallbackValue ,
+
       ])
     ) ;
 
@@ -181,34 +188,34 @@ export const TceC = (() => {
         } )
       ) ;
 
-      // // const [ , ST ] = React.useTransition() ;
-
-      // const specifiedValDeferredAsHtml = (
-      //   React.useDeferredValue(specifiedValAsHtml)
-      // ) ;
-
-      // const [transitionalValue, setTransitionalValue] = (
-      //   React.useState<string>("?????")
-      // ) ;
-
-      // if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
-      //   void (transitionalValue === specifiedValAsHtml || setTransitionalValue(specifiedValAsHtml ) ) ;
-      // }
-
       if (actualElem) {
         assignIfIhtmlNotSame(actualElem, transitionalValue ) ;
       }
 
-      return {
+      return (
+        React.useMemo(() => (
+          {
 
-        // actualElem ,
-        setAssumedActualElem ,
+            actualElem ,
+            setAssumedActualElem ,
+    
+            specifiedValDeferredAsHtml ,
+            transitionalValue ,
+            setTransitionalValue ,
+    
+          } as const
+        ) , [
+          //
 
-        specifiedValDeferredAsHtml ,
-        transitionalValue ,
-        setTransitionalValue ,
-
-      } as const ;
+          actualElem ,
+          setAssumedActualElem ,
+  
+          specifiedValDeferredAsHtml ,
+          transitionalValue ,
+          setTransitionalValue ,
+  
+        ])
+      ) ;
 
     }
   ) satisfies (
@@ -221,19 +228,40 @@ export const TceC = (() => {
   return (
 
     StudkReactJs.describeHtmlComponent((
-      function TceCImpl({ valueAsHtml: specifiedValAsHtml, editable: asEditable = false , onChange: occbArg, ...etcPrps } : (
+      function TceCImpl({
+        valueAsHtml: specifiedValAsHtml,
+        editable: asEditable = false ,
+        onChange: occbArg,
+        xRef,
+        ...etcPrps
+      } : (
         & { valueAsHtml: string, }
         & Omit<JSX.IntrinsicElements["div"] , "children" | "ref" | ("onChange" | "onInput") >
         & (
           | ({ editable: true, } & { onChange: (evtInfo: { existingValueInHtml: string, newValueInHtml: string, } ) => void } )
           | { editable?: false, onChange?: never, }
         )
+        & { xRef ?: React.Ref<(
+          ReturnType<typeof useSpcl>
+          // | null
+        ) > }
       ) )
       {
 
         const occbLocal = (
           StudkReactJs.useEventDispatchCallback(occbArg || Object )
         ) ;
+
+        const s = (
+          useSpcl({
+            specifiedValAsHtml ,
+            asEditable ,
+          })
+        ) ;
+
+        React.useImperativeHandle(xRef , () => s , [
+          s ,
+        ] ) ;
 
         const {
 
@@ -244,12 +272,7 @@ export const TceC = (() => {
           transitionalValue ,
           setTransitionalValue ,
   
-        } = (
-          useSpcl({
-            specifiedValAsHtml ,
-            asEditable ,
-          })
-        ) ;
+        } = s ;
 
         const rcbMain = (
           React.useCallback((c: HTMLDivElement | null ) => {
