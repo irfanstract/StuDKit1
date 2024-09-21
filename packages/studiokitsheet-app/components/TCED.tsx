@@ -66,6 +66,7 @@ import {
   React ,
   getSpaceSeparatedClassNameList, 
   StudkReactJs,
+  describeCallbackAssignedStyleProps,
 } from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
@@ -169,20 +170,38 @@ export const EvTceC = (
 
       return (
         <div >
-          <TceC
-          valueAsHtml={cInHtml }
-          editable
-          onChange={({ newValueInHtml, existingValueInHtml: eV0, }) => (
-            // true ||
-            setCInHtml(aV0 => (eV0 === aV0 ? newValueInHtml : aV0 ) )
+          { (
+            [true, true]
+            .map(_ => (
+              <div
+              style={(
+                describeCallbackAssignedStyleProps(function (s) {
+                  s.maxBlockSize = `30ex` ;
+                  s.overflowBlock = "auto" ;
+                  s.overflowInline = "hidden" ;
+                  s.overflow = "auto" ;
+                  s.contain = `layout` ;
+                })
+              )}
+              >
+              <TceC
+              valueAsHtml={cInHtml }
+              editable
+              onChange={({ newValueInHtml, existingValueInHtml: eV0, }) => (
+                // true ||
+                setCInHtml(aV0 => (eV0 === aV0 ? newValueInHtml : aV0 ) )
+              ) }
+              style={{
+                contain: `layout`,
+                border: `0.1ex solid currentcolor` ,
+                paddingInline: `0.5ex` ,
+                paddingBlock: `0.8ex` ,
+                background: `canvas` ,
+              }}
+              />
+              </div>
+            ) )
           ) }
-          style={{
-            contain: `layout`,
-            border: `0.1ex solid currentcolor` ,
-            paddingInline: `0.5ex` ,
-            paddingBlock: `0.8ex` ,
-          }}
-          />
           <pre>
             { cInHtml }
           </pre>
