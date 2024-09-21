@@ -322,6 +322,14 @@ export const TceC = (() => {
 
 })() ;
 
+export type TceCompIRefValue = (
+  React.ElementRef<(
+    React.FC<{ ref: (
+      React.ComponentProps<typeof TceC>["xRef"]
+    ) }>
+  ) >
+) ;
+
 
 
 
