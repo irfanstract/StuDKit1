@@ -132,12 +132,9 @@ export const TceC = (() => {
 
         useDoDOmToggleContentEditability(actualElem, asEditable ) ;
   
-        const rcbMain = (
+        void (
           React.useCallback((c: HTMLDivElement | null ) => {
             ;
-
-            setAssumedActualElem(() => c ) ;
-
           } , [])
         ) ;
 
@@ -158,6 +155,17 @@ export const TceC = (() => {
         if (actualElem) {
           assignIfIhtmlNotSame(actualElem, sv1AsHtml ) ;
         }
+
+        const rcbMain = (
+          React.useCallback((c: HTMLDivElement | null ) => {
+            ;
+
+            setAssumedActualElem(() => c ) ;
+
+          } , [
+            setAssumedActualElem,
+          ])
+        ) ;
 
         const handleEdit = (
           (actualElem ? (e0) => {
