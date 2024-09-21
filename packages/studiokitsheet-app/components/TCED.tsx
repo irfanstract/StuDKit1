@@ -178,6 +178,9 @@ export const EvTceC = (
           ) }
           style={{
             contain: `layout`,
+            border: `0.1ex solid currentcolor` ,
+            paddingInline: `0.5ex` ,
+            paddingBlock: `0.8ex` ,
           }}
           />
           <pre>
