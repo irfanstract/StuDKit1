@@ -1,0 +1,22 @@
+{
+  "private": false
+  ,
+  "license": "LGPL-3.0-only"
+  ,
+  "devDependencies": {
+  }
+  ,
+  "dependencies": {
+    "core-js": "^3.35.1"
+    ,
+    "next": "^14.0"
+  }
+  ,
+  "scripts": {
+    "dev": "npm run runDevServer"
+    ,
+    "runDevServer": "next dev --turbo"
+    ,
+    "runDevApp102": "node ../../node_modules/studk-enx/index.mjs"
+  }
+}
