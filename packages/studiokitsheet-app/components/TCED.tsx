@@ -172,7 +172,41 @@ export const EvTceC = (
         <div >
           { (
             [true, true]
-            .map(_ => (
+            .map((_, i) => StudkReactJs.withExtraSemanticProperties({
+              key: i ,
+            } , (
+              <div
+              style={(
+                describeCallbackAssignedStyleProps(function (s) {
+                })
+              )}
+              >
+              <nav>
+                <Button
+                children={ <strong><code>{ `<b>` }</code></strong> }
+                onClick={e => {}}
+                />
+                <Button
+                children={ <strong><code>{ `<strong>` }</code></strong> }
+                onClick={e => {}}
+                />
+                <Button
+                children={ <em><code>{ `<em>` }</code></em> }
+                onClick={e => {}}
+                />
+                <Button
+                children={ <em><code>{ `<i>` }</code></em> }
+                onClick={e => {}}
+                />
+                <Button
+                children={ <em><code>{ `<u>` }</code></em> }
+                onClick={e => {}}
+                />
+                <Button
+                children={ <strong><code>{ `<del>` }</code></strong> }
+                onClick={e => {}}
+                />
+              </nav>
               <div
               style={(
                 describeCallbackAssignedStyleProps(function (s) {
@@ -200,7 +234,8 @@ export const EvTceC = (
               }}
               />
               </div>
-            ) )
+              </div>
+            )) )
           ) }
           <pre>
             { cInHtml }
