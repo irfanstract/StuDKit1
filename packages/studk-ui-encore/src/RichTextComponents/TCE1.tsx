@@ -56,6 +56,48 @@ import {
   StudkReactJs,
 } from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
+const useDeferredAndTransitionalValue = (
+  (function <T> (...[specifiedValAsHtml, {
+    fallbackValue ,
+  }] : (
+    ArgsWithOptions<[updatedSpecifiedValue: T ], { fallbackValue: T, }>
+  ) ) {
+
+    // const [ , ST ] = React.useTransition() ;
+
+    const specifiedValDeferredAsHtml = (
+      React.useDeferredValue(specifiedValAsHtml)
+    ) ;
+
+    const [transitionalValue, setTransitionalValue] = (
+      React.useState(fallbackValue)
+    ) ;
+
+    if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
+      void (transitionalValue === specifiedValAsHtml || setTransitionalValue(specifiedValAsHtml ) ) ;
+    }
+
+    return (
+      React.useMemo(() => ({
+        specifiedValAsHtml ,
+        specifiedValDeferredAsHtml ,
+        transitionalValue ,
+        setTransitionalValue ,
+        fallbackValue ,
+      } as const) , [
+        //
+        specifiedValAsHtml ,
+        specifiedValDeferredAsHtml ,
+        transitionalValue ,
+        setTransitionalValue ,
+        fallbackValue ,
+      ])
+    ) ;
+
+    ;
+  })
+) ;
+
 import {
   useClientSideOnly ,
   useClientSideOnlyCompute ,
@@ -128,19 +170,30 @@ export const TceC = (() => {
         } , [])
       ) ;
 
-      // const [ , ST ] = React.useTransition() ;
-
-      const specifiedValDeferredAsHtml = (
-        React.useDeferredValue(specifiedValAsHtml)
+      const {
+        // specifiedValAsHtml,
+        specifiedValDeferredAsHtml ,
+        transitionalValue ,
+        setTransitionalValue ,
+      } = (
+        useDeferredAndTransitionalValue<string>(specifiedValAsHtml , {
+          fallbackValue: "?????" ,
+        } )
       ) ;
 
-      const [transitionalValue, setTransitionalValue] = (
-        React.useState<string>("?????")
-      ) ;
+      // // const [ , ST ] = React.useTransition() ;
 
-      if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
-        void (transitionalValue === specifiedValAsHtml || setTransitionalValue(specifiedValAsHtml ) ) ;
-      }
+      // const specifiedValDeferredAsHtml = (
+      //   React.useDeferredValue(specifiedValAsHtml)
+      // ) ;
+
+      // const [transitionalValue, setTransitionalValue] = (
+      //   React.useState<string>("?????")
+      // ) ;
+
+      // if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
+      //   void (transitionalValue === specifiedValAsHtml || setTransitionalValue(specifiedValAsHtml ) ) ;
+      // }
 
       if (actualElem) {
         assignIfIhtmlNotSame(actualElem, transitionalValue ) ;
@@ -148,7 +201,7 @@ export const TceC = (() => {
 
       return {
 
-        actualElem ,
+        // actualElem ,
         setAssumedActualElem ,
 
         specifiedValDeferredAsHtml ,
@@ -184,7 +237,7 @@ export const TceC = (() => {
 
         const {
 
-          actualElem ,
+          // actualElem ,
           setAssumedActualElem ,
   
           specifiedValDeferredAsHtml ,
@@ -209,26 +262,33 @@ export const TceC = (() => {
           ])
         ) ;
 
-        const handleEdit = (
-          (actualElem ? (e0) => {
-            const v1 = e0.currentTarget.innerHTML ;
-            occbLocal({
-              newValueInHtml: v1,
-              existingValueInHtml: specifiedValAsHtml,
-            } ) ;
-            void ((e, tOut) => e() )(function () {
-              ;
-              // assignIfIhtmlNotSame(actualElem, valueAsHtml ) ;
-              setTransitionalValue(v1) ;
-            } , 0 ) ;
-          } : Object ) satisfies React.FormEventHandler<HTMLDivElement>
+        const handleEditEvt = (
+          (
+
+            function (e0)
+            {
+              const v1 = e0.currentTarget.innerHTML ;
+
+              occbLocal({
+                newValueInHtml: v1,
+                existingValueInHtml: specifiedValAsHtml,
+              } ) ;
+
+              void ((e, tOut) => e() )(function () {
+                ;
+                setTransitionalValue(v1) ;
+              } , 0 ) ;
+
+            }
+
+          ) satisfies React.FormEventHandler<HTMLDivElement>
         ) ;
   
         return (
           <div
           ref={rcbMain}
           onInput={(
-            handleEdit
+            handleEditEvt
           )}
           {...etcPrps }
           />
