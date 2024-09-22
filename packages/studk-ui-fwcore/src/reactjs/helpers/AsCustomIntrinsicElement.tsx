@@ -35,6 +35,12 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts'
 
+export function assertAndPrintEquality<T>(actual: unknown, expected: T, message?: string | Error): asserts actual is T
+{
+  util.assert.deepStrictEqual(actual, expected, message) ;
+  console["info"](`${actual } = ${expected }`) ;
+}
+
 
 ;
 
@@ -84,24 +90,33 @@ export namespace ReactJsBasedCustomIntrinsicElement {
 
         .map(mdlSpaceKey => {
 
-          const {
-            userSpaceKey ,
-            camelCasedEName ,
-          } = (
-            ((): { userSpaceKey: string, camelCasedEName?: string } => {
+          const d = (
+            ((): (
+              | {
+                mdlSpaceStedKey: `(OnUserspaceKey)${string}` | `(OnProgrammaticItcSpaceKey)${typeof mdlSpaceKey}` ,
+                userSpaceKey: string,
+                camelCasedEName?: never,
+              }
+              | {
+                mdlSpaceStedKey: `(AsEventKey)${string}`,
+                userSpaceKey: string,
+                camelCasedEName: string,
+              }
+            ) => {
 
               switch (mdlSpaceKey) {
-                case "className"      : return { userSpaceKey: "class" , } ;
-                case "htmlFor"        : return { userSpaceKey: "for"   , } ;
+                case "className"      : return { mdlSpaceStedKey: `(OnUserspaceKey)class`, userSpaceKey: "class" , } as const ;
+                case "htmlFor"        : return { mdlSpaceStedKey: `(OnUserspaceKey)for`  , userSpaceKey: "for"   , } as const ;
               }
 
               for (const [fullNme = null, shortNme = null ] of util.iterateNonNull(mdlSpaceKey.match(/^on((?=[A-Z])\w+)/) ) ) {
                 // TODO
                 if ((shortNme !== null ) && (fullNme !== null ) ) {
                   return {
+                    mdlSpaceStedKey: `(AsEventKey)${shortNme }`,
                     userSpaceKey: fullNme.toLowerCase() ,
                     camelCasedEName: shortNme ,
-                  } ;
+                  } as const ;
                 }
               }
 
@@ -114,6 +129,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
 
                 return (
                   {
+                    mdlSpaceStedKey: `(OnProgrammaticItcSpaceKey)${mdlSpaceKey }`,
                     userSpaceKey: pnm ,
                   } as const
                 ) ;
@@ -123,8 +139,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
 
           return {
             mdlSpaceKey ,
-            userSpaceKey ,
-            camelCasedEName ,
+            ...d ,
           } as const ;
         } )
 
