@@ -9,6 +9,16 @@
 
 
 
+/**
+ * @import { MochaOptions, } from "mocha"
+ * 
+ */
+
+/**
+ * 
+ * @type {MochaOptions }
+ * 
+ */
 module.exports = {
   //
 
