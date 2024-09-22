@@ -5,6 +5,10 @@
 
 import { util, } from "typexpe-commons/src/common_sv.mjs";
 
+import {
+  assertAndPrintEquality,
+} from "studk-ui-fwcore/src/reactjs/helpers/AsCustomIntrinsicElement.js";
+
 
 
 
@@ -23,9 +27,12 @@ describe("ReactJsBasedCustomIntrinsicElement Case-Conversion test", function () 
 
     const {
       userSpacePropKeyNames ,
+      userSpacePropKnmp ,
     } = ReactJsBasedCustomIntrinsicElement.SpclPropNamesMapper.fromMdlSpacePropKeyNames(["className"]) ;
 
-    util.assert.deepStrictEqual(userSpacePropKeyNames.join(",") , "class" ) ;
+    util.assert.deepStrictEqual(userSpacePropKnmp.map(e => e.mdlSpaceStedKey ).join(";") , "(OnUserspaceKey)class" ) ;
+
+    util.assert.deepStrictEqual(userSpacePropKeyNames.join(";") , "class" ) ;
 
   } ) ;
 
@@ -33,9 +40,25 @@ describe("ReactJsBasedCustomIntrinsicElement Case-Conversion test", function () 
 
     const {
       userSpacePropKeyNames ,
+      userSpacePropKnmp ,
     } = ReactJsBasedCustomIntrinsicElement.SpclPropNamesMapper.fromMdlSpacePropKeyNames(["htmlFor"]) ;
 
-    util.assert.deepStrictEqual(userSpacePropKeyNames.join(",") , "for" ) ;
+    util.assert.deepStrictEqual(userSpacePropKnmp.map(e => e.mdlSpaceStedKey ).join(";") , "(OnUserspaceKey)for" ) ;
+
+    util.assert.deepStrictEqual(userSpacePropKeyNames.join(";") , "for" ) ;
+
+  } ) ;
+
+  it (`for 'spellCheck'`, function () {
+
+    const {
+      userSpacePropKeyNames ,
+      userSpacePropKnmp ,
+    } = ReactJsBasedCustomIntrinsicElement.SpclPropNamesMapper.fromMdlSpacePropKeyNames(["spellCheck"]) ;
+
+    util.assert.deepStrictEqual(userSpacePropKnmp.map(e => e.mdlSpaceStedKey ).join(";") , "(OnProgrammaticItcSpaceKey)spellCheck" ) ;
+
+    util.assert.deepStrictEqual(userSpacePropKeyNames.join(";") , "spellcheck" ) ;
 
   } ) ;
 
@@ -43,9 +66,12 @@ describe("ReactJsBasedCustomIntrinsicElement Case-Conversion test", function () 
 
     const {
       userSpacePropKeyNames ,
+      userSpacePropKnmp ,
     } = ReactJsBasedCustomIntrinsicElement.SpclPropNamesMapper.fromMdlSpacePropKeyNames(["formAction"]) ;
 
-    util.assert.deepStrictEqual(userSpacePropKeyNames.join(",") , "formaction" ) ;
+    assertAndPrintEquality(userSpacePropKnmp.map(e => e.mdlSpaceStedKey ).join(";") , "(OnProgrammaticItcSpaceKey)formAction" ) ;
+
+    assertAndPrintEquality(userSpacePropKeyNames.join(";") , "formaction" ) ;
 
   } ) ;
 
@@ -53,9 +79,29 @@ describe("ReactJsBasedCustomIntrinsicElement Case-Conversion test", function () 
 
     const {
       userSpacePropKeyNames ,
+      userSpacePropKnmp ,
     } = ReactJsBasedCustomIntrinsicElement.SpclPropNamesMapper.fromMdlSpacePropKeyNames(["onBeforeInput"]) ;
 
-    util.assert.deepStrictEqual(userSpacePropKeyNames.join(",") , "onbeforeinput" ) ;
+    assertAndPrintEquality(userSpacePropKeyNames.join(",") , "onbeforeinput" ) ;
+
+    assertAndPrintEquality(userSpacePropKnmp.map(e => e.mdlSpaceStedKey ).join(",") , "(AsEventKey)BeforeInput" ) ;
+
+    assertAndPrintEquality(userSpacePropKnmp.map(e => e.camelCasedEName ).join(",") , "BeforeInput" ) ;
+
+  } ) ;
+
+  it (`for 'onKeyDown' and 'onKeyUp' (an Evt Name)`, function () {
+
+    const {
+      userSpacePropKeyNames ,
+      userSpacePropKnmp ,
+    } = ReactJsBasedCustomIntrinsicElement.SpclPropNamesMapper.fromMdlSpacePropKeyNames(["onKeyDown", "onKeyUp" ]) ;
+
+    assertAndPrintEquality(userSpacePropKeyNames.join(",") , "onkeydown,onkeyup" ) ;
+
+    assertAndPrintEquality(userSpacePropKnmp.map(e => e.mdlSpaceStedKey ).join(";") , "(AsEventKey)KeyDown;(AsEventKey)KeyUp" ) ;
+
+    assertAndPrintEquality(userSpacePropKnmp.map(e => e.camelCasedEName ).join(";") , "KeyDown;KeyUp" ) ;
 
   } ) ;
 
