@@ -95,21 +95,29 @@ export namespace ReactJsBasedCustomIntrinsicElement {
                 case "htmlFor"        : return { userSpaceKey: "for"   , } ;
               }
 
-              for (const [nme = null ] of util.iterateNonNull(mdlSpaceKey.match(/^on((?=[A-Z])\w+)/) ) ) {
+              for (const [fullNme = null, shortNme = null ] of util.iterateNonNull(mdlSpaceKey.match(/^on((?=[A-Z])\w+)/) ) ) {
                 // TODO
-                if (nme !== null) {
+                if ((shortNme !== null ) && (fullNme !== null ) ) {
                   return {
-                    userSpaceKey: nme.toLowerCase() ,
-                    camelCasedEName: nme ,
+                    userSpaceKey: fullNme.toLowerCase() ,
+                    camelCasedEName: shortNme ,
                   } ;
                 }
               }
 
-              return (
-                {
-                  userSpaceKey: util.L.kebabCase(mdlSpaceKey) ,
-                }
-              ) ;
+              {
+                const pnm = (
+                  1 ?
+                  mdlSpaceKey.toLowerCase()
+                  : util.L.kebabCase(mdlSpaceKey)
+                ) ;
+
+                return (
+                  {
+                    userSpaceKey: pnm ,
+                  } as const
+                ) ;
+              }
             })()
           ) ;
 
