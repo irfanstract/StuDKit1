@@ -35,10 +35,25 @@ import type {
   PickW,
 } from 'studk-fwcore/src/util/C1.ts'
 
+const nextUInt32 = () => (
+  ((): number => {
+    const d = new ArrayBuffer(0x100) ;
+    new Float64Array(d)[0] = Math.random() ;
+    return new Uint32Array(d)[0]! ;
+  })()
+) ;
+
 export function assertAndPrintEquality<T>(actual: unknown, expected: T, message?: string | Error): asserts actual is T
 {
   util.assert.deepStrictEqual(actual, expected, message) ;
   console["info"](`${actual } = ${expected }`) ;
+}
+
+declare global {
+  export interface String {
+    startsWith <const testv extends string, const thisT extends string >(this: thisT , expectedPrefix: testv) : this is (thisT & `${typeof expectedPrefix }${string }` )
+    endsWith   <const testv extends string, const thisT extends string >(this: thisT , expectedPrefix: testv) : this is (thisT & `${string }${typeof expectedPrefix }` )
+  }
 }
 
 
@@ -70,6 +85,24 @@ namespace DCIE {
 
 }
 
+export const generateCustomIntrinsicElementName = (
+  function () {
+
+    const idt = (
+      nextUInt32()
+    ) ;
+
+    const pf = (
+      ("elementdef" + idt )
+    ) ;
+
+    return (
+      [pf, "main"].join("-")
+    ) ;
+
+  }
+) ;
+
 export namespace ReactJsBasedCustomIntrinsicElement {
   ;
 
@@ -98,6 +131,11 @@ export namespace ReactJsBasedCustomIntrinsicElement {
                 camelCasedEName?: never,
               }
               | {
+                mdlSpaceStedKey: `(spcl)children` ,
+                userSpaceKey?: never,
+                camelCasedEName?: never,
+              }
+              | {
                 mdlSpaceStedKey: `(AsEventKey)${string}`,
                 userSpaceKey: string,
                 camelCasedEName: string,
@@ -106,6 +144,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
 
               switch (mdlSpaceKey) {
                 case "className"      : return { mdlSpaceStedKey: `(OnUserspaceKey)class`, userSpaceKey: "class" , } as const ;
+                case "children"       : return { mdlSpaceStedKey: `(spcl)children`, } as const ;
                 case "htmlFor"        : return { mdlSpaceStedKey: `(OnUserspaceKey)for`  , userSpaceKey: "for"   , } as const ;
               }
 
@@ -244,22 +283,55 @@ export namespace ReactJsBasedCustomIntrinsicElement {
       ) ;
 
       /**
-       * we can only do `customElements.define(... ...)` with given `name` at-most once, so
+       * note: skip in server-side setting.
+       * 
+       */
+      if (typeof document !== undefined ) {
+      ;
+
+      Object ;
+
+      /**
+       * we can only do {@link customElements.define `customElements.define(... ...)` } with given `name` at-most once, so
        * we'll need to make the resulting programmatic-itc `class { ... ... }` reconfigurable.
        * 
        */
-      ;
+      const {} = {} ;
 
       function extractAsProps(...[e] : [mainMountedElem: Element])
       : actualProps
       {
             ;
-
-            interface EvmpOps {
+            
+            interface EvmpOpsCommon {
               readonly mdlSpaceKey: (keyof actualProps & string) | "children" ;
+              readonly userSpaceKey?: string;
+              readonly value: (object | string) | null;
+            }
+            
+            interface EvmpOpsChPropertyDesc extends EvmpOpsCommon
+            {
+              readonly mdlSpaceKey: (keyof actualProps & string) ;
               readonly userSpaceKey: string;
               readonly value: (object | string) | null;
             }
+
+            interface EvmpOpsChildrenListing extends EvmpOpsCommon
+            {
+              readonly mdlSpaceKey: "children" ;
+              readonly userSpaceKey?: never;
+              readonly value: (object | string) | null;
+            }
+            
+            // interface EvmpOps {
+            //   readonly mdlSpaceKey: (keyof actualProps & string) | "children" ;
+            //   readonly userSpaceKey: string;
+            //   readonly value: (object | string) | null;
+            // }
+            type EvmpOps = (
+              | EvmpOpsChPropertyDesc
+              | EvmpOpsChildrenListing
+            ) ;
 
             const m2 = (
               util.reiterated<EvmpOps>(function* () {
@@ -267,8 +339,58 @@ export namespace ReactJsBasedCustomIntrinsicElement {
                 yield* (
                   userSpacePropKnmp
 
-                  .filter(({ mdlSpaceKey, }) => !(mdlSpaceKey === "children") )
-                  .map(({ mdlSpaceKey, userSpaceKey, }) => {
+                  .flatMap((c) => c.camelCasedEName ? [c] : [] as const )
+
+                  .map(({ mdlSpaceKey, camelCasedEName, mdlSpaceStedKey, userSpaceKey, }) => {
+
+                    // TODO
+                    const vle = (
+
+                      (...args: [unknown] ) => {
+                        const receiver = e satisfies EventTarget ;
+
+                        const [evt] = args ;
+
+                        if (evt instanceof Event) {
+                          ;
+                          
+                          if (
+                            !(
+                              [
+                                camelCasedEName,
+                                util.L.kebabCase(camelCasedEName) ,
+                                camelCasedEName.toLowerCase(),
+                              ]
+                              .includes(evt.type ) 
+                            )
+                          ) {
+                            throw util.throwTypeError(`mismatched evt name: 'evt.type' ${evt.type }, 'camelCasedEName' ${camelCasedEName } `) ;
+                          }
+
+                          return (
+                            receiver.dispatchEvent(evt)
+                          ) ;
+                        } else {
+                          throw new TypeError(`can only pass 'Event's, but found ${args.join(", ") } `) ;
+                        }
+                      }
+                    ) ;
+
+                    return {
+                      mdlSpaceKey,
+                      userSpaceKey,
+                      value: vle,
+                    } satisfies EvmpOps ;
+                  } )
+
+                ) ;
+
+                yield* (
+                  userSpacePropKnmp
+
+                  .filter((c) => c.mdlSpaceStedKey.startsWith("(OnProgrammaticItcSpaceKey)") )
+
+                  .map(({ mdlSpaceKey, userSpaceKey = util.throwAssertionError() , }) => {
 
                     const vle = e.getAttribute(userSpaceKey) ;
 
@@ -283,7 +405,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
 
                 yield {
                   mdlSpaceKey: "children",
-                  userSpaceKey: "children",
+                  // userSpaceKey: "children",
                   value: <slot />,
                 } satisfies EvmpOps ;
 
@@ -304,63 +426,123 @@ export namespace ReactJsBasedCustomIntrinsicElement {
 
       }
 
-      const mainProgrammticItc = (
+      globalThis.customElements.define ;
   
-        class extends (HTMLElement as CustomElementConstructor) {
-          //
+      const alreadyCreatedElementPrototype = (
+        (() => {
+          const e = document.createElement(tgName) ;
+          const ePrototype = (
+            Object.getPrototypeOf(e) as object
+          ) ;
+          return ePrototype ;
+        })()
+      ) ;
 
-          r !: RDC.Root ;
-  
-          constructor (...args: any )
-          {
-            super(...args) ;
+      const acec = (alreadyCreatedElementPrototype as Object).constructor ;
 
-            this.r = (
-              RDC.createRoot((
-                this.attachShadow({
-                  mode: sdr,
-                })
-              ) )
-            ) ;
+      void (
+        (
+          alreadyCreatedElementPrototype
+          ===
+          HTMLUnknownElement.prototype
+        ) && console["error"](`trying to (re)define (uneligible) element-name '${tgName }', resolving to 'HTMLUnknownElement', which will likely fail.`)
+      ) ;
 
-          }
+      void (
+        (
+          alreadyCreatedElementPrototype
+          !==
+          HTMLElement.prototype
+        ) && console["warn"](`custom element '${tgName }' had to be redefined.`)
+      ) ;
+
+      const {
+        mainProgrammticItc ,
+
+      } = (
+
+        (function () {
+          ;
 
           // TODO
-          
-          private getAsProps() : actualProps {
-            return (
-              extractAsProps(this)
+          if (
+            alreadyCreatedElementPrototype !== HTMLElement.prototype
+            ||
+            globalThis.customElements.get(tgName )
+          ) {
+            ;
+    
+            if (
+              (
+                alreadyCreatedElementPrototype
+                ===
+                HTMLUnknownElement.prototype
+              )
+            ) {
+              throw new TypeError(`unsupported tag-name (HTMLUnknownElement) '${tgName }' (prototype: ${alreadyCreatedElementPrototype } ) `) ;
+            }
+    
+            /* already defined */
+
+            if (DwrAsMounted.wasItcInstantiatedHere(acec ) ) {
+              ;
+              
+              const mainProgrammticItc0 = (
+                acec
+              ) ;
+
+              return {
+                mainProgrammticItc: mainProgrammticItc0 ,
+              } ;
+
+            } else {
+              throw new TypeError(`Element already registered elsewhere and therefore cannot be redefined here: ${tgName } (pt: ${alreadyCreatedElementPrototype } ) `) ;
+            }
+    
+          } else {
+            ;
+    
+            const mainProgrammticItc0 = (
+  
+              DwrAsMounted.allocateProgrammaticItc()
+        
             ) ;
+      
+            if ((
+              alreadyCreatedElementPrototype === HTMLElement.prototype
+            ) ) {
+              ;
+      
+              globalThis.customElements.define(tgName, (
+                mainProgrammticItc0
+              )) ;
+      
+            } else {
+      
+              if (
+                (
+                  alreadyCreatedElementPrototype
+                  ===
+                  HTMLUnknownElement.prototype
+                )
+              ) {
+                throw new TypeError(`unsupported tag-name '${tgName }' (HTMLUnknownElement: ${alreadyCreatedElementPrototype } ) `) ;
+              }
+
+              throw new TypeError(`unsupported tag-name '${tgName }' (prototype: ${alreadyCreatedElementPrototype } ) `) ;
+      
+              // TODO
+              ;
+            }
+
+            return {
+              mainProgrammticItc: mainProgrammticItc0 ,
+            } ;
+        
+            ;
           }
 
-          private remount1() : void
-          {
-
-            const props = this.getAsProps() ;
-
-            this.r.render((
-              <C {...props} />
-            )) ;
-
-          }
-
-          connectedCallback() : void
-          {
-            this.remount1() ;
-          }
-
-          attributeChangedCallback() : void
-          {
-            this.remount1() ;
-          }
-
-          disconnectedCallback() : void
-          {
-            this.r.unmount() ;
-          }
-  
-        }
-  
+        } )()
       ) ;
 
       void (
@@ -373,12 +555,6 @@ export namespace ReactJsBasedCustomIntrinsicElement {
         )
         ||
         (
-          (
-            Object.getPrototypeOf(mainProgrammticItc.prototype)
-            !==
-            HTMLElement.prototype
-          ) && console["warn"](`custom element '${tgName }' had to be redefined.`)
-          ,
           Object.setPrototypeOf((
             mainProgrammticItc.prototype
           ) , (
@@ -387,17 +563,29 @@ export namespace ReactJsBasedCustomIntrinsicElement {
         )
       ) ;
 
-      globalThis.customElements.define ;
-  
-      // TODO
-      void (
-        (document.createElement(tgName).constructor === HTMLUnknownElement )
-        &&
-        globalThis.customElements.define(tgName, (
-          mainProgrammticItc
-        ))
+      mainProgrammticItc.prototype.playptArgs = (
+        [{
+          mode: sdr,
+        }]
       ) ;
-  
+
+      mainProgrammticItc.prototype.remountImpl = (
+        function (this: InstanceType<typeof mainProgrammticItc > ) {
+          ;
+
+          const props = (
+            extractAsProps(this)
+          ) ;
+
+          this.r.render((
+            <C {...props} />
+          )) ;
+
+        }
+      ) ;
+
+      }
+
       return tgName ;
     }
   ) ;
@@ -423,7 +611,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
       const [
         tgName, C,
         supc ,
-        { ...etcProps },
+        { ...etcProps } = {} ,
       ] = null ?? a ;
   
       ;
@@ -436,6 +624,122 @@ export namespace ReactJsBasedCustomIntrinsicElement {
       ) ;
     }
   ) ;
+
+  /**
+   * 
+   * @deprecated
+   * 
+   */
+  export const defineWithRenderFnAndProgrammaticItcBaseClassAlt = (
+    function <const tgNm extends string, >(...a : (
+      ArgsWithOptions<[
+        tgName: tgNm,
+        render: (props: object ) => Extract<React.ReactNode, object | null> ,
+        supc ?: CustomElementConstructor ,
+      ], (
+        SpclWithRenderFncAndPrgmtcBaseClsCaseProps<actualProps>
+      )>
+    ) )
+    {
+      const [
+        tgName, C,
+        supc ,
+        { ...etcProps } = {} ,
+      ] = null ?? a ;
+  
+      ;
+  
+      return (
+        defineWithRender(tgName, C, {
+          supc ,
+          ...etcProps
+        })
+      ) ;
+    }
+  ) ;
+
+  export namespace DwrAsMounted
+  {
+    ;
+
+    export const wasItcInstantiatedHere: (
+      (x: Function ) => x is ItcAllocatedHere
+    ) = (
+      x => (
+        (mp as WeakSet<Function> )
+        .has(x)
+      )
+    ) ;
+
+    type ItcAllocatedHere = (
+      ReturnType<typeof allocateProgrammaticItc>
+    ) ;
+
+    export const allocateProgrammaticItc = (function () {
+
+      const mainProgrammticItc = (
+  
+        class extends (HTMLElement as CustomElementConstructor) {
+          //
+
+          private static WAS_ADDED_THERE = mp.add(this) ;
+
+          r !: RDC.Root ;
+  
+          constructor (...args: any )
+          {
+            super(...args) ;
+
+            this.r = (
+              RDC.createRoot((
+                this.attachShadow(...(this.playptArgs ?? (
+                  console["error"](`[ReactJsBasedCustomIntrinsicElement] [mainProgrammticItc.new] unexpected null-ness of 'playptArgs'`) ,
+                  [{
+                    mode: "open",
+                  }]
+                ) ) )
+              ) )
+            ) ;
+
+          }
+
+          playptArgs!: Parameters<Element["attachShadow"] > ;
+
+          // TODO
+          
+          remountImpl() : void
+          {
+            throw Error(`unimplemented 'remountImpl'`) ;
+          }
+
+          connectedCallback() : void
+          {
+            this.remountImpl() ;
+          }
+
+          attributeChangedCallback() : void
+          {
+            this.remountImpl() ;
+          }
+
+          disconnectedCallback() : void
+          {
+            this.r.unmount() ;
+          }
+  
+        }
+  
+      ) ;
+
+      return mainProgrammticItc ;
+    } ) ;
+
+    const mp = (
+      new WeakSet<ItcAllocatedHere>()
+    ) ;
+
+    ;
+  }
   
 }
 
