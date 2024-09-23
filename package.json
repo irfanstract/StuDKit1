@@ -91,6 +91,17 @@
      "@tensorflow/tfjs-node": "^4.21"
      ,
      "typescript": "^5.4.2"
+
+     ,
+     "@emotion/react": "^11.13.3"
+     ,
+     "@emotion/styled": "^11.13.0"
+     ,
+     "@fontsource/roboto": "^5.1.0"
+     ,
+     "@mui/icons-material": "^6.1.1"
+     ,
+     "@mui/material": "^6.1.1"
      ,
      "ts-node": "10.9.2"
      ,
