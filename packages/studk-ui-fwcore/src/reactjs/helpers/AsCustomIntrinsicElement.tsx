@@ -42,8 +42,12 @@ import type {
 // }
 
 import {
+  ACOBC,
   assertAndPrintEquality,
-  nextUInt32 ,
+  scheduleMobxAutoResponse,
+  nextUInt32, 
+  observable,
+  runMobxAction,
 } from 'studk-ui-fwcore/src/util/DOmCustomIntrinsicElemsInfrasCommon.ts';
 
 export {
@@ -521,13 +525,9 @@ export namespace ReactJsBasedCustomIntrinsicElement {
         )
       ) ;
 
-      mainProgrammticItc.prototype.playptArgs = (
-        [{
-          mode: shadowRootExpsMode,
-        }]
-      ) ;
-
-      mainProgrammticItc.prototype.remountImpl = (
+      mainProgrammticItc.reconfigure1([{
+        mode: shadowRootExpsMode,
+      }] , (
         function (this: InstanceType<typeof mainProgrammticItc > ) {
           ;
 
@@ -540,7 +540,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
           )) ;
 
         }
-      ) ;
+      ) ) ;
 
       }
 
@@ -826,6 +826,19 @@ export namespace ReactJsBasedCustomIntrinsicElement {
         
             ) ;
       
+            scheduleMobxAutoResponse(() => {
+
+              const NCHG = mainProgrammticItc0.NEEDCHGS ;
+
+              NCHG.get() ;
+      
+              if (1 < NCHG.get() ) {
+                ;
+                console["error"](`[ReactJsBasedCustomIntrinsicElement] previously-defined custom-element ${`<${tgName}>` } (DC=${NCHG.get() }) has been redefined. check for bugs - multiple usages of same tag-name - please make-sure the only redef(s) (of tag-name(s) ) only come from HMR(s). `) ;
+              }
+      
+            } ) ;
+      
             if ((
               alreadyCreatedElementPrototype === HTMLElement.prototype
             ) ) {
@@ -882,7 +895,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
     export const wasItcInstantiatedHere: (
       (x: Function ) => x is ItcAllocatedHere
     ) = (
-      x => (
+      (x): x is ItcAllocatedHere => (
         (mp as WeakSet<Function> )
         .has(x)
       )
@@ -896,10 +909,14 @@ export namespace ReactJsBasedCustomIntrinsicElement {
 
       const mainProgrammticItc = (
   
-        class extends (HTMLElement as CustomElementConstructor) {
+        class st1 extends (HTMLElement as CustomElementConstructor) {
           //
 
-          private static WAS_ADDED_THERE = mp.add(this) ;
+          static {
+            mp.add(this) ;
+          }
+
+          static NEEDCHGS = observable.box<number>(0 ) ;
 
           r !: RDC.Root ;
   
@@ -917,6 +934,14 @@ export namespace ReactJsBasedCustomIntrinsicElement {
                 ) ) )
               ) )
             ) ;
+
+            scheduleMobxAutoResponse(() => {
+
+              st1.NEEDCHGS.get() ;
+
+              this.remountImpl() ;
+
+            } ) ;
 
           }
 
@@ -945,6 +970,19 @@ export namespace ReactJsBasedCustomIntrinsicElement {
           disconnectedCallback() : void
           {
             this.r.unmount() ;
+          }
+
+          static reconfigure1(...[p, r]: [playptArgs: st1["playptArgs"], remountImpl: st1["remountImpl"]] ) : void
+          {
+
+            this.prototype.playptArgs  = p ;
+            this.prototype.remountImpl = r ;
+
+            runMobxAction(() => {
+              const NCHG = st1.NEEDCHGS ;
+              NCHG.set(NCHG.get() + 1 ) ;
+            }) ;
+      
           }
   
         }
