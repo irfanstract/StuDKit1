@@ -110,6 +110,66 @@ export const generateCustomIntrinsicElementName = (
 
 
 
+import {
+  IObservableValue ,
+} from "studk-fwcore/src/FunctionalReactiveChaining/StudkMobx.ts" ;
+
+// TODO get rid of this
+export {
+  observable  as observable ,
+  runInAction as runMobxAction ,
+} from "studk-fwcore/src/FunctionalReactiveChaining/StudkMobx.ts" ;
+export {
+  autorun as scheduleMobxAutoResponse ,
+} from "mobx" ;
+
+// TODO get rid of this
+import {
+  type React ,
+  type StudkReactJs,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+
+import * as MBRL from "mobx-react-lite" ;
+
+// /**
+//  * used above
+//  * 
+//  */
+// const SpclAsJsxListImpl = (
+//   MBRL.observer(({ mpOb: mOb, debug, } : {
+//     debug?: Boolean,
+//     mpOb: IObservableValue<util.Immutable.Map<string | number, React.ReactElement>>,
+//   }) => {
+//     ;
+
+const UpdatingOnTokenChangeC = (
+  MBRL.observer(function UpdatingOnTokenChangeCImpl({ children, token, } : React.PropsWithChildren<{ token: IObservableValue<object | true> }> ) {
+    ;
+
+    token.get() ;
+
+    return (
+      children
+    ) ;
+  })
+) ;
+
+export {
+  /**
+   * 
+   * @deprecated this is a WIP.
+   */
+  UpdatingOnTokenChangeC as ACOBC ,
+} ;
+
+;
+
+
+
+
+
+
+
 
 
 
