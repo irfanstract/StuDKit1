@@ -653,7 +653,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
       const [
         tgName, C,
         supc ,
-        { ...etcProps } = {} ,
+        { ...etcProps } ,
       ] = null ?? a ;
   
       ;
@@ -718,7 +718,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
       const [
         tgName0 = null, C,
         supc ,
-        { ...etcProps } = {} ,
+        { ...etcProps } ,
       ] = null ?? a ;
       const tgName = (
         (tgName0 ?? generateCustomIntrinsicElementName() ) as ([tgNm] extends [string] ? string : string )
