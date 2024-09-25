@@ -111,6 +111,24 @@ const ELCC = (
   (function () {
     Object ;
 
+    let v : number | string = 5 ;
+    
+    void (
+      (ReactJsBasedCustomIntrinsicElement.definePrivatelyWithRenderFnAndProgrammaticItcBaseClassAlt )("elementdef3422118914-main" , (props: {
+        //
+      } ) => {
+        return (
+          <p>
+            Empty Component
+          </p> 
+        ) ;
+      } , globalThis.HTMLSpanElement, {
+        mdlSpacePropKeyNames: [
+        ] as const ,
+        sdr: "open" ,
+      } )
+    ) ;
+
     return (
       (ReactJsBasedCustomIntrinsicElement.definePrivatelyWithRenderFnAndProgrammaticItcBaseClassAlt )("elementdef3422118914-main" , (props: {
         //
@@ -120,10 +138,12 @@ const ELCC = (
       } ) => {
         return (
           <p>
-            <code>TCE_C</code> {}
-            rendered with {}
+            <code>TCE_C</code> for example {}
+            was rendered with {}
             <code>{ JSON.stringify(props) }</code>
-          </p>
+            {} (<code>{v }</code>)
+            .
+          </p> 
         ) ;
       } , globalThis.HTMLSpanElement, {
         mdlSpacePropKeyNames: [
@@ -195,6 +215,9 @@ const TceAdvC = (
           <ELCC
           controlX={5 }
           controlY={"1" }
+          style={{
+            display: "inline-block" ,
+          } satisfies React.CSSProperties}
           />
         </nav>
         <div
