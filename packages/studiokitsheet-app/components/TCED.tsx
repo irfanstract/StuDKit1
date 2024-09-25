@@ -98,8 +98,65 @@ import {
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 import {
+  ReactJsBasedCustomIntrinsicElement ,
+  generateCustomIntrinsicElementName ,
+} from "studk-ui-fwcore/src/reactjs/helpers/AsCustomIntrinsicElement" ;
+
+import {
   AccrdListC ,
 } from "studk-ui-encore/src/PaginatedUi/Accrd1" ;
+
+const ELCC = (
+  // 1 ?
+  (function () {
+    Object ;
+
+    let v : number | string = 5 ;
+    
+    void (
+      (ReactJsBasedCustomIntrinsicElement.definePrivatelyWithRenderFnAndProgrammaticItcBaseClassAlt )("elementdef3422118914-main" , (props: {
+        //
+      } ) => {
+        return (
+          <p>
+            Empty Component
+          </p> 
+        ) ;
+      } , globalThis.HTMLSpanElement, {
+        mdlSpacePropKeyNames: [
+        ] as const ,
+        sdr: "open" ,
+      } )
+    ) ;
+
+    return (
+      (ReactJsBasedCustomIntrinsicElement.definePrivatelyWithRenderFnAndProgrammaticItcBaseClassAlt )("elementdef3422118914-main" , (props: {
+        //
+        "controlX": string ,
+        "controlY": string ,
+        "mdlY"    : string ,
+      } ) => {
+        return (
+          <p>
+            <code>TCE_C</code> for example {}
+            was rendered with {}
+            <code>{ JSON.stringify(props) }</code>
+            {} (<code>{v }</code>)
+            .
+          </p> 
+        ) ;
+      } , globalThis.HTMLSpanElement, {
+        mdlSpacePropKeyNames: [
+          "controlX" ,
+          "controlY" ,
+          "mdlY" ,
+        ] as const ,
+        sdr: "open" ,
+      } )
+    ) ;
+  } )()
+  // : null
+) ;
 
 import {
   TceC, 
@@ -154,6 +211,13 @@ const TceAdvC = (
           <Button
           children={ <strong><code>{ `<del>` }</code></strong> }
           onClick={e => {}}
+          />
+          <ELCC
+          controlX={5 }
+          controlY={"1" }
+          style={{
+            display: "inline-block" ,
+          } satisfies React.CSSProperties}
           />
         </nav>
         <div
