@@ -541,9 +541,12 @@ export namespace ReactJsBasedCustomIntrinsicElement {
             extractAsProps(this)
           ) ;
 
-          this.r.render((
-            <C {...props} />
-          )) ;
+          void (
+            (DwrAsMounted.getBackingReactJsMountPt(this) )
+            .render((
+              <C {...props} />
+            ))
+          ) ;
 
         }
       ) , {
@@ -838,10 +841,8 @@ export namespace ReactJsBasedCustomIntrinsicElement {
               DwrAsMounted.allocateProgrammaticItc()
         
             ) ;
-      
-            scheduleMobxAutoResponse(() => {
 
-              const NCHG = mainProgrammticItc0.NEEDCHGS ;
+            mainProgrammticItc0.addReconfigCountUpdateListener(({ NCHG, }) => {
 
               NCHG.get() ;
       
@@ -850,7 +851,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
                 console["error"](`[ReactJsBasedCustomIntrinsicElement] previously-defined custom-element ${`<${tgName}>` } (DC=${NCHG.get() }) has been redefined. check for bugs - multiple usages of same tag-name - please make-sure the only redef(s) (of tag-name(s) ) only come from HMR(s). `) ;
               }
       
-            } ) ;
+            }) ;
       
             if ((
               alreadyCreatedElementPrototype === HTMLElement.prototype
@@ -918,6 +919,18 @@ export namespace ReactJsBasedCustomIntrinsicElement {
     }
   ) ;
 
+  /**
+   * to deal with
+   * the `class`es you're supposed to pass as the 2nd arg along with a *tag-name* to {@link customElements.register}.
+   * 
+   * CONTRIB-NOTE:
+   * avoid adding new instance fields and methods to the main itc.
+   * doing so
+   * clutters the itc prototype in ways increasing {@link util.throwAssertionError the likelihoods of name-collisions }.
+   * for this reason
+   * those should either be private-field(s) or instead {@link WeakMap WeakMap }s.
+   * 
+   */
   export namespace DwrAsMounted
   {
     ;
@@ -926,7 +939,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
       (x: Function ) => x is ItcAllocatedHere
     ) = (
       (x): x is ItcAllocatedHere => (
-        (mp as WeakSet<Function> )
+        (instantiatedItcsSbf as WeakSet<Function> )
         .has(x)
       )
     ) ;
@@ -943,18 +956,39 @@ export namespace ReactJsBasedCustomIntrinsicElement {
           //
 
           static {
-            mp.add(this) ;
+            instantiatedItcsSbf.add(this) ;
           }
 
-          static NEEDCHGS = observable.box<number>(0 ) ;
+          private static redefCountBox = (
+            observable.box<number>(0 )
+          ) ;
 
-          r !: RDC.Root ;
-  
+          private static mountedInstances: util.Immutable.Set<st1> = (
+            util.Immutable.Set()
+          ) ;
+
+          static {
+
+            scheduleMobxAutoResponse(() => {
+              ;
+              
+              st1.redefCountBox.get() ;
+
+              void (
+                st1.mountedInstances
+                .map(e => e.remountImpl() )
+              ) ;
+
+            }) ;
+
+          } ;
+
           constructor (...args: any )
           {
             super(...args) ;
 
-            this.r = (
+            gbrjmMap.set(this, (
+
               RDC.createRoot((
                 this.attachShadow(...(this.playptArgs ?? (
                   console["error"](`[ReactJsBasedCustomIntrinsicElement] [mainProgrammticItc.new] unexpected null-ness of 'playptArgs'`) ,
@@ -963,15 +997,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
                   }]
                 ) ) )
               ) )
-            ) ;
-
-            scheduleMobxAutoResponse(() => {
-
-              st1.NEEDCHGS.get() ;
-
-              this.remountImpl() ;
-
-            } ) ;
+            ) ) ;
 
           }
 
@@ -984,12 +1010,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
             /* cannot safely `throw`, since {@link customElement.register `registerElement`} calls `connectedCallback` */
             // throw new Error(`unimplemented 'remountImpl'`) ;
 
-            this.r.render(null) ;
-          }
-
-          connectedCallback() : void
-          {
-            this.remountImpl() ;
+            void (getBackingReactJsMountPt(this) ).render(null) ;
           }
 
           // TODO
@@ -1000,9 +1021,28 @@ export namespace ReactJsBasedCustomIntrinsicElement {
             this.remountImpl() ;
           }
 
+          connectedCallback() : void
+          {
+
+            st1.mountedInstances = (
+              st1.mountedInstances
+              .add(this)
+            ) ;
+
+            this.remountImpl() ;
+
+          }
+
           disconnectedCallback() : void
           {
-            this.r.unmount() ;
+
+            st1.mountedInstances = (
+              st1.mountedInstances
+              .remove(this)
+            ) ;
+
+            void (getBackingReactJsMountPt(this) ).unmount() ;
+
           }
 
           static reconfigure1(...[p, r, { observedAttributes, }] : (
@@ -1018,10 +1058,35 @@ export namespace ReactJsBasedCustomIntrinsicElement {
             this.observedAttributes = observedAttributes ;
 
             runMobxAction(() => {
-              const NCHG = st1.NEEDCHGS ;
+              const NCHG = st1.redefCountBox ;
               NCHG.set(NCHG.get() + 1 ) ;
             }) ;
       
+          }
+
+          // scheduleMobxAutoResponse
+          static addReconfigCountUpdateListener(...[cb] : [(
+
+            (...args: [evtInf: {
+
+              /** @deprecated */
+              NCHG: { get(): number, } ,
+
+            }] ) => void
+          ) ] )
+          {
+
+            scheduleMobxAutoResponse(() => {
+
+              const NCHG = st1.redefCountBox ;
+
+              void (
+                cb({
+                  NCHG,
+                })
+              ) ;
+            }) ;
+
           }
   
         }
@@ -1031,8 +1096,23 @@ export namespace ReactJsBasedCustomIntrinsicElement {
       return mainProgrammticItc ;
     } ) ;
 
-    const mp = (
+    const instantiatedItcsSbf = (
       new WeakSet<ItcAllocatedHere>()
+    ) ;
+
+    export const getBackingReactJsMountPt = (
+      function <C extends InstanceType<ItcAllocatedHere > >(e: C )
+      : RDC.Root
+      {
+        return (
+          // e.r
+          gbrjmMap.get(e) ?? util.throwTypeError()
+        ) ;
+      }
+    ) ;
+
+    const gbrjmMap = (
+      new WeakMap<InstanceType<ItcAllocatedHere> , RDC.Root >()
     ) ;
 
     ;
