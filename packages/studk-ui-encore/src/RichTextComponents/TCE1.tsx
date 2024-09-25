@@ -193,7 +193,11 @@ export const TceC = (() => {
         & { valueAsHtml: string, }
         & Omit<JSX.IntrinsicElements["div"] , "children" | "ref" | ("onChange" | "onInput") >
         & (
-          | ({ editable: true, } & { onChange: (evtInfo: { existingValueInHtml: string, newValueInHtml: string, } ) => void } )
+          | ({ editable: true, } & { onChange: (evtInfo: {
+            existingValueInHtml: string,
+            newValueInHtml: string,
+            newValueAsPlainTxt: string,
+          } ) => void } )
           | { editable?: false, onChange?: never, }
         )
         & { xRef ?: React.Ref<(
@@ -245,9 +249,14 @@ export const TceC = (() => {
 
             function (e0)
             {
-              const v1 = e0.currentTarget.innerHTML ;
+
+              const eTarget = e0.currentTarget ;
+
+              const v1 = eTarget.innerHTML ?? "" ;
+              const v1Plain = eTarget.textContent ?? "" ;
 
               occbLocal({
+                newValueAsPlainTxt: v1Plain ,
                 newValueInHtml: v1,
                 existingValueInHtml: specifiedValAsHtml,
               } ) ;
