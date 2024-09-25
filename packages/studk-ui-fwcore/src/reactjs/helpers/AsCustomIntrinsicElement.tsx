@@ -495,6 +495,10 @@ export namespace ReactJsBasedCustomIntrinsicElement {
         }) ;
       }
 
+      const observedAttributes = (
+        userSpacePropKeyNames.flatMap(e => util.iterateNonNull(e ?? null) )
+      ) ;
+
       globalThis.customElements.define ;
 
       const {
@@ -504,7 +508,9 @@ export namespace ReactJsBasedCustomIntrinsicElement {
         mainProgrammticItc ,
 
       } = (
-        analysePossiblyAlreadyDefinedElementNameAndCtor(tgName)
+        analysePossiblyAlreadyDefinedElementNameAndCtor(tgName , {
+          observedAttributes ,
+        } )
       ) ;
   
       void (
@@ -540,7 +546,9 @@ export namespace ReactJsBasedCustomIntrinsicElement {
           )) ;
 
         }
-      ) ) ;
+      ) , {
+        observedAttributes ,
+      } ) ;
 
       }
 
@@ -741,7 +749,12 @@ export namespace ReactJsBasedCustomIntrinsicElement {
    */
   const analysePossiblyAlreadyDefinedElementNameAndCtor = (
 
-    function <const tgnmv extends string>(...[tgName] : [tgName: tgnmv] )
+    function <const tgnmv extends string>(...[tgName , { observedAttributes, } ] : (
+      ArgsWithOptions<[tgName: tgnmv], {
+        //
+        observedAttributes: readonly string[] ,
+      } >
+    ) )
     {
 
       globalThis.customElements.define ;
@@ -843,6 +856,23 @@ export namespace ReactJsBasedCustomIntrinsicElement {
               alreadyCreatedElementPrototype === HTMLElement.prototype
             ) ) {
               ;
+
+              mainProgrammticItc0.observedAttributes ? (
+                util.Immutable.Set(mainProgrammticItc0.observedAttributes )
+                .equals(util.Immutable.Set(observedAttributes) )
+                ||
+                util.throwTypeError(`[ReactJsBasedCustomIntrinsicElement] cannot change the set of observed attribute when redefining component, ${(
+                  JSON.stringify({
+                    observedAttributes ,
+                    oldObservedAttributes: mainProgrammticItc0.observedAttributes ,
+                  })
+                ) }`)
+              ) : (
+                //
+                mainProgrammticItc0.observedAttributes = observedAttributes
+              ) ;
+
+              // mainProgrammticItc0.observedAttributes = observedAttributes ;
       
               globalThis.customElements.define(tgName, (
                 mainProgrammticItc0
@@ -962,6 +992,9 @@ export namespace ReactJsBasedCustomIntrinsicElement {
             this.remountImpl() ;
           }
 
+          // TODO
+          static observedAttributes: (readonly string[] ) | null = null ;
+
           attributeChangedCallback() : void
           {
             this.remountImpl() ;
@@ -972,11 +1005,17 @@ export namespace ReactJsBasedCustomIntrinsicElement {
             this.r.unmount() ;
           }
 
-          static reconfigure1(...[p, r]: [playptArgs: st1["playptArgs"], remountImpl: st1["remountImpl"]] ) : void
+          static reconfigure1(...[p, r, { observedAttributes, }] : (
+            ArgsWithOptions<[playptArgs: st1["playptArgs"], remountImpl: st1["remountImpl"]], {
+              observedAttributes: readonly string[] ,
+            } >
+          ) ) : void
           {
 
             this.prototype.playptArgs  = p ;
             this.prototype.remountImpl = r ;
+
+            this.observedAttributes = observedAttributes ;
 
             runMobxAction(() => {
               const NCHG = st1.NEEDCHGS ;
