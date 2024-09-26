@@ -56,54 +56,9 @@ import {
   StudkReactJs,
 } from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
-const useDeferredAndTransitionalValue = (
-  (function <T> (...[specifiedValAsHtml, {
-    fallbackValue ,
-  }] : (
-    ArgsWithOptions<[updatedSpecifiedValue: T ], { fallbackValue: T, }>
-  ) ) {
-
-    // const [ , ST ] = React.useTransition() ;
-
-    const specifiedValDeferredAsHtml = (
-      React.useDeferredValue(specifiedValAsHtml)
-    ) ;
-
-    const [transitionalValue, setTransitionalValue] = (
-      React.useState(fallbackValue)
-    ) ;
-
-    if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
-      void (transitionalValue === specifiedValAsHtml || setTransitionalValue(specifiedValAsHtml ) ) ;
-    }
-
-    return (
-      React.useMemo(() => ({
-        //
-
-        specifiedValAsHtml ,
-        specifiedValDeferredAsHtml ,
-        transitionalValue ,
-        setTransitionalValue ,
-
-        fallbackValue ,
-
-      } as const) , [
-        //
-
-        specifiedValAsHtml ,
-        specifiedValDeferredAsHtml ,
-        transitionalValue ,
-        setTransitionalValue ,
-
-        fallbackValue ,
-
-      ])
-    ) ;
-
-    ;
-  })
-) ;
+import {
+  useDeferredAndTransitionalValue,
+} from 'studk-ui-fwcore/src/reactjs/helpers/UseUncontrolledInputsAsControlledComponents1.tsx';
 
 import {
   useClientSideOnly ,
@@ -178,8 +133,8 @@ export const TceC = (() => {
       ) ;
 
       const {
-        // specifiedValAsHtml,
-        specifiedValDeferredAsHtml ,
+        specifiedVal: svh1,
+        specifiedValDeferred: specifiedValDeferredAsHtml ,
         transitionalValue ,
         setTransitionalValue ,
       } = (
@@ -238,7 +193,11 @@ export const TceC = (() => {
         & { valueAsHtml: string, }
         & Omit<JSX.IntrinsicElements["div"] , "children" | "ref" | ("onChange" | "onInput") >
         & (
-          | ({ editable: true, } & { onChange: (evtInfo: { existingValueInHtml: string, newValueInHtml: string, } ) => void } )
+          | ({ editable: true, } & { onChange: (evtInfo: {
+            existingValueInHtml: string,
+            newValueInHtml: string,
+            newValueAsPlainTxt: string,
+          } ) => void } )
           | { editable?: false, onChange?: never, }
         )
         & { xRef ?: React.Ref<(
@@ -290,9 +249,14 @@ export const TceC = (() => {
 
             function (e0)
             {
-              const v1 = e0.currentTarget.innerHTML ;
+
+              const eTarget = e0.currentTarget ;
+
+              const v1 = eTarget.innerHTML ?? "" ;
+              const v1Plain = eTarget.textContent ?? "" ;
 
               occbLocal({
+                newValueAsPlainTxt: v1Plain ,
                 newValueInHtml: v1,
                 existingValueInHtml: specifiedValAsHtml,
               } ) ;
