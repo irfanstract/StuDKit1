@@ -23,4 +23,6 @@
     ,
     "printNodeVersion": "npx electron@29.2.0 ./src/metaPrintNodeVersion.mjs"
   }
+	,
+	"type": "module"
 }
