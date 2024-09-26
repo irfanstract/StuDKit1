@@ -132,7 +132,8 @@
   }
   ,
   "workspaces": [
-     "packages/*"
+     "packages/*",
+     "packages/@types/*"
   ]
   ,
   "scripts": {
