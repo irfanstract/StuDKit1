@@ -10,7 +10,9 @@
 
 
 
-import * as Electron from "electron" ;
+import {
+  Electron ,
+} from "studk-fwcore/src/PlatformSpecifics/ElectronJs.mjs" ;
 
 export {
   Electron ,
