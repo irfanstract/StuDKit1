@@ -62,12 +62,28 @@ export const describeCallbackAssignedStyleProps = (
   function (...[init] : [(self: MutableCSSProperties) => void ])
   : CSSProperties
   {
-    const e = new Object() as MutableCSSProperties ;
-    init(e) ;
-    return (
-      /* object possibly leaked somewhere else. */
-      { ...e } as const
-    ) ;
+
+    if (0) {
+    ;
+    if (typeof document !== "undefined") {
+      const e0 = document.createElement("div") ;
+      const e = e0 as MutableCSSProperties ;
+      init(e ) ;
+      return (
+        /* object possibly leaked somewhere else. */
+        { ...e } as const
+      ) ;
+    }
+    }
+
+    {
+      const e = new Object() as MutableCSSProperties ;
+      init(e) ;
+      return (
+        /* object possibly leaked somewhere else. */
+        { ...e } as const
+      ) ;
+    }
   }
 ) ;
 
