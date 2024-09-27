@@ -56,6 +56,55 @@ import {
   StudkReactJs,
 } from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
+const useDeferredAndTransitionalValue = (
+  (function <T> (...[specifiedValAsHtml, {
+    fallbackValue ,
+  }] : (
+    ArgsWithOptions<[updatedSpecifiedValue: T ], { fallbackValue: T, }>
+  ) ) {
+
+    // const [ , ST ] = React.useTransition() ;
+
+    const specifiedValDeferredAsHtml = (
+      React.useDeferredValue(specifiedValAsHtml)
+    ) ;
+
+    const [transitionalValue, setTransitionalValue] = (
+      React.useState(fallbackValue)
+    ) ;
+
+    if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
+      void (transitionalValue === specifiedValAsHtml || setTransitionalValue(specifiedValAsHtml ) ) ;
+    }
+
+    return (
+      React.useMemo(() => ({
+        //
+
+        specifiedValAsHtml ,
+        specifiedValDeferredAsHtml ,
+        transitionalValue ,
+        setTransitionalValue ,
+
+        fallbackValue ,
+
+      } as const) , [
+        //
+
+        specifiedValAsHtml ,
+        specifiedValDeferredAsHtml ,
+        transitionalValue ,
+        setTransitionalValue ,
+
+        fallbackValue ,
+
+      ])
+    ) ;
+
+    ;
+  })
+) ;
+
 import {
   useClientSideOnly ,
   useClientSideOnlyCompute ,
@@ -109,16 +158,93 @@ const useDoDOmToggleContentEditability = (
 
 export const TceC = (() => {
 
+  const useSpcl = (
+    (...[{
+      asEditable ,
+      specifiedValAsHtml ,
+    }] ) => {
+      ;
+
+      const [actualElem, setAssumedActualElem] = (
+        React.useState<HTMLDivElement | null>(null )
+      ) ;
+
+      useDoDOmToggleContentEditability(actualElem, asEditable ) ;
+
+      void (
+        React.useCallback((c: HTMLDivElement | null ) => {
+          ;
+        } , [])
+      ) ;
+
+      const {
+        // specifiedValAsHtml,
+        specifiedValDeferredAsHtml ,
+        transitionalValue ,
+        setTransitionalValue ,
+      } = (
+        useDeferredAndTransitionalValue<string>(specifiedValAsHtml , {
+          fallbackValue: "?????" ,
+        } )
+      ) ;
+
+      if (actualElem) {
+        assignIfIhtmlNotSame(actualElem, transitionalValue ) ;
+      }
+
+      return (
+        React.useMemo(() => (
+          {
+
+            actualElem ,
+            setAssumedActualElem ,
+    
+            specifiedValDeferredAsHtml ,
+            transitionalValue ,
+            setTransitionalValue ,
+    
+          } as const
+        ) , [
+          //
+
+          actualElem ,
+          setAssumedActualElem ,
+  
+          specifiedValDeferredAsHtml ,
+          transitionalValue ,
+          setTransitionalValue ,
+  
+        ])
+      ) ;
+
+    }
+  ) satisfies (
+    (...a: ArgsWithOptions<[], {
+      specifiedValAsHtml: string ,
+      asEditable: boolean ,
+    }>) => void
+  ) ;
+
   return (
 
     StudkReactJs.describeHtmlComponent((
-      function TceCImpl({ valueAsHtml: specifiedValAsHtml, editable: asEditable = false , onChange: occbArg, ...etcPrps } : (
+      function TceCImpl({
+        valueAsHtml: specifiedValAsHtml,
+        editable: asEditable = false ,
+        onChange: occbArg,
+        xRef,
+        ...etcPrps
+      } : (
         & { valueAsHtml: string, }
         & Omit<JSX.IntrinsicElements["div"] , "children" | "ref" | ("onChange" | "onInput") >
         & (
           | ({ editable: true, } & { onChange: (evtInfo: { existingValueInHtml: string, newValueInHtml: string, } ) => void } )
           | { editable?: false, onChange?: never, }
         )
+        & { xRef ?: React.Ref<(
+          ReturnType<typeof useSpcl>
+          // | null
+        ) > }
       ) )
       {
 
@@ -126,59 +252,66 @@ export const TceC = (() => {
           StudkReactJs.useEventDispatchCallback(occbArg || Object )
         ) ;
 
-        const [actualElem, setAssumedActualElem] = (
-          React.useState<HTMLDivElement | null>(null )
+        const s = (
+          useSpcl({
+            specifiedValAsHtml ,
+            asEditable ,
+          })
         ) ;
 
-        useDoDOmToggleContentEditability(actualElem, asEditable ) ;
+        React.useImperativeHandle(xRef , () => s , [
+          s ,
+        ] ) ;
+
+        const {
+
+          // actualElem ,
+          setAssumedActualElem ,
   
+          specifiedValDeferredAsHtml ,
+          transitionalValue ,
+          setTransitionalValue ,
+  
+        } = s ;
+
         const rcbMain = (
           React.useCallback((c: HTMLDivElement | null ) => {
             ;
 
             setAssumedActualElem(() => c ) ;
 
-          } , [])
+          } , [
+            setAssumedActualElem,
+          ])
         ) ;
 
-        // const [ , ST ] = React.useTransition() ;
+        const handleEditEvt = (
+          (
 
-        const specifiedValDeferredAsHtml = (
-          React.useDeferredValue(specifiedValAsHtml)
-        ) ;
+            function (e0)
+            {
+              const v1 = e0.currentTarget.innerHTML ;
 
-        const [sv1AsHtml, setSv1] = (
-          React.useState<string>("?????")
-        ) ;
+              occbLocal({
+                newValueInHtml: v1,
+                existingValueInHtml: specifiedValAsHtml,
+              } ) ;
 
-        if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
-          void (sv1AsHtml === specifiedValAsHtml || setSv1(specifiedValAsHtml ) ) ;
-        }
+              void ((e, tOut) => e() )(function () {
+                ;
+                setTransitionalValue(v1) ;
+              } , 0 ) ;
 
-        if (actualElem) {
-          assignIfIhtmlNotSame(actualElem, sv1AsHtml ) ;
-        }
+            }
 
-        const handleEdit = (
-          (actualElem ? (e0) => {
-            const v1 = e0.currentTarget.innerHTML ;
-            occbLocal({
-              newValueInHtml: v1,
-              existingValueInHtml: specifiedValAsHtml,
-            } ) ;
-            void ((e, tOut) => e() )(function () {
-              ;
-              // assignIfIhtmlNotSame(actualElem, valueAsHtml ) ;
-              setSv1(v1) ;
-            } , 0 ) ;
-          } : Object ) satisfies React.FormEventHandler<HTMLDivElement>
+          ) satisfies React.FormEventHandler<HTMLDivElement>
         ) ;
   
         return (
           <div
           ref={rcbMain}
           onInput={(
-            handleEdit
+            handleEditEvt
           )}
           {...etcPrps }
           />
@@ -188,6 +321,14 @@ export const TceC = (() => {
   ) ;
 
 })() ;
+
+export type TceCompIRefValue = (
+  React.ElementRef<(
+    React.FC<{ ref: (
+      React.ComponentProps<typeof TceC>["xRef"]
+    ) }>
+  ) >
+) ;
 
 
 
