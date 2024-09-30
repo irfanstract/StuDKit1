@@ -163,6 +163,30 @@ export {
 
 ;
 
+import * as ReactDOM from "react-dom" ;
+
+import * as ReactDOMClient from "react-dom/client" ;
+// import * as ReactDOMServer from "react-dom/server" ;
+
+export {
+  ReactDOM ,
+  ReactDOMClient ,
+  ReactDOMClient as RDC ,
+} ;
+
+;
+
+
+
+
+
+
+
+
+;
+
+;
+
 export type {
   //
 } ;
