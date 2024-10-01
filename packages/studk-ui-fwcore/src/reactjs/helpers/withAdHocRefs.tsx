@@ -60,7 +60,7 @@ export type {
 
 import {
   analyseReusableJsxElement ,
-} from "studk-ui-fwcore/src/reactjs/helpers/ForwardedJsxElementAnalysis.tsx" ;
+} from "#UiFwCore/reactjs/helpers/ForwardedJsxElementAnalysis.tsx" ;
 
 const withRef: (
   & {
