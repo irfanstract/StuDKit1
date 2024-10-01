@@ -15,6 +15,10 @@
   ,
 	"imports": {
 		"#currentPkg/*": "./*"
+		,
+		"#ReactJsBased.ts": "studk-ui-fwcore/src/util/ReactJsBased.ts"
+		,"#ReactJsBased": "studk-ui-fwcore/src/util/ReactJsBased.ts"
+		,"#ReactDomBased.ts": "studk-ui-fwcore/src/util/ReactDomBased.ts"
 	}
 	,
 	"scripts": {
