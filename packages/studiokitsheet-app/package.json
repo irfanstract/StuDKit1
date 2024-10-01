@@ -17,6 +17,14 @@
     "next": "^14.0"
   }
   ,
+	"imports": {
+		"#ReactJsBased.ts": "studk-ui-fwcore/src/util/ReactJsBased.ts"
+		,"#ReactJsBased": "studk-ui-fwcore/src/util/ReactJsBased.ts"
+		,"#ReactDomBased.ts": "studk-ui-fwcore/src/util/ReactDomBased.ts"
+		,"#UiFwCore/*"  : "studk-ui-fwcore/src/*"
+		,"#UiFwExtras/*": "studk-ui-encore/src/*"
+	}
+  ,
   "scripts": {
     "dev": "npm run runDevServer"
     ,

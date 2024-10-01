@@ -104,7 +104,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+} from '#UiFwCore/ReactComponentDef.tsx'; ;
 
 import {
   describeSvgComponent ,
