@@ -49,7 +49,7 @@ import * as React from "react" ;
 
 import {
   ReactSetStateActionHelpers ,
-} from "studk-ui-fwcore/src/reactjs/helpers/UseReactSetStateAction.tsx" ;
+} from "#UiFwCore/reactjs/helpers/UseReactSetStateAction.tsx" ;
 
 ;
 
@@ -59,7 +59,7 @@ import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
 
 import {
   analyseReusableJsxElement ,
-} from "studk-ui-fwcore/src/reactjs/helpers/ForwardedJsxElementAnalysis.tsx" ;
+} from "#UiFwCore/reactjs/helpers/ForwardedJsxElementAnalysis.tsx" ;
 
 
 export const asHidden = (
