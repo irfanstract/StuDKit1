@@ -88,7 +88,7 @@ import {
 
 import {
   OVCB, 
-} from 'studk-ui/src/templating/xst/ovcb.tsx';
+} from 'studk-ui-core-ovcstack/src/main/ovcb.tsx';
 
 ;
 
