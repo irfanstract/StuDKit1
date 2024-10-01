@@ -12,34 +12,51 @@ Copyright 2024-today.
 
 ## 1. Definitions.
 
-“License” shall mean <br/>
-the terms and conditions for use, reproduction, and distribution as defined by the whole of this document.
-
-“Licensor” shall mean <br/>
-the copyright owner or entity authorized by the copyright owner that is granting the License.
-
 “Legal Entity” shall mean <br/>
-the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity.
+the union of (1) the acting entity and (2) all other entities that control, are controlled by, or are under common control with that entity.
 - For the purposes of this definition,
   “control” means
   (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or
   (ii) ownership of fifty percent (50%) or more of the outstanding shares, or
   (iii) beneficial ownership of such entity.
 
-“You” (or “Your”) shall mean <br/>
+“a License” shall mean <br/>
+a grant by someone, to someone else, of a permission to do some specific things generally prohibited otherwise
+(eg to Convey - or Move - someone else's Work in a way which, In General, would be Prohibited by the Applicable Laws ).
+
+“The Licensor” shall mean <br/>
+the copyright owner or entity authorized by the copyright owner that is granting the License.
+
+“Work” shall mean either:
+- Effort/Hard-Work;
+- The Act Which Creates Some Work;
+- The (Tangible) Result Of A Work;
+
+“Derivative Works” shall mean <br/>
+any work, whether in Source or Object form, that is based on (or derived from) some other Work(s), and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. 
+
+### ON-TOPIC SPECIFIC DEFINITIONS
+
+“This Work” shall mean <br/>
+the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
+
+“The License” shall mean <br/>
+the terms and conditions for use, reproduction, and distribution as defined by the whole of this document.
+
+“The Licensor” shall mean <br/>
+the copyright owner or entity authorized by the copyright owner that is granting the License.
+
+“You” (or “Your”) are <br/>
 an individual or Legal Entity exercising permissions granted by this License.
 
-“Source” form shall mean <br/>
+“The Source” form shall mean <br/>
 the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
 
-“Object” form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
+“The Object Form” form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
 "Compiled" is a special case of "Object" where "the Translation, of the Source form and leading to the Compiled form, was done by a Compiler".
 
 "Compilation" shall mean <br/>
 any process of translating a String people call "code, in one language (they call it)", or a "file (they call it)" whose contents is such String, into what people call "bytecode (they call it)", "executable code (they call it)", "code which can be run by a computer (they call it)", or "code, in another language, possibly the same language as the input's in (they call it)".
-
-“Work” shall mean <br/>
-the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
 
 “Derivative Works” shall mean <br/>
 any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
