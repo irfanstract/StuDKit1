@@ -7,7 +7,7 @@ import { util, } from "typexpe-commons/src/common_sv.mjs";
 
 import {
   assertAndPrintEquality,
-} from "studk-ui-fwcore/src/reactjs/helpers/AsCustomIntrinsicElement.js";
+} from "#UiFwCore/reactjs/helpers/AsCustomIntrinsicElement.js";
 
 
 
@@ -16,7 +16,7 @@ import {
 
 import {
   ReactJsBasedCustomIntrinsicElement,
-} from "studk-ui-fwcore/src/reactjs/helpers/AsCustomIntrinsicElement.js";
+} from "#UiFwCore/reactjs/helpers/AsCustomIntrinsicElement.js";
 
 
 
