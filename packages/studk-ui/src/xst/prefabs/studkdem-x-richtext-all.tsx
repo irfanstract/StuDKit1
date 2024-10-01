@@ -29,16 +29,16 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+} from '#UiFwCore/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+} from '#UiFwCore/util/EWithOpt.ts'; ;
 
 import type {
   // ContinuousLinearRange ,
-} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
+} from '#UiFwCore/util/ContinuousLinearRangeTs.ts'; ;
 
 
 
@@ -53,7 +53,7 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+} from '#UiFwCore/ReactComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
