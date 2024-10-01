@@ -71,11 +71,12 @@ export default function App()
       ) ,
       children: (
         <div>
-          { (
+          {/* { (
             <EvrC />
             // (0 && <EvrC /> )
             // null
-          ) }
+          ) } */}
+          <EvTceC />
         </div>
       ) ,
     })
@@ -98,6 +99,10 @@ const EvrC = dynamicComponent(async () => {
     </div>
   ) ;
 } , } ) ;
+
+import {
+  EvTceC ,
+} from "@/components/TCED" ;
 
 
 
