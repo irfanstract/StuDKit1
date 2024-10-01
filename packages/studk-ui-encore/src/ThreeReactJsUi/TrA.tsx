@@ -37,7 +37,7 @@ import React, {
 
 import {
   describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'
+} from '#UiFwCore/ReactComponentDef.tsx'
 
 
 
@@ -45,7 +45,7 @@ import {
 import {
   useIntervalEffect,
   useEventDispatchCallback ,
-} from 'studk-ui-fwcore/src/xt/ovc-util.tsx';
+} from '#UiFwCore/xt/ovc-util.tsx';
 
 const useForceRedraw = () => (
   useReducer<(v0: any) => any>(v => (v + 1) , 0 )

@@ -53,7 +53,7 @@ import {
   Span ,
   describeCallbackAssignedStyleProps ,
   DOmClientBoundingRect ,
-} from 'studk-ui-fwcore/src/util/ReactDomBased.ts'; ;
+} from '#UiFwCore/util/ReactDomBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -68,7 +68,7 @@ import {
 import {
   GET_LOCALOFFSET_OF ,
   GCOIbleNode ,
-} from "studk-ui-fwcore/src/dom/helpers/DOmLocalBoundingRectOfElementGeCo.ts" ;
+} from "#UiFwCore/dom/helpers/DOmLocalBoundingRectOfElementGeCo.ts" ;
 
 export type {
   /** @deprecated this is a WIP/TBD. */

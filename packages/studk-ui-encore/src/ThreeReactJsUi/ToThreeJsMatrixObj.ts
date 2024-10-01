@@ -4,7 +4,7 @@
 
 
 
-export * from "studk-ui-fwcore/src/i3d/ToThreeJsMatrixObj.ts" ;
+export * from "#UiFwCore/i3d/ToThreeJsMatrixObj.ts" ;
 
 
 
