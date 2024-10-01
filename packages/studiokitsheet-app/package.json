@@ -20,7 +20,7 @@
   "scripts": {
     "dev": "npm run runDevServer"
     ,
-    "runDevServer": "next dev --turbo"
+    "runDevServer": "next dev "
     ,
     "runDevApp102": "node ../../node_modules/studk-enx/index.mjs"
   }
