@@ -49,16 +49,16 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+} from '#UiFwCore/ReactComponentDef.tsx'; ;
 
 import {
   CFaBku ,
-} from "studk-ui-fwcore/src/reactjs/helpers/CFa.tsx" ;
+} from "#UiFwCore/reactjs/helpers/CFa.tsx" ;
 
 import {
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+} from '#UiFwCore/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
