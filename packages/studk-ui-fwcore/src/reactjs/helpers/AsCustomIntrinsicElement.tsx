@@ -53,7 +53,7 @@ import {
   nextUInt32, 
   observable,
   runMobxAction,
-} from 'studk-ui-fwcore/src/util/DOmCustomIntrinsicElemsInfrasCommon.ts';
+} from '#UiFwCore/util/DOmCustomIntrinsicElemsInfrasCommon.ts';
 
 export {
   assertAndPrintEquality ,
@@ -98,7 +98,7 @@ namespace DCIE {
 
 import {
   generateCustomIntrinsicElementName ,
-} from 'studk-ui-fwcore/src/util/DOmCustomIntrinsicElemsInfrasCommon.ts';
+} from '#UiFwCore/util/DOmCustomIntrinsicElemsInfrasCommon.ts';
 
 export {
   generateCustomIntrinsicElementName ,
