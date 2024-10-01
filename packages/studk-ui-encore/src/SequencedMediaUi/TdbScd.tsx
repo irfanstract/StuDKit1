@@ -62,11 +62,11 @@ import {
   Span ,
   describeCallbackAssignedStyleProps ,
   DOmClientBoundingRect ,
-} from 'studk-ui-fwcore/src/util/ReactDomBased.ts'; ;
+} from '#UiFwCore/util/ReactDomBased.ts'; ;
 
 import {
   GET_LOCALOFFSET_OF,
-} from 'studk-ui-fwcore/src/dom/helpers/DOmLocalBoundingRectOfElementGeCo.ts';
+} from '#UiFwCore/dom/helpers/DOmLocalBoundingRectOfElementGeCo.ts';
 
 import {
   getFullDocBodySrcBasedSvgDataUrl,
@@ -77,7 +77,7 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
+} from "#UiFwCore/xt/ovc-util.tsx" ;
 
 const GET_CLIENTOFFSET_OF = (
   (e: Element) => ({

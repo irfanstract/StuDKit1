@@ -71,11 +71,11 @@ import {
   Button ,
   Span, 
   ReactSetStateActionHelpers,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+} from '#UiFwCore/util/ReactJsBased.ts'; ;
 
 import {
   useAutoresettingProvideredState ,
-} from 'studk-ui-fwcore/src/reactjs/helpers/ProvideredStateHook1.tsx'; ;
+} from '#UiFwCore/reactjs/helpers/ProvideredStateHook1.tsx'; ;
 
 
 

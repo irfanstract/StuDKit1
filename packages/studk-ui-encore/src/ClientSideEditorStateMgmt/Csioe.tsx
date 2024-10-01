@@ -64,7 +64,7 @@ import * as React from "react" ;
 
 import {
   ReactSetStateActionHelpers ,
-} from "studk-ui-fwcore/src/reactjs/helpers/UseReactSetStateAction.tsx" ;
+} from "#UiFwCore/reactjs/helpers/UseReactSetStateAction.tsx" ;
 
 import {
   useClientSideOnly ,

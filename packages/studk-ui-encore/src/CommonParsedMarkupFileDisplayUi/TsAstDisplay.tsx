@@ -116,12 +116,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+} from '#UiFwCore/ReactComponentDef.tsx'; ;
 
 import {
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+} from '#UiFwCore/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -129,7 +129,7 @@ import {
 
 import {
   withExtraSemanticProperties ,
-} from 'studk-ui-fwcore/src/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
+} from '#UiFwCore/react-dom/helpers/WithAddedSemanticProperties.tsx'; ;
 
 import {
   SingleChildDiv,
