@@ -68,7 +68,7 @@ import {
   ComponentProps,
   withExtraSemanticProperties,
   getEffectiveZoom,
-} from 'studk-ui-fwcore/src/util/ReactDomBased.ts'; ;
+} from '#UiFwCore/util/ReactDomBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
@@ -93,7 +93,7 @@ import {
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
+} from "#UiFwCore/xt/ovc-util.tsx" ;
 
 const warnOnceOfUnsetScdOnscrollVal = (
   util.L.once(() => {
