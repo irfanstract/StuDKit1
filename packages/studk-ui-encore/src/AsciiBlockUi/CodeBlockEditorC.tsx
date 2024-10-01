@@ -67,15 +67,15 @@ import {
   getSpaceSeparatedClassNameList, 
   StudkReactJs,
   describeCallbackAssignedStyleProps,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+} from '#UiFwCore/util/ReactJsBased.ts'; ;
 
 import {
   CFaBku ,
-} from "studk-ui-fwcore/src/reactjs/helpers/CFa.tsx" ;
+} from "#UiFwCore/reactjs/helpers/CFa.tsx" ;
 
 import {
   ReactJsBasedCustomIntrinsicElement ,
-} from "studk-ui-fwcore/src/reactjs/helpers/AsCustomIntrinsicElement.tsx" ;
+} from "#UiFwCore/reactjs/helpers/AsCustomIntrinsicElement.tsx" ;
 
 import {
   useClientSideOnly ,
