@@ -4,7 +4,6 @@
 
 
 
-
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -29,34 +28,45 @@ import {
   random,
 } from "lodash-es" ;
 
+import {
+  MNI_CTXTUALONLY ,
+  mkArray ,
+} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+
 import type {
   ArgsGetOptions ,
-  ArgsWithOptions, 
-  Extend,
-} from 'studk-fwcore/src/util/C1.ts'; ;
+  ArgsWithOptions ,
+  ObjectFromEntry, 
+  RecordValue,
+} from 'studk-fwcore-setups/src/util-eawo.mjs'; ;
+
+import type {
+  ContinuousLinearRange ,
+} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
 
 
 
 
 
 
-import * as DEC from "studk-ui-componentdefinition/src/dec.tsx" ;
+import * as React from "react" ;
+
+import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
+
+import {
+  describeComponent,
+} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
 
 
 
 
 
+;
 
-export const describeComponent = (
-  DEC.describeComponent
-) ;
-
-
-
-// export {
-//   /** @deprecated an off-topic re-export(ed) item from `ReactHtmComponentDef.tsx` */
-//   getSpaceSeparatedClassNameList ,
-// } from "studk-ui-fwcore/src/ReactHtmComponentDef.tsx" ;
+export {
+  /** @deprecated import directly from `ctxStacks/ovcb.tsx` */
+  OVCB ,
+} from 'studk-ui/src/templating/xst/ctxStacks/ovcb.tsx' ;
 
 
 
