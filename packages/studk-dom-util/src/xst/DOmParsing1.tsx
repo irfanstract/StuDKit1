@@ -5,6 +5,9 @@
 
 
 
+
+
+
 /* 
  * https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#unsupported-pattern-importing-server-components-into-client-components  
  * https://stackoverflow.com/q/77592173  
@@ -21,42 +24,49 @@
 
 
 
+
 import {
   util,
-} from 'typexpe-commons/src/common_sv.mjs';
-
-import {
-  random,
-} from "lodash-es" ;
+} from 'typexpe-commons/src/common_sv.mjs'
 
 import type {
+  AllOrNever1,
   ArgsGetOptions ,
   ArgsWithOptions, 
+  EitherPropertyOf, 
   Extend,
-} from 'studk-fwcore/src/util/C1.ts'; ;
+  OmitCase,
+  OmitW,
+  RequiredPartially,
+} from 'studk-fwcore/src/util/C1.ts'
+
+
+
+;
+
+;
+
+const parseDOmParseableCode = (
+  (...[c, lang] : ArgsWithOptions<[mainCode: string, langAsMimeType: DOMParserSupportedType ], {} >) => (
+    new DOMParser().parseFromString(c, lang)
+  )
+);
+
+const parseHtml = (
+  (c: string) => (
+    parseDOmParseableCode(c, "text/html")
+  )
+);
+
+export {
+  parseDOmParseableCode ,
+  parseHtml ,
+} ;
 
 
 
 
 
-
-import * as DEC from "studk-ui-componentdefinition/src/dec.tsx" ;
-
-
-
-
-
-
-export const describeComponent = (
-  DEC.describeComponent
-) ;
-
-
-
-// export {
-//   /** @deprecated an off-topic re-export(ed) item from `ReactHtmComponentDef.tsx` */
-//   getSpaceSeparatedClassNameList ,
-// } from "studk-ui-fwcore/src/ReactHtmComponentDef.tsx" ;
 
 
 
