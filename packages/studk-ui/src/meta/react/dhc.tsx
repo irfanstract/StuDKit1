@@ -49,7 +49,7 @@ import {
 
 import {
   getFromClassNameProp ,
-} from 'studk-ui-fwcore/src/util/ReactJsBased';
+} from '#ReactJsBased.ts';
 
 ;
 

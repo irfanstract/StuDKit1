@@ -127,7 +127,7 @@ export {
 import {
   type React ,
   type StudkReactJs,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+} from '#ReactJsBased.ts'; ;
 
 import * as MBRL from "mobx-react-lite" ;
 

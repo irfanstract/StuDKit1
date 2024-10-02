@@ -55,7 +55,7 @@ import {
   getSpaceSeparatedClassNameList, 
   StudkReactJs,
   StudkReactJsOvcUtil,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+} from '#ReactJsBased.ts'; ;
 
 import {
   withTimeoutMillis ,
