@@ -829,8 +829,9 @@ stick to ESM, to avoid the following issues:
     // [Error] Import Error:
     // module "react" does not provide named export 'Context' ;
     // Note: "react" is a CommonJS module which may not provide named export ;
-    // CommonJS modules can always be imported using `import * as React from "react"`, and
-    // use `const { Context, } = React ` ;
+    // you can, however, always do it like this:
+    //     import * as React from "react" ;
+    //     const { Context, } = React ;
     ```
     then u tried to do what the diagnostic suggested u to:
     ```javascript
@@ -862,8 +863,9 @@ stick to ESM, to avoid the following issues:
     // [Error] Import Error:
     // module "lodash" does not provide named export 'once' ;
     // Note: "react" is a CommonJS module which may not provide named export ;
-    // CommonJS modules can always be imported using `import * as React from "react"`, and
-    // use `const { Context, } = React ` ;
+    // you can, however, always do it like this:
+    //     import * as React from "react" ;
+    //     const { Context, } = React ;
     ```
 
 I got rid of `lodash`, in favour of `lodash-es`,
@@ -937,7 +939,7 @@ relevant open issues with `tsc`:
 ## Relevant UI/Front-End Libraries
 
 currently we only use React. however,
-we aren't closing the doors for potential alternative FW(s).
+we won't close our doors for potential alternative FW(s).
 
 ### React
 
@@ -947,9 +949,18 @@ browse https://react.dev/learn .
 some *important lessons* which aren't immediately listed, however:
 
 - https://react.dev/learn/describing-the-ui 
+
 - https://19.react.dev/learn/adding-interactivity 
+
+- React JSX Rendering Of Custom Intrinsic Elements
+  will need to first convert Attribute Value(s) into `string`s, resulting in unexpected results;
+  you'll need to wait for React 19 RC (or alternatively React 19 Canary)
+  to get the true solution to that.
+
 - https://react.dev/learn/managing-state 
+
 - https://19.react.dev/learn/separating-events-from-effects 
+
 
 
 
