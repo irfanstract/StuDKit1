@@ -50,7 +50,7 @@ import {
   React ,
   toComponentMountKey,
   ReactSetStateActionHelpers,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+} from '#ReactJsBased.ts'; ;
 
 
 /**
