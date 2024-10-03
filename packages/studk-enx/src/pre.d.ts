@@ -10,10 +10,10 @@
 
 export {} ;
 
-declare module "electron" {
-  //
-  export {} ;
-}
+// declare module "electron" {
+//   //
+//   export {} ;
+// }
 
 
 

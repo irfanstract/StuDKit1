@@ -47,6 +47,12 @@ export type PickW<O, P extends keyof any> = (
   Pick<O, P & (keyof O)>
 ) ;
 
+type Omit<T, K extends keyof any> = (
+  T extends any ?
+  Pick<T, Exclude<keyof T, K> >
+  : never
+) ;
+
 /**
  * constrained {@link Omit}.
  * one of the four series of `PickW` and `OmitW`.

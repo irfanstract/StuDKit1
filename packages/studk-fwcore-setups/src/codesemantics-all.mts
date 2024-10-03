@@ -14,7 +14,7 @@ import {
 /* `require` is not provided for ESM */
 import {
   createRequire,
-} from './util-all.mjs' ;
+} from 'studk-fwcore/src/util/CSBD.mjs' ;
 
 /* PLATFORM */
 
@@ -38,7 +38,7 @@ import {
   exec,
   execSync,
   spawnSync,
-} from './util-all.mjs' ;
+} from 'studk-fwcore/src/util/CSBD.mjs' ;
 
 /** @type {NodeRequire} */
 const require = createRequire(import.meta.url) ;
@@ -52,17 +52,17 @@ const require = createRequire(import.meta.url) ;
 
 import {
   TS,
-} from "./codesemantics-fw.mjs" ;
+} from "studk-fwcore-setups/src/codesemantics-fw.mjs" ;
 
 import {
   loadSrcFile,
-} from './codesemantics-fw.mjs';
+} from 'studk-fwcore-setups/src/codesemantics-fw.mjs';
 
 import {
   runSearch ,
   RS_DESCEND ,
   RS_AS_TERMINAL,
-} from "./codesemantics-fw1.mjs" ;
+} from "studk-fwcore-setups/src/codesemantics-fw1.mjs" ;
 
 import type {
   ArgsWithOptions ,
