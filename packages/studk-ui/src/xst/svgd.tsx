@@ -38,29 +38,22 @@ import type {
 
 
 
-import * as React from "react" ;
-
 import {
-  describeComponent,
-} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
-
-import {
+  React ,
+  describeComponent ,
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  Span ,
+  SingleChildDiv ,
+  describeCallbackAssignedStyleProps ,
+} from '#UiFwCore/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
-
-import {
-  SingleChildDiv,
-} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
-
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/meta/react/dbc.tsx'; ;
 
 
 

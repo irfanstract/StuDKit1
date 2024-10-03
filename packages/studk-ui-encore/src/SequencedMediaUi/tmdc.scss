@@ -1,0 +1,394 @@
+
+
+
+
+@use "sass:selector";
+
+
+
+
+
+
+
+
+$studk-ui-sequemi-maintableelemselector: "table.studk-tbmctableelem, .studk-sequemi-tlwalkthruinlinecomp table" ;
+
+$studk-ui-sequemi-contentlayercellselector: '*[data-src-col-id^="content-layer"]' ;
+
+$studk-ui-sequemi-plotsegmentcellselector: '*[data-src-row-id^="plotsegment-"]' ;
+
+$studk-ui-sequemi-channelidentcellselector: '*[data-src-row-id^="itemident"]' ;
+
+$studk-ui-sequemi-channeltypecellselector: '*[data-src-row-id^="itemkind"]' ;
+
+
+
+
+
+$tbmcdebug : 0 ;
+
+@layer defaults
+{
+  //
+  
+  .studk-sequemi-tlwalkthruinlinecomp {
+    min-block-size: 45vh;
+  }
+
+  :is(#{$studk-ui-sequemi-maintableelemselector } ) {
+    //
+    // font-family: serif;
+
+    // writing-mode: vertical-lr;
+    // & :is(td, th) {
+    //   writing-mode: initial;
+    // }
+    --table-cell-orientation: vertical-lr ;
+
+  }
+
+  @if $tbmcdebug <= 0 {
+  //
+
+  //
+
+  :is(
+    :is(#{$studk-ui-sequemi-maintableelemselector } ) > * > tr 
+    ,
+    #----e
+  )
+  {
+    //
+    
+    @if false {
+      position: relative;
+      z-index: 20;
+
+      &:is(
+        * > tr:is(#{$studk-ui-sequemi-plotsegmentcellselector })
+      )
+      {
+        z-index: 10 ;
+      }
+    }
+
+  }
+
+  :is(#{$studk-ui-sequemi-maintableelemselector } )
+  {
+    //
+
+    // color: cadetblue;
+    border: 0.2ex solid cadetblue;
+
+    @if true {
+      //
+
+      &:is(table) > * {
+        position: relative;
+        z-index: 20;
+
+        &:is(thead, tfoot)
+        {
+          z-index: 25 ;
+        }
+
+        position: sticky;
+  
+        &:is(thead)
+        {
+          inset-block-start: 0;
+        }
+        &:is(tfoot)
+        {
+          inset-block-end: 0;
+        }
+
+      }
+
+    }
+
+    @if false {
+    //
+
+    & > * > tr > :is(th, td)
+    {
+      //
+
+      position: relative;
+      z-index: 20;
+      
+      &:is(
+        * > tr:is(#{$studk-ui-sequemi-channelidentcellselector }) > *
+      )
+      {
+        z-index: 25 ;
+      }
+
+      &:is(
+        // :is(thead, tbody) > tr > *
+        * > tr:where(:is(#{$studk-ui-sequemi-channelidentcellselector }), :is(#{$studk-ui-sequemi-channeltypecellselector }) ) > *
+      )
+      {
+        backdrop-filter: blur(0.2ex);
+      }
+
+      &:is(
+        // tbody > tr > *
+        tbody > tr:is(#{$studk-ui-sequemi-plotsegmentcellselector }) > *
+      )
+      {
+        z-index: 15 ;
+      }
+
+      &:is(:is(#{$studk-ui-sequemi-contentlayercellselector }) ):is(
+        // tbody > tr > *
+        tbody > tr:is(#{$studk-ui-sequemi-plotsegmentcellselector }) > *
+      )
+      {
+        z-index: 10 ;
+      }
+
+      //
+
+      &:not(:is(#{$studk-ui-sequemi-contentlayercellselector }) ) {
+        //
+        @media screen {
+          position: sticky;
+          inset-inline-start: 0;
+          inset-block-start: 0;
+        }
+      }
+  
+    }
+
+    }
+
+  }
+
+  //
+  }
+
+  // :is(table.studk-tbmctableelem > * > tr > td):is(*[data-src-col-id])
+  // table.studk-tbmctableelem > * > tr > td[data-src-col-id] ,
+  // .studk-sequemi-tlwalkthruinlinecomp td:where(:is(#{$studk-ui-sequemi-contentlayercellselector }) )
+  :is(
+    :is(#{$studk-ui-sequemi-maintableelemselector } ) > * > tr > :is(th, td)
+    ,
+    #----e
+  )
+  {
+    //
+
+    &:is(:is(#{$studk-ui-sequemi-contentlayercellselector }) ):is(
+      // tbody > tr > *
+      tbody > tr:is(#{$studk-ui-sequemi-plotsegmentcellselector }) > *
+    )
+    {
+      background-color: black ;
+      border-color: black ;
+      color: lightgray;
+    }
+
+    &:not(:is(#{$studk-ui-sequemi-contentlayercellselector }) ) {
+      //
+      font-weight: bolder;
+    }
+
+    &:is(:is(#{$studk-ui-sequemi-contentlayercellselector }) ) {
+      zoom: 80%;
+      font-family: "Cambria", "DejaVu Serif", "Roboto Serif", serif;
+    }
+
+    //
+    &:is(:is(#{$studk-ui-sequemi-contentlayercellselector }):is(tbody > tr:is(#{$studk-ui-sequemi-plotsegmentcellselector }) > * ) ) {
+      //
+
+      // border: 0.2ex solid blue !important;
+
+      padding-block: 0 ;
+
+      @if false {
+        //
+        & > * {
+          border: 0.2ex solid red;
+          display: inline-block;
+          vertical-align: top;
+        }
+        &::after {
+          content: "co";
+          vertical-align: top;
+        }
+        & > *, &::after {
+          vertical-align: bottom;
+        }
+      }
+
+      @if false {
+        //
+        & > * {
+          margin-inline: -0.5ex;
+        }
+      }
+
+      /* https://stackoverflow.com/a/14670886 */
+      /* experimental solution using `position: relative` and `position: absolute` even when `display: table-cell`; portability yet to be tried */
+      @if true {
+        //
+        position: relative;
+        & > * {
+          position: absolute ;
+          inset: 0 ;
+        }
+      }
+
+    }
+  }
+  
+  /* was merely for debugging. */
+  // *:is(#{$studk-ui-sequemi-plotsegmentcellselector }) {
+  //   border: 0.2ex solid green !important;
+  // }
+
+}
+
+
+
+
+
+// TODO
+@property --t-start {
+  syntax: "<number> | auto";
+  inherits: true;
+  initial-value: auto;
+}
+@property --t-end {
+  syntax: "<number> | auto";
+  inherits: true;
+  initial-value: auto;
+}
+@property --sc {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* DEBUG */
+
+
+
+
+
+
+// @if true {
+//   //
+
+//   $paddw: 1.095ex ;
+//   $bordw: 0.3095ex ;
+
+//   .studk-sequemi-tdbi-withspecialisedscdoverrides-1do03 {
+//     border: $bordw solid hsl(0, 100%, 50%) !important ;
+//     padding: $paddw !important ;
+//   }
+//   .studk-sequemi-tdbi-withspecialisedscdoverrides-1do02 {
+//     border: $bordw solid hsl(20, 100%, 50%) !important ;
+//     padding: $paddw !important ;
+//   }
+//   .studk-sequemi-tdbi-withspecialisedscdoverrides-1do01 {
+//     border: $bordw solid hsl(35, 100%, 50%) !important ;
+//     padding: $paddw !important ;
+//   }
+
+// }
+
+%debug-bordw {
+  //
+  border: 0.295ex solid black ;
+  padding: 0.6095  ;
+}
+
+@if 1 <= $tbmcdebug {
+  //
+
+  $uninteres-saturrate: 51.93% ;
+
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1do03 {
+    @extend %debug-bordw ;
+    border-color: hsl(0, $uninteres-saturrate, 50%) ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1do02 {
+    @extend %debug-bordw ;
+    border-color: hsl(0, $uninteres-saturrate, 50%) ;
+    border-style: dashed ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1do01 {
+    @extend %debug-bordw ;
+    border-color: hsl(0, $uninteres-saturrate, 50%) ;
+    border-style: dotted ;
+  }
+
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner02 {
+    @extend %debug-bordw ;
+    border-color: hsl(218, $uninteres-saturrate, 50%) ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1dinner01 {
+    @extend %debug-bordw ;
+    border-color: hsl(218, $uninteres-saturrate, 50%) ;
+    border-style: dashed ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1c02 {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(200, $uninteres-saturrate, 50%) ;
+    // border-style: dashed ;
+  }
+  .studk-sequemi-tdbi-withspecialisedscdoverrides-1c01 {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(200, $uninteres-saturrate, 50%) ;
+    border-style: dashed ;
+  }
+
+  .studk-paginatedui-scdc-paginroot-d302 {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(183, $uninteres-saturrate, 30%) ;
+  }
+  .studk-paginatedui-scdc-paginroot-d301 {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(183, $uninteres-saturrate, 30%) ;
+    border-style: dashed ;
+  }
+  .studk-paginatedui-scdc-paginroot {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(183, $uninteres-saturrate, 37%) ;
+  }
+  .studk-paginatedui-scdc-wholediv {
+    //
+    @extend %debug-bordw ;
+    border-color: hsl(183, $uninteres-saturrate, 37%) ;
+    border-style: dashed ;
+  }
+
+}
+
+
+
+
+
+

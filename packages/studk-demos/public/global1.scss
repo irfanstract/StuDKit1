@@ -1,0 +1,391 @@
+
+
+
+
+
+
+
+
+
+
+/* @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100..900&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+
+
+
+
+
+
+
+
+
+/* RECOMMENDED PER-COMPONENT DEFAULTS */
+
+/* that's it */
+
+
+
+
+
+
+
+
+h1, h2 {
+  /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-family: 'Inter', Roboto, 'Helvetica Neue', sans-serif ;
+}
+
+/* we deliberately restrict this to "bring attention" elems, not "strong" elems */
+b {
+  /* font-family: var(--font-poppins), var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-family: "Poppins", "Inter", Roboto, 'Helvetica Neue', sans-serif ;
+}
+
+
+
+
+
+
+body {
+  
+  /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+  font-weight: 500;
+}
+
+body {
+  /* font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
+  /* font-family: var(--font-outfittt), var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ; */
+  /* font-weight: 530; */
+  letter-spacing: 0.028ex ;
+}
+
+
+
+
+
+
+
+:is(h1, h2, h3, h4, h5, h6)
+{
+  &::before
+  {
+    content: "§";
+    color: rgba(128 128 128 / 0.5 );
+  }
+
+  &:hover::before
+  {
+    color: hsla(217, 100%, 75%, 0.5);
+  }
+
+}
+
+
+
+
+
+
+@media screen {
+  //
+
+  h1, h2, h3, h4, h5, h6
+  {
+  
+    position: sticky;
+    top : 0.25em ;
+    offset-block-start : 0.25em ;
+    left: 0.25em ;
+    offset-inline-start: 0.25em ;
+  
+  }
+  
+  //
+}
+
+//
+
+
+
+
+
+
+
+//
+
+@media screen {
+//
+
+dialog[open] {
+  position: sticky;
+  position: fixed;
+  inset-block-start: 0;
+}
+
+}
+
+dialog[open] {
+  border-radius: 0.5em ;
+}
+dialog[open]::backdrop {
+  background: rgba(0 0 0 / 0.5 ) ;
+  backdrop-filter: blur(0.35em) ;
+}
+
+dialog:not([open]) {
+  opacity: 0 ;
+}
+dialog[open] {
+  opacity: 1 ;
+}
+@starting-style {
+  dialog[open] {
+    opacity: 0 ;
+  }
+}
+
+dialog {
+  transition-behavior: allow-discrete ;
+}
+
+
+
+
+
+
+
+//
+
+/* relocated from the `layout.css`es */
+
+
+
+
+
+//
+
+.arbrd-d1 {
+  padding-inline: 1em 1em;
+  padding-block: 1em 1em;
+  /* overflow-x: auto; */
+
+}
+
+@media (min-width: 1024px)
+{  
+  .arbrd-d1 {
+    padding-inline: 3em 1em;
+  }
+}
+
+html {
+  @media screen {
+    //
+    background: hsl(89.88deg 100% 11.5%) ;
+    color: white;
+  }
+  font-weight: 530;
+}
+html {
+  justify-content: center;
+  text-align: center;
+}
+
+@media screen {
+//
+}
+html {
+  background: hsl(240, 84%, 17%);
+}
+
+
+// .arbrd-d1 {
+//   display: block;
+//   max-inline-size: 1196px;
+//   margin-inline: auto ;
+// }
+
+
+
+
+
+//
+
+@layer defaults, studk-demos-strl-defaults ;
+
+@layer studk-demos-strl-defaults {
+
+/* equivalent to ((32 + 8)em ), but we can't use `px` so we assume per `em` is `16px` */
+
+.strl-d1 {
+  display: grid;
+  grid: "main" "exploringView" ;
+  grid-template-rows: auto ;
+  grid-template-columns: 1fr;
+}
+
+.strl-d1 {
+  overflow-x: clip;
+}
+
+.strl-exploringAndOutline {
+  display: grid;
+  grid: "thisdoc" "otherdocs";
+  grid-template-rows: 1fr 1fr ;
+}
+.strl-exploringAndOutline > :nth-child(1) {
+  grid-area: thisdoc;
+}
+
+.strl-exploringAndOutline {
+  position: relative;
+}
+@media screen {
+  //
+  .strl-exploringAndOutline {
+    height: 96vh;
+    position: sticky;
+    top: 2em;
+  }
+}
+
+@media screen {
+  //
+  .strl-d2 {
+    min-height: 200vh ;
+  }
+}
+
+@media (min-width: 640px)
+{
+  
+  .strl-d1 {
+    display: grid;
+    grid: "main exploringView" "main ." ;
+    grid-template-columns: 3fr 1fr ;
+    @media screen {
+      grid-template-rows: 98vh 1fr ;
+    }
+  }
+  .strl-d1 > :nth-child(1) { grid-area: main; }
+  .strl-d1 > :nth-child(2) { grid-area: exploringView; }
+  
+  .strl-exploringAndOutline {
+    display: grid;
+    grid: "otherdocs" "thisdoc";
+    grid-template-rows: 1fr 1.9fr ;
+  }
+
+  .strl-exploringAndOutline {
+    background: rgba(0 0 0 / 0);
+  }
+
+  // .strl-exploringAndOutline {
+  //   padding-block-end: 5em ;
+  //   margin-block-end: -4.5em ;
+  // }
+
+  @media screen {
+  //
+  .strl-d1 {
+    grid-template-rows: 116vh 1fr ;
+  }
+  .strl-exploringAndOutline {
+    height: 116vh;
+    top: 0;
+  }
+  }
+
+  @media print {
+    .strl-exploringAndOutline {
+      top: 10ex;
+    }
+  }
+
+  @if false {
+    //
+    @media print {
+      .strl-exploringAndOutline > :is(*:not(:first-child) ) {
+        display: none !important;
+      }
+    }
+  }
+
+}
+
+.strl-exploringAndOutline {
+  background: rgba(0 0 0 / 0.2);
+}
+
+.strl-exploringAndOutline {
+  zoom: 81%;
+  padding: 0.5em;
+}
+
+.strl-exploringAndOutline {
+  background: rgba(0 0 0 / 0.82);
+  color: rgba(255 255 255 / 0.9);
+  border-radius: 0.3em ;
+}
+
+}
+
+
+
+
+
+
+.arbrd-d2 {
+  border-radius: 0.25em;
+  
+}
+
+.arbrd-d2 {
+  
+  background: white !important;
+  color: black !important;
+
+  text-align: start;
+  justify-content: start;
+  justify-items: start;
+}
+
+.arbrd-d2 {
+  
+  box-shadow: "#0000002d 0 0 0.3em 0.3em" !important;
+  border-radius: "0.25em" !important;
+  border        : "0.05em solid black" !important;
+  
+  padding-block : "2em 3em"       !important;
+  padding-inline: "0.51em 0.51em" !important;
+}
+
+.arbrd-d3 {
+  max-width: 28em;
+  margin-inline-end  : 3em ;
+  margin-inline-start: 1em ;
+}
+
+.arbrd-d2 {
+  display: block;
+  max-inline-size: 880px;
+  margin-inline: auto ;
+}
+
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+

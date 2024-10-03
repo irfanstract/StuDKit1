@@ -41,11 +41,11 @@ import type {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+} from '#UiFwCore/util/EWithOpt.ts'; ;
 
 import type {
   ContinuousLinearRange ,
-} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
+} from '#UiFwCore/util/ContinuousLinearRangeTs.ts'; ;
 
 import {
   allocateKeyInternedObjectPool ,
@@ -83,7 +83,7 @@ export {
   mkArray ,
 } ;
 
-export type * from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+export type * from '#UiFwCore/util/EWithOpt.ts'; ;
 
 export type {
   ContinuousLinearRange ,

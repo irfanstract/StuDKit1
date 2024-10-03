@@ -29,39 +29,43 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+} from '#UiFwCore/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
   ArgsWithOptions ,
-} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+} from '#UiFwCore/util/EWithOpt.ts'; ;
 
 import type {
   // ContinuousLinearRange ,
-} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
+} from '#UiFwCore/util/ContinuousLinearRangeTs.ts'; ;
 
-
-
-
-
-
-import * as React from "react" ;
 
 
 
 
 
 import {
-  describeComponent,
-} from 'studk-ui/src/meta/react/dec.tsx'; ;
+  React ,
+  StudkReactJs,
+  describeComponent ,
+  describeHtmlComponent,
+  getSpaceSeparatedClassNameList,
+  mkClasses ,
+  withExtraSemanticProperties,
+  Button ,
+  Span ,
+  SingleChildDiv ,
+  describeCallbackAssignedStyleProps ,
+} from '#UiFwCore/util/ReactJsBased.ts'; ;
+
+
+
+
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
-
-import {
-  SingleChildDiv,
-} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
 
 import {
   MainAndNavAndFinaleC,

@@ -61,7 +61,7 @@ import {
   withTimeoutMillis ,
   useAsyncInitedEffect ,
   useAsyncStartEffect ,
-} from "studk-ui-fwcore/src/reactjs/helpers/UseResourceViaAsync1.tsx" ;
+} from "#UiFwCore/reactjs/helpers/UseResourceViaAsync1.tsx" ;
 
 export {
   /**

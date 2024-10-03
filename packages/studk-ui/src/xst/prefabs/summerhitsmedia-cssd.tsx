@@ -20,7 +20,7 @@
 
 
 
-export * from "studk-ui-fwcore/src/xt/summerhitsmedia-cssd.tsx" ;
+export * from "#UiFwCore/xt/summerhitsmedia-cssd.tsx" ;
 
 
 

@@ -28,19 +28,17 @@ import {
   random,
 } from "lodash-es" ;
 
-import {
-  MNI_CTXTUALONLY ,
-  mkArray ,
-} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
-
 import type {
   ArgsGetOptions ,
-  ArgsWithOptions ,
-} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'
 
 import type {
   ContinuousLinearRange ,
-} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
+} from '#UiFwCore/util/ContinuousLinearRangeTs.ts'; ;
 
 const TIMEOUT = (
   (tMillis: number) => (
@@ -60,25 +58,26 @@ import {
 
 
 
-import * as React from "react" ;
-
 import {
-  describeComponent,
-} from 'studk-ui-componentdefinition/src/dec.tsx'; ;
+  React ,
+  StudkReactJs,
+} from 'studk-ui-fwcore/src/util/ReactJsBased';
 
 import {
   useIntervalEffect ,
   useIntervalScan ,
   useMutableRefObjState ,
   useRefState ,
-} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
+} from "#UiFwCore/xt/ovc-util.tsx" ;
 
 
-import * as ReactDOM from "studk-fbreact-all/src/react-dom-min-1.ts" ;
+import {
+  ReactDOM ,
+} from 'studk-ui-fwcore/src/util/ReactDomBased';
 
 import {
   withRef ,
-} from "studk-ui-fwcore/src/reactjs/helpers/withAdHocRefs.tsx" ;
+} from "#UiFwCore/reactjs/helpers/withAdHocRefs.tsx" ;
 
 
 
@@ -88,7 +87,7 @@ import {
 
 import {
   OVCB, 
-} from 'studk-ui/src/templating/xst/ovcb.tsx';
+} from 'studk-ui-core-ovcstack/src/main/ovcb.tsx';
 
 ;
 
@@ -122,7 +121,7 @@ export { ovcbMid, } ;
 import {
   doNativeCompDisplayedOffsetsAnalysis,
   useNativeCompDisplayedOffsetsAnalysis,
-} from "studk-ui-fwcore/src/xt/ReactJsHookGetComputedStyle102.tsx" ;
+} from "#UiFwCore/xt/ReactJsHookGetComputedStyle102.tsx" ;
 
 import type {
   //
@@ -132,7 +131,7 @@ import type {
 import {
   useExistingNativeCompBoundingBoxViaRef ,
   NCPSR ,
-} from "studk-ui-fwcore/src/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
+} from "#UiFwCore/xt/ReactJsHookFollowOtherCompComputedStyle103.tsx" ;
 
 type IRenderNativeElemOverlaySupported = (
   NcpSupportedElem

@@ -31,7 +31,7 @@ import {
 import {
   MNI_CTXTUALONLY ,
   mkArray ,
-} from 'studk-ui-fwcore/src/util/EWithOpt.ts'; ;
+} from '#UiFwCore/util/EWithOpt.ts'; ;
 
 import type {
   ArgsGetOptions ,
@@ -42,7 +42,7 @@ import type {
 
 import type {
   ContinuousLinearRange ,
-} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs.ts'; ;
+} from '#UiFwCore/util/ContinuousLinearRangeTs.ts'; ;
 
 
 
