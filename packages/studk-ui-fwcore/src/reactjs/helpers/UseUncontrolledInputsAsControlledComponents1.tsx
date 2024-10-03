@@ -54,7 +54,21 @@ import {
   React ,
   getSpaceSeparatedClassNameList, 
   StudkReactJs,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+  StudkReactJsOvcUtil,
+} from '#ReactJsBased.ts'; ;
+
+import {
+  withTimeoutMillis ,
+  useAsyncInitedEffect ,
+  useAsyncStartEffect ,
+} from "#UiFwCore/reactjs/helpers/UseResourceViaAsync1.tsx" ;
+
+export {
+  /**
+   * @deprecated instead, redirect it into direct one `UseResourceViaAsync1.tsx`.
+   */
+  useAsyncStartEffect ,
+} ;
 
 const useDeferredAndTransitionalValue = (
   (function <T> (...[specifiedValAsHtml, {
@@ -73,8 +87,18 @@ const useDeferredAndTransitionalValue = (
       React.useState(fallbackValue)
     ) ;
 
+    const [dwc, setDwc] = (
+      React.useState<number>(() => (
+        util.L.random(32, 800, false )
+        * 1000
+      ) )
+    ) ;
+
     if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
-      void (transitionalValue === specifiedValAsHtml || setTransitionalValue(specifiedValAsHtml ) ) ;
+      void (transitionalValue === specifiedValAsHtml || [
+        setTransitionalValue(specifiedValAsHtml ) ,
+        setDwc(v => (v + 1 ) ) ,
+      ] ) ;
     }
 
     return (
@@ -89,6 +113,8 @@ const useDeferredAndTransitionalValue = (
 
         fallbackValue ,
 
+        dwc ,
+
       } as const) , [
         //
 
@@ -98,6 +124,8 @@ const useDeferredAndTransitionalValue = (
         setTransitionalValue ,
 
         fallbackValue ,
+
+        dwc ,
 
       ])
     ) ;

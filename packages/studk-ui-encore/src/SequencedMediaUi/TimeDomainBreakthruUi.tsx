@@ -77,7 +77,7 @@ import {
   describeCallbackAssignedStyleProps, 
   ReadonlyArrayOrSeq,
   StudkReactJs,
-} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+} from '#UiFwCore/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
