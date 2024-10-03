@@ -59,11 +59,11 @@ import type {
 
 // export * from 'studk-fwcore/src/util/C1.ts'; ;
 
-export {} from 'studk-util/src/utilityTypeDefs/OITF.mts'; ;
-export * from 'studk-util/src/utilityTypeDefs/DictRecordEitherPropertyOrExtends.mts'; ;
-export * from 'studk-util/src/utilityTypeDefs/DictRecordKeyedPick.mts'; ;
+export type {} from 'studk-util/src/utilityTypeDefs/OITF.mts'; ;
+export type * from 'studk-util/src/utilityTypeDefs/DictRecordEitherPropertyOrExtends.mts'; ;
+export type * from 'studk-util/src/utilityTypeDefs/DictRecordKeyedPick.mts'; ;
 // export * from 'studk-util/src/utilityTypeDefs/SpecialiseW.mts'; ;
-export {
+export type {
   ArgsWithOptions ,
 } from 'studk-util/src/utilityTypeDefs/ArgsWithOptions.mts'; ;
 
