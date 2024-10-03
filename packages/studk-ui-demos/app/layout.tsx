@@ -8,7 +8,7 @@ import * as React from "react" ;
 
 /* import needs to be pre/repeated preceding the imports of component defs, as work-around to the naive approach the platform takes to bundle CSS */
 // console["log"](new Error("l") ) ;
-import "@/public/global.css" ;
+import "@/public/global1.scss" ;
 import "@/appInternalScripts/env" ;
 
 import {
@@ -17,7 +17,7 @@ import {
 
 import { MainAndNavAndFinaleC, } from "studk-ui/src/xst/prefabs/studkdem-semanticlayout-site-mnavf.tsx" ;
 
-import Link from "next/link" ;
+import AppLink from "next/link" ;
 
 import {
   NavigateBackButton,
@@ -26,6 +26,13 @@ import {
 
 
 
+/**
+ * trying to make module `@/appInternalScripts/env` run .
+ * it seems like the FW refuses to re-run this file `layout.tsx` on Client-Side, so
+ * we need to make the module define-and-export a Client Component and actually put the exported Component into display ;
+ * otherwise, the module's code will never run, since nothing else will ever cause the module's code to run
+ * 
+ */
 import { EnvTsxMainDummyC, } from "@/appInternalScripts/env" ;
 
 import "./layout.scss" ;
@@ -50,6 +57,8 @@ export default function RootLayout({
 })
 {
   return (
+    <>
+    <EnvTsxMainDummyC />
     <html lang="en" style={{ }}>
       <body
       className={(
@@ -70,24 +79,24 @@ export default function RootLayout({
         footerSecContents={(
           <menu>
           <React.Fragment>
-              <Link href="/" >
+              <AppLink href="/" >
               Home
-              </Link>
+              </AppLink>
               --
-              <Link href="/reference/demos/" >
+              <AppLink href="/reference/demos/" >
               Demos
-              </Link>
-              <Link href="/reference/emptypage/" >
+              </AppLink>
+              <AppLink href="/reference/emptypage/" >
               Empty Page
-              </Link>
+              </AppLink>
               --
-              <Link href="/credits/">
+              <AppLink href="/credits/">
               credits
-              </Link>
+              </AppLink>
               --
-              <Link href="about:blank">
+              <AppLink href="about:blank">
               <code>about:blank</code>
-              </Link>
+              </AppLink>
               --
               <NavigateBackButton />
               <NavigateForwardButton />
@@ -96,9 +105,9 @@ export default function RootLayout({
         )}
         />
         </WOSC>
-        <EnvTsxMainDummyC />
       </body>
     </html>
+    </>
   ) ;
 }
 

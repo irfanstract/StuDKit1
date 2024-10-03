@@ -44,26 +44,14 @@ import type {
 
 ;
 
-import * as React from "react" ;
-
-
-
-
-
-
 import {
-  describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
-
-import {
-  describeHtmlComponent,
+  React ,
+  StudkReactJs ,
+  toComponentMountKey, 
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
-
-import {
   Button ,
   Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   pagesConventions,
@@ -71,19 +59,6 @@ import {
   AppLink,
   Image,
 } from "@/appInternalScripts/appPagesConvention"; ;
-
-import {
-  useIntervalEffect ,
-  useIntervalScan ,
-  useMutableRefObjState ,
-  useRefState ,
-} from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
-
-import {
-  WithElementBoundingBoxHighlightingC,
-  WithOvcLevelleRefGoodiesC,
-  WithOverlaySupportC,
-} from "studk-ui/src/templating/xst/ctxStacks/ovc.tsx" ;
 
 export default function App()
 {

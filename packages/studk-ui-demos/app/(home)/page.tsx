@@ -44,8 +44,6 @@ import type {
 
 ;
 
-import * as React from "react" ;
-
 
 
 
@@ -56,7 +54,18 @@ import {
   dynamicComponent,
   AppLink,
   Image,
+  getSpaceSeparatedClassNameList, 
+  //
+  React ,
+  StudkReactJs,
 } from "@/appInternalScripts/appPagesConvention"; ;
+
+;
+
+
+
+
+
 
 export default function App()
 {

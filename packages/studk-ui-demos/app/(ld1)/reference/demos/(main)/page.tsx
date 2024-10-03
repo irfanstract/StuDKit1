@@ -44,26 +44,18 @@ import type {
 
 ;
 
-import * as React from "react" ;
-
-
-
-
-
-
 import {
-  describeHtmlComponent,
+  React ,
+  StudkReactJs ,
+  toComponentMountKey, 
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+  Button ,
+  Span ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
 
 import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
-
-import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/xst/dbc.tsx'; ;
 
 import {
   pagesConventions,

@@ -14,17 +14,30 @@ import {
   random,
 } from "lodash-es" ;
 
+import {
+  ReadonlyURLSearchParams,
+} from "next/navigation";
+
+export {
+  ReadonlyURLSearchParams ,
+} ;
 
 
 
 
 
-import * as React from "react" ;
 
+import {
+  React ,
+  getSpaceSeparatedClassNameList, 
+  StudkReactJs,
+} from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
-
-
-
+export {
+  React ,
+  getSpaceSeparatedClassNameList, 
+  StudkReactJs,
+} ;
 
 // import dynamicComponent from "next/dynamic";
 const dynamicComponent: (
@@ -39,21 +52,148 @@ export {
   dynamicComponent as dynamicComponent,
 } ;
 
+import {
+  SingleChildDiv,
+} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
+
+export {
+  SingleChildDiv ,
+} ;
+
+import { MainAndNavAndFinaleC, } from "studk-ui/src/xst/prefabs/studkdem-semanticlayout-site-mnavf.tsx" ;
+
+export {
+  MainAndNavAndFinaleC ,
+} ;
+
+import {
+  useSearchParams ,
+  usePathname,
+} from "next/navigation";
+
 import AppLink from "next/link";
 
-// import NxImage from "next/image";
+const useSearchParamState = (
+
+  function () {
+
+    const pathname = (
+      usePathname()
+    ) ;
+    /**
+     * {@link useSearchParams}.
+     * 
+     * due to the usage of {@link React.useMemo},
+     * to avoid rerender-loop
+     * we convert them to `String` first
+     * 
+     */
+    const queryString = (
+      useSearchParams().toString()
+    ) ;
+
+    const router = useRouter() ;
+
+    return (
+
+      React.useMemo(() => {
+
+        const fmatAfterSearchParamReplace = (
+
+          (v1: ReadonlyURLSearchParams | string): string => (
+            [pathname, "?", v1.toString() ]
+            .join("")
+          )
+        ) ;
+    
+        return (
+          [queryString, {
+    
+            queryString ,
+            queryStringStructure: new ReadonlyURLSearchParams(queryString) ,
+            pathname ,
+    
+            underlyingRouter: router ,
+            pushSearchParamsState: (v1: ReadonlyURLSearchParams | string) => (
+              router.push((
+                fmatAfterSearchParamReplace(v1)
+              ) )
+            ) ,
+            replaceSearchParamsState: (v1: ReadonlyURLSearchParams | string) => (
+              router.replace((
+                fmatAfterSearchParamReplace(v1)
+              ) )
+            ) ,
+    
+          } ] as const
+        ) ;
+      } , [
+        pathname ,
+        queryString ,
+        router ,
+      ])
+    ) ;
+  }
+) ;
+
+import {
+  useRouter ,
+} from "next/navigation";
+
+export {
+  usePathname,
+  useSearchParams,
+  useSearchParamState,
+  AppLink as AppLink,
+  useRouter as useRouter, 
+} ;
+
+import {
+  NavigateBackButton,
+  NavigateForwardButton ,
+} from "studk-ui/src/meta/react/uiNavigateBackForth.tsx"; ;
+
+export {
+  NavigateBackButton ,
+  NavigateForwardButton ,
+} ;
+
+const getQueryStringFromProps = (
+
+  function <const actualKeyT extends string> (...[vals] : [Record<actualKeyT, string>] )
+  {
+
+    const spC = new URLSearchParams() ;
+    for (const [k, v] of Object.entries(((): Record<string, string> => vals )() ) ) {
+      spC.set(k, v) ;
+    }
+
+    return (
+      spC.toString()
+    ) ;
+  }
+) ;
+
+export {
+  getQueryStringFromProps ,
+  /** @deprecated alias of {@link getQueryStringFromProps}. */
+  getQueryStringFromProps as MSP ,
+} ;
+
+// export {
+//   NextRouter ,
+// } from "next/router";
+
+import NxImage from "next/image";
+
 const Image: (
   | React.ElementType<JSX.IntrinsicElements["img"] >
   | (typeof import("next/image") )
 ) = "img" ;
 
-// export {
-//   default as NxImage,
-// } from "next/image";
 export {
-  AppLink as AppLink,
   Image as Image,
-  // NxImage ,
+  NxImage ,
 } ;
 
 

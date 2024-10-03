@@ -22,7 +22,7 @@ import {
 
 import "studk-ui/src/quick/studkCssPresets/iui.tsx" ;
 
-import "@/public/global.css" ;
+import "@/public/global1.scss" ;
 
 (async () => {
   if (typeof window !== "undefined")

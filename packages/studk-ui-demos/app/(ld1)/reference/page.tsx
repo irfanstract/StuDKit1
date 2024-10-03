@@ -44,14 +44,16 @@ import type {
 
 ;
 
-import * as React from "react" ;
-
 import {
+  React ,
+  getSpaceSeparatedClassNameList, 
+  StudkReactJs,
   NativeButton ,
-  Button, 
-  Span,
-} from "studk-ui/src/xst/dbc.tsx" ;
-console["log"]({ NativeButton, }) ;
+  Button ,
+  ButtonC ,
+  Span ,
+  SpanC ,
+} from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
 
 
