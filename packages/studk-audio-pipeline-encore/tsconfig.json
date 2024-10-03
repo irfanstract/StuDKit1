@@ -13,9 +13,11 @@
     "noEmit": false, "emitDeclarationOnly": true, /* https://stackoverflow.com/a/77369498 */
     "allowImportingTsExtensions": true ,
     /* https://stackoverflow.com/a/61513685 */
-    // "rootDir": "src" , /* moved into 'tsconfig.build.json' --- per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
+    "rootDir": "src" ,
     "outDir": "dist",
 
+    /* `jsx` in `studk-demos` needs to be set to `"preserve"` per the Next(JS) docs - therefore we assume `"react-jsx"` or `"react"` */
+    "jsx": "react",
   },
   
   "references": [
@@ -25,6 +27,7 @@
     { "path": "../../packages/studk-fwcore/tsconfig.build.json", } ,
 
     { "path": "../../packages/studk-audio-fwcore/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-audio-pipeline-common/tsconfig.build.json", } ,
 
     { "path": "../../packages/studk-ui-fwcore/tsconfig.build.json", } ,
     { "path": "../../packages/studk-ui-coresemanticelems/tsconfig.build.json", } ,
