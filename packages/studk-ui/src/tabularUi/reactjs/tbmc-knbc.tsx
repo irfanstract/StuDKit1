@@ -20,7 +20,7 @@ import type {
 
 import type {
   ContinuousLinearRange ,
-} from 'studk-ui-fwcore/src/util/ContinuousLinearRangeTs'; ;
+} from '#UiFwCore/util/ContinuousLinearRangeTs'; ;
 
 export namespace XUtil { ; }
 
@@ -38,7 +38,7 @@ import {
   withExtraSemanticProperties,
   describeCallbackAssignedStyleProps,
   ButtonC,
-} from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
+} from '#UiFwCore/util/ReactJsBased'; ;
 
 import {
   describeHeadlinedArticle ,
