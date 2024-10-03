@@ -1,0 +1,40 @@
+{
+  "extends": "../../tsconfig.json" ,
+  "compilerOptions": {
+    "moduleResolution": "Node16",
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true ,
+    "module": "NodeNext",
+
+    /* to avoid the so-called complaints "referenced file is not under root dir", we need to stick to Project References, */
+    /* https://www.typescriptlang.org/docs/handbook/project-references.html */
+    "composite": true ,
+    /* yet, at the same time, work with Vite or Next.js, meaning that */
+    /* we need the 'noEmit'-like behaviour, but */
+    /* "referenced project may not disable emit" and hence we turned to 'emitDeclarationOnly' */
+    /* https://stackoverflow.com/a/77369498 (in https://stackoverflow.com/q/71704754 ) */
+    "emitDeclarationOnly": true, "noEmit": false,
+    /* necessary  */
+    "allowImportingTsExtensions": true ,
+    /* https://stackoverflow.com/a/61513685 */
+    // "rootDir": "src" , /* moved into 'tsconfig.build.json' --- per https://stackoverflow.com/q/35470511 focused at https://stackoverflow.com/a/60223923 */
+    "outDir": "dist",
+
+    /* `jsx` in `studk-demos` needs to be set to `"preserve"` per the Next(JS) docs - therefore we assume `"react-jsx"` or `"react"` */
+    "jsx": "react",
+  },
+  "include": [
+    "src" ,
+
+    "**/corejs.d.ts",
+  ],
+  // "exclude": [
+  //   "src/**/*" ,
+  // ],
+  "references": [
+    { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-util", } ,
+    { "path": "../../packages/studk-fwcore/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-fwcore-setups", } ,
+  ] ,
+}
