@@ -33,7 +33,12 @@ import type {
   OmitCase,
   OmitW,
   PickW,
-} from 'studk-fwcore/src/util/C1.ts'
+} from 'studk-fwcore/src/util/C1.ts' ;
+
+type CapitalAToZ = (
+  // @ts-ignore
+  keyof {Q,W,E,R,T,Y,U,I,O,P,A,S,D,F,G,H,J,K,L,Z,X,C,V,B,N,M}
+) ;
 
 // function assertAndPrintEquality<T>(actual: unknown, expected: T, message?: string | Error): asserts actual is T
 // {
@@ -293,7 +298,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
   ) ;
 
   const defineWithRender10 = (
-    function <const tgNm extends string, actualProps extends { [k: string]: string | (CeEventListenerFnc<Event, boolean> | CeEventListenerFnc<Event, void> ) ; } >(...a : (
+    function <const tgNm extends string, actualProps extends { [k: string]: IPN<typeof k> ; } >(...a : (
       ArgsWithOptions<[
         tgName: tgNm,
         render: (props: actualProps) => Extract<React.ReactNode, object | null> ,
@@ -471,10 +476,25 @@ export namespace ReactJsBasedCustomIntrinsicElement {
       {
             ;
 
+            interface Sp {
+              readonly mdlSpaceKey: string,
+              readonly value: object | string | null ,
+            }
+
+            const effectivePropSerDeserTransationalDescs1 = (
+
+              propSerDeserTransationalDescs
+              .map(({ mdlSpaceKey, getValueFrom, }): Sp => ({ mdlSpaceKey, value: getValueFrom(e), } as const ) )
+              .toSpliced(0, 0, ...[
+                { mdlSpaceKey: "innerHTML"  , value: e.innerHTML    , } ,
+                { mdlSpaceKey: "textContent", value: e.textContent  , } ,
+              ])
+            ) ;
+
             const o3 = (
               util.Immutable.Map((
-                propSerDeserTransationalDescs
-                .map(({ mdlSpaceKey, getValueFrom, }) => ({ mdlSpaceKey, value: getValueFrom(e), } as const ) )
+
+                effectivePropSerDeserTransationalDescs1
                 .map(({ mdlSpaceKey, value, }) => [ mdlSpaceKey, value ] as const )
               ))
               .toObject()
@@ -686,7 +706,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
    * 
    */
   export const defineWithRenderFnAndProgrammaticItcBaseClassAlt = (
-    function <const tgNm extends string, const actualProps extends { [k: string]: string ; } >(...a : (
+    function <const tgNm extends string, const actualProps extends { [k: string]: IPN<typeof k> ; } >(...a : (
       ArgsWithOptions<[
         tgName: tgNm,
         render: (props: actualProps ) => Extract<React.ReactNode, object | null> ,
@@ -716,7 +736,7 @@ export namespace ReactJsBasedCustomIntrinsicElement {
    * 
    */
   export const definePrivatelyWithRenderFnAndProgrammaticItcBaseClassAlt = (
-    function <const tgNm extends string, const actualProps extends { [k: string]: string | (CeEventListenerFnc<Event, boolean> | CeEventListenerFnc<Event, void> ) ; } >(...a : (
+    function <const tgNm extends string, const actualProps extends { [k: string]: IPN<typeof k> ; } >(...a : (
       ArgsWithOptions<[
         ...[tgName?: tgNm | null,],
         render: (props: actualProps ) => Extract<React.ReactNode, object | null> ,
@@ -744,6 +764,26 @@ export namespace ReactJsBasedCustomIntrinsicElement {
         })
       ) ;
     }
+  ) ;
+
+  export type IPN<tgNm extends string> = (
+    [tgNm] extends [`on${IpnCamelCasedEvtName }`] ?
+    IpnEventCallback
+    :
+    [tgNm] extends ["innerHTML" | "textContent"] ?
+    string
+    :
+    (
+      | string
+      | IpnEventCallback
+    )
+  ) ;
+
+  type IpnCamelCasedEvtName = `${CapitalAToZ }${string }` ;
+
+  type IpnEventCallback = (
+    | CeEventListenerFnc<Event, boolean>
+    | CeEventListenerFnc<Event, void>
   ) ;
 
   /**
