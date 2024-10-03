@@ -119,13 +119,27 @@
     "packages" ,
     // "packages/*/src" ,
     // "src" ,
+    "${configDir}/src" ,
+    "${configDir}/test" ,
     // ".next/types/**/*.ts" ,
 
     /* IN-SOURCE D-TS FILES */
     /* otherwise, the `yyyyy.d.ts` has no effect */
     
     "**/corejs.d.ts",
+    "scripts/CherryPickedEssentialDts" ,
+    /* otherwise `next-env.d.ts` has no effect */
     "next-env.d.ts" ,
+    "${configDir}/next-env.d.ts" ,
+
+    /* TRANSLATED -- GENERATED D-TS FILES */
+    /* https://nextjs.org/docs/app/building-your-application/configuring/typescript#custom-type-declarations */
+
+    "${configDir}/.next/types/**/*.ts" ,
+
+    /* OTHER POSSIBLE SRC FILE(S) */
+
+    "${configDir}/**/*" ,
 
     /* CONFIG FILES */
     
