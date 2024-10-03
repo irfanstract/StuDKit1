@@ -46,12 +46,12 @@ import * as React from "react" ;
 
 import {
   describeComponent,
-} from 'studk-ui-fwcore/src/ReactComponentDef.tsx'; ;
+} from '#UiFwCore/ReactComponentDef.tsx'; ;
 
 import {
   describeHtmlComponent,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/ReactHtmComponentDef.tsx'; ;
+} from '#UiFwCore/ReactHtmComponentDef.tsx'; ;
 
 import {
   describeHeadlinedArticle ,
