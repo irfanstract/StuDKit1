@@ -45,13 +45,9 @@ import {
 } from "studk-util/src/math/point-all.mjs" ;
 
 
-const TIMEOUT = (
-  (tMillis: number) => (
-    new Promise<void>(resume => (
-      setTimeout(resume, tMillis)
-    ))
-  )
-) ;
+import {
+  TIMEOUT,
+} from 'studk-ui-fwcore/src/util/TimeoutPromiseUtil.ts';
 
 export {
   TIMEOUT ,

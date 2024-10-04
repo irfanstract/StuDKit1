@@ -126,6 +126,33 @@ export {
 
 } from "studk-ui-fwcore/src/util/StudkReactJsCore.ts" ;
 
+export const {
+
+  /**
+   * like {@link useState} but
+   * without those spcl treatment of `function`s ;
+   * the right one for {@link React.Ref Ref(s) }
+   * 
+   */
+  value: useRefState,
+
+} = {
+
+  value: function useRefState<Value extends {} >()
+  {
+
+    return (
+      useReducer((v0: unknown, v2: Value | null) : (Value | null) => (
+        v2
+      ) , null )
+    ) ;
+  } ,
+} ;
+
+export * from "studk-ui-fwcore/src/reactjs/helpers/UseTimeBoundedTransition1.tsx" ;
+
+export * from "studk-ui-fwcore/src/util/StudkReactJsAsyncFunctionReturnValue.ts" ;
+
 import {
   //
   OptionallyExternedState ,
