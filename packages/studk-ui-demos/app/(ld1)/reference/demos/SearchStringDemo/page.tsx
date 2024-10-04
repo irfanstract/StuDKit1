@@ -62,6 +62,9 @@ import {
   dynamicComponent,
   AppLink,
   Image,
+  useSearchParamState,
+  getQueryStringFromProps, 
+  ReadonlyURLSearchParams,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 
@@ -71,36 +74,49 @@ import {
 
 
 
+const MAIN_ENTERED_QUERY = "q" ;
+
 export default function App()
 {
+
+  const [s, setS] = (
+
+    useSearchParamState()
+  ) ;
+
   return (
     <div>
       <p>
-        please open:
+        Search:
       </p>
-      <ul>
-        <li>
-          <AppLink
-          href="/reference/demos/all/"
-          children={<code>all</code> }
-          />
-        </li>
-        <li>
-          <AppLink
-          href="/reference/demos/SearchStringDemo/"
-          children={<><i>SearchStringDemo</i></> }
-          />
-        </li>
-        <li>
-          <AppLink
-          href="/reference/demos/sim3d/"
-          children={<><i>Simulation 3D</i></> }
-          />
-        </li>
-      </ul>
+      <p>
+        <input
+        value={(
+          new ReadonlyURLSearchParams(s).get(MAIN_ENTERED_QUERY) ?? ""
+        )}
+        onChange={e => {
+          const newv = e.target.value ;
+          setS.replaceSearchParamsState((
+            getQueryStringFromProps({
+              [MAIN_ENTERED_QUERY]: newv ,
+            })
+          )) ;
+        } }
+        />
+      </p>
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
