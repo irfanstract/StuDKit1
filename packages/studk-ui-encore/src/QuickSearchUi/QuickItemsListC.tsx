@@ -60,6 +60,10 @@ import {
 
 
 import {
+  useDeferredAndTransitionalValue,
+} from 'studk-ui-fwcore/src/reactjs/helpers/UseUncontrolledInputsAsControlledComponents1.tsx';
+
+import {
   QuickSearchTransition ,
   useKeyTypedownTransitionState ,
 } from "studk-ui-encore/src/QuickSearchUi/QuickItemsListTransition1.tsx" ;
@@ -121,11 +125,86 @@ const QckC = (
   ))
 ) ;
 
+const QckSearchC = (
+
+  // true
+  StudkReactJs.describeHtmlComponent((
+    function QckSearchCImpl(props : (
+      {
+        //
+        q: string ,
+        processInputValueChgEvent: (
+          (evt: { newValue: string, }) =>
+            void
+        ) ,
+      }
+    ) )
+    {
+
+      const {
+        q: sv ,
+        processInputValueChgEvent: PIVCE ,
+      } = props ;
+
+      const {
+        transitionalValue: transitionalSv ,
+        setTransitionalValue: setTransitionalSv ,
+      } = (
+        useDeferredAndTransitionalValue(sv, {
+          fallbackValue: sv ,
+        })
+      ) ;
+    
+      const {
+        beingTyped ,
+      } = (
+    
+        useTextSearch(transitionalSv)
+      ) ;
+    
+      // TODO
+      return (
+        <div>
+          <p>
+            Search:
+          </p>
+          <p>
+            <input
+            value={(
+              // sv
+              transitionalSv
+            )}
+            onChange={e => {
+              const newv = e.target.value ;
+              PIVCE({
+                newValue: newv,
+              }) ;
+              setTransitionalSv(newv ) ;
+            } }
+            style={{
+              inlineSize: `75%` ,
+            }}
+            />
+          </p>
+          <p>
+            { beingTyped ? (
+              <span>Typing</span>
+            ) : (
+              <span>Idle (<code>{ sv }</code>)</span>
+            ) }
+          </p>
+        </div>
+      )
+    }
+  ))
+) ;
+
 export {
   useTextSearch,
   QuickSearchTransition ,
   /** @deprecated WIP */
   useKeyTypedownTransitionState ,
+  QckSearchC,
   /** @deprecated WIP */
   QckC ,
 } ;
