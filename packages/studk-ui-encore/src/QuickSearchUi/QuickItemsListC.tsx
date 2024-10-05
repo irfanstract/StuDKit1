@@ -169,6 +169,12 @@ const QckSearchC = (
             Search:
           </p>
           <p>
+            <span
+            style={{
+              display: "flex" ,
+              flexDirection: "row",
+            }}
+            >
             <input
             value={(
               // sv
@@ -185,6 +191,7 @@ const QckSearchC = (
               inlineSize: `75%` ,
             }}
             />
+            </span>
           </p>
           <p>
             { beingTyped ? (
