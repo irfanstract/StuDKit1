@@ -93,11 +93,6 @@ export default function App()
     React.useTransition()
   ) ;
 
-  const [s, setS] = (
-
-    useSearchParamState()
-  ) ;
-
   const [sv, setSV] = (
 
     useSearchParamDictItemState(MAIN_ENTERED_QUERY)
@@ -156,9 +151,6 @@ export default function App()
         ) : (
           <span>Idle (<code>{ sv }</code>)</span>
         ) }
-      </p>
-      <p>
-        <code>{ JSON.stringify([{ sv, transitionalSv, }, { s, }], null, 2 ) }</code>
       </p>
     </div>
   )
