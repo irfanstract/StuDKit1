@@ -149,6 +149,8 @@ export const {
   } ,
 } ;
 
+export * from "studk-ui-fwcore/src/reactjs/helpers/UseIncrementState1.tsx" ;
+
 export * from "studk-ui-fwcore/src/reactjs/helpers/UseTimeBoundedTransition1.tsx" ;
 
 export * from "studk-ui-fwcore/src/util/StudkReactJsAsyncFunctionReturnValue.ts" ;

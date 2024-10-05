@@ -63,6 +63,10 @@ import {
   useAsyncStartEffect ,
 } from "#UiFwCore/reactjs/helpers/UseResourceViaAsync1.tsx" ;
 
+import {
+  useTimeBoundedDependencyChangeTransition ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseTimeBoundedTransition1.tsx" ;
+
 export {
   /**
    * @deprecated instead, redirect it into direct one `UseResourceViaAsync1.tsx`.
@@ -94,7 +98,22 @@ const useDeferredAndTransitionalValue = (
       ) )
     ) ;
 
-    if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
+    // TODO
+    const [isPspb, ] = (
+
+      useTimeBoundedDependencyChangeTransition({
+        timeoutMillis: 300 ,
+        dependencies: [
+          specifiedValAsHtml ,
+        ] ,
+      })
+    ) ;
+
+    if ((
+      specifiedValDeferredAsHtml === specifiedValAsHtml
+      ,
+      isPspb
+    ) ) {
       void (transitionalValue === specifiedValAsHtml || [
         setTransitionalValue(specifiedValAsHtml ) ,
         setDwc(v => (v + 1 ) ) ,

@@ -257,8 +257,19 @@ const useAsyncInterlacingHetero = (
         useLayoutEffect(() => {
           const s = new AbortController() ;
 
+          fNotRun = true ;
+
           const itr = (
-            startNextRecomp1(false, { s: s.signal, } )
+            (async function * () {
+
+              fNotRun = false ;
+
+              return (
+                yield* (
+                  startNextRecomp1(false, { s: s.signal, } )
+                )
+              ) ;
+            } )()
           ) ;
 
           void (
@@ -297,15 +308,32 @@ const useAsyncInterlacingHetero = (
 
             })()
 
-            .catch(ez => (
+            .catch((ez: Error) => (
+              fNotRun ?
+              (
+                console["info"](`terminated before even started:`, String(ez) )
+                ,
+                console["debug"](`terminated before even started:`, ez )
+              )
+              :
               processResolverErrorEvt1(ez)
             ) )
 
           ) ;
 
+          var fNotRun : boolean ;
+
           return () => {
             s.abort() ;
-            itr.throw(new TypeError(`aborted`) ) ;
+            void (
+              itr.throw(new TypeError(`aborted`) )
+              .catch((z: Error) => (
+                console["error"](`echoed exception on closedown: ` , String(z))
+                ,console.groupCollapsed(`the exception was:`, String(z) )
+                ,console["log"](z)
+                ,console.groupEnd()
+              ) )
+            ) ;
           } ;
         } , [
           updatedBId ,
