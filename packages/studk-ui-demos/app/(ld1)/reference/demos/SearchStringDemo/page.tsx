@@ -76,12 +76,40 @@ import {
 
 const MAIN_ENTERED_QUERY = "q" ;
 
+import {
+  useTextSearch ,
+} from "studk-ui-encore/src/QuickSearchUi/QuickItemsListC" ;
+
+import {
+  useDeferredAndTransitionalValue,
+} from 'studk-ui-fwcore/src/reactjs/helpers/UseUncontrolledInputsAsControlledComponents1.tsx';
+
 export default function App()
 {
 
   const [s, setS] = (
 
     useSearchParamState()
+  ) ;
+
+  const sv = (
+    new ReadonlyURLSearchParams(s).get(MAIN_ENTERED_QUERY) ?? ""
+  ) ;
+
+  const {
+    transitionalValue: transitionalSv ,
+    setTransitionalValue: setTransitionalSv ,
+  } = (
+    useDeferredAndTransitionalValue(sv, {
+      fallbackValue: sv ,
+    })
+  ) ;
+
+  const {
+    beingTyped ,
+  } = (
+
+    useTextSearch(transitionalSv)
   ) ;
 
   return (
@@ -92,7 +120,8 @@ export default function App()
       <p>
         <input
         value={(
-          new ReadonlyURLSearchParams(s).get(MAIN_ENTERED_QUERY) ?? ""
+          // sv
+          transitionalSv
         )}
         onChange={e => {
           const newv = e.target.value ;
@@ -101,8 +130,19 @@ export default function App()
               [MAIN_ENTERED_QUERY]: newv ,
             })
           )) ;
+          setTransitionalSv(newv ) ;
         } }
         />
+      </p>
+      <p>
+        { beingTyped ? (
+          <span>Typing</span>
+        ) : (
+          <span>Idle (<code>{ sv }</code>)</span>
+        ) }
+      </p>
+      <p>
+        <code>{ JSON.stringify([{ sv, transitionalSv, }, { s, }], null, 2 ) }</code>
       </p>
     </div>
   )
