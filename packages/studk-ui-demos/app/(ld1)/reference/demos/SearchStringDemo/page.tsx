@@ -78,6 +78,7 @@ import {
 const MAIN_ENTERED_QUERY = "q" ;
 
 import {
+  QckSearchC,
   useTextSearch ,
 } from "studk-ui-encore/src/QuickSearchUi/QuickItemsListC" ;
 
@@ -98,60 +99,25 @@ export default function App()
     useSearchParamDictItemState(MAIN_ENTERED_QUERY)
   ) ;
 
-  const {
-    transitionalValue: transitionalSv ,
-    setTransitionalValue: setTransitionalSv ,
-  } = (
-    useDeferredAndTransitionalValue(sv, {
-      fallbackValue: sv ,
-    })
-  ) ;
-
-  const {
-    beingTyped ,
-  } = (
-
-    useTextSearch(transitionalSv)
-  ) ;
-
   return (
     <div>
       <p>
         Search:
       </p>
-      <p>
-        <input
-        value={(
-          // sv
-          transitionalSv
-        )}
-        onChange={e => {
-          const newv = e.target.value ;
+      <QckSearchC
+      q={sv}
+      processInputValueChgEvent={(
+        ({ newValue: newv, }) => {
+          ;
           SST(() => {
             ;
-            // setS.replaceSearchParamsState((
-            //   getQueryStringFromProps({
-            //     [MAIN_ENTERED_QUERY]: newv ,
-            //   })
-            // )) ;
             setSV(newv, {
               overwrite: true ,
             }) ;
           }) ;
-          setTransitionalSv(newv ) ;
-        } }
-        style={{
-          inlineSize: `75%` ,
-        }}
-        />
-      </p>
-      <p>
-        { beingTyped ? (
-          <span>Typing</span>
-        ) : (
-          <span>Idle (<code>{ sv }</code>)</span>
-        ) }
-      </p>
+        }
+      )}
+      />
     </div>
   )
 }
