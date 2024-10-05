@@ -88,6 +88,11 @@ import {
 export default function App()
 {
 
+  const [, SST] = (
+
+    React.useTransition()
+  ) ;
+
   const [s, setS] = (
 
     useSearchParamState()
@@ -127,12 +132,17 @@ export default function App()
         )}
         onChange={e => {
           const newv = e.target.value ;
-          // setS.replaceSearchParamsState((
-          //   getQueryStringFromProps({
-          //     [MAIN_ENTERED_QUERY]: newv ,
-          //   })
-          // )) ;
-          setSV(newv) ;
+          SST(() => {
+            ;
+            // setS.replaceSearchParamsState((
+            //   getQueryStringFromProps({
+            //     [MAIN_ENTERED_QUERY]: newv ,
+            //   })
+            // )) ;
+            setSV(newv, {
+              overwrite: true ,
+            }) ;
+          }) ;
           setTransitionalSv(newv ) ;
         } }
         style={{
