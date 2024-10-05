@@ -14,6 +14,16 @@ import {
   random,
 } from "lodash-es" ;
 
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'; ;
+
 import {
   ReadonlyURLSearchParams,
 } from "next/navigation";
@@ -31,6 +41,7 @@ import {
   React ,
   getSpaceSeparatedClassNameList, 
   StudkReactJs,
+  ReactSetStateActionHelpers,
 } from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
 
 export {
@@ -105,6 +116,30 @@ const useSearchParamState = (
             .join("")
           )
         ) ;
+
+        const pushSearchParamsState = (
+
+          (...a : (
+            ArgsWithOptions<[newValue: ReadonlyURLSearchParams | string] , {
+              overwrite ?: boolean ,
+            }>
+          ) ) => {
+
+            const [
+              v1,
+              optsArg,
+            ] = a ;
+            const {
+              overwrite = false ,
+            } = optsArg ?? {} ;
+
+            return (
+              router[overwrite ? "replace" : "push"]((
+                fmatAfterSearchParamReplace(v1)
+              ) )
+            ) ;
+          }
+        ) ;
     
         return (
           [queryString, {
@@ -114,15 +149,13 @@ const useSearchParamState = (
             pathname ,
     
             underlyingRouter: router ,
-            pushSearchParamsState: (v1: ReadonlyURLSearchParams | string) => (
-              router.push((
-                fmatAfterSearchParamReplace(v1)
-              ) )
-            ) ,
-            replaceSearchParamsState: (v1: ReadonlyURLSearchParams | string) => (
-              router.replace((
-                fmatAfterSearchParamReplace(v1)
-              ) )
+            pushSearchParamsState ,
+            replaceSearchParamsState: (
+              (v1: ReadonlyURLSearchParams | string) => (
+                pushSearchParamsState(v1, {
+                  overwrite: true ,
+                })
+              )
             ) ,
     
           } ] as const
@@ -136,6 +169,62 @@ const useSearchParamState = (
   }
 ) ;
 
+const useSearchParamDictItemState = (
+
+  function (...[MAIN_ENTERED_QUERY] : [key: string] )
+  {
+
+    const [s, setS] = (
+
+      useSearchParamState()
+    ) ;
+
+    const sv = (
+      new ReadonlyURLSearchParams(s).get(MAIN_ENTERED_QUERY) ?? ""
+    ) ;
+
+    const setSValue = (
+
+      React.useCallback((...a : (
+        ArgsWithOptions<[newv: React.SetStateAction<string>] , {
+          //
+          overwrite ?: boolean ,
+        }>
+      )) => {
+
+        const [newv0, optsARg] = a ;
+        const {
+          //
+          overwrite: ovwArg ,
+        } = optsARg ?? {} ;
+
+        const newv = (
+
+          ReactSetStateActionHelpers.asDigestFnc(newv0 )(sv)
+        ) ;
+
+        return (
+
+          setS.pushSearchParamsState(
+            (
+              getQueryStringFromProps({
+                [MAIN_ENTERED_QUERY]: newv ,
+              })
+            ) , {
+              overwrite: ovwArg ,
+            } )
+        ) ;
+
+        ;
+      } , [
+        // TODO
+      ])
+    ) ;
+
+    return [sv, setSValue] as const ;
+  }
+) ;
+
 import {
   useRouter ,
 } from "next/navigation";
@@ -144,6 +233,7 @@ export {
   usePathname,
   useSearchParams,
   useSearchParamState,
+  useSearchParamDictItemState,
   AppLink as AppLink,
   useRouter as useRouter, 
 } ;
