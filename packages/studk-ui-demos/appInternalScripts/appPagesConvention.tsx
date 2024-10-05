@@ -14,6 +14,16 @@ import {
   random,
 } from "lodash-es" ;
 
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'; ;
+
 import {
   ReadonlyURLSearchParams,
 } from "next/navigation";
@@ -28,151 +38,61 @@ export {
 
 
 import {
+
+  usePathname,
+  useSearchParams ,
+  useSearchParamState ,
+  useSearchParamDictItemState ,
+  useRouter,
+  getQueryStringFromProps,
+
+  AppLink,
+  NavigateBackButton,
+  NavigateForwardButton ,
+
   React ,
-  getSpaceSeparatedClassNameList, 
-  StudkReactJs,
-} from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
+  getSpaceSeparatedClassNameList ,
+  StudkReactJs ,
+  ReactSetStateActionHelpers ,
+  dynamicComponent ,
+  SingleChildDiv ,
+  MainAndNavAndFinaleC ,
+
+  NxImage ,
+
+} from "studk-ui-fwcore/src/util/NextJsSpecificRoutedGoodies1" ;
 
 export {
   React ,
   getSpaceSeparatedClassNameList, 
   StudkReactJs,
 } ;
-
-// import dynamicComponent from "next/dynamic";
-const dynamicComponent: (
-  // | (typeof util.L.identity)
-  | (typeof import("next/dynamic").default )
-  | null
-) = (
-  null
-) ;
 
 export {
   dynamicComponent as dynamicComponent,
 } ;
 
-import {
-  SingleChildDiv,
-} from "studk-ui/src/xst/prefabs/studkdem-esingulardiv.tsx"; ;
-
 export {
   SingleChildDiv ,
 } ;
-
-import { MainAndNavAndFinaleC, } from "studk-ui/src/xst/prefabs/studkdem-semanticlayout-site-mnavf.tsx" ;
 
 export {
   MainAndNavAndFinaleC ,
 } ;
 
-import {
-  useSearchParams ,
-  usePathname,
-} from "next/navigation";
-
-import AppLink from "next/link";
-
-const useSearchParamState = (
-
-  function () {
-
-    const pathname = (
-      usePathname()
-    ) ;
-    /**
-     * {@link useSearchParams}.
-     * 
-     * due to the usage of {@link React.useMemo},
-     * to avoid rerender-loop
-     * we convert them to `String` first
-     * 
-     */
-    const queryString = (
-      useSearchParams().toString()
-    ) ;
-
-    const router = useRouter() ;
-
-    return (
-
-      React.useMemo(() => {
-
-        const fmatAfterSearchParamReplace = (
-
-          (v1: ReadonlyURLSearchParams | string): string => (
-            [pathname, "?", v1.toString() ]
-            .join("")
-          )
-        ) ;
-    
-        return (
-          [queryString, {
-    
-            queryString ,
-            queryStringStructure: new ReadonlyURLSearchParams(queryString) ,
-            pathname ,
-    
-            underlyingRouter: router ,
-            pushSearchParamsState: (v1: ReadonlyURLSearchParams | string) => (
-              router.push((
-                fmatAfterSearchParamReplace(v1)
-              ) )
-            ) ,
-            replaceSearchParamsState: (v1: ReadonlyURLSearchParams | string) => (
-              router.replace((
-                fmatAfterSearchParamReplace(v1)
-              ) )
-            ) ,
-    
-          } ] as const
-        ) ;
-      } , [
-        pathname ,
-        queryString ,
-        router ,
-      ])
-    ) ;
-  }
-) ;
-
-import {
-  useRouter ,
-} from "next/navigation";
-
 export {
   usePathname,
   useSearchParams,
   useSearchParamState,
+  useSearchParamDictItemState,
   AppLink as AppLink,
   useRouter as useRouter, 
 } ;
-
-import {
-  NavigateBackButton,
-  NavigateForwardButton ,
-} from "studk-ui/src/meta/react/uiNavigateBackForth.tsx"; ;
 
 export {
   NavigateBackButton ,
   NavigateForwardButton ,
 } ;
-
-const getQueryStringFromProps = (
-
-  function <const actualKeyT extends string> (...[vals] : [Record<actualKeyT, string>] )
-  {
-
-    const spC = new URLSearchParams() ;
-    for (const [k, v] of Object.entries(((): Record<string, string> => vals )() ) ) {
-      spC.set(k, v) ;
-    }
-
-    return (
-      spC.toString()
-    ) ;
-  }
-) ;
 
 export {
   getQueryStringFromProps ,
@@ -183,8 +103,6 @@ export {
 // export {
 //   NextRouter ,
 // } from "next/router";
-
-import NxImage from "next/image";
 
 const Image: (
   | React.ElementType<JSX.IntrinsicElements["img"] >

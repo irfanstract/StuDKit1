@@ -65,6 +65,7 @@ import {
   useSearchParamState,
   getQueryStringFromProps, 
   ReadonlyURLSearchParams,
+  useSearchParamDictItemState,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 
@@ -76,12 +77,26 @@ import {
 
 const MAIN_ENTERED_QUERY = "q" ;
 
+import {
+  QckSearchC,
+  useTextSearch ,
+} from "studk-ui-encore/src/QuickSearchUi/QuickItemsListC" ;
+
+import {
+  useDeferredAndTransitionalValue,
+} from 'studk-ui-fwcore/src/reactjs/helpers/UseUncontrolledInputsAsControlledComponents1.tsx';
+
 export default function App()
 {
 
-  const [s, setS] = (
+  const [, SST] = (
 
-    useSearchParamState()
+    React.useTransition()
+  ) ;
+
+  const [sv, setSV] = (
+
+    useSearchParamDictItemState(MAIN_ENTERED_QUERY)
   ) ;
 
   return (
@@ -89,21 +104,20 @@ export default function App()
       <p>
         Search:
       </p>
-      <p>
-        <input
-        value={(
-          new ReadonlyURLSearchParams(s).get(MAIN_ENTERED_QUERY) ?? ""
-        )}
-        onChange={e => {
-          const newv = e.target.value ;
-          setS.replaceSearchParamsState((
-            getQueryStringFromProps({
-              [MAIN_ENTERED_QUERY]: newv ,
-            })
-          )) ;
-        } }
-        />
-      </p>
+      <QckSearchC
+      q={sv}
+      processInputValueChgEvent={(
+        ({ newValue: newv, }) => {
+          ;
+          SST(() => {
+            ;
+            setSV(newv, {
+              overwrite: true ,
+            }) ;
+          }) ;
+        }
+      )}
+      />
     </div>
   )
 }
