@@ -193,11 +193,101 @@ const QckSearchC = (
               <span>Idle (<code>{ sv }</code>)</span>
             ) }
           </p>
+          <div>
+            { beingTyped ? (
+              <p>Being Typed</p>
+            ) : (
+              KSR(transitionalSv).renderFullResultListSec()
+            ) }
+          </div>
         </div>
       )
     }
   ))
 ) ;
+
+function KSR(...[qw] : [q: string] )
+{
+
+  const searchResults = (
+
+    //
+    (
+      (
+        util.Immutable.Seq(util.range(2033, 2111) )
+        .sortBy(v => (3 / Math.max(1 , (v ** 1.25 ) << (v * 5) ) ) )
+      )
+      .slice(0, 30 )
+      .toOrderedMap()
+      .mapKeys((_, id) => id )
+    )
+    .map((id, ) => {
+
+      const o = id + 8 ;
+
+      const fw = (
+        <span>
+          { `${o}th time, ${qw}` }
+        </span>
+      ) ;
+
+      const searchq = fw ;
+
+      const sp = (
+        <div>
+        <p>
+          <b>{ fw }</b>
+        </p>
+        <p>
+          { fw }.
+          { fw }.
+          { fw }.
+        </p>
+        </div>
+      ) ;
+
+      return { id, fw, searchq, sp, } as const ;
+    } )
+  ) ;
+
+  return {
+
+    renderFullResultListSec: () => {
+      return (
+        <div>
+          <p>Results for <q>{ qw }</q>:</p>
+          <ol>
+            { (
+              searchResults
+              .map(({ id, fw, searchq, sp, }) => {
+
+                return (
+                  <div>
+                  <p>
+                    <q>{ searchq }</q>
+                  </p>
+                  <blockquote>
+                    { sp }
+                  </blockquote>
+                  <p>
+                    Src ID: <code>{ id }</code>
+                  </p>
+                  </div>
+                ) ;
+              } )
+              .map((v, id) => (
+                <li key={id}>
+                  { v }
+                </li>
+              ))
+              .toIndexedSeq()
+            ) }
+          </ol>
+        </div>
+      ) ;
+    } ,
+  } as const ;
+}
 
 export {
   useTextSearch,
