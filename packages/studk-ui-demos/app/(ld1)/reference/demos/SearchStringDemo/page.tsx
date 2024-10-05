@@ -65,6 +65,7 @@ import {
   useSearchParamState,
   getQueryStringFromProps, 
   ReadonlyURLSearchParams,
+  useSearchParamDictItemState,
 } from "@/appInternalScripts/appPagesConvention"; ;
 
 
@@ -92,8 +93,9 @@ export default function App()
     useSearchParamState()
   ) ;
 
-  const sv = (
-    new ReadonlyURLSearchParams(s).get(MAIN_ENTERED_QUERY) ?? ""
+  const [sv, setSV] = (
+
+    useSearchParamDictItemState(MAIN_ENTERED_QUERY)
   ) ;
 
   const {
@@ -125,13 +127,17 @@ export default function App()
         )}
         onChange={e => {
           const newv = e.target.value ;
-          setS.replaceSearchParamsState((
-            getQueryStringFromProps({
-              [MAIN_ENTERED_QUERY]: newv ,
-            })
-          )) ;
+          // setS.replaceSearchParamsState((
+          //   getQueryStringFromProps({
+          //     [MAIN_ENTERED_QUERY]: newv ,
+          //   })
+          // )) ;
+          setSV(newv) ;
           setTransitionalSv(newv ) ;
         } }
+        style={{
+          inlineSize: `75%` ,
+        }}
         />
       </p>
       <p>
