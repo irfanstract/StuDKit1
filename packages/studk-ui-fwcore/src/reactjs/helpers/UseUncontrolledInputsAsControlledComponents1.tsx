@@ -75,7 +75,7 @@ export {
 } ;
 
 const useDeferredAndTransitionalValue = (
-  (function <T> (...[specifiedValAsHtml, {
+  (function <T extends {}> (...[specifiedValAsHtml, {
     fallbackValue ,
   }] : (
     ArgsWithOptions<[updatedSpecifiedValue: T ], { fallbackValue: T, }>
@@ -87,8 +87,17 @@ const useDeferredAndTransitionalValue = (
       React.useDeferredValue(specifiedValAsHtml)
     ) ;
 
-    const [transitionalValue, setTransitionalValue] = (
-      React.useState(fallbackValue)
+    const [tsv0, setTransitionalValue] = (
+      React.useState<T | null>(null )
+    ) ;
+
+    const transitionalValue = (
+      // TODO
+      tsv0 ?? specifiedValAsHtml ?? fallbackValue
+    ) ;
+
+    const hasTransitionalValue = (
+      (tsv0 !== null )
     ) ;
 
     const [dwc, setDwc] = (
@@ -102,20 +111,24 @@ const useDeferredAndTransitionalValue = (
     const [isPspb, ] = (
 
       useTimeBoundedDependencyChangeTransition({
-        timeoutMillis: 300 ,
+        timeoutMillis: 750 ,
         dependencies: [
           specifiedValAsHtml ,
         ] ,
       })
     ) ;
 
-    if ((
-      specifiedValDeferredAsHtml === specifiedValAsHtml
-      ,
+    const isIntendedTransitionState = (
+      hasTransitionalValue
+      &&
       isPspb
+    ) ;
+
+    if ((
+      !isIntendedTransitionState
     ) ) {
       void (transitionalValue === specifiedValAsHtml || [
-        setTransitionalValue(specifiedValAsHtml ) ,
+        setTransitionalValue(null ) ,
         setDwc(v => (v + 1 ) ) ,
       ] ) ;
     }
@@ -129,6 +142,8 @@ const useDeferredAndTransitionalValue = (
         specifiedValDeferred: specifiedValDeferredAsHtml ,
         transitionalValue ,
         setTransitionalValue ,
+        hasTransitionalValue ,
+        isIntendedTransitionState,
 
         fallbackValue ,
 
@@ -141,6 +156,8 @@ const useDeferredAndTransitionalValue = (
         specifiedValDeferredAsHtml ,
         transitionalValue ,
         setTransitionalValue ,
+        hasTransitionalValue ,
+        isIntendedTransitionState,
 
         fallbackValue ,
 
