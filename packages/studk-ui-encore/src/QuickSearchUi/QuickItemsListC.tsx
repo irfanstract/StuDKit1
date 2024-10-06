@@ -290,15 +290,14 @@ const QckSearchC = (
 function KSR(...[qw] : [q: string] )
 {
 
-  const searchResults = (
+  const searchSrcItemList = (
 
+    //
     //
     (
       (
         util.Immutable.Seq(util.range(2033, 2111) )
-        .sortBy(v => (3 / Math.max(1 , (v ** 1.25 ) << (v * 5) ) ) )
       )
-      .slice(0, 30 )
       .toOrderedMap()
       .mapKeys((_, id) => id )
     )
@@ -306,39 +305,70 @@ function KSR(...[qw] : [q: string] )
 
       const o = id + 8 ;
 
-      const fwPlain = (
+      const forewordPlain = (
         `${o}th time, ${qw}`
       ) ;
 
-      const fw = (
+      const foreword = (
         <span>
-          { fwPlain }
+          { forewordPlain }
         </span>
       ) ;
-
-      const searchq = fw ;
 
       const sp = (
         <div>
         <p>
-          <b>{ fw }</b>
+          <b>{ foreword }</b>
         </p>
         <p>
-          { fw }.
-          { fw }.
-          { fw }.
+          { foreword }. {}
+          { foreword }. {}
+          { foreword }. {}
         </p>
         </div>
       ) ;
 
+      const sdcId = (
+        "" + id + "::" + getQueryStringFromProps({ q: forewordPlain, }).slice(2)
+      ) ;
+
+      const sItemUrl = (
+        `https://localhost:61915/searchdotcom/${sdcId}` 
+      ) ;
+
       return {
         id,
-        searchq,
-        fwPlain,
-        fw,
+        sItemUrl,
+        forewordPlain,
+        foreword,
         sp,
       } as const ;
     } )
+
+  ) ;
+
+  const searchResults = (
+
+    searchSrcItemList
+
+    .map(e => {
+
+      const { foreword, } = e ;
+
+      const searchq = foreword ;
+
+      return {
+        ...e ,
+        searchq,
+      } as const ;
+    })
+    .sortBy(item => {
+      const id = item.id ;
+      return (
+        (3 / Math.max(1 , (id ** 1.25 ) << (id * 5) ) )
+      ) ;
+    } )
+    .slice(0, 30 )
   ) ;
 
   return {
@@ -350,12 +380,12 @@ function KSR(...[qw] : [q: string] )
           <ol>
             { (
               searchResults
-              .map(({ id, fwPlain, fw, searchq, sp, }) => {
+              .map(({ id, sItemUrl, forewordPlain, foreword, searchq, sp, }) => {
 
                 return (
                   <div>
                   <a
-                  href={`https://localhost:61915/searchdotcom/${"" + id + "::" + getQueryStringFromProps({ q: fwPlain, }).slice(2) }` }
+                  href={sItemUrl }
                   >
                   <p>
                     <q>{ searchq }</q>
@@ -365,7 +395,13 @@ function KSR(...[qw] : [q: string] )
                   </blockquote>
                   </a>
                   <p>
-                    Src ID: <code>{ id }</code>
+                    Src ID: <code>{ id }</code> - {}
+                    <a
+                    href={sItemUrl }
+                    children={(
+                      <code children={sItemUrl } />
+                    )}
+                    />
                   </p>
                   </div>
                 ) ;
