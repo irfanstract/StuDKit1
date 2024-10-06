@@ -174,6 +174,7 @@ const QckSearchC = (
       const {
         transitionalValue: transitionalSv ,
         setTransitionalValue: setTransitionalSv ,
+        isIntendedTransitionState: beingTyped ,
       } = (
         useDeferredAndTransitionalValue(sv, {
           fallbackValue: sv ,
@@ -236,9 +237,9 @@ const QckSearchC = (
         </div>
       ) ;
 
-      const beingTyped = (
-        !(transitionalSv === sv )
-      ) ;
+      // const beingTyped = (
+      //   !(transitionalSv === sv )
+      // ) ;
     
       const {
         // beingTyped ,
