@@ -70,22 +70,13 @@ import {
 
 const useTextSearch = (
 
-  function (...[queryString] : (
-    ArgsWithOptions< [query: string] , {} >
+  function (...[queryString, { beingTyped, }] : (
+    ArgsWithOptions< [query: string] , {
+      beingTyped : boolean ,
+    } >
   ))
   {
     
-    const [beingTyped, , ] = (
-
-      StudkReactJs.useTimeBoundedDependencyChangeTransition({
-
-        timeoutMillis: 750 ,
-        dependencies: [
-          queryString ,
-        ] ,
-      })
-    ) ;
-
     const done = !beingTyped ;
 
     return (
@@ -155,7 +146,7 @@ const QckSearchC = (
         //
         q: string ,
         processInputValueChgEvent: (
-          (evt: { newValue: string, }) =>
+          (evt: { newValue: string, asFromHighFrequencyEditSeq: boolean, }) =>
             void
         ) ,
         offeredQs?: (
@@ -208,6 +199,7 @@ const QckSearchC = (
             const newv = e.target.value ;
             PIVCE({
               newValue: newv,
+              asFromHighFrequencyEditSeq: true ,
             }) ;
             setTransitionalSv(newv ) ;
           } }
@@ -229,6 +221,7 @@ const QckSearchC = (
                   ;
                   PIVCE({
                     newValue: newv,
+                    asFromHighFrequencyEditSeq: false ,
                   }) ;
                 }}
                 />
@@ -242,13 +235,19 @@ const QckSearchC = (
         ) }
         </div>
       ) ;
+
+      const beingTyped = (
+        !(transitionalSv === sv )
+      ) ;
     
       const {
-        beingTyped ,
+        // beingTyped ,
         resultsE ,
       } = (
     
-        useTextSearch(transitionalSv)
+        useTextSearch(transitionalSv, {
+          beingTyped ,
+        })
       ) ;
     
       // TODO
