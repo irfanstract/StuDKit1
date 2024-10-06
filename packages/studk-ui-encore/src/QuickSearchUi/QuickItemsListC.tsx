@@ -41,6 +41,12 @@ import type {
 ;
 
 import {
+
+  getQueryStringFromProps ,
+
+} from "studk-ui-fwcore/src/util/NextJsSpecificRoutedGoodies1.ts" ;
+
+import {
   React ,
   StudkReactJs,
   getSpaceSeparatedClassNameList,
@@ -218,6 +224,7 @@ const QckSearchC = (
               .map(newv => (
                 <StudkReactJs.ButtonC
                 children={<q>{ newv }</q> }
+                // alt={`Set to '${ }'` }
                 onClick={() => {
                   ;
                   PIVCE({
@@ -299,9 +306,13 @@ function KSR(...[qw] : [q: string] )
 
       const o = id + 8 ;
 
+      const fwPlain = (
+        `${o}th time, ${qw}`
+      ) ;
+
       const fw = (
         <span>
-          { `${o}th time, ${qw}` }
+          { fwPlain }
         </span>
       ) ;
 
@@ -320,7 +331,13 @@ function KSR(...[qw] : [q: string] )
         </div>
       ) ;
 
-      return { id, fw, searchq, sp, } as const ;
+      return {
+        id,
+        searchq,
+        fwPlain,
+        fw,
+        sp,
+      } as const ;
     } )
   ) ;
 
@@ -333,16 +350,20 @@ function KSR(...[qw] : [q: string] )
           <ol>
             { (
               searchResults
-              .map(({ id, fw, searchq, sp, }) => {
+              .map(({ id, fwPlain, fw, searchq, sp, }) => {
 
                 return (
                   <div>
+                  <a
+                  href={`https://localhost:61915/searchdotcom/${"" + id + "::" + getQueryStringFromProps({ q: fwPlain, }).slice(2) }` }
+                  >
                   <p>
                     <q>{ searchq }</q>
                   </p>
                   <blockquote>
                     { sp }
                   </blockquote>
+                  </a>
                   <p>
                     Src ID: <code>{ id }</code>
                   </p>
