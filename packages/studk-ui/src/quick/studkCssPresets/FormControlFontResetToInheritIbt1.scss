@@ -1,0 +1,74 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@mixin tmm-fontresettoinherit {
+  //
+
+  :is(button, input, textarea ) {
+
+    &:not(textarea) {
+      font-size: 100%;  
+    }
+    font-family: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    letter-spacing: inherit;
+    text-align: inherit;
+  }
+
+}
+
+
+
+
+
+@if false {
+
+  @include tmm-fontresettoinherit() ;
+
+} @else {
+
+  @layer st-inputelem-fontresettoinherit {
+    //
+  
+    @include tmm-fontresettoinherit() ;
+  
+  }
+
+  @layer st-inputelem-fontresettoinherit, defaults ;
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -78,18 +78,20 @@
 
 @layer defaults {
 
-  .studk-ui-dbc-standalonespan.studk-ui-dbcb:not(:disabled)::before,
-  .studk-ui-dbc-subsntcspan.studk-ui-dbcb:not(:disabled)::after {
+  .studk-ui-dbc-standalonespan.studk-ui-dbcb::before,
+  .studk-ui-dbc-subsntcspan.studk-ui-dbcb::after {
     content: "⚾";
+    content: "[!]";
   }
-  .studk-ui-dbc-standalonespan.studk-ui-dbca:not(:disabled)::before {
+  .studk-ui-dbc-standalonespan.studk-ui-dbca::before {
     content: "[link]";
     content: "⛱";
+    content: "[✈]";
     font-size: 75% ;
     background-color: hsl(240, 100%, 50%) ;
     color: white ;
   }
-  .studk-ui-dbc-standalonespan:is(.studk-ui-dbca, .studk-ui-dbcb ):not(:disabled)::before {
+  .studk-ui-dbc-standalonespan:is(.studk-ui-dbca, .studk-ui-dbcb )::before {
     margin-inline-end: 0.5ex;
     margin-block-end : 0.5ex;
   }
@@ -99,7 +101,7 @@
     // -webkit-text-stroke-color: white;
   }
 
-  :is(.studk-ui-dbca, .studk-ui-dbcb):is(:is(ul, ol) > li > :first-child:last-child ) {
+  :is(.studk-ui-dbca, .studk-ui-dbcb):is(:is(ul, ol, menu, dir) > li > :first-child:last-child ) {
     background: transparent;
     color: inherit;
   }
