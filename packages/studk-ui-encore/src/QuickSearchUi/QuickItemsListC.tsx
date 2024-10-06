@@ -86,10 +86,31 @@ const useTextSearch = (
       })
     ) ;
 
-    return {
-      queryString ,
-      beingTyped ,
-    } as const ;
+    const done = !beingTyped ;
+
+    return (
+      done ?
+      {
+        queryString ,
+        done ,
+        beingTyped ,
+        resultsE: (
+          (
+            KSR(queryString).renderFullResultListSec()
+          )
+        ) ,
+      }
+      : {
+        queryString ,
+        done ,
+        beingTyped ,
+      }
+    ) satisfies {
+      readonly queryString : any ,
+      done: boolean,
+      readonly beingTyped  : boolean ,
+      resultsE?: React.ReactNode ,
+    } ;
   }
 ) ;
 
@@ -137,6 +158,10 @@ const QckSearchC = (
           (evt: { newValue: string, }) =>
             void
         ) ,
+        offeredQs?: (
+          | null
+          | (readonly string[])
+        ),
       }
     ) )
     {
@@ -144,6 +169,15 @@ const QckSearchC = (
       const {
         q: sv ,
         processInputValueChgEvent: PIVCE ,
+        offeredQs = [
+          `Trending` ,
+          `Friends` ,
+          `Vacation Places Staycation` ,
+          `Coffee & Bar` ,
+          `Satisfying Videos` ,
+          `Search String Demo` ,
+          `Search String Demo, soUuu, Good, Bee.. Good,,,,,, as, s, d` ,
+        ] ,
       } = props ;
 
       const {
@@ -154,9 +188,64 @@ const QckSearchC = (
           fallbackValue: sv ,
         })
       ) ;
+
+      const inputSecCont = (
+        //
+        <div>
+        <p>
+          <span
+          style={{
+            display: "flex" ,
+            flexDirection: "row",
+          }}
+          >
+          <input
+          value={(
+            // sv
+            transitionalSv
+          )}
+          onChange={e => {
+            const newv = e.target.value ;
+            PIVCE({
+              newValue: newv,
+            }) ;
+            setTransitionalSv(newv ) ;
+          } }
+          style={{
+            inlineSize: `75%` ,
+          }}
+          />
+          </span>
+        </p>
+        { offeredQs && (
+          <menu>
+            { (
+              util.Immutable.Seq(offeredQs)
+              .toOrderedMap().mapKeys((_, v) => v )
+              .map(newv => (
+                <StudkReactJs.ButtonC
+                children={<q>{ newv }</q> }
+                onClick={() => {
+                  ;
+                  PIVCE({
+                    newValue: newv,
+                  }) ;
+                }}
+                />
+              ) )
+              .map((v, id) => (
+                <li key={id} children={v} />
+              ))
+              .toIndexedSeq()
+            ) }
+          </menu>
+        ) }
+        </div>
+      ) ;
     
       const {
         beingTyped ,
+        resultsE ,
       } = (
     
         useTextSearch(transitionalSv)
@@ -168,43 +257,21 @@ const QckSearchC = (
           <p>
             Search:
           </p>
-          <p>
-            <span
-            style={{
-              display: "flex" ,
-              flexDirection: "row",
-            }}
-            >
-            <input
-            value={(
-              // sv
-              transitionalSv
-            )}
-            onChange={e => {
-              const newv = e.target.value ;
-              PIVCE({
-                newValue: newv,
-              }) ;
-              setTransitionalSv(newv ) ;
-            } }
-            style={{
-              inlineSize: `75%` ,
-            }}
-            />
-            </span>
-          </p>
+          <div>
+            { inputSecCont }
+          </div>
           <p>
             { beingTyped ? (
               <span>Typing</span>
             ) : (
-              <span>Idle (<code>{ sv }</code>)</span>
+              <span>Idle (<q>{ sv }</q>)</span>
             ) }
           </p>
           <div>
             { beingTyped ? (
               <p>Being Typed</p>
             ) : (
-              KSR(transitionalSv).renderFullResultListSec()
+              resultsE
             ) }
           </div>
         </div>
