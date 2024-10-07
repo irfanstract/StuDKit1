@@ -74,6 +74,78 @@ import {
   useKeyTypedownTransitionState ,
 } from "studk-ui-encore/src/QuickSearchUi/QuickItemsListTransition1.tsx" ;
 
+const generateKsrSchEngnDataSet = (
+
+  ((...[qw] : [qw: string]) => (
+
+    //
+    //
+    (
+      (
+        util.Immutable.Seq(util.range(2033, 2111) )
+      )
+      .toOrderedMap()
+      .mapKeys((_, id) => id )
+    )
+    .map((id, ) => {
+
+      const o = id + 8 ;
+
+      const forewordPlain = (
+        `${o}th time, ${qw}`
+      ) ;
+
+      const foreword = (
+        <span>
+          { forewordPlain }
+        </span>
+      ) ;
+
+      const sp = (
+        <div>
+        <p>
+          <b>{ foreword }</b>
+        </p>
+        <p>
+          { foreword }. {}
+          { foreword }. {}
+          { foreword }. {}
+        </p>
+        </div>
+      ) ;
+
+      const sdcId = (
+        "" + id + "::" + getQueryStringFromProps({ q: forewordPlain, }).slice(2)
+      ) ;
+
+      const sItemUrl = (
+        `https://localhost:61915/searchdotcom/${sdcId}` 
+      ) ;
+
+      return (
+        ((): KsrSearchableArticleSummaryD => (
+          {
+            id,
+            sItemUrl,
+            forewordPlain,
+            foreword,
+            sp,
+          } as const
+        ))()
+      ) ;
+    } )
+
+  ))
+) ;
+
+interface KsrSearchableArticleSummaryD {
+  readonly id: number;
+  readonly sItemUrl: string;
+  readonly forewordPlain: string;
+  readonly foreword: React.JSX.Element;
+  readonly sp: React.JSX.Element;
+}
+
 const useTextSearch = (
 
   function (...[queryString, { beingTyped, }] : (
@@ -111,6 +183,12 @@ const useTextSearch = (
   }
 ) ;
 
+
+
+
+
+
+
 /**
  * 
  * @deprecated
@@ -143,6 +221,141 @@ const QckC = (
   ))
 ) ;
 
+interface QckscInputBoxInputEvent extends Extract<{
+  readonly newValue: string,
+  readonly asFromHighFrequencyEditSeq: boolean,
+}, any >
+{}
+
+const useQckscQueryStrRenderedEditorState = (
+    //
+    
+    function (props : (
+      {
+        //
+        q: string ,
+        processInputValueChgEvent: (
+          (evt: QckscInputBoxInputEvent ) =>
+            void
+        ) ,
+        offeredQs?: (
+          | null
+          | (readonly string[])
+        ),
+      }
+    ) )
+    {
+
+      const {
+        q: sv ,
+        processInputValueChgEvent: PIVCE ,
+        offeredQs = null ,
+      } = props ;
+
+      const {
+        transitionalValue: transitionalSv ,
+        setTransitionalValue: setTransitionalSv ,
+        isIntendedTransitionState: beingTyped ,
+      } = (
+        useDeferredAndTransitionalValue(sv, {
+          fallbackValue: sv ,
+        })
+      ) ;
+
+      const coreInputElem = (
+        //
+        <input
+        value={(
+          // sv
+          transitionalSv
+        )}
+        onChange={e => {
+          const newv = e.target.value ;
+          PIVCE({
+            newValue: newv,
+            asFromHighFrequencyEditSeq: true ,
+          }) ;
+          setTransitionalSv(newv ) ;
+        } }
+        style={{
+        }}
+        />
+      ) ;
+
+      const autocompletionItemListElem = (
+        //
+        offeredQs && (
+          <menu>
+            { (
+              util.Immutable.Seq(offeredQs)
+              .toOrderedMap().mapKeys((_, v) => v )
+              .map(newv => (
+                <StudkReactJs.ButtonC
+                children={<q>{ newv }</q> }
+                // alt={`Set to '${ }'` }
+                onClick={() => {
+                  ;
+                  PIVCE({
+                    newValue: newv,
+                    asFromHighFrequencyEditSeq: false ,
+                  }) ;
+                }}
+                />
+              ) )
+              .map((v, id) => (
+                <li key={id} children={v} />
+              ))
+              .toIndexedSeq()
+            ) }
+          </menu>
+        )
+      ) ;
+
+      const inputSecCont = (
+        //
+        <div>
+        <p>
+          <span
+          style={{
+            display: "flex" ,
+            flexDirection: "row",
+          }}
+          >
+          { (
+            StudkReactJs.withExtraSemanticProperties({
+              //
+              style: {
+                //
+                inlineSize: `75%` ,
+              }
+            } , (
+              coreInputElem
+            ))
+          ) }
+          </span>
+        </p>
+        { autocompletionItemListElem }
+        </div>
+      ) ;
+
+      ;
+
+      return {
+        sv ,
+        PIVCE ,
+        offeredQs ,
+        transitionalSv,
+        beingTyped,
+        inputSecCont ,
+        unsafe: {
+          //
+          setTransitionalSv,
+        } ,
+      } as const ;
+
+    }
+) ;
+
 const QckSearchC = (
 
   // true
@@ -152,7 +365,7 @@ const QckSearchC = (
         //
         q: string ,
         processInputValueChgEvent: (
-          (evt: { newValue: string, asFromHighFrequencyEditSeq: boolean, }) =>
+          (evt: QckscInputBoxInputEvent ) =>
             void
         ) ,
         offeredQs?: (
@@ -178,71 +391,88 @@ const QckSearchC = (
       } = props ;
 
       const {
-        transitionalValue: transitionalSv ,
-        setTransitionalValue: setTransitionalSv ,
-        isIntendedTransitionState: beingTyped ,
+        // sv ,
+        // PIVCE ,
+        // offeredQs ,
+        transitionalSv,
+        // setTransitionalSv,
+        beingTyped,
+        inputSecCont ,
       } = (
-        useDeferredAndTransitionalValue(sv, {
-          fallbackValue: sv ,
+
+        useQckscQueryStrRenderedEditorState({
+          q: sv ,
+          processInputValueChgEvent: PIVCE ,
+          offeredQs ,
         })
       ) ;
 
-      const inputSecCont = (
-        //
-        <div>
-        <p>
-          <span
-          style={{
-            display: "flex" ,
-            flexDirection: "row",
-          }}
-          >
-          <input
-          value={(
-            // sv
-            transitionalSv
-          )}
-          onChange={e => {
-            const newv = e.target.value ;
-            PIVCE({
-              newValue: newv,
-              asFromHighFrequencyEditSeq: true ,
-            }) ;
-            setTransitionalSv(newv ) ;
-          } }
-          style={{
-            inlineSize: `75%` ,
-          }}
-          />
-          </span>
-        </p>
-        { offeredQs && (
-          <menu>
-            { (
-              util.Immutable.Seq(offeredQs)
-              .toOrderedMap().mapKeys((_, v) => v )
-              .map(newv => (
-                <StudkReactJs.ButtonC
-                children={<q>{ newv }</q> }
-                // alt={`Set to '${ }'` }
-                onClick={() => {
-                  ;
-                  PIVCE({
-                    newValue: newv,
-                    asFromHighFrequencyEditSeq: false ,
-                  }) ;
-                }}
-                />
-              ) )
-              .map((v, id) => (
-                <li key={id} children={v} />
-              ))
-              .toIndexedSeq()
-            ) }
-          </menu>
-        ) }
-        </div>
-      ) ;
+      // const {
+      //   transitionalValue: transitionalSv ,
+      //   setTransitionalValue: setTransitionalSv ,
+      //   isIntendedTransitionState: beingTyped ,
+      // } = (
+      //   useDeferredAndTransitionalValue(sv, {
+      //     fallbackValue: sv ,
+      //   })
+      // ) ;
+
+      // const inputSecCont = (
+      //   //
+      //   <div>
+      //   <p>
+      //     <span
+      //     style={{
+      //       display: "flex" ,
+      //       flexDirection: "row",
+      //     }}
+      //     >
+      //     <input
+      //     value={(
+      //       // sv
+      //       transitionalSv
+      //     )}
+      //     onChange={e => {
+      //       const newv = e.target.value ;
+      //       PIVCE({
+      //         newValue: newv,
+      //         asFromHighFrequencyEditSeq: true ,
+      //       }) ;
+      //       setTransitionalSv(newv ) ;
+      //     } }
+      //     style={{
+      //       inlineSize: `75%` ,
+      //     }}
+      //     />
+      //     </span>
+      //   </p>
+      //   { offeredQs && (
+      //     <menu>
+      //       { (
+      //         util.Immutable.Seq(offeredQs)
+      //         .toOrderedMap().mapKeys((_, v) => v )
+      //         .map(newv => (
+      //           <StudkReactJs.ButtonC
+      //           children={<q>{ newv }</q> }
+      //           // alt={`Set to '${ }'` }
+      //           onClick={() => {
+      //             ;
+      //             PIVCE({
+      //               newValue: newv,
+      //               asFromHighFrequencyEditSeq: false ,
+      //             }) ;
+      //           }}
+      //           />
+      //         ) )
+      //         .map((v, id) => (
+      //           <li key={id} children={v} />
+      //         ))
+      //         .toIndexedSeq()
+      //       ) }
+      //     </menu>
+      //   ) }
+      //   </div>
+      // ) ;
 
       // const beingTyped = (
       //   !(transitionalSv === sv )
@@ -292,58 +522,7 @@ function KSR(...[qw] : [q: string] )
 
   const searchSrcItemList = (
 
-    //
-    //
-    (
-      (
-        util.Immutable.Seq(util.range(2033, 2111) )
-      )
-      .toOrderedMap()
-      .mapKeys((_, id) => id )
-    )
-    .map((id, ) => {
-
-      const o = id + 8 ;
-
-      const forewordPlain = (
-        `${o}th time, ${qw}`
-      ) ;
-
-      const foreword = (
-        <span>
-          { forewordPlain }
-        </span>
-      ) ;
-
-      const sp = (
-        <div>
-        <p>
-          <b>{ foreword }</b>
-        </p>
-        <p>
-          { foreword }. {}
-          { foreword }. {}
-          { foreword }. {}
-        </p>
-        </div>
-      ) ;
-
-      const sdcId = (
-        "" + id + "::" + getQueryStringFromProps({ q: forewordPlain, }).slice(2)
-      ) ;
-
-      const sItemUrl = (
-        `https://localhost:61915/searchdotcom/${sdcId}` 
-      ) ;
-
-      return {
-        id,
-        sItemUrl,
-        forewordPlain,
-        foreword,
-        sp,
-      } as const ;
-    } )
+    generateKsrSchEngnDataSet(qw)
 
   ) ;
 
