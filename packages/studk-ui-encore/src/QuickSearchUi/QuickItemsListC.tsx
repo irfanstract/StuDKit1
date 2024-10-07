@@ -297,20 +297,22 @@ function KSR(...[qw] : [q: string] )
               searchResults
               .map(({ id, sItemUrl, forewordPlain, foreword, searchq, sp, }) => {
 
+                const CE = "studk-card" satisfies keyof React.JSX.IntrinsicElements ;
+
                 return (
                   <div>
                   { (
                     StudkReactJsPro.withAddedReadmoreHrefAnnotation({
                       href: sItemUrl ,
                     } , (
-                      <div>
+                      <CE>
                       <p>
                         <q>{ searchq }</q>
                       </p>
                       <blockquote>
                         { sp }
                       </blockquote>
-                      </div>
+                      </CE>
                     ))
                   ) }
                   <p>
