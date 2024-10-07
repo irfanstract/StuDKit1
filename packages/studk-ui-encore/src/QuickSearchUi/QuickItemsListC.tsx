@@ -46,6 +46,8 @@ import {
 
 } from "studk-ui-fwcore/src/util/NextJsSpecificRoutedGoodies1.ts" ;
 
+import type {} from "studk-ui/src/st-ce/studk-card.tsx" ;
+
 import {
   React ,
   StudkReactJs,
@@ -301,18 +303,19 @@ function KSR(...[qw] : [q: string] )
 
                 return (
                   <div>
+                  <CE>
                   { (
                     StudkReactJsPro.withAddedReadmoreHrefAnnotation({
                       href: sItemUrl ,
                     } , (
-                      <CE>
+                      <div>
                       <p>
                         <q>{ searchq }</q>
                       </p>
                       <blockquote>
                         { sp }
                       </blockquote>
-                      </CE>
+                      </div>
                     ))
                   ) }
                   <p>
@@ -324,6 +327,7 @@ function KSR(...[qw] : [q: string] )
                     )}
                     />
                   </p>
+                  </CE>
                   </div>
                 ) ;
               } )
