@@ -56,6 +56,10 @@ import {
 } from '#UiFwCore/util/ReactJsBased.ts'; ;
 
 import {
+  StudkReactJsPro ,
+} from "studk-ui-fwcore/src/util/ReactJsBasedPro.tsx" ;
+
+import {
   describeHeadlinedArticle ,
 } from 'studk-ui/src/meta/react/dhc.tsx'; ;
 
@@ -295,16 +299,20 @@ function KSR(...[qw] : [q: string] )
 
                 return (
                   <div>
-                  <a
-                  href={sItemUrl }
-                  >
-                  <p>
-                    <q>{ searchq }</q>
-                  </p>
-                  <blockquote>
-                    { sp }
-                  </blockquote>
-                  </a>
+                  { (
+                    StudkReactJsPro.withAddedReadmoreHrefAnnotation({
+                      href: sItemUrl ,
+                    } , (
+                      <div>
+                      <p>
+                        <q>{ searchq }</q>
+                      </p>
+                      <blockquote>
+                        { sp }
+                      </blockquote>
+                      </div>
+                    ))
+                  ) }
                   <p>
                     Src ID: <code>{ id }</code> - {}
                     <a
