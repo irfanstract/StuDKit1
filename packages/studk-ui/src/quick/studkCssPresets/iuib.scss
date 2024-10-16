@@ -12,16 +12,40 @@
 
 
 
+
+
+// @import "studk-ui/src/quick/studkCssPresets/FormControlFontResetToInheritIbt1.scss" layer(st-inputelem-fontresettoinherit) ;
+@import    "studk-ui/src/quick/studkCssPresets/FormControlFontResetToInheritIbt1.scss" ;
+@import    "studk-ui/src/quick/studkCssPresets/CaretSelectionCyn.scss" ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* RECOMMENDED PER-COMPONENT DEFAULTS */
 
-@layer defaults {
-  
-  button {
-    
-    font-family: inherit;
-  }
+// @layer st-inputelem-fontresettoinherit, defaults ;
 
-}
+// @layer defaults {
+
+//   //
+
+//   ::selection {
+//     background-color: rgb(0, 205, 255);
+//     color: white;
+//   }
+
+// }
 
 @layer defaults {
   /* */

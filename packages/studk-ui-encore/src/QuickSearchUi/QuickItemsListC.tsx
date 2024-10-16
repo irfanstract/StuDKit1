@@ -41,6 +41,14 @@ import type {
 ;
 
 import {
+
+  getQueryStringFromProps ,
+
+} from "studk-ui-fwcore/src/util/NextJsSpecificRoutedGoodies1.ts" ;
+
+import type {} from "studk-ui/src/st-ce/studk-card.tsx" ;
+
+import {
   React ,
   StudkReactJs,
   getSpaceSeparatedClassNameList,
@@ -48,6 +56,10 @@ import {
   Span ,
   describeCallbackAssignedStyleProps, 
 } from '#UiFwCore/util/ReactJsBased.ts'; ;
+
+import {
+  StudkReactJsPro ,
+} from "studk-ui-fwcore/src/util/ReactJsBasedPro.tsx" ;
 
 import {
   describeHeadlinedArticle ,
@@ -60,34 +72,61 @@ import {
 
 
 import {
+  useDeferredAndTransitionalValue,
+} from 'studk-ui-fwcore/src/reactjs/helpers/UseUncontrolledInputsAsControlledComponents1.tsx';
+
+import {
   QuickSearchTransition ,
   useKeyTypedownTransitionState ,
 } from "studk-ui-encore/src/QuickSearchUi/QuickItemsListTransition1.tsx" ;
 
+import {
+  generateKsrSchEngnDataSet ,
+  KsrSearchableArticleSummaryD ,
+} from "studk-ui-encore/src/QuickSearchUi/KsrSrchEngine.tsx" ;
+
 const useTextSearch = (
 
-  function (...[queryString] : (
-    ArgsWithOptions< [query: string] , {} >
+  function (...[queryString, { beingTyped, }] : (
+    ArgsWithOptions< [query: string] , {
+      beingTyped : boolean ,
+    } >
   ))
   {
     
-    const [beingTyped, , ] = (
+    const done = !beingTyped ;
 
-      StudkReactJs.useTimeBoundedDependencyChangeTransition({
-
-        timeoutMillis: 750 ,
-        dependencies: [
-          queryString ,
-        ] ,
-      })
-    ) ;
-
-    return {
-      queryString ,
-      beingTyped ,
-    } as const ;
+    return (
+      done ?
+      {
+        queryString ,
+        done ,
+        beingTyped ,
+        resultsE: (
+          (
+            KSR(queryString).renderFullResultListSec()
+          )
+        ) ,
+      }
+      : {
+        queryString ,
+        done ,
+        beingTyped ,
+      }
+    ) satisfies {
+      readonly queryString : any ,
+      done: boolean,
+      readonly beingTyped  : boolean ,
+      resultsE?: React.ReactNode ,
+    } ;
   }
 ) ;
+
+
+
+
+
+
 
 /**
  * 
@@ -121,11 +160,197 @@ const QckC = (
   ))
 ) ;
 
+import {
+  QckscInputBoxInputEvent ,
+  useQckscQueryStrRenderedEditorState ,
+} from "studk-ui-encore/src/ClientSideEditorStateMgmt/QckscInputBox.tsx" ;
+
+const QckSearchC = (
+
+  // true
+  StudkReactJs.describeHtmlComponent((
+    function QckSearchCImpl(props : (
+      {
+        //
+        q: string ,
+        processInputValueChgEvent: (
+          (evt: QckscInputBoxInputEvent ) =>
+            void
+        ) ,
+        offeredQs?: (
+          | null
+          | (readonly string[])
+        ),
+      }
+    ) )
+    {
+
+      const {
+        q: sv ,
+        processInputValueChgEvent: PIVCE ,
+        offeredQs = [
+          `Trending` ,
+          `Friends` ,
+          `Vacation Places Staycation` ,
+          `Coffee & Bar` ,
+          `Satisfying Videos` ,
+          `Search String Demo` ,
+          `Search String Demo, soUuu, Good, Bee.. Good,,,,,, as, s, d` ,
+        ] ,
+      } = props ;
+
+      const {
+        // sv ,
+        // PIVCE ,
+        // offeredQs ,
+        transitionalSv,
+        // setTransitionalSv,
+        beingTyped,
+        inputSecCont ,
+      } = (
+
+        useQckscQueryStrRenderedEditorState({
+          q: sv ,
+          processInputValueChgEvent: PIVCE ,
+          offeredQs ,
+        })
+      ) ;
+
+      const {
+        // beingTyped ,
+        resultsE ,
+      } = (
+    
+        useTextSearch(transitionalSv, {
+          beingTyped ,
+        })
+      ) ;
+    
+      // TODO
+      return (
+        <div>
+          <p>
+            Search:
+          </p>
+          <div>
+            { inputSecCont }
+          </div>
+          <p>
+            { beingTyped ? (
+              <span>Typing</span>
+            ) : (
+              <span>Idle (<q>{ sv }</q>)</span>
+            ) }
+          </p>
+          <div>
+            { beingTyped ? (
+              <p>Being Typed</p>
+            ) : (
+              resultsE
+            ) }
+          </div>
+        </div>
+      )
+    }
+  ))
+) ;
+
+function KSR(...[qw] : [q: string] )
+{
+
+  const searchSrcItemList = (
+
+    generateKsrSchEngnDataSet(qw)
+
+  ) ;
+
+  const searchResults = (
+
+    searchSrcItemList
+
+    .map(e => {
+
+      const { foreword, } = e ;
+
+      const searchq = foreword ;
+
+      return {
+        ...e ,
+        searchq,
+      } as const ;
+    })
+    .sortBy(item => {
+      const id = item.id ;
+      return (
+        (3 / Math.max(1 , (id ** 1.25 ) << (id * 5) ) )
+      ) ;
+    } )
+    .slice(0, 30 )
+  ) ;
+
+  return {
+
+    renderFullResultListSec: () => {
+      return (
+        <div>
+          <p>Results for <q>{ qw }</q>:</p>
+          <ol>
+            { (
+              searchResults
+              .map(({ id, sItemUrl, forewordPlain, foreword, searchq, sp, }) => {
+
+                const CE = "studk-card" satisfies keyof React.JSX.IntrinsicElements ;
+
+                return (
+                  <div>
+                  <CE>
+                  { (
+                    StudkReactJsPro.withAddedReadmoreHrefAnnotation({
+                      href: sItemUrl ,
+                    } , (
+                      <div>
+                      <p>
+                        <q>{ searchq }</q>
+                      </p>
+                      <blockquote>
+                        { sp }
+                      </blockquote>
+                      </div>
+                    ))
+                  ) }
+                  <p>
+                    Src ID: <code>{ id }</code> - {}
+                    <a
+                    href={sItemUrl }
+                    children={(
+                      <code children={sItemUrl } />
+                    )}
+                    />
+                  </p>
+                  </CE>
+                  </div>
+                ) ;
+              } )
+              .map((v, id) => (
+                <li key={id}>
+                  { v }
+                </li>
+              ))
+              .toIndexedSeq()
+            ) }
+          </ol>
+        </div>
+      ) ;
+    } ,
+  } as const ;
+}
+
 export {
   useTextSearch,
   QuickSearchTransition ,
   /** @deprecated WIP */
   useKeyTypedownTransitionState ,
+  QckSearchC,
   /** @deprecated WIP */
   QckC ,
 } ;
