@@ -97,6 +97,12 @@ export default function App()
           children={<><i>Simulation 3D</i></> }
           />
         </li>
+        <li>
+          <AppLink
+          href="/reference/demos/AvConvDemo/"
+          children={<><i>AvConvDemo</i></> }
+          />
+        </li>
       </ul>
     </div>
   )
