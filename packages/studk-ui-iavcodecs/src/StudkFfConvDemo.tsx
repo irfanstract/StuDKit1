@@ -237,8 +237,8 @@ const StudkFfConvDemoInnerC = (
 
         const { fmt, } = (() : { fmt: "mp4" | "webm" } => ({ fmt: "webm" }) )() ;
 
-        const regen = (
-          React.useCallback(() => {
+        const resetToLavfiRendering = (
+          React.useCallback((...[mainCode = `testsrc2=duration=5.1` ]: [code: string] | [code ?: never]) => {
             const id1 = (
               util.L.random(20000, 1E6, false )
             ) ;
@@ -257,7 +257,7 @@ const StudkFfConvDemoInnerC = (
                 await (
                   coreEngn.exec([
                     "-loglevel", "verbose",
-                    "-f", "lavfi", "-i", `testsrc2=duration=5.1` ,
+                    "-f", "lavfi", "-i", mainCode ,
                     ...([
                       //
                       /**
@@ -296,6 +296,14 @@ const StudkFfConvDemoInnerC = (
               whenResultAsUrl: r0.then(e => e.fOAsUrl ) ,
             })) ;
           } , [
+            coreEngn ,
+          ] )
+        ) ;
+
+        const regen = (
+          React.useCallback(() => (
+            resetToLavfiRendering(`testsrc2=duration=5.1` )
+          ) , [
             coreEngn ,
           ] )
         ) ;
