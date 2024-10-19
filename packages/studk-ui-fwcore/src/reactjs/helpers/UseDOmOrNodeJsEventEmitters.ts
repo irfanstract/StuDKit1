@@ -87,7 +87,7 @@ import {
  */
 const useEventEmitterListener = (
 
-  function <hostT extends EventEmitter, typ extends string>(...a : (
+  function <hostT extends PickW<EventEmitter, "on" | "off">, typ extends string>(...a : (
     SpclEvtlHookMinimumArgs<hostT, Parameters<typeof EventEmitter.prototype.on >, {} >["main"]
 
   ))
