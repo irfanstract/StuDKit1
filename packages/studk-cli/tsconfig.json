@@ -4,5 +4,25 @@
   "compilerOptions": {
     "checkJs": true,
     "allowSyntheticDefaultImports": true ,
+    "outDir": "dist",
+
+    /* https://www.typescriptlang.org/docs/handbook/project-references.html */
+    "composite": true ,
+    "emitDeclarationOnly": true, "noEmit": false, /* https://stackoverflow.com/a/77369498 */
+    "allowImportingTsExtensions": true ,
+    /* https://stackoverflow.com/a/61513685 */
+    "rootDir": "src" ,
   },
+  "include": [
+    "src" ,
+    "test",
+  ],
+  // "exclude": [
+  //   "src/**/*" ,
+  // ],
+  "references": [
+    { "path": "../../packages/typexpe-commons/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-util/tsconfig.build.json", } ,
+    { "path": "../../packages/studk-simulations-commons", } ,
+  ] ,
 }

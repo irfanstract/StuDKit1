@@ -12,6 +12,13 @@
 	"engines": {
 		"vscode": "^1.75.0"
 	}
+	,
+	"scripts": {
+		"test": "npx mocha"
+	}
+  ,
+	"activationEvents": [
+	]
   ,
 	"dependencies": {
 		"vscode-languageclient": "^9.0.1"
@@ -21,18 +28,17 @@
 		"@types/vscode": "^1.75.1"
 	}
 	,
-	"scripts": {
-		"run": "npm run compileAndRunIndexJs "
-		,"runWithoutCompile": "npm run runIndexJsWithoutCompile "
-		,
-		"compile"  			: "tsc --build --force --listEmittedFiles         ",
-		"watch"    			: "tsc --build --force --listEmittedFiles  -w     " ,
-		"compileAndRunIndexJs": "npm run compile  && npm run runIndexJsWithoutCompile "
-		,"runIndexJsWithoutCompile": "node ./index.mjs "
+	"exports": {
+		"./package.json": "./package.json"
+		,"./src/*": "./src/*"
+		,"./index.mjs"   			: "./index.mjs"
+		,"./index.js"    			: "./index.mjs"
+		,"./i/CliMain"          			: "./src/cli-main.mjs"
+		,"./i/CliStdFlagParsing"			: "./src/cli-std-flag-parsing.mjs"
+		,"./i/StdComponents"    			: "./src/stdComponents.mjs"
 	}
-  ,
-	"activationEvents": [
-	]
+	,
+	"type": "module"
   ,
 	"main": "./dist/index.mjs"
   ,
