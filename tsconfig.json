@@ -1,0 +1,186 @@
+{
+  "compilerOptions": {
+
+    /* 
+     * SETTINGS WHICH AFFECTS LINKAGE !!!
+     */
+
+    "module": "NodeNext",
+
+    /* `noEmit` and `isolatedModules` . enabling `noEmit` implies assumptions of being run in direct exec engine like Deno, Node, TS-Node, Vite, Next */
+    
+    /* using TS-Node or ESBuild, never the CLI `tsc` - https://github.com/microsoft/TypeScript/pull/51669 */
+    "noEmit": true ,
+    "isolatedModules": true,
+
+    /* `esModuleInterop` and `jsx` */
+    
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": false,
+
+
+    /* 
+     * TYPECHECKER-ONLY PATHS
+     * (EXCLUSIVELY IF USING PREAMBLES LIKE `tsconfig-paths`, IN WHICH CASE AFFECTS LINKAGE )
+     */
+    
+    // "baseUrl": ".",
+    "moduleResolution": "NodeNext" /* https://github.com/microsoft/TypeScript/pull/51669 */,
+    "resolvePackageJsonExports": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    /* post-vendoring paths settings */
+
+    "resolveJsonModule": true,
+    /* https://github.com/microsoft/TypeScript/pull/51669 */
+    /* we already have `noEmit: true` here and the runtime uses alternative compiler/transpiler */
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
+
+
+
+    /* 
+     * SETTINGS WHICH DOESN'T AFFECT LINKAGE !!!
+     */
+    
+    /* these three does not affect linkage, yet does affect generated code */
+
+    // "preserveValueImports": true,
+    // "preserveConstEnums": false,
+
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    /* `experimentalDecorators` is effectively backwards. */
+    "experimentalDecorators": false,
+    
+    /* these three is at the heart of typechecking */
+
+    "strict": true,
+    "noImplicitAny": true, // '"strict": true ' did not enforce this
+    // without this
+    // the type-system would be unsound as
+    // `tsc` would pretend indexed array items always exists which cannot be proven.
+    // i believe `tsc init` should have done this.
+    "noUncheckedIndexedAccess": true, 
+    // more likely a bug, than not
+    "noFallthroughCasesInSwitch": true,
+    
+    /* *reference libs* */
+    
+    "lib": [
+      "DOM", 
+      "DOM.Iterable", 
+      "ESNext" ,
+    ],
+    "skipLibCheck": true,
+    "checkJs": false,
+    "incremental": true,
+
+    /* etc */
+
+    "jsx": "preserve",
+    // "jsx": "react-jsx" ,
+    "plugins": [
+      {
+        "name": "next"
+      } ,
+    ] ,
+    
+    
+    /* https://stackoverflow.com/a/57273280 . */
+    "paths": {
+      // "typexpe-commons/*"        : ["./packages/typexpe-commons/*"] ,
+      // "studk-fwcore/*"           : ["./packages/studk-fwcore/*"] ,
+      /*
+       * repetition like above wouldn't scale well, and is prone to bugs including `ENOENT`s and soundness issues
+       */
+      /*
+       * https://www.typescriptlang.org/docs/handbook/modules/reference.html#wildcard-substitutions 
+       */
+      "*" : [
+        "./packages/*" ,
+      ] ,
+    } ,
+    
+    // "outDir": "dist", /* didn't work as expected */
+    "declaration": true ,
+    
+    
+  },
+  /**
+   * Referenced Projects And `include`s.
+   * see also https://stackoverflow.com/a/60933948 .
+   */
+  "include": [
+
+    /* SRC FILES */
+    
+    "scripts" ,
+    "packages" ,
+    // "packages/*/src" ,
+    // "src" ,
+    "${configDir}/src" ,
+    "${configDir}/test" ,
+    // ".next/types/**/*.ts" ,
+
+    /* IN-SOURCE D-TS FILES */
+    /* otherwise, the `yyyyy.d.ts` has no effect */
+    
+    "**/corejs.d.ts",
+    "scripts/CherryPickedEssentialDts" ,
+    /* otherwise `next-env.d.ts` has no effect */
+    "next-env.d.ts" ,
+    "${configDir}/next-env.d.ts" ,
+
+    /* TRANSLATED -- GENERATED D-TS FILES */
+    /* https://nextjs.org/docs/app/building-your-application/configuring/typescript#custom-type-declarations */
+
+    "${configDir}/.next/types/**/*.ts" ,
+
+    /* OTHER POSSIBLE SRC FILE(S) */
+
+    "${configDir}/**/*" ,
+
+    /* CONFIG FILES */
+    
+    // ".eslintrc.cjs" ,
+    // ".eslintrc.mjs" ,
+    "next.config.mjs" ,
+  ],
+  "references": [
+    // TBD
+  ] ,
+  "exclude": [
+    "node_modules" ,
+    "**/dist" ,
+    "**/dist/**/*" ,
+  ],
+  
+  "ts-node": {
+
+    /* https://github.com/TypeStrong/ts-node/issues/1934#issuecomment-1682786084 */
+
+    /* Node no longer use custom inspect on abort on uncaught exceptions, but */
+    /* `ts-node` kept doing that */
+    "logError": true,
+
+    "transpileOnly": true,
+    // /*
+    //  * we need to disable `transpileOnly` to avoid run-time `ReferenceError`s and thelike, since
+    //  * - it's possible some src-file(s) were written under `isolatedModules: false`, uses const-enum(s), and therefore necessitates type-checking in order to compile properly
+    //  * - to catch typo(s) early
+    //  */
+    // "transpileOnly": false,
+
+    /* https://typestrong.org/ts-node/docs/troubleshooting/#missing-types */
+    "files": true,
+
+    /* try to avoid those issues with import-path file-extension(s) */
+    "experimentalResolver": true,
+    
+    /* avoid issues associated with ESM fmt usage, as explained in https://typestrong.org/ts-node/docs/imports#native-ecmascript-modules */
+    "esm": true,
+
+  } ,
+
+}
