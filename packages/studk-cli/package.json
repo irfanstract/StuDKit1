@@ -36,6 +36,8 @@
 		,"./i/CliMain"          			: "./src/cli-main.mjs"
 		,"./i/CliStdFlagParsing"			: "./src/cli-std-flag-parsing.mjs"
 		,"./i/StdComponents"    			: "./src/stdComponents.mjs"
+    ,"./i/CppGlob"    			: "./src/cc/cppGlob.ts"
+    ,"./i/CppGlobApp" 			: "./src/cc/cppGlobApp.ts"
 	}
 	,
 	"type": "module"
