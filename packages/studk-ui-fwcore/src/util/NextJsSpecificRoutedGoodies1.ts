@@ -141,11 +141,16 @@ const useSearchParamDictItemState = (
       new ReadonlyURLSearchParams(s).get(MAIN_ENTERED_QUERY) ?? ""
     ) ;
 
-    const setSValue = (
+    const setSValueInnr = (
 
       React.useCallback((...a : (
         ArgsWithOptions<[newv: React.SetStateAction<string>] , {
           //
+          /**
+           * normally it'd be `pushState`;
+           * set to `true` if u want it be `replaceState` instead
+           * 
+           */
           overwrite ?: boolean ,
         }>
       )) => {
@@ -176,7 +181,15 @@ const useSearchParamDictItemState = (
         ;
       } , [
         // TODO
+        sv ,
+        setS ,
+        MAIN_ENTERED_QUERY ,
       ])
+    ) ;
+
+    const setSValue = (
+
+      StudkReactJs.useRefreshedCallback(setSValueInnr )
     ) ;
 
     return [sv, setSValue] as const ;
