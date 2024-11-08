@@ -14,113 +14,124 @@ import {
   random,
 } from "lodash-es" ;
 
-
-
-
-
-
-import * as React from "react" ;
-
-import * as DEC from "studk-ui-componentdefinition/src/dec.tsx" ;
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'; ;
 
 import {
-  Button ,
-  Span ,
-} from 'studk-ui/src/meta/react/dbc.tsx'; ;
+  ReadonlyURLSearchParams,
+} from "next/navigation";
 
-// import NxImage from "next/image";
-
-
-
+export {
+  ReadonlyURLSearchParams ,
+} ;
 
 
 
-export const describeComponent = (
-  DEC.describeComponent
-) ;
 
-export const describeHtmlComponent = (
-  describeComponent
-) ;
+
+
+import {
+
+  usePathname,
+  useSearchParams ,
+  useSearchParamState ,
+  useSearchParamDictItemState ,
+  useRouter,
+  getQueryStringFromProps,
+
+  AppLink,
+  NavigateBackButton,
+  NavigateForwardButton ,
+
+  React ,
+  getSpaceSeparatedClassNameList ,
+  StudkReactJs ,
+  ReactSetStateActionHelpers ,
+  // dynamicComponent ,
+  SingleChildDiv ,
+  MainAndNavAndFinaleC ,
+
+  NxImage ,
+
+} from "studk-ui-fwcore/src/util/NextJsSpecificRoutedGoodies1" ;
 
 import dynamicComponent from "next/dynamic";
-// const dynamicComponent: (
-//   // | (typeof util.L.identity)
-//   | (typeof import("next/dynamic").default )
-//   | null
-// ) = (
-//   null
-// ) ;
+
+export {
+  React ,
+  getSpaceSeparatedClassNameList, 
+  StudkReactJs,
+} ;
 
 export {
   dynamicComponent as dynamicComponent,
 } ;
 
-import AppLinkImpl from "next/link";
-
-/**
- * {@link AppLinkImpl}
- * 
- * @see
- * note that we need to narrow the 2nd type-arg to `"a"`,
- * since
- * {@link React.ComponentProps}
- * {@link Extract "distributes over the type-parameters"} therefore deforming the type-result
- * 
- */
-const AppLink: (
-  React.ElementType<JSX.IntrinsicElements["a"], "a">
-) = (
-  AppLinkImpl
-) ;
-
-const AppLinkAsLi = (
-  function AppLinkAsListItemCompImpl(props : (
-    & JSX.IntrinsicElements["li"]
-    & React.ComponentProps<typeof AppLink>
-  ) )
-  {
-    const {
-      href,
-      children ,
-      ...etProps
-    } = props ;
-    ;
-    return (
-      <li
-      {...etProps}
-      >
-        <AppLink
-        href={href}
-        children={children }
-        />
-      </li>
-    ) ;
-  }
-) ;
-
 export {
-  AppLink,
-  AppLinkAsLi ,
+  SingleChildDiv ,
 } ;
 
 export {
-  Button ,
-  Span ,
+  MainAndNavAndFinaleC ,
 } ;
+
+export {
+  usePathname,
+  useSearchParams,
+  useSearchParamState,
+  useSearchParamDictItemState,
+  AppLink as AppLink,
+  useRouter as useRouter, 
+} ;
+
+export {
+  NavigateBackButton ,
+  NavigateForwardButton ,
+} ;
+
+export {
+  getQueryStringFromProps ,
+  /** @deprecated alias of {@link getQueryStringFromProps}. */
+  getQueryStringFromProps as MSP ,
+} ;
+
+// export {
+//   NextRouter ,
+// } from "next/router";
 
 const Image: (
   | React.ElementType<JSX.IntrinsicElements["img"] >
   | (typeof import("next/image") )
 ) = "img" ;
 
-// export {
-//   default as NxImage,
-// } from "next/image";
 export {
   Image as Image,
-  // NxImage ,
+  NxImage ,
 } ;
+
+export {
+  /** @deprecated please make the `import` more direct thru there. */ Button ,
+  /** @deprecated please make the `import` more direct thru there. */ Span ,
+} from 'studk-ui/src/meta/react/dbc.tsx'; ;
+
+/** @deprecated please make the `import` more direct thru there. */
+export const describeComponent = (
+  StudkReactJs.describeComponent
+) ;
+
+/** @deprecated please make the `import` more direct thru there. */
+export const describeHtmlComponent = (
+  describeComponent
+) ;
+
+;
 
 
 
