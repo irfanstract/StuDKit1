@@ -56,11 +56,70 @@ import {
   dynamicComponent,
   AppLink,
   Image,
+  useSearchParamState,
+  getQueryStringFromProps, 
+  ReadonlyURLSearchParams,
+  useSearchParamDictItemState,
+  StudkReactJs,
 } from "@/appInternalScripts/appPagesConvention"; ;
+
+const useXData = (
+  function () {
+    const [sv, setSV] = (
+
+      useSearchParamDictItemState("q")
+    ) ;
+
+    const toggleBtn = (
+      (() => {
+        const newv = ("" + !(String(sv || false) !== "false" ) ) ;
+        return (
+          <StudkReactJs.ButtonC
+          title={`toggle`}
+          children={`toggle (-> '${newv }' )`}
+          onClick={() => setSV(e => newv , { overwrite: true , } ) }
+          />
+        ) ;
+      })()
+    ) ;
+
+    const clearoutBtn = (
+      <StudkReactJs.ButtonC
+      children="clear"
+      onClick={() => setSV(e => ("" ) , { overwrite: true , } ) }
+      />
+    ) ;
+
+    const smoBtn = (
+      <StudkReactJs.ButtonC
+      children="submit order"
+      onClick={() => setSV(e => ("started" ) , { overwrite: false , } ) }
+      />
+    ) ;
+
+    return {
+      sv ,
+      toggleBtn ,
+      clearoutBtn ,
+      smoBtn,
+    } ;
+  }
+) ;
+
 
 export default function App()
 {
   ;
+
+  const {
+    sv ,
+    toggleBtn ,
+    clearoutBtn,
+    smoBtn,
+  } = (
+
+    useXData()
+  ) ;
 
   return (
     pagesConventions.describeArticlePage({
@@ -76,7 +135,23 @@ export default function App()
             // (0 && <EvrC /> )
             // null
           ) } */}
-          <EvTceC />
+          {/* <EvTceC /> */}
+          { (
+            <div>
+            <p>
+              Studio Kit {}
+              <span>
+              <code>{ sv || "(empty)" }</code>
+              { smoBtn } {}
+              { toggleBtn   } {}
+              { clearoutBtn } {}
+              </span>
+            </p>
+            <p>
+              Studio Kit
+            </p>
+            </div>
+          ) }
         </div>
       ) ,
     })
