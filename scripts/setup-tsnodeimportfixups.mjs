@@ -8,7 +8,7 @@
  */
 ;
 
-console["log"](`running ${JSON.stringify("studk-fwcore-setups/src/SrcFileLoaders/nodeesm-tsnode.mjs") } `) ;
+0 && console["log"](`running ${JSON.stringify("studk-fwcore-setups/src/SrcFileLoaders/nodeesm-tsnode.mjs") } `) ;
 
 import "studk-fwcore-setups/src/SrcFileLoaders/nodeesm-tsnode.mjs" ;
 
