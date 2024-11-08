@@ -291,53 +291,53 @@ export const EvTceC = (
             yield `  is equivalent to <code>2Π/360</code> nominally `
             yield `  . `
             yield `</p> `
-            yield `<p lang="en"> `
-            yield `  The value `
-            yield `  is equivalent to `
-            yield ` <span>(sin<sup>d:n</sup>[0]&nbsp;<span>(2Π/360)<sup>n</sup></span>&nbsp;(n!)<sup>−1</sup>&nbsp;) * x<sup>n</sup></span> `
-            yield ` . `
-            yield `</p> `
-            yield ` `
-            yield `<p lang="en"> `
-            yield `  Let's say: `
-            yield `</p> `
-            yield `<blockquote > `
-            yield `<p lang="en"> `
-            yield `  The value `
-            yield `  <em>is (de)nominally equivalent</em> in this sense `
-            yield `  . `
-            yield `</p> `
-            yield `<p lang="ru"> `
-            yield `  Пeннск. `
-            yield `</p> `
-            yield `</blockquote> `
-            yield ` `
-            yield `. `
-            yield `<p lang="en"> `
-            yield `  If you want a Math img: `
-            yield `</p> `
-            yield ` `
-            yield `<blockquote > `
-            yield `<p lang="en"> `
-            yield `  Here's a Summation Sign: `
-            yield `</p> `
-            yield `<figure> `
-            yield `  <img src="${summationSignImgUrl }" alt=""> `
-            yield `  <figcaption> `
-            yield `    a summation sign `
-            yield `  </figcaption> `
-            yield `</figure> `
-            yield `</blockquote> `
-            yield ` `
-            yield `<pre> `
-            yield `pick commit1 `
-            yield `pick commit2 `
-            yield `pick commit3 https://linkpage.me.localhost https://linkpage.me.localhost/auto/ `
-            yield `</pre> `
-            yield ` `
-            yield `<p lang="en"> `
-            yield `  That's it `
-            yield `</p> `
+            // yield `<p lang="en"> `
+            // yield `  The value `
+            // yield `  is equivalent to `
+            // yield ` <span>(sin<sup>d:n</sup>[0]&nbsp;<span>(2Π/360)<sup>n</sup></span>&nbsp;(n!)<sup>−1</sup>&nbsp;) * x<sup>n</sup></span> `
+            // yield ` . `
+            // yield `</p> `
+            // yield ` `
+            // yield `<p lang="en"> `
+            // yield `  Let's say: `
+            // yield `</p> `
+            // yield `<blockquote > `
+            // yield `<p lang="en"> `
+            // yield `  The value `
+            // yield `  <em>is (de)nominally equivalent</em> in this sense `
+            // yield `  . `
+            // yield `</p> `
+            // yield `<p lang="ru"> `
+            // yield `  Пeннск. `
+            // yield `</p> `
+            // yield `</blockquote> `
+            // yield ` `
+            // yield `. `
+            // yield `<p lang="en"> `
+            // yield `  If you want a Math img: `
+            // yield `</p> `
+            // yield ` `
+            // yield `<blockquote > `
+            // yield `<p lang="en"> `
+            // yield `  Here's a Summation Sign: `
+            // yield `</p> `
+            // yield `<figure> `
+            // yield `  <img src="${summationSignImgUrl }" alt=""> `
+            // yield `  <figcaption> `
+            // yield `    a summation sign `
+            // yield `  </figcaption> `
+            // yield `</figure> `
+            // yield `</blockquote> `
+            // yield ` `
+            // yield `<pre> `
+            // yield `pick commit1 `
+            // yield `pick commit2 `
+            // yield `pick commit3 https://linkpage.me.localhost https://linkpage.me.localhost/auto/ `
+            // yield `</pre> `
+            // yield ` `
+            // yield `<p lang="en"> `
+            // yield `  That's it `
+            // yield `</p> `
             yield ` `
             yield `</section> `
           } )
@@ -405,13 +405,26 @@ export const EvTceC = (
                           console["debug"](`race condition; discarding change.`, {
                             actualExistingValAsHtml,
                             expectedExistingValAsHtml ,
+                            ignored: {
+                              newValueInHtml ,
+                            } ,
                           } )
                         ) ;
   
                         break Cd ;
                       }
   
-                      return newValueInHtml ;
+                      {
+                        void (
+                          console["debug"](`committing edit.`, {
+                            newValueInHtml ,
+                            actualExistingValAsHtml,
+                            expectedExistingValAsHtml ,
+                          } )
+                        ) ;
+  
+                        return newValueInHtml ;
+                      }
                     }
 
                     void (
