@@ -47,7 +47,7 @@ import {
   Span, 
   withExtraSemanticProperties,
   getSpaceSeparatedClassNameList,
-} from 'studk-ui-fwcore/src/util/ReactJsBased'; ;
+} from '#ReactJsBased.ts'; ;
 
 export const describeSvgComponent = (
   describeComponent

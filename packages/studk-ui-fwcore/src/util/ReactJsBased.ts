@@ -190,6 +190,8 @@ export {
   describeCallbackAssignedStyleProps,
 } from "studk-ui-fwcore/src/util/StudkReactJs.ts"; ;
 
+export * as StudkReactJsOvcUtil from "studk-ui-fwcore/src/xt/ovc-util.tsx" ;
+
 ;
 
 

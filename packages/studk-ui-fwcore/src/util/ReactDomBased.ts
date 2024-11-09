@@ -128,7 +128,7 @@ export * from 'studk-ui-fwcore/src/dbce.tsx'; ;
 
 // import Link from "next/link" ;
 
-export * from 'studk-ui-fwcore/src/util/ReactJsBased.ts'; ;
+export * from '#ReactJsBased.ts'; ;
 
 
 
@@ -160,6 +160,30 @@ export {
 
 
 
+
+;
+
+import * as ReactDOM from "react-dom" ;
+
+import * as ReactDOMClient from "react-dom/client" ;
+// import * as ReactDOMServer from "react-dom/server" ;
+
+export {
+  ReactDOM ,
+  ReactDOMClient ,
+  ReactDOMClient as RDC ,
+} ;
+
+;
+
+
+
+
+
+
+
+
+;
 
 ;
 

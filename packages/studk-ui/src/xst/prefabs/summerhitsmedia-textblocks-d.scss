@@ -1,0 +1,104 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@layer defaults {
+  
+  :is(studk-spmea-msptextcolumn ) ,
+  :is(studk-spmea-phrasalblock) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  :is(studk-spmea-phrasalblock) {
+    background-color: hsla(0, 0%, 0%, 0.728);
+    color: white;
+    backdrop-filter: blur(0.1em ) ;
+  }
+
+  @media print {
+
+    :not(.studk-printexactmode *):is(studk-spmea-phrasalblock) {
+      // background-color: white;
+      // color: black;
+      border: 0.1ex solid black;
+    }
+
+  }
+
+  studk-spmea-phrasalblock {
+    padding-inline: 0.5ex;
+  }
+
+  /* MSP-STACKING */
+  
+  :is(studk-spmea-backgroundandcaption) {
+    display: grid;
+    grid-template: 'e1' ;
+    /* grid-template-rows: 10ex ; */
+
+    isolation: isolate;
+
+    & > :first-child {
+      z-index: -30;
+    }
+    & > * {
+      grid-area: e1 ;
+      inline-size: 100%;
+      block-size: 100%;
+    }
+    & > :not(:is(:nth-child(1), :nth-child(2) ) ) {
+      display: none !important ;
+    }
+  }
+
+  :is(studk-spmea-backgroundandcaption) {
+    box-sizing: content-box;
+    box-sizing: padding-box;
+  }
+
+  :is(studk-spmea-backgroundandcaption) {
+    border: 0.25ex solid black ;
+    border-radius: 0.5ex;
+  }
+
+  :is(studk-spmea-backgroundandcaption) :is(i, u) {
+    font-weight: inherit;
+    font-style: normal;
+    text-decoration: none;
+
+    &:is(u) {
+      font-style: italic;
+    }
+  }
+  :is(studk-spmea-backgroundandcaption) :is(i, u, b ) {
+    font-family: inherit;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,136 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+@layer defaults, cmbdgewhoa ;
+
+@layer cmbdgewhoa {
+
+  h1, h2 {
+    /* font-family: var(--font-inter), 'Inter', Roboto, 'Helvetica Neue', sans-serif ; */
+    font-family: 'Inter', Roboto, 'Helvetica Neue', sans-serif ;
+  }
+  
+}
+
+@layer cmbdgewhoa {
+  //
+
+  @media screen {
+
+    :is(h1) {
+      font-size: 1.5em ;
+    }
+
+    :is(h1, h2, h3, h4, h5, h6)
+    {
+  
+      position: sticky;
+      top : 0.25em ;
+      offset-block-start : 0.25em ;
+      left: 0.25em ;
+      offset-inline-start: 0.25em ;
+  
+      z-index: var(--layers-headings);
+  
+      &:is(:is(:focus-within, :hover), :root:has(:is(.studk-kmcbsrootmnvf-navdiv, h1):is(:focus-within, :hover ) ) * )
+      {
+        border: 0.1ex solid black;
+        /* box-shadow: 0 0 1ex black ; */
+        box-sizing: content-box;
+        border: 0.25ex solid black;
+  
+        font-size: 18px ;
+        background: white !important ;
+        &::before {
+          font-weight: bold;
+          font-size: 95.2% ;
+          content: " you're reading: " !important ;
+          display: block;
+          color: black !important ;
+        }
+      }
+  
+      &:is(h1):is(:root:has(.studk-kmcbsrootmnvf-footerdiv:hover ) * )
+      {
+        /* disable the floatingness, reverting back to being static */
+        /* opacity: 0 !important; */
+        top : unset !important ;
+        left: unset !important ;
+        z-index: unset;
+      }
+  
+    }
+  
+  }
+  
+  :is(h1, h2, h3, h4, h5, h6) {
+    transform: none;
+  
+    &:hover, body:has(.studk-mnavf-header:is(:focus-within, :hover)) & {
+      top : 2.25em ;
+      background: white;
+      color: hsl(207, 100%, 76%);
+      opacity: 1;
+    }
+  }
+  
+  
+  //
+}
+
+/* MEDIA-BASED PROGRESSIVE ENHANCEMENT(s) */
+
+@layer kmcbsrootlayoutdefaults033 {
+  @media screen and (max-width: 620) {
+    .studk-kmcbsrootmnvf-navdiv {
+      //
+      background: black;
+      // backdrop-filter: ;
+      color: white;
+      filter: none;
+    }
+  }
+}
+
+@layer cmbdgewhoa {
+  //
+  
+  @media (min-width: 620px) {
+    :is(h1) {
+      font-size: 1.95em ;
+    }
+  }
+  @media (max-width: 620px) {
+    //
+    :is(h1, h2, h3, h4, h5, h6) {
+      //
+      top : 0.95em ;
+      offset-block-start : 0.95em ;
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

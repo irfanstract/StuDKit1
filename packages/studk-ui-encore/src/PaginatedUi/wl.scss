@@ -1,0 +1,38 @@
+
+
+
+
+
+
+
+
+@layer defaults {
+  //
+
+  :is(ul, ol).studk-ui-accrdnlc {
+    list-style-type: none;
+
+    & > :is(li) {
+      padding-inline-start: 0 ;
+    }
+  }
+
+  :is(ul, ol).studk-ui-accrdnlc > * {
+    @media screen {
+    //
+
+    overflow: auto;
+    max-block-size: 75vh;
+    // max-inline-size: 300vh;
+    }
+
+    border: 0.05em solid currentColor;
+  }
+
+}
+
+
+
+
+
+

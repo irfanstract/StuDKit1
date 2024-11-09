@@ -53,10 +53,10 @@ export const describeComponent = (
 
 
 
-export {
-  /** @deprecated an off-topic re-export(ed) item from `ReactHtmComponentDef.tsx` */
-  getSpaceSeparatedClassNameList ,
-} from "studk-ui-fwcore/src/ReactHtmComponentDef.tsx" ;
+// export {
+//   /** @deprecated an off-topic re-export(ed) item from `ReactHtmComponentDef.tsx` */
+//   getSpaceSeparatedClassNameList ,
+// } from "studk-ui-fwcore/src/ReactHtmComponentDef.tsx" ;
 
 
 
