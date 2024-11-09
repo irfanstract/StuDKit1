@@ -1,24 +1,30 @@
 {
-	"license": "Apache-2.0",
-	"version": "0.0.1"
+  "license": "Apache-2.0",
+  "version": "0.0.1"
   ,
-	"dependencies": {
-		"core-js": "3.35.1"
-		,
-		"lodash-es": "^4.17.21"
-		,
-		"immutable": "^4.1.0"
-	}
+  "exports": {
+    "./package.json"						: "./package.json"
+    ,"./src/*"			      			: "./src/*"
+    ,"./StudkFfConv"						: "./src/StudkFfConv.tsx"
+  }
   ,
-	"devDependencies": {
-	}
+  "dependencies": {
+    "core-js": "3.35.1"
+    ,
+    "lodash-es": "^4.17.21"
+    ,
+    "immutable": "^4.1.0"
+  }
   ,
-	"imports": {
-	}
-	,
-	"scripts": {
-		"test": "npx mocha"
-	}
-	,
-	"type": "module"
+  "devDependencies": {
+  }
+  ,
+  "imports": {
+  }
+  ,
+  "scripts": {
+    "test": "npx mocha"
+  }
+  ,
+  "type": "module"
 }

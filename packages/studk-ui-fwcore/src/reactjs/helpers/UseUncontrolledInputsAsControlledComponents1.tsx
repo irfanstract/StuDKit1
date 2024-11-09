@@ -63,6 +63,10 @@ import {
   useAsyncStartEffect ,
 } from "#UiFwCore/reactjs/helpers/UseResourceViaAsync1.tsx" ;
 
+import {
+  useTimeBoundedDependencyChangeTransition ,
+} from "studk-ui-fwcore/src/reactjs/helpers/UseTimeBoundedTransition1.tsx" ;
+
 export {
   /**
    * @deprecated instead, redirect it into direct one `UseResourceViaAsync1.tsx`.
@@ -71,7 +75,7 @@ export {
 } ;
 
 const useDeferredAndTransitionalValue = (
-  (function <T> (...[specifiedValAsHtml, {
+  (function <T extends {}> (...[specifiedValAsHtml, {
     fallbackValue ,
   }] : (
     ArgsWithOptions<[updatedSpecifiedValue: T ], { fallbackValue: T, }>
@@ -83,8 +87,17 @@ const useDeferredAndTransitionalValue = (
       React.useDeferredValue(specifiedValAsHtml)
     ) ;
 
-    const [transitionalValue, setTransitionalValue] = (
-      React.useState(fallbackValue)
+    const [tsv0, setTransitionalValue] = (
+      React.useState<T | null>(null )
+    ) ;
+
+    const transitionalValue = (
+      // TODO
+      tsv0 ?? specifiedValAsHtml ?? fallbackValue
+    ) ;
+
+    const hasTransitionalValue = (
+      (tsv0 !== null )
     ) ;
 
     const [dwc, setDwc] = (
@@ -94,9 +107,28 @@ const useDeferredAndTransitionalValue = (
       ) )
     ) ;
 
-    if (specifiedValDeferredAsHtml === specifiedValAsHtml ) {
+    // TODO
+    const [isPspb, ] = (
+
+      useTimeBoundedDependencyChangeTransition({
+        timeoutMillis: 750 ,
+        dependencies: [
+          specifiedValAsHtml ,
+        ] ,
+      })
+    ) ;
+
+    const isIntendedTransitionState = (
+      hasTransitionalValue
+      &&
+      isPspb
+    ) ;
+
+    if ((
+      !isIntendedTransitionState
+    ) ) {
       void (transitionalValue === specifiedValAsHtml || [
-        setTransitionalValue(specifiedValAsHtml ) ,
+        setTransitionalValue(null ) ,
         setDwc(v => (v + 1 ) ) ,
       ] ) ;
     }
@@ -110,6 +142,8 @@ const useDeferredAndTransitionalValue = (
         specifiedValDeferred: specifiedValDeferredAsHtml ,
         transitionalValue ,
         setTransitionalValue ,
+        hasTransitionalValue ,
+        isIntendedTransitionState,
 
         fallbackValue ,
 
@@ -122,6 +156,8 @@ const useDeferredAndTransitionalValue = (
         specifiedValDeferredAsHtml ,
         transitionalValue ,
         setTransitionalValue ,
+        hasTransitionalValue ,
+        isIntendedTransitionState,
 
         fallbackValue ,
 

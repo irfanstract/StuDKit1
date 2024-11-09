@@ -1,0 +1,62 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@layer defaults {
+
+  //
+
+  ::selection {
+    background-color: hsl(189, 100%, 71.6%);
+    color: white;
+  }
+
+}
+
+
+
+
+
+@layer defaults {
+
+  //
+
+  :root:not(:is(:focus-within, :hover ) )
+  {
+    ::selection {
+      background-color: hsl(189, 100%, 51.6%);
+      color: white;
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

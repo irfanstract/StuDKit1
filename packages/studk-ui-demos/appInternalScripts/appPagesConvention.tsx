@@ -14,46 +14,104 @@ import {
   random,
 } from "lodash-es" ;
 
+import type {
+  AllOrNever1,
+  ArgsGetOptions ,
+  ArgsWithOptions, 
+  Extend,
+  OmitW,
+  PartializedPartially,
+  PickW,
+} from 'studk-fwcore/src/util/C1.ts'; ;
+
+import {
+  ReadonlyURLSearchParams,
+} from "next/navigation";
+
+export {
+  ReadonlyURLSearchParams ,
+} ;
 
 
 
 
 
-import * as React from "react" ;
 
+import {
 
+  usePathname,
+  useSearchParams ,
+  useSearchParamState ,
+  useSearchParamDictItemState ,
+  useRouter,
+  getQueryStringFromProps,
 
+  AppLink,
+  NavigateBackButton,
+  NavigateForwardButton ,
 
+  React ,
+  getSpaceSeparatedClassNameList ,
+  StudkReactJs ,
+  ReactSetStateActionHelpers ,
+  dynamicComponent ,
+  SingleChildDiv ,
+  MainAndNavAndFinaleC ,
 
+  NxImage ,
 
-// import dynamicComponent from "next/dynamic";
-const dynamicComponent: (
-  // | (typeof util.L.identity)
-  | (typeof import("next/dynamic").default )
-  | null
-) = (
-  null
-) ;
+} from "studk-ui-fwcore/src/util/NextJsSpecificRoutedGoodies1" ;
+
+export {
+  React ,
+  getSpaceSeparatedClassNameList, 
+  StudkReactJs,
+} ;
 
 export {
   dynamicComponent as dynamicComponent,
 } ;
 
-import AppLink from "next/link";
+export {
+  SingleChildDiv ,
+} ;
 
-// import NxImage from "next/image";
+export {
+  MainAndNavAndFinaleC ,
+} ;
+
+export {
+  usePathname,
+  useSearchParams,
+  useSearchParamState,
+  useSearchParamDictItemState,
+  AppLink as AppLink,
+  useRouter as useRouter, 
+} ;
+
+export {
+  NavigateBackButton ,
+  NavigateForwardButton ,
+} ;
+
+export {
+  getQueryStringFromProps ,
+  /** @deprecated alias of {@link getQueryStringFromProps}. */
+  getQueryStringFromProps as MSP ,
+} ;
+
+// export {
+//   NextRouter ,
+// } from "next/router";
+
 const Image: (
   | React.ElementType<JSX.IntrinsicElements["img"] >
   | (typeof import("next/image") )
 ) = "img" ;
 
-// export {
-//   default as NxImage,
-// } from "next/image";
 export {
-  AppLink as AppLink,
   Image as Image,
-  // NxImage ,
+  NxImage ,
 } ;
 
 

@@ -556,6 +556,12 @@ const LjdeDataSyncPluginC = (
         asynchronouslyApplyTrvh1 ,
       ] ) ;
 
+      React["useLayoutEffect"](() => {
+        console["log"]({ dwc, })
+      } , [
+        dwc ,
+      ]) ;
+
       return <></> ;
     }
   ))
