@@ -1,0 +1,14 @@
+{
+  "types": "electron.d.ts",
+	"dependencies": {
+		"core-js": "3.35.1"
+		,
+		"lodash-es": "^4.17.21"
+		,
+		"immutable": "^4.1.0"
+	}
+  ,
+	"scripts": {
+		"test": "npx mocha"
+	}
+}

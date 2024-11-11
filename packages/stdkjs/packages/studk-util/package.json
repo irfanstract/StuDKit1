@@ -1,0 +1,16 @@
+{
+	"license": "MIT",
+	"version": "0.0.1"
+  ,
+	"dependencies": {
+	}
+  ,
+	"devDependencies": {
+	}
+	,
+	"scripts": {
+		"test": "npx mocha"
+	}
+	,
+	"type": "module"
+}
