@@ -2,20 +2,12 @@
 
 ## Dev environment
 
-Tools I use:
-
-- yarn 3 for package management
-- volta (optional, node version management)
-
 ## Features, bugfixes, and other code
 
 We use package.json scripts for building, testing, and linting.  Read the scripts to become familiar with our build process.  The big ones are:
 
 ```
-yarn
-yarn build
-yarn test
-yarn fmt
+??????
 ```
 
 `yarn prepack` / `pnpm prepack`/ `npm prepare` are maintained so that anyone can install `ts-node` from git, which is useful for testing experimental branches and unreleased features.
