@@ -4,9 +4,15 @@
   "private": true
 
   ,
+  "scripts": {
+    "installAllDeps": "npm install"
+  }
+
+  ,
   "workspaces": [
      "packages/*",
      "packages/@types/*"
+     ,"packages/@studiokit/*"
   ]
 
   ,
@@ -78,9 +84,15 @@
     "hereby": "^1.8.9"
     ,
     "mocha": "^10.3.0"
-    ,
-    "next": "^14.0"
 
+    ,
+    "typescript": "^5.5"
+
+  }
+
+  ,"overrides": {
+    "immutable": "$immutable"
+    ,"typescript": "$typescript"
   }
 
 }
