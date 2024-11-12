@@ -14,5 +14,11 @@
   },
   "include": [
     "src/**/*"
+  ],
+  "exclude": [
+    /* exclude the test-file(s) from this main-src config - there're a very large number of those */
+    "src/test/**/*",
+    /* exclude swcc-dependent stuffs */
+    "src/**/*swc*",
   ]
 }
