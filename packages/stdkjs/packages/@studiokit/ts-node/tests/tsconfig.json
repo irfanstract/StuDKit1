@@ -5,6 +5,6 @@
     "noEmit": true,
     "strict": true,
     // Global type definitions.
-    "typeRoots": ["./typings", "../node_modules/@types"]
+    "typeRoots": ["./typings", "../node_modules/@types", "../../../../node_modules/@types" /* 3, not 2, since our branch adds prefix `@<our-company>` (hence `@studiokit/ts-node`) */ ],
   }
 }

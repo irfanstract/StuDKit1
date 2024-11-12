@@ -39,8 +39,8 @@ module.exports = {
   const rimraf = require('rimraf');
   const { resolve } = require('path');
 
-  remove(resolve(__dirname, 'node_modules/ts-node'));
-  remove(resolve(__dirname, 'tests/node_modules/ts-node'));
+  /* in past versions we delete installed `node_modules` at this pt; */
+  /* no longer recommended */
 
   // Prove that we did it correctly
   (() => {

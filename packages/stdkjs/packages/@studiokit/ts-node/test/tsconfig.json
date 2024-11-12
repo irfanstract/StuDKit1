@@ -1,0 +1,16 @@
+{
+  "extends": "../../../../tsconfig.json" ,
+
+  "compilerOptions": {
+    //
+    "allowJs": true,
+    "noEmit": true,
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+  } ,
+  "include": [
+    "**/*",
+  ],
+
+}
