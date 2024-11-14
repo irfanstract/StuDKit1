@@ -151,6 +151,8 @@ export function once<Fn extends (...args: any[]) => any>(fn: Fn) {
   return onceFn;
 }
 
+export { memoize, } from "lodash" ;
+
 /** @internal */
 export function versionGteLt(version: string, gteRequirement: string, ltRequirement?: string) {
   const [major, minor, patch, extra] = parse(version);
@@ -168,3 +170,22 @@ export function versionGteLt(version: string, gteRequirement: string, ltRequirem
     return requirement.split(/[\.-]/).map((s) => parseInt(s, 10));
   }
 }
+
+export function getStackOrMessage(...[o] : [unknown])
+{
+  if (o instanceof Error) {
+    const stack = o.stack ;
+    if (stack) {
+      return stack ;
+    }
+  }
+  return String(o) ;
+}
+
+export type ArgsWithOptions<P extends readonly unknown[], opt extends object > = (
+  [...P , ...(
+    [{}] extends [opt] ?
+    [options ?: opt]
+    : [opts : opt]
+  ) ]
+) ;
