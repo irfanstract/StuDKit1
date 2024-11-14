@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
 import { join, resolve, dirname, parse as parsePath, relative } from 'path';
+import { readFileSync } from 'fs';
+import assert = require('assert');
 import { inspect } from 'util';
 import Module = require('module');
 let arg: typeof import('arg');
-import { parse, hasOwnProperty, versionGteLt } from './util';
+import { parse, hasOwnProperty, versionGteLt, getStackOrMessage, } from './util';
 import {
   EVAL_FILENAME,
   EvalState,
@@ -263,7 +265,7 @@ function phase2(payload: BootstrapState) {
 
   if (help) {
     console.log(`
-Usage: ts-node [options] [ -e script | script.ts ] [arguments]
+Usage: studk-ts-node [options] [ -e script | script.ts ] [arguments]
 
 Options:
 
@@ -301,7 +303,17 @@ Options:
   --logError                      Logs TypeScript errors to stderr instead of throwing exceptions
   --noExperimentalReplAwait       Disable top-level await in REPL.  Equivalent to node's --no-experimental-repl-await
   --experimentalSpecifierResolution [node|explicit]
-                                  Equivalent to node's --experimental-specifier-resolution
+      Equivalent to node's --experimental-specifier-resolution
+
+  ⁘⁘⁘ end of Options ⁘⁘⁘⁘⁘⁘⁘⁘⁘
+
+studk-ts-node can also be installed as import-plugin (see Limitations !);
+this is what our tests here does.
+
+  node -r @studiokit/ts-node/register my-app.ts
+  node -r @studiokit/ts-node/register my-app.ts --app-flag1 --app-flag2 arg1 arg2 ... ...
+  (not only CJS; these will also handle ESM(s) )
+
 `);
 
     process.exit(0);
