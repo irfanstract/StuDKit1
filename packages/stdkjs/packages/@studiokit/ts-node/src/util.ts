@@ -1,5 +1,7 @@
 import { dirname } from 'path';
 
+import "./utilGlobalConsoleAlwaysStderr" ;
+
 /**
  * @internal
  * Copied from https://unpkg.com/yn@3.1.1/index.js
