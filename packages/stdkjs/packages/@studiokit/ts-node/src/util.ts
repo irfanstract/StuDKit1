@@ -153,6 +153,12 @@ export function once<Fn extends (...args: any[]) => any>(fn: Fn) {
 
 export { memoize, } from "lodash" ;
 
+export import Immutable = require("immutable") ;
+
+export function utilReiterated<const E>(src: () => Iterable<E> ) {
+  return [...src() ] ;
+}
+
 /** @internal */
 export function versionGteLt(version: string, gteRequirement: string, ltRequirement?: string) {
   const [major, minor, patch, extra] = parse(version);
@@ -188,4 +194,84 @@ export type ArgsWithOptions<P extends readonly unknown[], opt extends object > =
     [options ?: opt]
     : [opts : opt]
   ) ]
+) ;
+
+export type AllOrNever1<Props extends object> = (
+  (
+    Props extends any ?
+    AnevImplEach<Props>
+    : never
+  )
+  |
+  { [k in PossibleKeyOf<Props>] ?: never ; }
+) ;
+
+type AnevImplEach<Props extends object> = (
+  Required<Props>
+) ;
+
+export type PossibleKeyOf<Props extends object> = (
+  Props extends any ?
+  PossibleKeyOfOneAlt<Props>
+  : never
+) ;
+
+export type KeyOf<Props extends object> = (
+  PossibleKeyOfOneAlt<Props>
+) ;
+
+type PossibleKeyOfOneAlt<Props extends object> = (
+  keyof Required<Props>
+) ;
+
+{
+  {
+    const ADPE = (x: AtLeastEitherProp<{
+      //
+      onNewKnownPath : (value: string) => void ,
+      onNewDynamicPathExpr : (expr: NodeRequire) => void ,
+    }>) => { x.onNewDynamicPathExpr ; } ;
+    ADPE({ onNewDynamicPathExpr: () => {} , }) ;
+    ADPE({ onNewKnownPath: () => {} , }) ;
+    ADPE({
+      onNewKnownPath: () => {} ,
+      onNewDynamicPathExpr: () => {} ,
+    }) ;
+    // @ts-expect-error
+    ADPE({
+    }) ;
+  }
+}
+
+export type AtLeastEitherProp<Props extends object> = (
+  Partial<Props>
+  & Required<PickEitherProp<Props > >
+) ;
+
+export type EitherOneProp<Props extends object> = (
+  OnlySelectEitherProp<Props, keyof Props>
+) ;
+
+export type PickEitherProp<D extends object, kChosen extends keyof D = keyof D > = (
+  kChosen extends any ?
+  Pick<D, kChosen>
+  : never
+) ;
+
+export type OnlySelectEitherProp<D extends object, kChosen extends keyof D = keyof D> = (
+  kChosen extends any ?
+  OnlySelectProps<D, kChosen>
+  : never
+) ;
+
+export type OnlySelectProps<D extends object, kChosen extends keyof D> = (
+  { [k1 in keyof D]?: ([k1] extends [kChosen] ? D[k1] : never ) ; }
+  &
+  Required<{ [k1 in kChosen]?: unknown ; }>
+) ;
+
+type EipSingleProp<k extends keyof any, val> = (
+  k extends any ?
+  { [k1 in k]: val ; }
+  : never
 ) ;
