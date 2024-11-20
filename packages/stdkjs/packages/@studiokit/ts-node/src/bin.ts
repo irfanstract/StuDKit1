@@ -264,7 +264,7 @@ function phase2(payload: BootstrapState) {
   const { help, version, cwdArg, esm } = payload.parseArgvResult;
 
   if (help) {
-    console.log(`
+    process.stdout.write(`
 Usage: studk-ts-node [options] [ -e script | script.ts ] [arguments]
 
 Options:
