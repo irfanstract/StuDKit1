@@ -9,6 +9,7 @@ import "./utilGlobalConsoleAlwaysStderr" ;
  * This is a lazy way to make the dep number go down, we haven't touched this
  * dep in ages, and we didn't use all its features, so we stripped them.
  */
+export function yn(input: string | undefined): boolean | undefined ;
 export function yn(input: string | undefined) {
   input = String(input).trim();
 
@@ -20,6 +21,18 @@ export function yn(input: string | undefined) {
     return false;
   }
 }
+
+export const isUnderCspNoEvalsPolicy = (
+
+  (): boolean => {
+    try {
+      new Function(``) ;
+      return false ;
+    } catch (z) {
+      return true ;
+    }
+  }
+) ;
 
 /**
  * Like `Object.assign`, but ignores `undefined` properties.
@@ -41,6 +54,8 @@ export function assign<T extends object>(initialValue: T, ...sources: Array<T>):
  * and remove empty strings from the resulting array.
  * @internal
  */
+export function split(value: string            ): string[]             ;
+export function split(value: string | undefined): string[] | undefined ;
 export function split(value: string | undefined) {
   return typeof value === 'string' ? value.split(/ *, */g).filter((v) => v !== '') : undefined;
 }
@@ -49,7 +64,9 @@ export function split(value: string | undefined) {
  * Parse a string as JSON.
  * @internal
  */
-export function parse(value: string | undefined): object | undefined {
+export function parse(value: string            ): object | null             ;
+export function parse(value: string | undefined): object | null | undefined ;
+export function parse(value: string | undefined): object | null | undefined {
   return typeof value === 'string' ? JSON.parse(value) : undefined;
 }
 
@@ -179,6 +196,8 @@ export function versionGteLt(version: string, gteRequirement: string, ltRequirem
   }
 }
 
+export function getStackOrMessage(value: Error    ): string ;
+export function getStackOrMessage(value: unknown  ): string ;
 export function getStackOrMessage(...[o] : [unknown])
 {
   if (o instanceof Error) {
