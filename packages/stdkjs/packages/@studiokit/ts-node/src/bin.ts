@@ -160,18 +160,24 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
 
         // Support both tsc-style camelCase and node-style hypen-case for *all* flags
         '--cwd-mode': '--cwdMode',
+        '--cwdmode': '--cwdMode',
         '--script-mode': '--scriptMode',
         '--show-config': '--showConfig',
         '--compiler-options': '--compilerOptions',
         '--ignore-diagnostics': '--ignoreDiagnostics',
         '--transpile-only': '--transpileOnly',
+        '--transpileonly': '--transpileOnly',
         '--type-check': '--typeCheck',
+        '--typecheck': '--typeCheck',
         '--compiler-host': '--compilerHost',
+        '--compilerhost': '--compilerHost',
         '--skip-project': '--skipProject',
         '--skip-ignore': '--skipIgnore',
         '--prefer-ts-exts': '--preferTsExts',
+        '--prefer-ts': '--preferTsExts',
         '--log-error': '--logError',
         '--scope-dir': '--scopeDir',
+        '--scopedir': '--scopeDir',
         '--no-experimental-repl-await': '--noExperimentalReplAwait',
         '--experimental-specifier-resolution': '--experimentalSpecifierResolution',
       },
@@ -287,19 +293,19 @@ Options:
   -P, --project [path]            Path to TypeScript JSON project file
   -C, --compiler [name]           Specify a custom TypeScript compiler
   --transpiler [name]             Specify a third-party, non-typechecking transpiler
-  -D, --ignoreDiagnostics [code]  Ignore TypeScript warnings by diagnostic code
-  -O, --compilerOptions [opts]    JSON object to merge with compiler options
+  -D, --ignore-diagnostics [code]  Ignore TypeScript warnings by diagnostic code
+  -O, --compiler-options [opts]    JSON object to merge with compiler options
 
   --cwd                           Behave as if invoked within this working directory.
   --files                         Load \`files\`, \`include\` and \`exclude\` from \`tsconfig.json\` on startup
   --pretty                        Use pretty diagnostic formatter (usually enabled by default)
-  --cwdMode                       Use current directory instead of <script.ts> for config resolution
-  --skipProject                   Skip reading \`tsconfig.json\`
-  --skipIgnore                    Skip \`--ignore\` checks
+  --cwd-mode                       Use current directory instead of <script.ts> for config resolution
+  --skip-project                   Skip reading \`tsconfig.json\`
+  --skip-ignore                    Skip \`--ignore\` checks
   --emit                          Emit output files into \`.ts-node\` directory
   --scope                         Scope compiler to files within \`scopeDir\`.  Anything outside this directory is ignored.
-  --scopeDir                      Directory for \`--scope\`
-  --preferTsExts                  Prefer importing TypeScript files over JavaScript files
+  --scope-dir                     Directory for \`--scope\`
+  --prefer-ts-exts                Prefer importing TypeScript files over JavaScript files
   --logError                      Logs TypeScript errors to stderr instead of throwing exceptions
   --noExperimentalReplAwait       Disable top-level await in REPL.  Equivalent to node's --no-experimental-repl-await
   --experimentalSpecifierResolution [node|explicit]
