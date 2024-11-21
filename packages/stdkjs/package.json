@@ -99,6 +99,7 @@
 
   ,"overrides": {
     "immutable": "$immutable"
+    ,"@types/node": "$@types/node"
     ,"typescript": "$typescript"
   }
 
