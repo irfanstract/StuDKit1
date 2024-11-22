@@ -9,6 +9,54 @@ import assert from "assert";
 
 export { assert, } ;
 
+import * as Immutable from "immutable";
+
+/**
+ * 
+ * @type {typeof import("../src/util.ts")}
+ * @module
+ * 
+ */
+const provUtilJs = (await import("../dist/util.js")) ;
+
+const {
+  memoize,
+  utilReiterated,
+} = provUtilJs ;
+
+export {
+  memoize ,
+  utilReiterated ,
+} ;
+
+export {
+  provUtilJs,
+} ;
+
+/**
+ * indents the given block of txt with an MD-like blockquoting indent.
+ * 
+ * ```
+ * process.stderr.println((
+ *   posixBlockquotify(code )
+ * )) ;
+ * 
+ * // Result:
+ * > process.stderr.println((
+ * >   posixBlockquotify(code )
+ * > )) ;
+ * ```
+ * 
+ */
+const posixBlockquotify = (
+
+  /** @satisfies {(x: string) => string} */ ((x) => (
+
+    x.replace(/(^|\r?\n)/g, "$1> ")
+  ) )
+) ;
+export { posixBlockquotify, } ;
+
 
 
 
