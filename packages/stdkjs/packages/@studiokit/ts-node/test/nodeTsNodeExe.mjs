@@ -127,40 +127,16 @@ const stringAssert = (
 
 
 
+import {
+  spclMustTryProbSet ,
+} from "../scripts/commonStTsNodeTestworthyPreBundlingFlags.mjs" ;
+
 {
 //
 
 const spclExpectedEnvVars = /** @satisfies {NodeJS.ProcessEnv  } */ ({
   STUDKTSNODE_GENERAL_SETUP_CONSOLEALWAYSSTDERR: "1",
 }) ;
-
-const spclMustTryProbSet = (
-
-  utilReiterated(function* () {
-    /**
-     * note that we need `--transpileOnly` since
-     * the app's path contains untyped compiled JS file(s)
-     * 
-     */
-    for (const withNoNativeRunmain          of (/** @return {Boolean[]} */ () => [false,  true])() )
-    for (const withAlwaysPreTranspile       of (/** @return {Boolean[]} */ () => [false,  true])() )
-    for (const withTranspileOnly            of (/** @return {Boolean[]} */ () => [        true])() )
-    for (const scanAndPrintDeps             of (/** @return {Boolean[]} */ () => [false,  true])() )
-    for (const {  } of /** @satisfies {{ }[] } */ ([
-      {} ,
-    ]) )
-    yield {
-      flags: (
-        utilReiterated(function* () {
-          if (withNoNativeRunmain       ) { yield "--noNativeRunmain"       ; }
-          if (withAlwaysPreTranspile    ) { yield "--alwaysPreTranspile"    ; }
-          if (withTranspileOnly         ) { yield "--transpileOnly"         ; }
-          if (scanAndPrintDeps          ) { yield "--scanAndPrintDeps"      ; }
-        })
-      ) ,
-    } ;
-  })
-) ;
 
 /**
  * path to the `<this-package-root>/dist/bin.js`,
