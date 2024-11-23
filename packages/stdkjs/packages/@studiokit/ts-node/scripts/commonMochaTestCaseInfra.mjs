@@ -60,7 +60,19 @@ export { posixBlockquotify, } ;
 
 
 
+/** @import { SpawnSyncReturns, ChildProcess, } from "child_process" */
 import { execFileSync, execSync, spawnSync, } from "child_process";
+
+const assertProcSyncExitCode = (
+
+  /** @type {(...args: [SpawnSyncReturns<any> , (status: number) => boolean] ) => void } */ function (...[p, cx]) {
+    if (cx(p.status ?? assert.fail(new TypeError(`process has not terminated`) ) )) {
+      ;
+    } else {
+      assert.fail(new TypeError(`failed; the code was ${p.status } and the stderr was: ` + "\r\n" + posixBlockquotify(p.stderr ) ) ) ;
+    }
+  }
+) ;
 
 import * as Path from "path";
 import { fileURLToPath } from "url";
@@ -82,6 +94,10 @@ export const provDir = (
 
 export { getFilenameAndDirname, } ;
 
+
+export {
+  assertProcSyncExitCode,
+} ;
 
 export { execFileSync, execSync, spawnSync, } ;
 
