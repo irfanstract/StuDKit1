@@ -1,0 +1,18 @@
+{
+  "extends": "../../../../tsconfig.json" ,
+
+  "compilerOptions": {
+    //
+    // "composite": true,
+    "allowJs": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+  } ,
+  "include": [
+    "**/*",
+  ],
+
+}
