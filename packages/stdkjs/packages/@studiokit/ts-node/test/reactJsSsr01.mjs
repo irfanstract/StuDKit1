@@ -22,18 +22,22 @@ const {
 
 import {
   provDir ,
-  RUN_TSFILE ,
-  RUN_TSFILE_DIAGNOSED ,
 } from "../scripts/commonMochaTestCaseInfra.mjs" ;
 
 
-const FAIL_WITH_SPAWNSYNCOUTPUT = (
+const {
 
-  /** @satisfies {(x: import("child_process").SpawnSyncReturns<string>) => any } */ ((oR) => (
+  jsxTestsSpawnsyncPreDefs: {
+    //
 
-    assert.fail(`ERROR(${oR.status }): ${"\n" + (oR.stderr).replace(/(^|\r?\n)/g, "$1> ") }`)
-  ) )
-) ;
+    //
+    RUN_TSFILE ,
+    RUN_TSFILE_DIAGNOSED ,
+    FAIL_WITH_SPAWNSYNCOUTPUT ,
+
+  } ,
+
+} = (await import("../testScripts/conventions.mjs") ) ;
 
 
 
