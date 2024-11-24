@@ -159,6 +159,81 @@ describe(`running 'node studk-ts-node hello-world.ts' `, () => {
 
 }) ;
 
+describe(`running 'node studk-ts-node <library-example-ts>' `, () => {
+  ;
+
+  for (const {
+    //
+    fullNm: testsPjiTsPath ,
+    simpleNm: testsPjiTsName,
+    isExpectedOutTxt,
+  } of (
+
+    utilReiterated(/** @return {Iterable<{ readonly simpleNm: String, readonly ieo: OC, }>} */ function* () {
+
+      yield {
+        simpleNm: "PopularLibsCoreJsImmutable03.ts" ,
+        ieo: (
+          OC.byIsExpectedOutputStringChkFnc((o) => (
+            true
+            && o.includes("c=1,d=2,e=3 ===")
+          ) )
+        )
+        ,
+      } ;
+
+      yield {
+        simpleNm: "PopularLibsNativeFileSystemAdapterJs01.ts" ,
+        ieo: (
+          OC.byIsExpectedOutputStringChkFnc((o) => (
+            true
+            && o.includes("Not In Web Env")
+          ) )
+        )
+        ,
+      } ;
+
+    })
+
+    .map(({ simpleNm, ieo, }) => /** @type {const} */ ({
+      simpleNm,
+      fullNm: (
+        Path.join(provDir, "tests", simpleNm)
+        .replaceAll("\\", "/")
+      ) ,
+      isExpectedOutTxt: ieo.isExpectedOut,
+    }))
+
+  ) )
+
+  for (const {
+    flags,
+  } of spclMustTryProbSet )
+  {
+
+    it (`running 'node studk-ts-node ${flags.join(" ") } ${testsPjiTsName}'  `, () => {
+
+      const pE = (
+        spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), })
+      ) ;
+
+      checkNoError(pE) ;
+
+      const o = (
+        spclPrettifyStdioBothOutput(pE)
+      );
+
+      stringAssert(o, o => isExpectedOutTxt(o) ) ;
+
+    }) ;
+  
+    ;
+  }
+
+  ;;
+
+}) ; /* running 'node studk-ts-node <library-example-ts>' */
+
 describe(`running 'node studk-ts-node studk-ts-node' `, () => {
 
   for (const {
