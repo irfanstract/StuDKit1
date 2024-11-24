@@ -16,8 +16,11 @@ import {
 
 import { posixBlockquotify ,} from "../scripts/commonMochaTestCaseInfra.mjs" ;
 
-/** @typedef {Extract<Extract<StdioOptions, readonly any[] >[2], `${"i" | "p" }${string}`> } */
-const EnumStdOutId = {} ;
+import {
+  stringAssert ,
+  asGreen,
+  OC ,
+} from "../testScripts/conventions.mjs" ;
 
 /** @import { StdioOptions, SpawnSyncReturns, SpawnOptions, } from "child_process" */
 import {
@@ -25,6 +28,13 @@ import {
   execSync,
   spawnSync,
 } from "child_process";
+
+import {
+  runChildProcess ,
+  runChildProcessWithStat ,
+  checkChildProcessNoError ,
+  EnumStdOutId ,
+} from "../dist-raw/ChildProcessExecSyncWithErr.mjs" ;
 
 import {
   //
@@ -44,147 +54,54 @@ const {
 
 
 
+const {
+
+  jsxTestsSpawnsyncPreDefs: {
+    //
+    //
+    RUN_TSFILE ,
+    RUN_TSFILE_DIAGNOSED ,
+    FAIL_WITH_SPAWNSYNCOUTPUT ,
+  
+  } ,
+
+} = (await import("../testScripts/conventions.mjs") ) ;
+
+
+
+
+
 import {
   provDir ,
-  RUN_TSFILE ,
-  RUN_TSFILE_DIAGNOSED ,
-} from "../scripts/commonMochaTestCaseInfra.mjs" ;
-
-const spclExecSync = (
-
-  /** @satisfies {(...args: ArgsWithOptions<[cmd: string], { stderr ?: EnumStdOutId, env ?: NodeJS.ProcessEnv, }> ) => any } */ (
-    (...cfg) => {
-      const [cmd, { stderr = "inherit", env = {}, } = {}] = cfg ;
-      return (
-        execSync(cmd, {
-          stdio: ["pipe", "pipe", stderr] ,
-          encoding: "utf-8" ,
-          env ,
-        })
-      ) ;
-    }
-  )
-) ;
-
-const spclExecSyncWithErr = (
-
-  /** @satisfies {(...args: ArgsWithOptions<[cmd: string], { env ?: NodeJS.ProcessEnv, }> ) => any } */ (
-    (...[cmd, { env = {}, } = {}]) => {
-      return (
-        spawnSync(cmd, {
-          shell: true ,
-          stdio: ["pipe", "pipe", "pipe"] ,
-          encoding: "utf-8" ,
-          env ,
-        })
-      ) ;
-    }
-  )
-) ;
-
-;
-const spclPrettifyStdioBothOutput = (
-
-  /** @type {(o: SpawnSyncReturns<string> ) => string } */ (pE) => (
-    [
-      `-- begin stderr --`,
-      posixBlockquotify(pE.stderr ?? ` `),
-      `-- end stderr, begin stdout --`,
-      posixBlockquotify(pE.stdout ?? ` `),
-      `-- end stdout --`,
-    ].join("\r\n\r\n")
-  )
-) ;
-
-/**
- * check that the process has exited with stat-code `0`, failing in caseof nonzero.
- * will also fail if the Process remains running.
- * 
- */
-const checkNoError = (
-
-  /** @type {(o: SpawnSyncReturns<string> ) => void } */ (o) => {
-    void (
-      Number(String(o.status) || "???" ) === 0
-      ||
-      assert.fail(new TypeError(`process ${typeof o.status === "number" ? `returned with Error ${o.status }` : `might havent exited` }:` + "\r\n" + posixBlockquotify(o.stderr ?? ``) ) )
-    ) ;
-  }
-) ;
-
-const stringAssert = (
-
-  /** @satisfies {<const V extends string>(x: string, x1: (x: string) => any ) => any } */ (function (...[x, x1])
-  {
-    x1(x) || assert.fail(`assertion failed: ${posixBlockquotify(x) }`) ;
-  })
-) ;
-
-
-
-
-
-import {
-  spclMustTryProbSet ,
-} from "../scripts/commonStTsNodeTestworthyPreBundlingFlags.mjs" ;
+} from "../testScripts/conventions.mjs";
 
 {
 //
 
-const spclExpectedEnvVars = /** @satisfies {NodeJS.ProcessEnv  } */ ({
-  STUDKTSNODE_GENERAL_SETUP_CONSOLEALWAYSSTDERR: "1",
-}) ;
+const {
 
-/**
- * path to the `<this-package-root>/dist/bin.js`,
- * assuming {@link https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html having successfully run emit}
- * 
- */
-const binJsPath = (
+  spweDefs: {
+    //
+    //
+  
+    spclExecSync ,
+    spclExecSyncWithErr ,
+    spclPrettifyStdioBothOutput,
+    checkNoError ,
+  
+    binJsPath,
+    testsHelloWorldTsPath,
+    testsNofileHelloWorldTsPath,
+  
+    spclMustTryProbSet,
+    spclExpectedEnvVars,
+  
+    spcl1WithErr ,
+    spclMeta1WithErr ,
+  
+  } ,
 
-  Path.join(provDir, "dist", "bin.js")
-  .replaceAll("\\", "/")
-) ;
-
-const testsHelloWorldTsPath = (
-  Path.join(provDir, "tests", "hello-world.ts")
-  .replaceAll("\\", "/")
-) ;
-const testsNofileHelloWorldTsPath = (
-  Path.join(provDir, "tests", "nofile-hello-world.ts")
-  .replaceAll("\\", "/")
-) ;
-
-const spcl1WithErr = (
-
-  /** @satisfies {(...args: ArgsWithOptions<[cm: string], { vmflagsStr: string }>) => any } */ ((cm, { vmflagsStr: flagsStr, }) => {
-
-    const finalCm = `node ${binJsPath } ${flagsStr } ${cm }` ;
-
-    if (0) {
-      ;
-      console["log"]({
-        cm,
-        flagsStr,
-        spclExpectedEnvVars,
-        finalCm,
-      }) ;
-    }
-
-    return (
-      spclExecSyncWithErr(finalCm, {
-        env: spclExpectedEnvVars ,
-      })
-    ) ;
-  })
-) ;
-
-const spclMeta1WithErr = (
-
-  /** @satisfies {(...args: ArgsWithOptions<[cm: string], { firstLevelVmFlagsStr: string, secndLevelVmFlagsStr?: string }>) => any } */ ((cm, { firstLevelVmFlagsStr, secndLevelVmFlagsStr = ``, }) => (
-    spcl1WithErr(`${binJsPath } ${secndLevelVmFlagsStr } ${cm}`, { vmflagsStr: firstLevelVmFlagsStr, })
-  ))
-) ;
+} = (await import("../testScripts/conventions.mjs") ) ;
 
 describe(`running 'node studk-ts-node hello-world.ts' `, () => {
   ;
