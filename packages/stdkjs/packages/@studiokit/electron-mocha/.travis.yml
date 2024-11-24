@@ -1,0 +1,35 @@
+language: node_js
+dist: xenial
+services:
+  - xvfb
+node_js:
+  - stable
+  - 16
+matrix:
+  fast_finish: true
+  include:
+    - node_js: stable
+      os: osx
+    - node_js: 16
+      env: ELECTRON_VERSION=15
+    - node_js: 16
+      env: ELECTRON_VERSION=14
+    - node_js: 14
+      env: ELECTRON_VERSION=13
+    - node_js: stable
+      env: ELECTRON_VERSION=beta
+before_install:
+  - if [[ -n $ELECTRON_VERSION ]]; then
+      npm install electron@$ELECTRON_VERSION;
+    fi
+install:
+  - npm install --no-progress
+  - $(npm bin)/electron --version
+script:
+  - if [[ $ELECTRON_VERSION = "beta" ]]; then
+      npm test || true;
+    else
+      npm test;
+    fi
+notifications:
+  email: false
