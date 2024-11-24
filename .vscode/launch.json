@@ -11,6 +11,21 @@
 
    "configurations": [
       // TBD
+      {
+         "name": "Run StudkTsNodeSeriousExe.Exe Debug",
+         "request": "launch",
+         "cwd": "${workspaceFolder}/packages/stdkjs",
+         "runtimeArgs": [
+            "run",
+            "runStudkTsNodeSeriousExe",
+         ],
+         "runtimeExecutable": "npm",
+         "skipFiles": [
+            "<node_internals>/**"
+         ],
+         "type": "node" ,
+         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      } ,
    ] ,
 
 }
