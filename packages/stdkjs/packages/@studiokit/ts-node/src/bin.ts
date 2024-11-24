@@ -108,6 +108,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
         '--interactive': Boolean,
         '--print': Boolean,
         '--require': [String],
+        '--noRunApp': Boolean,
 
         // CLI options.
         '--help': Boolean,
@@ -128,6 +129,10 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
         '--transpileOnly': Boolean,
         '--transpiler': String,
         '--swc': Boolean,
+        '--scanAndPrintDeps': Boolean,
+        '--alwaysPreTranspile': Boolean,
+        '--preferNativeRunmain': Boolean,
+        '--noNativeRunmain': Boolean,
         '--typeCheck': Boolean,
         '--compilerHost': Boolean,
         '--pretty': Boolean,
@@ -180,6 +185,16 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
         '--scopedir': '--scopeDir',
         '--no-experimental-repl-await': '--noExperimentalReplAwait',
         '--experimental-specifier-resolution': '--experimentalSpecifierResolution',
+
+        // '--alwaysPreTranspile': Boolean,
+        // '--preferNativeRunmain': Boolean,
+        '--no-run': '--noRunApp',
+        '--no-run-app': '--noRunApp',
+        '--always-prebundle': '--alwaysPreTranspile' ,
+        '--always-pretranspile': '--alwaysPreTranspile' ,
+        '--prefer-native-runmain': '--preferNativeRunmain' ,
+        '--no-native-runmain': '--noNativeRunmain' ,
+        '--verbose-importtrace': '--scanAndPrintDeps',
       },
       {
         argv,
@@ -202,6 +217,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     '--eval': code = undefined,
     '--print': print = false,
     '--interactive': interactive = false,
+    "--noRunApp": noRunApp = false,
     '--files': files,
     '--compiler': compiler,
     '--compilerOptions': compilerOptions,
@@ -212,6 +228,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     '--typeCheck': typeCheck,
     '--transpiler': transpiler,
     '--swc': swc,
+    '--scanAndPrintDeps': scanAndPrintDeps,
     '--compilerHost': compilerHost,
     '--pretty': pretty,
     '--skipProject': skipProject,
@@ -224,6 +241,9 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     '--noExperimentalReplAwait': noExperimentalReplAwait,
     '--experimentalSpecifierResolution': experimentalSpecifierResolution,
     '--esm': esm,
+    "--alwaysPreTranspile": alwaysPreTranspile = false,
+    "--preferNativeRunmain": tryNativeRunmain0 ,
+    "--noNativeRunmain": noNativeRunmain0 ,
     _: restArgs,
   } = args;
   return {
@@ -241,6 +261,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     code,
     print,
     interactive,
+    noRunApp,
     files,
     compiler,
     compilerOptions,
@@ -251,6 +272,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     typeCheck,
     transpiler,
     swc,
+    scanAndPrintDeps,
     compilerHost,
     pretty,
     skipProject,
@@ -263,6 +285,10 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     noExperimentalReplAwait,
     experimentalSpecifierResolution,
     esm,
+
+    alwaysPreTranspile,
+    tryNativeRunmain0: tryNativeRunmain0 ,
+    noNativeRunmain0,
   };
 }
 
@@ -279,15 +305,25 @@ Options:
   -p, --print                     Print result of \`--eval\`
   -r, --require [path]            Require a node module before execution
   -i, --interactive               Opens the REPL even if stdin does not appear to be a terminal
+  --noRunApp                  avoid actually running i; when used with '--scanAndPrintDeps', only scan-and-print the dependency graph
 
   --esm                           Bootstrap with the ESM loader, enabling full ESM support
   --swc                           Use the faster swc transpiler
+  --no-native-runmain
+                            opposite of '--prefer-native-runmain' ;
+  --prefer-native-runmain
+                            allow using native support for 'require'-or-'import' ;
+                            if 'false', we'd instead do much-blown emulation, possibly enhanced, of the native support
+  --always-pretranspile, --always-prebundle
+                            force pre-bundled dispatch mode ;
+                            pre-bundle, from the entry-pt, and then run the bundle instead
 
   -h, --help                      Print CLI usage
   -v, --version                   Print module version information.  -vvv to print additional information
   --showConfig                    Print resolved configuration and exit
 
   -T, --transpileOnly             Use TypeScript's faster \`transpileModule\` or a third-party transpiler
+  --scanAndPrintDeps              verbose-print the dependency graph
   -H, --compilerHost              Use TypeScript's compiler host API
   -I, --ignore [pattern]          Override the path patterns to skip compilation
   -P, --project [path]            Path to TypeScript JSON project file
@@ -309,7 +345,7 @@ Options:
   --logError                      Logs TypeScript errors to stderr instead of throwing exceptions
   --noExperimentalReplAwait       Disable top-level await in REPL.  Equivalent to node's --no-experimental-repl-await
   --experimentalSpecifierResolution [node|explicit]
-      Equivalent to node's --experimental-specifier-resolution
+                                  Equivalent to node's --experimental-specifier-resolution
 
   ⁘⁘⁘ end of Options ⁘⁘⁘⁘⁘⁘⁘⁘⁘
 
@@ -344,6 +380,7 @@ this is what our tests here does.
 
 function phase3(payload: BootstrapState) {
   const {
+    noRunApp,
     emit,
     files,
     pretty,
@@ -352,6 +389,7 @@ function phase3(payload: BootstrapState) {
     noExperimentalReplAwait,
     typeCheck,
     swc,
+    scanAndPrintDeps,
     compilerHost,
     ignore,
     preferTsExts,
@@ -369,6 +407,10 @@ function phase3(payload: BootstrapState) {
     scopeDir,
     esm,
     experimentalSpecifierResolution,
+
+    alwaysPreTranspile ,
+    tryNativeRunmain0: tryNativeRunmain0,
+    noNativeRunmain0 ,
   } = payload.parseArgvResult;
   const { cwd } = payload.phase2Result!;
 
@@ -381,6 +423,7 @@ function phase3(payload: BootstrapState) {
   const { entryPointPath } = getEntryPointInfo(payload);
 
   const preloadedConfig = findAndReadConfig({
+    noRunApp,
     cwd,
     emit,
     files,
@@ -390,6 +433,7 @@ function phase3(payload: BootstrapState) {
     typeCheck,
     transpiler,
     swc,
+    scanAndPrintDeps,
     compilerHost,
     ignore,
     logError,
@@ -406,6 +450,10 @@ function phase3(payload: BootstrapState) {
     preferTsExts,
     esm,
     experimentalSpecifierResolution: experimentalSpecifierResolution as ExperimentalSpecifierResolution,
+
+    alwaysPreTranspile ,
+    tryNativeRunmain0 ,
+    noNativeRunmain0 ,
   });
 
   // If ESM is enabled through the parsed tsconfig, stage4 should be run in a child
@@ -461,8 +509,22 @@ function getEntryPointInfo(state: BootstrapState) {
 function phase4(payload: BootstrapState) {
   const { isInChildProcess, tsNodeScript } = payload;
   const { version, showConfig, restArgs, code, print, argv } = payload.parseArgvResult;
+  const {
+    noRunApp,
+    alwaysPreTranspile: optAlwaysPreTranspile,
+    tryNativeRunmain0: optTryNativeRunmain = false,
+    noNativeRunmain0: optNoNativeRunmain = false ,
+    scanAndPrintDeps,
+  } = payload.parseArgvResult;
   const { cwd } = payload.phase2Result!;
   const { preloadedConfig } = payload.phase3Result!;
+
+  const iTryNativeRunmain = (
+    (optNoNativeRunmain && optTryNativeRunmain)
+    && assert.fail(new TypeError(`specified both of mutually-oppoceous flag '--noNativeRunmain' and '--preferNativeRunmain'`) )
+    ,
+    optTryNativeRunmain || (!optNoNativeRunmain)
+  ) ;
 
   const { entryPointPath, executeEntrypoint, executeEval, executeRepl, executeStdin } = getEntryPointInfo(payload);
 
@@ -601,6 +663,39 @@ function phase4(payload: BootstrapState) {
     process.exit(0);
   }
 
+  const nativeRunmainConfig = (
+
+    (function (): (
+      & {
+        /**
+         * performance-wise at glance we should only clear cache for the entrypt ({@link entryPointPath}), but
+         * that'd lead to bugs because the seen module now differ despite sesolving to same path.
+         * the only sound choice 'd be clearing out all at once, but
+         * maybe the user is opposing that.
+         * 
+         */
+        skipClearingNonEntrypointCjsRequireCache: boolean,
+      }
+    ) {
+      return {
+        skipClearingNonEntrypointCjsRequireCache: false ,
+      } ;
+    })()
+  ) ;
+
+  const shallTryNativeRunmain = (
+
+    (
+      /* work-around Node regression of `runMain`; disable this outcome in those versions */
+      !(payload.isInChildProcess && versionGteLt(process.versions.node, '18.6.0', '18.7.0'))
+    )
+    &&
+
+    iTryNativeRunmain
+    &&
+    (!optAlwaysPreTranspile)
+  ) ;
+
   // Prepend `ts-node` arguments to CLI for child processes.
   process.execArgv.push(tsNodeScript, ...argv.slice(2, argv.length - restArgs.length));
 
@@ -609,13 +704,123 @@ function phase4(payload: BootstrapState) {
     .concat(executeEntrypoint ? ([entryPointPath] as string[]) : [])
     .concat(restArgs.slice(executeEntrypoint ? 1 : 0));
 
-  // Execute the main contents (either eval, script or piped).
+  /**
+   * Execute the main contents (either eval, script or piped).
+   * 
+   * optionally delegate to {@link Module.runMain} lol https://github.com/nodejs/node/pull/43763#issuecomment-1179815175
+   * > the actual introduction of {@link Module.runMain `runMain` } goes back further than that.
+   * > https://github.com/TypeStrong/ts-node/blob/aa5ec36526bf817b09345449492d5b9da11c0b93/src/bin.ts#L568-L579
+   * > we manipulate `argv` and `execArgv` and then run {@link Module.runMain `runMain` }
+   * 
+   * otherwise
+   * we instead delegate to `runmain-hack.js`
+   * 
+   *  */
+  void (function () {
+  ;
   if (executeEntrypoint) {
-    if (payload.isInChildProcess && versionGteLt(process.versions.node, '18.6.0', '18.7.0')) {
-      // HACK workaround node regression
-      require('../dist-raw/runmain-hack.js').run(entryPointPath);
-    } else {
-      Module.runMain();
+    assert(entryPointPath) ;
+
+    const runSvcDsf = (
+
+      () => {
+        ;
+        ;
+        try {
+          ;
+          return service.dispatchSrcFileNatively(entryPointPath ) ;
+        } catch (z) {
+          throw z ;
+        }
+      }
+    ) ;
+
+    {
+      ;
+      ;
+      if ((
+        !noRunApp
+      ) ) {
+        directRunfileMode : {
+            ;
+
+            if (shallTryNativeRunmain) {
+              ;
+
+              console["log"](`trying native 'runMain', with config ${inspect(nativeRunmainConfig , undefined, 7, true ) }`) ;
+
+              void (
+                (function runmainTricImpl() {
+                  ;
+                  if (nativeRunmainConfig.skipClearingNonEntrypointCjsRequireCache ) {
+                    delete require.cache[entryPointPath] ;
+                  } else {
+                    for (const k of Object.keys(require.cache) ) {
+                      delete require.cache[k] ;
+                    }
+                  }
+    
+                  return Module.runMain() ;
+                })()
+              ) ;
+
+              // break RUN ;
+              return ;
+            }
+
+            if (0) {
+              ;
+              try {
+                ;
+                runSvcDsf() ;
+                // break RUN ;
+                return ;
+              } catch (z) {
+                if ((z instanceof Error) && ((z as { code ?: string, }).code ?? "" ).match(/\bERR_REQUIRE_ESM\b/) ) {
+                  console["warn"](`failed with ERR_REQUIRE_ESM; trying different (pre)compilation strategy`, z ) ;
+                  break directRunfileMode ;
+                }
+                throw z ;
+              }
+            }
+        }
+      }
+  
+      if (scanAndPrintDeps ) {
+        if (noRunApp) {
+          ; 
+          console["error"](`not running; only`) ;
+        }
+        //
+        console["error"](`scanning and logging its Dependencies. `) ;
+
+        preTranspiledRunfileMode : {
+          service.dryDepScanningEb.dispatchSrcFile(entryPointPath, {
+            alwaysAvoidNativeImport: true ,
+          } ) ;
+          if (noRunApp) {
+            ;
+            // break RUN ;
+            return ;
+          }
+        }
+      }
+
+      if (!noRunApp ) {
+        preTranspiledRunfileMode : {
+
+          console["log"](`trying 'service.dispatchSrcFile(entryPointPath, --alwaysAvoidNativeImport=true, )',`) ;
+
+          service.dispatchSrcFile(entryPointPath, {
+            alwaysAvoidNativeImport: true ,
+          } ) ;
+
+          // break RUN ;
+          return ;
+        }
+      }
+
+      // throw new TypeError
     }
   } else {
     // Note: eval and repl may both run, but never with stdin.
@@ -623,10 +828,16 @@ function phase4(payload: BootstrapState) {
     if (executeEval) {
       addBuiltinLibsToObject(global);
       evalAndExitOnTsError(evalStuff!.repl, evalStuff!.module!, code!, print, 'eval');
+      ;
+      // break RUN ;
+      return ;
     }
 
     if (executeRepl) {
       replStuff!.repl.start();
+      ;
+      // break RUN ;
+      return ;
     }
 
     if (executeStdin) {
@@ -642,8 +853,12 @@ function phase4(payload: BootstrapState) {
           'stdin'
         );
       });
+      ;
+      // break RUN ;
+      return ;
     }
   }
+  })() ;
 }
 
 /**
