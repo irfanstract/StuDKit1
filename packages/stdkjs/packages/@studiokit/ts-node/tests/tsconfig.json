@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "target": "es2015",
+    "module": "CommonJS",
     "jsx": "react",
     "noEmit": true,
     "strict": true,
