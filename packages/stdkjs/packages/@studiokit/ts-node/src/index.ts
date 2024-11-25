@@ -30,7 +30,7 @@ import {
 } from './util';
 import { findAndReadConfig, loadCompiler } from './configuration';
 import type { TSCommon, TSInternal } from './ts-compiler-types';
-import { createModuleTypeClassifier, ModuleTypeClassifier } from './module-type-classifier';
+import { createModuleTypeClassifier, ModuleTypeClassification, ModuleTypeClassifier } from './module-type-classifier';
 import { createResolverFunctions } from './resolver-functions';
 import type { createEsmHooks as createEsmHooksFn } from './esm';
 import { installCommonjsResolveHooksIfNecessary, ModuleConstructorWithInternals } from './cjs-resolve-hooks';
@@ -1249,18 +1249,50 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
   const getOutputTranspileOnly = createTranspileOnlyGetOutputFunction();
 
   // Create a simple TypeScript compiler proxy.
-  function compile(...[code, fileName, lineOffset = 0] : (
-    ArgsWithOptions<[code: string, fileName: string, lineOffset?: number], {}>
+  function compile(...[code, fileName, lineOffset = 0, { forcedModuleType = null, transpileOnly: traArg = false, } = {} ] : (
+
+    ArgsWithOptions<[code: string, fileName: string, lineOffset?: number], (
+      & {
+        transpileOnly?: boolean,
+        forcedModuleType ?: ModuleTypeClassification["moduleType"] | null,
+      }
+    )>
   )) {
     const normalizedFileName = normalizeSlashes(fileName);
-    const classification = moduleTypeClassifier.classifyModuleByModuleTypeOverrides(normalizedFileName);
+    const classification = (
+      ((): ModuleTypeClassification => {
+        if (forcedModuleType) {
+          return {
+            moduleType: forcedModuleType ,
+          } ;
+        }
+        return (
+          moduleTypeClassifier.classifyModuleByModuleTypeOverrides(normalizedFileName)
+        ) ;
+      })()
+    );
     let value: string | undefined = '';
     let sourceMap: string | undefined = '';
     let emitSkipped = true;
-    if (getOutput) {
-      // Must always call normal getOutput to throw typechecking errors
-      [value, sourceMap, emitSkipped] = getOutput(code, normalizedFileName);
+
+    if (emitSkipped) {
+      /**
+       * generally,
+       * unless {@link traArg} (`transpileOnly`), we shall head it to {@link getOutput}.
+       * note however, that
+       * setting {@link forcedModuleType} is incompatible with {@link getOutput `program.getOutput`} and therefore
+       * in that case we can only safely skip this ATM (hopefully fixed in future).
+       * 
+       */
+      if (!forcedModuleType && !traArg) {
+        ;
+        if (getOutput) {
+          // Must always call normal getOutput to throw typechecking errors
+          [value, sourceMap, emitSkipped] = getOutput(code, normalizedFileName);
+        }
+      }
     }
+
     // If module classification contradicts the above, call the relevant transpiler
     if (classification.moduleType === 'cjs' && (shouldOverwriteEmitWhenForcingCommonJS || emitSkipped)) {
       [value, sourceMap] = getOutputForceCommonJS(code, normalizedFileName);
@@ -1645,7 +1677,9 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
           )
           :
           code
-        ), assumedSrcPath )
+        ), assumedSrcPath, undefined, {
+          forcedModuleType: "cjs" ,
+        } )
       ) ;
 
       ;
