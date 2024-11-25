@@ -1,24 +1,32 @@
 import { relative, basename, extname, dirname, join } from 'path';
-import { Module } from 'module';
+import { builtinModules, Module } from 'node:module';
 import * as util from 'util';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { existsSync, readFileSync } from 'node:fs';
 
 import type * as _sourceMapSupport from '@cspotcode/source-map-support';
 import { BaseError } from 'make-error';
-import type * as _ts from 'typescript';
+import * as _ts from 'typescript';
 
 import type { Transpiler, TranspilerFactory } from './transpilers/types';
+import assert = require('assert');
 import {
   cachedLookup,
   createProjectLocalResolveHelper,
+  getStackOrMessage,
   hasOwnProperty,
+  memoize,
   normalizeSlashes,
   once,
   parse,
   ProjectLocalResolveHelper,
+  utilReiterated,
   split,
   versionGteLt,
   yn,
+  type ArgsWithOptions, 
+  Immutable,
+  isUnderCspNoEvalsPolicy,
 } from './util';
 import { findAndReadConfig, loadCompiler } from './configuration';
 import type { TSCommon, TSInternal } from './ts-compiler-types';
