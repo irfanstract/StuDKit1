@@ -9,10 +9,70 @@ import assert from "assert";
 
 export { assert, } ;
 
+import * as Immutable from "immutable";
+
+/**
+ * 
+ * @type {typeof import("../src/util.ts")}
+ * @module
+ * 
+ */
+const provUtilJs = (await import("../dist/util.js")) ;
+
+const {
+  memoize,
+  utilReiterated,
+} = provUtilJs ;
+
+export {
+  memoize ,
+  utilReiterated ,
+} ;
+
+export {
+  provUtilJs,
+} ;
+
+/**
+ * indents the given block of txt with an MD-like blockquoting indent.
+ * 
+ * ```
+ * process.stderr.println((
+ *   posixBlockquotify(code )
+ * )) ;
+ * 
+ * // Result:
+ * > process.stderr.println((
+ * >   posixBlockquotify(code )
+ * > )) ;
+ * ```
+ * 
+ */
+const posixBlockquotify = (
+
+  /** @satisfies {(x: string) => string} */ ((x) => (
+
+    x.replace(/(^|\r?\n)/g, "$1> ")
+  ) )
+) ;
+export { posixBlockquotify, } ;
 
 
 
+
+/** @import { SpawnSyncReturns, ChildProcess, } from "child_process" */
 import { execFileSync, execSync, spawnSync, } from "child_process";
+
+const assertProcSyncExitCode = (
+
+  /** @type {(...args: [SpawnSyncReturns<any> , (status: number) => boolean] ) => void } */ function (...[p, cx]) {
+    if (cx(p.status ?? assert.fail(new TypeError(`process has not terminated`) ) )) {
+      ;
+    } else {
+      assert.fail(new TypeError(`failed; the code was ${p.status } and the stderr was: ` + "\r\n" + posixBlockquotify(p.stderr ) ) ) ;
+    }
+  }
+) ;
 
 import * as Path from "path";
 import { fileURLToPath } from "url";
@@ -34,6 +94,10 @@ export const provDir = (
 
 export { getFilenameAndDirname, } ;
 
+
+export {
+  assertProcSyncExitCode,
+} ;
 
 export { execFileSync, execSync, spawnSync, } ;
 
