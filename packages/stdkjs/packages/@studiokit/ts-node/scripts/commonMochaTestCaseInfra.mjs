@@ -40,12 +40,23 @@ export { execFileSync, execSync, spawnSync, } ;
 
 
 
+/**
+ * path to the `<this-package-root>/dist/bin.js`,
+ * assuming {@link https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html having successfully run emit}
+ * 
+ */
+const spclBinJsPath = (
+
+  Path.join(provDir, "dist", "bin.js")
+  .replaceAll("\\", "/")
+) ;
+
 export const RUN_TSFILE = (
 
-  /** @satisfies {(filePath: string, options: { intendedWorkingDir: string, }) => any} */ ((filePath, { intendedWorkingDir, }) => (
+  /** @satisfies {(...args: RtsfArgs<{}>) => any} */ ((filePath, { intendedWorkingDir, liftRunner = false, lrFlags = [], }) => (
 
     (
-      execFileSync("node", ["-r", "@studiokit/ts-node/register", filePath ] , {
+      execFileSync(...rtsfImplBuildPeerArgv(filePath, { liftRunner, lrFlags, } ) , {
         shell: true ,
         cwd: intendedWorkingDir ,
         stdio: ["pipe", "pipe", "inherit"],
@@ -60,10 +71,10 @@ export const RUN_TSFILE = (
 
 export const RUN_TSFILE_DIAGNOSED = (
 
-  /** @satisfies {(filePath: string, options: { intendedWorkingDir: string, }) => any} */ ((filePath, { intendedWorkingDir, }) => (
+  /** @satisfies {(...args: RtsfArgs<{}>) => any} */ ((filePath, { intendedWorkingDir, liftRunner = false, lrFlags = [], }) => (
 
     (
-      spawnSync("node", ["-r", "@studiokit/ts-node/register", filePath ] , {
+      spawnSync(...rtsfImplBuildPeerArgv(filePath, { liftRunner, lrFlags, } ) , {
         shell: true ,
         cwd: intendedWorkingDir ,
         stdio: ["pipe", "pipe", "pipe"],
@@ -71,6 +82,29 @@ export const RUN_TSFILE_DIAGNOSED = (
       } )
     )
   ) )
+) ;
+
+/**
+ * @typedef {Parameters<(filePath: string, options: ({ intendedWorkingDir: string, } & ({ liftRunner?: false, lrFlags?: readonly [], } | { liftRunner: true, lrFlags?: readonly string[] }) ) & XExtraOptions) => any > }
+ * @template {{}} XExtraOptions={}
+ * 
+ */
+const RtsfArgs = {} ;
+
+const rtsfImplBuildPeerArgv = (
+
+  /** @satisfies {(...args: [filePath: string, { liftRunner: boolean, lrFlags: readonly string[], } ]) => Parameters<typeof execFileSync>} */ ((...[filePath, { liftRunner, lrFlags, }]) => {
+    if (liftRunner) {
+      return (
+        ["node", [spclBinJsPath, ...lrFlags, filePath ]]
+      ) ;
+    } else {
+      ;
+      return (
+        ["node", ["-r", "@studiokit/ts-node/register", filePath ]]
+      ) ;
+    }
+  })
 ) ;
 
 
