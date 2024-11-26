@@ -1,3 +1,6 @@
+
+/// <reference lib="ES2023" />
+
 import { resolve, dirname, join } from 'path';
 import * as _ts from 'typescript';
 import { CreateOptions, DEFAULTS, OptionBasePaths, RegisterOptions, TSCommon, TsConfigOptions } from './index';
@@ -5,6 +8,8 @@ import type { TSInternal } from './ts-compiler-types';
 import { createTsInternals } from './ts-internals';
 import { getDefaultTsconfigJsonForNodeVersion } from './tsconfigs';
 import {
+  assert,
+  Immutable ,
   assign,
   attemptRequireWithV8CompileCache,
   createProjectLocalResolveHelper,
