@@ -167,59 +167,59 @@ export interface CreateOptions {
    *
    * @default process.cwd()
    */
-  cwd?: string;
+  readonly cwd?: string;
   /**
    * Legacy alias for `cwd`
    *
    * @deprecated use `projectSearchDir` or `cwd`
    */
-  dir?: string;
+  readonly dir?: string;
   /**
    * Emit output files into `.ts-node` directory.
    *
    * @default false
    */
-  emit?: boolean;
+  readonly emit?: boolean;
   /**
    * Scope compiler to files within `scopeDir`.
    *
    * @default false
    */
-  scope?: boolean;
+  readonly scope?: boolean;
   /**
    * @default First of: `tsconfig.json` "rootDir" if specified, directory containing `tsconfig.json`, or cwd if no `tsconfig.json` is loaded.
    */
-  scopeDir?: string;
+  readonly scopeDir?: string;
   /**
    * Use pretty diagnostic formatter.
    *
    * @default false
    */
-  pretty?: boolean;
+  readonly pretty?: boolean;
   /**
    * Use TypeScript's faster `transpileModule`.
    *
    * @default false
    */
-  transpileOnly?: boolean;
+  readonly transpileOnly?: boolean;
   /**
    * **DEPRECATED** Specify type-check is enabled (e.g. `transpileOnly == false`).
    *
    * @default true
    */
-  typeCheck?: boolean;
+  readonly typeCheck?: boolean;
   /**
    * Use TypeScript's compiler host API instead of the language service API.
    *
    * @default false
    */
-  compilerHost?: boolean;
+  readonly compilerHost?: boolean;
   /**
    * Logs TypeScript errors to stderr instead of throwing exceptions.
    *
    * @default false
    */
-  logError?: boolean;
+  readonly logError?: boolean;
   /**
    * Load "files" and "include" from `tsconfig.json` on startup.
    *
@@ -227,17 +227,17 @@ export interface CreateOptions {
    *
    * @default false
    */
-  files?: boolean;
+  readonly files?: boolean;
   /**
    * Specify a custom TypeScript compiler.
    *
    * @default "typescript"
    */
-  compiler?: string;
+  readonly compiler?: string;
   /**
    * Specify a custom transpiler for use with transpileOnly
    */
-  transpiler?: string | [string, object];
+  readonly transpiler?: string | [string, object];
   /**
    * Transpile with swc instead of the TypeScript compiler, and skip typechecking.
    *
@@ -245,7 +245,7 @@ export interface CreateOptions {
    *
    * For complete instructions: https://typestrong.org/ts-node/docs/transpilers
    */
-  swc?: boolean;
+  readonly swc?: boolean;
   /**
    * Paths which should not be compiled.
    *
@@ -257,38 +257,38 @@ export interface CreateOptions {
    *
    * @default ["(?:^|/)node_modules/"]
    */
-  ignore?: string[];
+  readonly ignore?: string[];
   /**
    * Path to TypeScript config file or directory containing a `tsconfig.json`.
    * Similar to the `tsc --project` flag: https://www.typescriptlang.org/docs/handbook/compiler-options.html
    */
-  project?: string;
+  readonly project?: string;
   /**
    * Search for TypeScript config file (`tsconfig.json`) in this or parent directories.
    */
-  projectSearchDir?: string;
+  readonly projectSearchDir?: string;
   /**
    * Skip project config resolution and loading.
    *
    * @default false
    */
-  skipProject?: boolean;
+  readonly skipProject?: boolean;
   /**
    * Skip ignore check, so that compilation will be attempted for all files with matching extensions.
    *
    * @default false
    */
-  skipIgnore?: boolean;
+  readonly skipIgnore?: boolean;
   /**
    * JSON object to merge with TypeScript `compilerOptions`.
    *
    * @allOf [{"$ref": "https://schemastore.azurewebsites.net/schemas/json/tsconfig.json#definitions/compilerOptionsDefinition/properties/compilerOptions"}]
    */
-  compilerOptions?: _ts.CompilerOptions;
+  readonly compilerOptions?: _ts.CompilerOptions;
   /**
    * Ignore TypeScript warnings by diagnostic code.
    */
-  ignoreDiagnostics?: Array<number | string>;
+  readonly ignoreDiagnostics?: Array<number | string>;
   /**
    * Modules to require, like node's `--require` flag.
    *
@@ -297,10 +297,10 @@ export interface CreateOptions {
    * If specified programmatically, each input string should be pre-resolved to an absolute path for
    * best results.
    */
-  require?: Array<string>;
-  readFile?: (path: string) => string | undefined;
-  fileExists?: (path: string) => boolean;
-  transformers?: _ts.CustomTransformers | ((p: _ts.Program) => _ts.CustomTransformers);
+  readonly require?: Array<string>;
+  readonly readFile?: (path: string) => string | undefined;
+  readonly fileExists?: (path: string) => boolean;
+  readonly transformers?: _ts.CustomTransformers | ((p: _ts.Program) => _ts.CustomTransformers);
   /**
    * Allows the usage of top level await in REPL.
    *
@@ -311,7 +311,7 @@ export interface CreateOptions {
    * **Note**: setting to `true` when tsconfig target is too low will throw an Error.  Leave as `undefined`
    * to get default, automatic behavior.
    */
-  experimentalReplAwait?: boolean;
+  readonly experimentalReplAwait?: boolean;
   /**
    * Override certain paths to be compiled and executed as CommonJS or ECMAScript modules.
    * When overridden, the tsconfig "module" and package.json "type" fields are overridden, and
@@ -327,7 +327,7 @@ export interface CreateOptions {
    * `package` overrides either of the above to default behavior, which obeys package.json "type" and
    * tsconfig.json "module" options.
    */
-  moduleTypes?: ModuleTypes;
+  readonly moduleTypes?: ModuleTypes;
   /**
    * @internal
    * Set by our configuration loader whenever a config file contains options that
@@ -335,19 +335,19 @@ export interface CreateOptions {
    * to know this.  Some options can be eagerly resolved to absolute paths by
    * the configuration loader, so it is *not* necessary for their source to be set here.
    */
-  optionBasePaths?: OptionBasePaths;
+  readonly optionBasePaths?: OptionBasePaths;
   /**
    * A function to collect trace messages from the TypeScript compiler, for example when `traceResolution` is enabled.
    *
    * @default console.log
    */
-  tsTrace?: (str: string) => void;
+  readonly tsTrace?: (str: string) => void;
   /**
    * Enable native ESM support.
    *
    * For details, see https://typestrong.org/ts-node/docs/imports#native-ecmascript-modules
    */
-  esm?: boolean;
+  readonly esm?: boolean;
   /**
    * Re-order file extensions so that TypeScript imports are preferred.
    *
@@ -355,13 +355,13 @@ export interface CreateOptions {
    *
    * @default false
    */
-  preferTsExts?: boolean;
+  readonly preferTsExts?: boolean;
   /**
    * Like node's `--experimental-specifier-resolution`, , but can also be set in your `tsconfig.json` for convenience.
    *
    * For details, see https://nodejs.org/dist/latest-v18.x/docs/api/esm.html#customizing-esm-specifier-resolution-algorithm
    */
-  experimentalSpecifierResolution?: 'node' | 'explicit';
+  readonly experimentalSpecifierResolution?: 'node' | 'explicit';
   /**
    * Allow using voluntary `.ts` file extension in import specifiers.
    *
@@ -372,7 +372,7 @@ export interface CreateOptions {
    * However, if you really want to use `.ts` in import specifiers, and are aware that this may
    * break tooling, you can enable this flag.
    */
-  experimentalTsImportSpecifiers?: boolean;
+  readonly experimentalTsImportSpecifiers?: boolean;
 }
 
 export interface CreateOptions extends AlwaysPreTranspileOptions {}
@@ -384,7 +384,7 @@ interface AlwaysPreTranspileOptions
    * {@link alwaysPreTranspile}; `false` by default
    * 
    */
-  alwaysPreTranspile ?: boolean ;
+  readonly alwaysPreTranspile ?: boolean ;
 }
 
 export type ModuleTypes = Record<string, ModuleTypeOverride>;
@@ -411,7 +411,7 @@ export interface RegisterOptions extends CreateOptions {
    *
    * For details, see https://github.com/TypeStrong/ts-node/issues/1514
    */
-  experimentalResolver?: boolean;
+  readonly experimentalResolver?: boolean;
 }
 
 export type ExperimentalSpecifierResolution = 'node' | 'explicit';

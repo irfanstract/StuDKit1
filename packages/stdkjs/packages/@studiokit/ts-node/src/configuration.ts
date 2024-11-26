@@ -1,3 +1,6 @@
+
+/// <reference lib="ES2023" />
+
 import { resolve, dirname, join } from 'path';
 import * as _ts from 'typescript';
 import { CreateOptions, DEFAULTS, OptionBasePaths, RegisterOptions, TSCommon, TsConfigOptions } from './index';
@@ -5,6 +8,8 @@ import type { TSInternal } from './ts-compiler-types';
 import { createTsInternals } from './ts-internals';
 import { getDefaultTsconfigJsonForNodeVersion } from './tsconfigs';
 import {
+  assert,
+  Immutable ,
   assign,
   attemptRequireWithV8CompileCache,
   createProjectLocalResolveHelper,
@@ -121,7 +126,8 @@ export function readConfig(
    */
   config: _ts.ParsedCommandLine;
   /**
-   * ts-node options pulled from `tsconfig.json`, NOT merged with any other sources.  Merging must happen outside
+   * ts-node options verbatim/as-is pulled from `tsconfig.json` (at path {@link configFilePath}); NOT merged with any other sources.
+   * Merging must happen outside
    * this function.
    */
   tsNodeOptionsFromTsconfig: TsConfigOptions;
@@ -159,13 +165,13 @@ export function readConfig(
     if (rootConfigPath) {
       // If root extends [a, c] and a extends b, c extends d, then this array will look like:
       // [root, c, d, a, b]
-      let configPaths = [rootConfigPath];
+      let configPaths: readonly string[] = [rootConfigPath];
       const tsInternals = createTsInternals(ts);
       const errors: Array<_ts.Diagnostic> = [];
 
       // Follow chain of "extends"
       for (let configPathIndex = 0; configPathIndex < configPaths.length; configPathIndex++) {
-        const configPath = configPaths[configPathIndex];
+        const configPath = configPaths[configPathIndex] ?? assert.fail(new Error );
         const result = ts.readConfigFile(configPath, readFile);
 
         // Return diagnostics.
@@ -214,12 +220,12 @@ export function readConfig(
             // Tricky! If "extends" array is [a, c] then this will splice them into this order:
             // [root, c, a]
             // This is what we want.
-            configPaths.splice(configPathIndex + 1, 0, resolvedExtendedConfigPath);
+            configPaths = configPaths.toSpliced(configPathIndex + 1, 0, resolvedExtendedConfigPath ) ;
           }
         }
       }
 
-      ({ config, basePath } = configChain[0]);
+      ({ config, basePath } = configChain[0] ?? assert.fail(new Error ) );
     }
   }
 
@@ -230,20 +236,26 @@ export function readConfig(
   ) ;
 
   // Merge and fix ts-node options that come from tsconfig.json(s)
-  const tsNodeOptionsFromTsconfig: TsConfigOptions = {};
+  let tsNodeOptionsFromTsconfig: TsConfigOptions = {};
   const optionBasePaths: OptionBasePaths = {};
-  for (let i = configChain.length - 1; i >= 0; i--) {
-    const { config, basePath, configPath } = configChain[i];
-    const options = filterRecognizedTsConfigTsNodeOptions(config['ts-node']).recognized;
+  for (const { config, basePath, configPath } of Immutable.Seq(configChain ).reverse() )
+  {
+    let options: TsConfigOptions = filterRecognizedTsConfigTsNodeOptions(config['ts-node']).recognized;
 
     // Some options are relative to the config file, so must be converted to absolute paths here
     if (options.require) {
       // Modules are found relative to the tsconfig file, not the `dir` option
       const tsconfigRelativeResolver = createProjectLocalResolveHelper(dirname(configPath));
-      options.require = options.require.map((path: string) => tsconfigRelativeResolver(path, false));
+      options = {
+        ...options ,
+        require: options.require.map((path: string) => tsconfigRelativeResolver(path, false)) ,
+      };
     }
     if (options.scopeDir) {
-      options.scopeDir = resolve(basePath, options.scopeDir!);
+      options = {
+        ...options ,
+        scopeDir: resolve(basePath, options.scopeDir!) ,
+      };
     }
 
     // Downstream code uses the basePath; we do not do that here.
@@ -264,7 +276,7 @@ export function readConfig(
       raiseAptImplyingCjsEmitFmtWarning({ ctxNote: `config from ${configPath }, BP ${basePath }` }) ;
     }
 
-    assign(tsNodeOptionsFromTsconfig, options);
+    tsNodeOptionsFromTsconfig = assign<TsConfigOptions>(new Object, tsNodeOptionsFromTsconfig, options);
   }
 
   // Remove resolution of "files".
