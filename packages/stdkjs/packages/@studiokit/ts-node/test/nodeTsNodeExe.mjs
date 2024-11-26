@@ -167,9 +167,10 @@ describe(`running 'node studk-ts-node <library-example-ts>' `, () => {
     fullNm: testsPjiTsPath ,
     simpleNm: testsPjiTsName,
     isExpectedOutTxt,
+    skipNativeRuntimeMode: shallSkipNativeRuntimeMode,
   } of (
 
-    utilReiterated(/** @return {Iterable<{ readonly simpleNm: String, readonly ieo: OC, }>} */ function* () {
+    utilReiterated(/** @return {Iterable<{ readonly simpleNm: String, readonly ieo: OC, readonly skipNativeRuntimeMode?: Boolean, }>} */ function* () {
 
       yield {
         simpleNm: "PopularLibsCoreJsImmutable03.ts" ,
@@ -191,30 +192,60 @@ describe(`running 'node studk-ts-node <library-example-ts>' `, () => {
           ) )
         )
         ,
+        skipNativeRuntimeMode: true,
       } ;
 
     })
 
-    .map(({ simpleNm, ieo, }) => /** @type {const} */ ({
+    .map(({ simpleNm, ieo, skipNativeRuntimeMode, }) => /** @type {const} */ ({
       simpleNm,
       fullNm: (
         Path.join(provDir, "tests", simpleNm)
         .replaceAll("\\", "/")
       ) ,
       isExpectedOutTxt: ieo.isExpectedOut,
+      skipNativeRuntimeMode ,
     }))
 
   ) )
 
   for (const {
     flags,
-  } of spclMustTryProbSet )
+  } of (
+    spclMustTryProbSet
+
+    .filter(e => {
+      if ((
+        shallSkipNativeRuntimeMode &&
+        !(e.flags.includes("--noNativeRunmain") || e.flags.includes("--alwaysPreTranspile") )
+      ) ) {
+        return false
+      }
+
+      return true ;
+    })
+
+  ) )
+  for (const { title, runMain, } of /** @satisfies {{ title: String, runMain: () => SpawnSyncReturns<String>, }[] } */ ([
+    {
+      title: `running 'node @studiokit/ts-node ${flags.join(" ") } ${testsPjiTsName}'  ` ,
+      runMain: () => (
+        spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), lft: true, })
+      ),
+    } ,
+    {
+      title: `running 'node -r "@studiokit/ts-node/register ${flags.join(" ") }" ${testsPjiTsName}'  ` ,
+      runMain: () => (
+        spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), lft: false, })
+      ),
+    } ,
+  ]))
   {
 
-    it (`running 'node studk-ts-node ${flags.join(" ") } ${testsPjiTsName}'  `, () => {
+    it (title, () => {
 
       const pE = (
-        spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), })
+        runMain()
       ) ;
 
       checkNoError(pE) ;
