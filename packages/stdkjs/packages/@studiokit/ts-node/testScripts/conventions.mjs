@@ -43,6 +43,16 @@ export {
   asGreen ,
 } ;
 
+const describeInlineEsmUrl = (
+
+  /** @satisfies {(x: string) => string} */ ((code) => {
+
+    return (
+      "data:text/javascript," + encodeURIComponent(code)
+    ) ;
+  })
+) ;
+
 
 
 class OC
@@ -134,6 +144,16 @@ import {
 const binJsPath = (
 
   Path.join(provDir, "dist", "bin.js")
+  .replaceAll("\\", "/")
+) ;
+
+/**
+ * path to the `<this-package-root>/register/index.js`,
+ * 
+ */
+const registerJsPath = (
+
+  Path.join(provDir, "register", "index.js")
   .replaceAll("\\", "/")
 ) ;
 
@@ -246,9 +266,11 @@ const spweDefs = (
 
     const spcl1WithErr = (
         
-      /** @satisfies {(...args: ArgsWithOptions<[cm: string], { vmflagsStr: string }>) => any } */ ((cm, { vmflagsStr: flagsStr, }) => {
+      /** @satisfies {(...args: ArgsWithOptions<[cm: string], { vmflagsStr: string, lft?: boolean, }>) => any } */ ((cm, { vmflagsStr: flagsStr, lft: lftArg = true , }) => {
     
-        const finalCm = `node ${binJsPath } ${flagsStr } ${cm }` ;
+        const finalCm = (
+          `node ${fmx1(cm, { vmflagsStr: flagsStr, lft: lftArg, } ) }`
+        ) ;
     
         if (0) {
           ;
@@ -271,8 +293,53 @@ const spweDefs = (
     const spclMeta1WithErr = (
     
       /** @satisfies {(...args: ArgsWithOptions<[cm: string], { firstLevelVmFlagsStr: string, secndLevelVmFlagsStr?: string }>) => any } */ ((cm, { firstLevelVmFlagsStr, secndLevelVmFlagsStr = ``, }) => (
-        spcl1WithErr(`${binJsPath } ${secndLevelVmFlagsStr } ${cm}`, { vmflagsStr: firstLevelVmFlagsStr, })
+        spcl1WithErr((
+
+          fmx1(cm, {
+            vmflagsStr: secndLevelVmFlagsStr,
+            lft: true,
+          } )
+
+        ), { vmflagsStr: firstLevelVmFlagsStr, })
       ))
+    ) ;
+
+    /**
+     * intended to be used as eg
+     * ```
+     * execSync(`node ${fmx1(cm, { vmflagsStr: flagsStr, lft: lftArg, } ) }` , { ... } )
+     * ```
+     * 
+     */
+    const fmx1 = (
+    
+      /** @satisfies {(...args: ArgsWithOptions<[cm: string], { vmflagsStr: string, lft: boolean, }>) => any } */ ((...[cm, { vmflagsStr, lft, }] ) => {
+        if (lft) {
+
+          return (
+            (`${binJsPath } ${vmflagsStr } ${cm}` )
+          ) ;
+        } else {
+          // TODO
+
+          if (!(vmflagsStr.match(/^\s*$/u ) ) ) {
+            if (0) {
+              ;
+              throw new Error(`currently, specifying 'vmflagsStr' is only supported when ${require("node:util").inspect({ lft: true, }) } `) ;
+            }
+
+            return (
+              (`--import ${describeInlineEsmUrl(`XTSNode.registerWithFlagsStr(${JSON.stringify(vmflagsStr) }) ` ) } ${cm}` )
+            ) ;
+          } else {
+            ;
+
+            return (
+              (`-r ${registerJsPath } ${cm}` )
+            ) ;
+          }
+        }
+      })
     ) ;
 
     //
