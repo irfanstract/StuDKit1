@@ -39,7 +39,23 @@ export const isUnderCspNoEvalsPolicy = (
  *
  * @internal
  */
-export function assign<T extends object>(initialValue: T, ...sources: Array<T>): T {
+export function assign(...args: never): unknown ;
+// export function assign<dummy5 extends never, dummy6 extends never, dummy7 extends never, const T extends object = never, dummy8 extends never = never,  >(...args: never): unknown ;
+// export function assign<dummy5 extends never, dummy6 extends never, dummy7 extends never, const T extends object = never, dummy8 extends never = never, DstT = NoInfer<{ /** supposed to be assignable, to prevent unintended mutability */ [k in {} & (keyof T)] ?: T[k] ; }> >(
+//   initialValue: NoInfer<(DstT )>,
+//   ...sources: (Array<T> )
+// ): typeof initialValue ;
+// /** @deprecated seems like there're properties not supposed to be reassigned, aren't there? check your objs' types. */
+// export function assign<dummy5 extends never, dummy6 extends never, dummy7 extends never, const T extends object = never,  >(
+//   initialValue: NoInfer<({ readonly [k in {} & (keyof T)] ?: T[k] ; } )>,
+//   ...sources: (Array<T> )
+// ): typeof initialValue ;
+export function assign<const T extends object = never, >(
+  initialValue: NoInfer<({ /** supposed to be assignable, to prevent unintended mutability */ [k in {} & (keyof T)] ?: T[k] ; } )>,
+  ...sources: NoInfer<(Array<{ readonly [k in {} & (keyof T)] ?: T[k] ; }> )>
+): typeof initialValue ;
+// export function assign<const TSrc extends object, TDest extends { [k in keyof TSrc]: unknown ; }>(initialValue: TDest, ...sources: Array<TSrc>): TDest ;
+export function assign<const TSrc extends object, TDest extends { [k in keyof TSrc]: unknown ; }>(initialValue: TDest, ...sources: Array<TSrc>): TDest {
   for (const source of sources) {
     for (const key of Object.keys(source)) {
       const value = (source as any)[key];
@@ -157,6 +173,17 @@ export function getBasePathForProjectLocalDependencyResolution(
   // should have configFilePath, so not reach this codepath.
 }
 
+import assert = require('assert');
+
+function failMissingArgName<const RT = never>(nm: string): RT
+{
+  return (
+    assert.fail(new TypeError(`unspecified argument '${nm}'`) )
+  ) ;
+}
+
+export { assert, } ;
+
 /** @internal */
 export function once<Fn extends (...args: any[]) => any>(fn: Fn) {
   let value: ReturnType<Fn>;
@@ -180,7 +207,7 @@ export function utilReiterated<const E>(src: () => Iterable<E> ) {
 
 /** @internal */
 export function versionGteLt(version: string, gteRequirement: string, ltRequirement?: string) {
-  const [major, minor, patch, extra] = parse(version);
+  const [major = failMissingArgName("major"), minor, patch, extra] = parse(version);
   const [gteMajor, gteMinor, gtePatch] = parse(gteRequirement);
   const isGte =
     major > gteMajor || (major === gteMajor && (minor > gteMinor || (minor === gteMinor && patch >= gtePatch)));
