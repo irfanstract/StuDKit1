@@ -584,11 +584,20 @@ export function register(opts?: RegisterOptions): Service;
  */
 export function register(service: Service): Service;
 export function register(serviceOrOpts: Service | RegisterOptions | undefined): Service {
-  // Is this a Service or a RegisterOptions?
-  let service = serviceOrOpts as Service;
-  if (!(serviceOrOpts as Service)?.[TS_NODE_SERVICE_BRAND]) {
-    // Not a service; is options
-    service = create((serviceOrOpts ?? {}) as RegisterOptions);
+  const service = (
+    (/** Is it a {@link Service} or a {@link RegisterOptions}? */ (serviceOrOpts: (Service | (RegisterOptions & { readonly [TS_NODE_SERVICE_BRAND] ?: false | null | undefined }) ) | undefined ): Service => {
+      if (!serviceOrOpts?.[TS_NODE_SERVICE_BRAND]) {
+        ;
+        // Not a service; is options
+        return (
+          create(serviceOrOpts satisfies (RegisterOptions | undefined) )
+        );
+      } else {
+        return serviceOrOpts ;
+      }
+    })(serviceOrOpts )
+  ) ;
+  {
   }
 
   if (fRegisterHasBeenCalled++) {
