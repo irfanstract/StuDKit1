@@ -584,11 +584,24 @@ export function register(opts?: RegisterOptions): Service;
  */
 export function register(service: Service): Service;
 export function register(serviceOrOpts: Service | RegisterOptions | undefined): Service {
-  // Is this a Service or a RegisterOptions?
-  let service = serviceOrOpts as Service;
-  if (!(serviceOrOpts as Service)?.[TS_NODE_SERVICE_BRAND]) {
-    // Not a service; is options
-    service = create((serviceOrOpts ?? {}) as RegisterOptions);
+  const service = (
+    (/** Is it a {@link Service} or a {@link RegisterOptions}? */ (serviceOrOpts: (Service | (RegisterOptions & { readonly [TS_NODE_SERVICE_BRAND] ?: false | null | undefined }) ) | undefined ): Service => {
+      if (!serviceOrOpts?.[TS_NODE_SERVICE_BRAND]) {
+        ;
+        // Not a service; is options
+        return (
+          create(serviceOrOpts satisfies (RegisterOptions | undefined) )
+        );
+      } else {
+        return serviceOrOpts ;
+      }
+    })(serviceOrOpts )
+  ) ;
+  {
+  }
+
+  if (fRegisterHasBeenCalled++) {
+    onSecondTimeRegisterMethodCall(service, serviceOrOpts) ;
   }
 
   const originalJsHandler = require.extensions['.js'];
@@ -608,6 +621,15 @@ export function register(serviceOrOpts: Service | RegisterOptions | undefined): 
 
   return service;
 }
+
+let fRegisterHasBeenCalled: number = 0 ;
+
+const onSecondTimeRegisterMethodCall = (
+
+  (...[s]: [s: Service, sO: Service | RegisterOptions | undefined]) => {
+    console["error"](`[studiokit-ts-node] 'register()' has only been designed to run at-most once. running it more-than-once may lead to untested, unexpected effects`) ;
+  }
+);
 
 /**
  * Create TypeScript compiler instance.
@@ -996,7 +1018,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
           );
         }
 
-        return [output.outputFiles[1].text, output.outputFiles[0].text, false];
+        return [output.outputFiles[1]!.text, output.outputFiles[0]!.text, false];
       };
 
       getTypeInfo = (code: string, fileName: string, position: number) => {
@@ -1881,6 +1903,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         dispatchSrcFile,
         eb ,
         dryDepScanningEb ,
+        getEmitExtension ,
         /** @deprecated */
         compilerHelper11,
       } as const
