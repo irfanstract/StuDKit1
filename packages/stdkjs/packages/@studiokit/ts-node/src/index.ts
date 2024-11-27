@@ -1009,7 +1009,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
           );
         }
 
-        return [output.outputFiles[1].text, output.outputFiles[0].text, false];
+        return [output.outputFiles[1]!.text, output.outputFiles[0]!.text, false];
       };
 
       getTypeInfo = (code: string, fileName: string, position: number) => {
