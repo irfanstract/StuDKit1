@@ -591,6 +591,10 @@ export function register(serviceOrOpts: Service | RegisterOptions | undefined): 
     service = create((serviceOrOpts ?? {}) as RegisterOptions);
   }
 
+  if (fRegisterHasBeenCalled++) {
+    onSecondTimeRegisterMethodCall(service, serviceOrOpts) ;
+  }
+
   const originalJsHandler = require.extensions['.js'];
 
   // Expose registered instance globally.
@@ -608,6 +612,15 @@ export function register(serviceOrOpts: Service | RegisterOptions | undefined): 
 
   return service;
 }
+
+let fRegisterHasBeenCalled: number = 0 ;
+
+const onSecondTimeRegisterMethodCall = (
+
+  (...[s]: [s: Service, sO: Service | RegisterOptions | undefined]) => {
+    console["error"](`[studiokit-ts-node] 'register()' has only been designed to run at-most once. running it more-than-once may lead to untested, unexpected effects`) ;
+  }
+);
 
 /**
  * Create TypeScript compiler instance.
