@@ -23,6 +23,7 @@ import {
   VERSION,
   TSError,
   register,
+  registerByArgvFlags,
   createEsmHooks,
   createFromPreloadedConfig,
   DEFAULTS,
@@ -104,6 +105,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     ...arg(
       {
         // Node.js-like options.
+        /** hidden, dummy argv-fmt flag meant for programmatic usage from eg (sorry, wrong syntax) {@link registerByArgvFlags `--import "require('@studiokit/ts-node').registerByArgvFlags(flags) "`}, to register the comprehensive range of the loaders, */ '--only-register': Boolean,
         '--eval': String,
         '--interactive': Boolean,
         '--print': Boolean,
@@ -208,6 +210,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
   // defaults.
   const {
     '--cwd': cwdArg,
+    "--only-register": iRlo1,
     '--help': help = false,
     '--scriptMode': scriptMode,
     '--cwdMode': cwdMode,
@@ -252,6 +255,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     restArgs,
 
     cwdArg,
+    iRlo1 ,
     help,
     scriptMode,
     cwdMode,
@@ -506,7 +510,15 @@ function getEntryPointInfo(state: BootstrapState) {
   };
 }
 
-function phase4(payload: BootstrapState) {
+function phase4(payload: BootstrapState)
+{
+  return (
+    phase4Impl(phase4Pre(payload) )
+  ) ;
+}
+
+function phase4Pre(payload: BootstrapState)
+{
   const { isInChildProcess, tsNodeScript } = payload;
   const { version, showConfig, restArgs, code, print, argv } = payload.parseArgvResult;
   const {
@@ -524,6 +536,26 @@ function phase4(payload: BootstrapState) {
     && assert.fail(new TypeError(`specified both of mutually-oppoceous flag '--noNativeRunmain' and '--preferNativeRunmain'`) )
     ,
     optTryNativeRunmain || (!optNoNativeRunmain)
+  ) ;
+
+  const nativeRunmainConfigImpl = (
+
+    (function (): (
+      & {
+        /**
+         * performance-wise at glance we should only clear cache for the entrypt ({@link entryPointPath}), but
+         * that'd lead to bugs because the seen module now differ despite sesolving to same path.
+         * the only sound choice 'd be clearing out all at once, but
+         * maybe the user is opposing that.
+         * 
+         */
+        skipClearingNonEntrypointCjsRequireCache: boolean,
+      }
+    ) {
+      return {
+        skipClearingNonEntrypointCjsRequireCache: false ,
+      } ;
+    })()
   ) ;
 
   const { entryPointPath, executeEntrypoint, executeEval, executeRepl, executeStdin } = getEntryPointInfo(payload);
@@ -610,25 +642,99 @@ function phase4(payload: BootstrapState) {
   evalStuff?.repl.setService(service);
   stdinStuff?.repl.setService(service);
 
+  return {
+    ...payload ,
+    //
+
+    version ,
+    preloadedConfig ,
+    tsNodeScript,
+    evalAwarePartialHost ,
+    service ,
+
+    isInChildProcess ,
+    executeEntrypoint,
+    ...( {executeRepl   ,  replStuff ,      } ) , //
+    ...( {executeEval   ,  evalStuff , code,} ) , //
+    ...( {executeStdin  , stdinStuff ,      } ) , //
+    noRunApp ,
+    entryPointPath ,
+    argv , restArgs,
+    showConfig ,
+    scanAndPrintDeps ,
+
+    cwd ,
+    iTryNativeRunmain ,
+    nativeRunmainConfigImpl ,
+    optAlwaysPreTranspile ,
+    optTryNativeRunmain,
+    optNoNativeRunmain ,
+
+    print ,
+
+  } as const ;
+}
+
+function phase4Impl(payload: ReturnType<typeof phase4Pre> )
+{
+  const {
+    //
+
+    version ,
+    preloadedConfig ,
+    tsNodeScript,
+    evalAwarePartialHost ,
+    service ,
+    parseArgvResult ,
+
+    isInChildProcess ,
+    executeEntrypoint,
+    executeRepl   ,  replStuff ,       //
+    executeEval   ,  evalStuff , code, //
+    executeStdin  , stdinStuff ,       //
+    noRunApp ,
+    entryPointPath ,
+    argv , restArgs,
+    showConfig ,
+    scanAndPrintDeps ,
+
+    cwd ,
+    iTryNativeRunmain ,
+    nativeRunmainConfigImpl ,
+    optAlwaysPreTranspile ,
+
+    print ,
+
+  } = payload ;
+
+  /**
+   * {@link parseArgvResult.iRlo1} corresponds to the programmatic-only switch `--only-register`.
+   * assumed to be run (with)in {@link phase4} after done {@link phase4Pre}, at this point we likely have done the Loaders stuff; if the flag is 1, then return immediately.
+   * 
+   */
+  if (parseArgvResult.iRlo1) {
+    return ;
+  }
+
   // Output project information.
   if (version === 2) {
     console.log(`ts-node v${VERSION}`);
     console.log(`node ${process.version}`);
     console.log(`compiler v${service.ts.version}`);
-    process.exit(0);
+    return phaseRunProcessExit(0);
   }
   if (version >= 3) {
     console.log(`ts-node v${VERSION} ${dirname(__dirname)}`);
     console.log(`node ${process.version}`);
     console.log(`compiler v${service.ts.version} ${service.compilerPath ?? ''}`);
-    process.exit(0);
+    return phaseRunProcessExit(0);
   }
 
   if (showConfig) {
     const ts = service.ts as any as TSInternal;
     if (typeof ts.convertToTSConfig !== 'function') {
       console.error('Error: --showConfig requires a typescript versions >=3.2 that support --showConfig');
-      process.exit(1);
+      return phaseRunProcessExit(1);
     }
     let moduleTypes = undefined;
     if (service.options.moduleTypes) {
@@ -660,27 +766,27 @@ function phase4(payload: BootstrapState) {
       // replacer function.
       JSON.stringify(json, null, 2)
     );
-    process.exit(0);
+    return phaseRunProcessExit(0);
   }
+
+  /**
+   * Execute the main contents (either eval, script or piped).
+   * 
+   * optionally delegate to {@link Module.runMain} lol https://github.com/nodejs/node/pull/43763#issuecomment-1179815175
+   * > the actual introduction of {@link Module.runMain `runMain` } goes back further than that.
+   * > https://github.com/TypeStrong/ts-node/blob/aa5ec36526bf817b09345449492d5b9da11c0b93/src/bin.ts#L568-L579
+   * > we manipulate `argv` and `execArgv` and then run {@link Module.runMain `runMain` }
+   * 
+   * otherwise
+   * we instead delegate to `runmain-hack.js`
+   * 
+   *  */
+  return (function () {
+  ;
 
   const nativeRunmainConfig = (
 
-    (function (): (
-      & {
-        /**
-         * performance-wise at glance we should only clear cache for the entrypt ({@link entryPointPath}), but
-         * that'd lead to bugs because the seen module now differ despite sesolving to same path.
-         * the only sound choice 'd be clearing out all at once, but
-         * maybe the user is opposing that.
-         * 
-         */
-        skipClearingNonEntrypointCjsRequireCache: boolean,
-      }
-    ) {
-      return {
-        skipClearingNonEntrypointCjsRequireCache: false ,
-      } ;
-    })()
+    nativeRunmainConfigImpl
   ) ;
 
   const shallTryNativeRunmain = (
@@ -697,27 +803,17 @@ function phase4(payload: BootstrapState) {
   ) ;
 
   // Prepend `ts-node` arguments to CLI for child processes.
-  process.execArgv.push(tsNodeScript, ...argv.slice(2, argv.length - restArgs.length));
+  process.execArgv = [
+    ...process.execArgv,
+    tsNodeScript,
+    ...argv.slice(2, argv.length - restArgs.length),
+  ];
 
   // TODO this comes from BootstrapState
   process.argv = [process.argv[1]]
     .concat(executeEntrypoint ? ([entryPointPath] as string[]) : [])
     .concat(restArgs.slice(executeEntrypoint ? 1 : 0));
 
-  /**
-   * Execute the main contents (either eval, script or piped).
-   * 
-   * optionally delegate to {@link Module.runMain} lol https://github.com/nodejs/node/pull/43763#issuecomment-1179815175
-   * > the actual introduction of {@link Module.runMain `runMain` } goes back further than that.
-   * > https://github.com/TypeStrong/ts-node/blob/aa5ec36526bf817b09345449492d5b9da11c0b93/src/bin.ts#L568-L579
-   * > we manipulate `argv` and `execArgv` and then run {@link Module.runMain `runMain` }
-   * 
-   * otherwise
-   * we instead delegate to `runmain-hack.js`
-   * 
-   *  */
-  void (function () {
-  ;
   if (executeEntrypoint) {
     assert(entryPointPath) ;
 
@@ -859,6 +955,12 @@ function phase4(payload: BootstrapState) {
     }
   }
   })() ;
+}
+
+function phaseRunProcessExit(...args: Parameters<typeof process.exit> ) {
+  return (
+    process.exit(...args )
+  ) ;
 }
 
 /**
