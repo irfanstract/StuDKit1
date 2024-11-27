@@ -2025,6 +2025,8 @@ function registerExtension(ext: string, service: Service, originalHandler: (m: N
   require.extensions[ext] = function (m: any, filename) {
     if (service.ignored(filename)) return old(m, filename);
 
+    /* TODO this is doing the thing backwards, isn't it? */
+
     assertScriptCanLoadAsCJS(service, m, filename);
 
     const _compile = m._compile;
