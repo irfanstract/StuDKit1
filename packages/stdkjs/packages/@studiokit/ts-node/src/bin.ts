@@ -43,7 +43,11 @@ import { findAndReadConfig } from './configuration';
  * The functions are intentionally given uncreative names and left in the same order as the original code, to make a
  * smaller git diff.
  *
- * @internal
+ * ```
+ * // the default
+ * main(argv: string[] = process.argv.slice(2), entrypointArgs: Record<string, any> = {})
+ * ```
+ * 
  */
 export function main(argv: string[] = process.argv.slice(2), entrypointArgs: Record<string, any> = {}) {
   const args = parseArgv(argv, entrypointArgs);
@@ -499,7 +503,16 @@ function getEntryPointInfo(state: BootstrapState) {
    * Unresolved. May point to a symlink, not realpath. May be missing file extension
    * NOTE: resolution relative to cwd option (not `process.cwd()`) is legacy backwards-compat; should be changed in next major: https://github.com/TypeStrong/ts-node/issues/1834
    */
-  const entryPointPath = executeEntrypoint ? (isCli ? resolve(cwd, restArgs[0]) : resolve(restArgs[0])) : undefined;
+  const entryPointPath = (
+    executeEntrypoint ?
+    (
+      isCli ?
+      resolve(cwd, restArgs[0] ?? assert.fail(new TypeError) )
+      :
+      resolve(restArgs[0] ?? assert.fail(new TypeError) )
+    )
+    : undefined
+  );
 
   return {
     executeEval,
@@ -810,7 +823,7 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
   ];
 
   // TODO this comes from BootstrapState
-  process.argv = [process.argv[1]]
+  process.argv = [process.argv[1] || assert.fail(new TypeError(`'process.argv[1]' is ${process.argv[1] }`) ) ]
     .concat(executeEntrypoint ? ([entryPointPath] as string[]) : [])
     .concat(restArgs.slice(executeEntrypoint ? 1 : 0));
 
