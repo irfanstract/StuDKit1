@@ -571,6 +571,16 @@ export interface DiagnosticFilter {
   diagnosticsIgnored: number[];
 }
 
+export const registerByArgvFlags: (
+  (...x: [flags: readonly string[] ]) =>
+    void
+) = function (...[flags]) {
+
+  return (
+    (require("./bin") as typeof import("./bin") ).main(["--only-register", ...flags, ] )
+  ) ;
+} ;
+
 /**
  * Create a new TypeScript compiler instance and register it onto node.js
  *
