@@ -1894,6 +1894,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         dispatchSrcFile,
         eb ,
         dryDepScanningEb ,
+        getEmitExtension ,
         /** @deprecated */
         compilerHelper11,
       } as const
