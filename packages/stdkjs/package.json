@@ -64,7 +64,7 @@
     , "@lexical/html": "^0.18.0"
 
     ,
-    "@types/mocha": "10.0.6"
+    "@types/mocha": "10.0.10"
     ,
     "@types/node": "20.11.17"
     ,
@@ -83,7 +83,7 @@
     ,
     "hereby": "^1.8.9"
     ,
-    "mocha": "^10.3.0"
+    "mocha": "^10.7.0"
 
     ,
     "@types/express": "5.0.0"
