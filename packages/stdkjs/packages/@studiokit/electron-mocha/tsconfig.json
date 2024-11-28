@@ -9,10 +9,15 @@
   "exclude": [
   ] ,
 
+  "references": [
+    //
+  ],
+
   "compilerOptions": {
 
     //
     "composite": true,
+    "tsBuildInfoFile": ".local/tsconfig.build-dist.tsbuildinfo",
     "rootDir": ".",
 
     "noEmit": false,
