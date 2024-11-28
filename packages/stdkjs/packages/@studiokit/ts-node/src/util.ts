@@ -1,5 +1,7 @@
 import { dirname } from 'path';
 
+import "./utilGlobalConsoleAlwaysStderr" ;
+
 /**
  * @internal
  * Copied from https://unpkg.com/yn@3.1.1/index.js
@@ -7,6 +9,7 @@ import { dirname } from 'path';
  * This is a lazy way to make the dep number go down, we haven't touched this
  * dep in ages, and we didn't use all its features, so we stripped them.
  */
+export function yn(input: string | undefined): boolean | undefined ;
 export function yn(input: string | undefined) {
   input = String(input).trim();
 
@@ -19,12 +22,40 @@ export function yn(input: string | undefined) {
   }
 }
 
+export const isUnderCspNoEvalsPolicy = (
+
+  (): boolean => {
+    try {
+      new Function(``) ;
+      return false ;
+    } catch (z) {
+      return true ;
+    }
+  }
+) ;
+
 /**
  * Like `Object.assign`, but ignores `undefined` properties.
  *
  * @internal
  */
-export function assign<T extends object>(initialValue: T, ...sources: Array<T>): T {
+export function assign(...args: never): unknown ;
+// export function assign<dummy5 extends never, dummy6 extends never, dummy7 extends never, const T extends object = never, dummy8 extends never = never,  >(...args: never): unknown ;
+// export function assign<dummy5 extends never, dummy6 extends never, dummy7 extends never, const T extends object = never, dummy8 extends never = never, DstT = NoInfer<{ /** supposed to be assignable, to prevent unintended mutability */ [k in {} & (keyof T)] ?: T[k] ; }> >(
+//   initialValue: NoInfer<(DstT )>,
+//   ...sources: (Array<T> )
+// ): typeof initialValue ;
+// /** @deprecated seems like there're properties not supposed to be reassigned, aren't there? check your objs' types. */
+// export function assign<dummy5 extends never, dummy6 extends never, dummy7 extends never, const T extends object = never,  >(
+//   initialValue: NoInfer<({ readonly [k in {} & (keyof T)] ?: T[k] ; } )>,
+//   ...sources: (Array<T> )
+// ): typeof initialValue ;
+export function assign<const T extends object = never, >(
+  initialValue: NoInfer<({ /** supposed to be assignable, to prevent unintended mutability */ [k in {} & (keyof T)] ?: T[k] ; } )>,
+  ...sources: NoInfer<(Array<{ readonly [k in {} & (keyof T)] ?: T[k] ; }> )>
+): typeof initialValue ;
+// export function assign<const TSrc extends object, TDest extends { [k in keyof TSrc]: unknown ; }>(initialValue: TDest, ...sources: Array<TSrc>): TDest ;
+export function assign<const TSrc extends object, TDest extends { [k in keyof TSrc]: unknown ; }>(initialValue: TDest, ...sources: Array<TSrc>): TDest {
   for (const source of sources) {
     for (const key of Object.keys(source)) {
       const value = (source as any)[key];
@@ -39,6 +70,8 @@ export function assign<T extends object>(initialValue: T, ...sources: Array<T>):
  * and remove empty strings from the resulting array.
  * @internal
  */
+export function split(value: string            ): string[]             ;
+export function split(value: string | undefined): string[] | undefined ;
 export function split(value: string | undefined) {
   return typeof value === 'string' ? value.split(/ *, */g).filter((v) => v !== '') : undefined;
 }
@@ -47,7 +80,9 @@ export function split(value: string | undefined) {
  * Parse a string as JSON.
  * @internal
  */
-export function parse(value: string | undefined): object | undefined {
+export function parse(value: string            ): object | null             ;
+export function parse(value: string | undefined): object | null | undefined ;
+export function parse(value: string | undefined): object | null | undefined {
   return typeof value === 'string' ? JSON.parse(value) : undefined;
 }
 
@@ -138,6 +173,17 @@ export function getBasePathForProjectLocalDependencyResolution(
   // should have configFilePath, so not reach this codepath.
 }
 
+import assert = require('assert');
+
+function failMissingArgName<const RT = never>(nm: string): RT
+{
+  return (
+    assert.fail(new TypeError(`unspecified argument '${nm}'`) )
+  ) ;
+}
+
+export { assert, } ;
+
 /** @internal */
 export function once<Fn extends (...args: any[]) => any>(fn: Fn) {
   let value: ReturnType<Fn>;
@@ -151,9 +197,17 @@ export function once<Fn extends (...args: any[]) => any>(fn: Fn) {
   return onceFn;
 }
 
+export { memoize, } from "lodash" ;
+
+export import Immutable = require("immutable") ;
+
+export function utilReiterated<const E>(src: () => Iterable<E> ) {
+  return [...src() ] ;
+}
+
 /** @internal */
 export function versionGteLt(version: string, gteRequirement: string, ltRequirement?: string) {
-  const [major, minor, patch, extra] = parse(version);
+  const [major = failMissingArgName("major"), minor, patch, extra] = parse(version);
   const [gteMajor, gteMinor, gtePatch] = parse(gteRequirement);
   const isGte =
     major > gteMajor || (major === gteMajor && (minor > gteMinor || (minor === gteMinor && patch >= gtePatch)));
@@ -168,3 +222,104 @@ export function versionGteLt(version: string, gteRequirement: string, ltRequirem
     return requirement.split(/[\.-]/).map((s) => parseInt(s, 10));
   }
 }
+
+export function getStackOrMessage(value: Error    ): string ;
+export function getStackOrMessage(value: unknown  ): string ;
+export function getStackOrMessage(...[o] : [unknown])
+{
+  if (o instanceof Error) {
+    const stack = o.stack ;
+    if (stack) {
+      return stack ;
+    }
+  }
+  return String(o) ;
+}
+
+export type ArgsWithOptions<P extends readonly unknown[], opt extends object > = (
+  [...P , ...(
+    [{}] extends [opt] ?
+    [options ?: opt]
+    : [opts : opt]
+  ) ]
+) ;
+
+export type AllOrNever1<Props extends object> = (
+  (
+    Props extends any ?
+    AnevImplEach<Props>
+    : never
+  )
+  |
+  { [k in PossibleKeyOf<Props>] ?: never ; }
+) ;
+
+type AnevImplEach<Props extends object> = (
+  Required<Props>
+) ;
+
+export type PossibleKeyOf<Props extends object> = (
+  Props extends any ?
+  PossibleKeyOfOneAlt<Props>
+  : never
+) ;
+
+export type KeyOf<Props extends object> = (
+  PossibleKeyOfOneAlt<Props>
+) ;
+
+type PossibleKeyOfOneAlt<Props extends object> = (
+  keyof Required<Props>
+) ;
+
+{
+  {
+    const ADPE = (x: AtLeastEitherProp<{
+      //
+      onNewKnownPath : (value: string) => void ,
+      onNewDynamicPathExpr : (expr: NodeRequire) => void ,
+    }>) => { x.onNewDynamicPathExpr ; } ;
+    ADPE({ onNewDynamicPathExpr: () => {} , }) ;
+    ADPE({ onNewKnownPath: () => {} , }) ;
+    ADPE({
+      onNewKnownPath: () => {} ,
+      onNewDynamicPathExpr: () => {} ,
+    }) ;
+    // @ts-expect-error
+    ADPE({
+    }) ;
+  }
+}
+
+export type AtLeastEitherProp<Props extends object> = (
+  Partial<Props>
+  & Required<PickEitherProp<Props > >
+) ;
+
+export type EitherOneProp<Props extends object> = (
+  OnlySelectEitherProp<Props, keyof Props>
+) ;
+
+export type PickEitherProp<D extends object, kChosen extends keyof D = keyof D > = (
+  kChosen extends any ?
+  Pick<D, kChosen>
+  : never
+) ;
+
+export type OnlySelectEitherProp<D extends object, kChosen extends keyof D = keyof D> = (
+  kChosen extends any ?
+  OnlySelectProps<D, kChosen>
+  : never
+) ;
+
+export type OnlySelectProps<D extends object, kChosen extends keyof D> = (
+  { [k1 in keyof D]?: ([k1] extends [kChosen] ? D[k1] : never ) ; }
+  &
+  Required<{ [k1 in kChosen]?: unknown ; }>
+) ;
+
+type EipSingleProp<k extends keyof any, val> = (
+  k extends any ?
+  { [k1 in k]: val ; }
+  : never
+) ;

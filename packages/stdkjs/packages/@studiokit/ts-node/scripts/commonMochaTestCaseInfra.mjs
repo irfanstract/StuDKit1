@@ -9,10 +9,70 @@ import assert from "assert";
 
 export { assert, } ;
 
+import * as Immutable from "immutable";
+
+/**
+ * 
+ * @type {typeof import("../src/util.ts")}
+ * @module
+ * 
+ */
+const provUtilJs = (await import("../dist/util.js")) ;
+
+const {
+  memoize,
+  utilReiterated,
+} = provUtilJs ;
+
+export {
+  memoize ,
+  utilReiterated ,
+} ;
+
+export {
+  provUtilJs,
+} ;
+
+/**
+ * indents the given block of txt with an MD-like blockquoting indent.
+ * 
+ * ```
+ * process.stderr.println((
+ *   posixBlockquotify(code )
+ * )) ;
+ * 
+ * // Result:
+ * > process.stderr.println((
+ * >   posixBlockquotify(code )
+ * > )) ;
+ * ```
+ * 
+ */
+const posixBlockquotify = (
+
+  /** @satisfies {(x: string) => string} */ ((x) => (
+
+    x.replace(/(^|\r?\n)/g, "$1> ")
+  ) )
+) ;
+export { posixBlockquotify, } ;
 
 
 
+
+/** @import { SpawnSyncReturns, ChildProcess, } from "child_process" */
 import { execFileSync, execSync, spawnSync, } from "child_process";
+
+const assertProcSyncExitCode = (
+
+  /** @type {(...args: [SpawnSyncReturns<any> , (status: number) => boolean] ) => void } */ function (...[p, cx]) {
+    if (cx(p.status ?? assert.fail(new TypeError(`process has not terminated`) ) )) {
+      ;
+    } else {
+      assert.fail(new TypeError(`failed; the code was ${p.status } and the stderr was: ` + "\r\n" + posixBlockquotify(p.stderr ) ) ) ;
+    }
+  }
+) ;
 
 import * as Path from "path";
 import { fileURLToPath } from "url";
@@ -35,17 +95,32 @@ export const provDir = (
 export { getFilenameAndDirname, } ;
 
 
+export {
+  assertProcSyncExitCode,
+} ;
+
 export { execFileSync, execSync, spawnSync, } ;
 
 
 
 
+/**
+ * path to the `<this-package-root>/dist/bin.js`,
+ * assuming {@link https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html having successfully run emit}
+ * 
+ */
+const spclBinJsPath = (
+
+  Path.join(provDir, "dist", "bin.js")
+  .replaceAll("\\", "/")
+) ;
+
 export const RUN_TSFILE = (
 
-  /** @satisfies {(filePath: string, options: { intendedWorkingDir: string, }) => any} */ ((filePath, { intendedWorkingDir, }) => (
+  /** @satisfies {(...args: RtsfArgs<{}>) => any} */ ((filePath, { intendedWorkingDir, liftRunner = false, lrFlags = [], }) => (
 
     (
-      execFileSync("node", ["-r", "@studiokit/ts-node/register", filePath ] , {
+      execFileSync(...rtsfImplBuildPeerArgv(filePath, { liftRunner, lrFlags, } ) , {
         shell: true ,
         cwd: intendedWorkingDir ,
         stdio: ["pipe", "pipe", "inherit"],
@@ -60,10 +135,10 @@ export const RUN_TSFILE = (
 
 export const RUN_TSFILE_DIAGNOSED = (
 
-  /** @satisfies {(filePath: string, options: { intendedWorkingDir: string, }) => any} */ ((filePath, { intendedWorkingDir, }) => (
+  /** @satisfies {(...args: RtsfArgs<{}>) => any} */ ((filePath, { intendedWorkingDir, liftRunner = false, lrFlags = [], }) => (
 
     (
-      spawnSync("node", ["-r", "@studiokit/ts-node/register", filePath ] , {
+      spawnSync(...rtsfImplBuildPeerArgv(filePath, { liftRunner, lrFlags, } ) , {
         shell: true ,
         cwd: intendedWorkingDir ,
         stdio: ["pipe", "pipe", "pipe"],
@@ -71,6 +146,29 @@ export const RUN_TSFILE_DIAGNOSED = (
       } )
     )
   ) )
+) ;
+
+/**
+ * @typedef {Parameters<(filePath: string, options: ({ intendedWorkingDir: string, } & ({ liftRunner?: false, lrFlags?: readonly [], } | { liftRunner: true, lrFlags?: readonly string[] }) ) & XExtraOptions) => any > }
+ * @template {{}} XExtraOptions={}
+ * 
+ */
+const RtsfArgs = {} ;
+
+const rtsfImplBuildPeerArgv = (
+
+  /** @satisfies {(...args: [filePath: string, { liftRunner: boolean, lrFlags: readonly string[], } ]) => Parameters<typeof execFileSync>} */ ((...[filePath, { liftRunner, lrFlags, }]) => {
+    if (liftRunner) {
+      return (
+        ["node", [spclBinJsPath, ...lrFlags, filePath ]]
+      ) ;
+    } else {
+      ;
+      return (
+        ["node", ["-r", "@studiokit/ts-node/register", filePath ]]
+      ) ;
+    }
+  })
 ) ;
 
 
