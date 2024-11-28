@@ -6,6 +6,9 @@ import assert = require('assert');
 import { inspect } from 'util';
 import Module = require('module');
 let arg: typeof import('arg');
+import { /* util */
+  ArgsWithOptions,
+} from './util';
 import { parse, hasOwnProperty, versionGteLt, getStackOrMessage, } from './util';
 import {
   EVAL_FILENAME,
@@ -24,6 +27,7 @@ import {
   TSError,
   register,
   registerByArgvFlags,
+  create ,
   createEsmHooks,
   createFromPreloadedConfig,
   DEFAULTS,
@@ -523,6 +527,17 @@ function getEntryPointInfo(state: BootstrapState) {
   };
 }
 
+;
+/**
+ * <repl>, [stdin], and [eval] are all essentially virtual files that do not exist on disc and are backed by a REPL
+ * service to handle eval-ing of code.
+ */
+interface TsNodeVirtualFileState {
+  state: EvalState;
+  repl: ReplService;
+  module?: Module;
+} /* `TsNodeVirtualFileState` */
+
 function phase4(payload: BootstrapState)
 {
   return (
@@ -577,11 +592,7 @@ function phase4Pre(payload: BootstrapState)
    * <repl>, [stdin], and [eval] are all essentially virtual files that do not exist on disc and are backed by a REPL
    * service to handle eval-ing of code.
    */
-  interface VirtualFileState {
-    state: EvalState;
-    repl: ReplService;
-    module?: Module;
-  }
+  type VirtualFileState = TsNodeVirtualFileState ;
   let evalStuff: VirtualFileState | undefined;
   let replStuff: VirtualFileState | undefined;
   let stdinStuff: VirtualFileState | undefined;
