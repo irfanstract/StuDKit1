@@ -584,16 +584,16 @@ export const registerByArgvFlags: (
 /**
  * Create a new TypeScript compiler instance and register it onto node.js
  *
- * @category Basic
  */
-export function register(opts?: RegisterOptions): Service;
-/**
- * Register TypeScript compiler instance onto node.js
+;
 
- * @category Basic
- */
-export function register(service: Service): Service;
-export function register(serviceOrOpts: Service | RegisterOptions | undefined): Service {
+export {
+  register ,
+} ;
+
+/** Is it a {@link Service} or a {@link RegisterOptions}? */
+function toService(serviceOrOpts: Service | RegisterOptions | undefined): Service
+{
   const service = (
     (/** Is it a {@link Service} or a {@link RegisterOptions}? */ (serviceOrOpts: (Service | (RegisterOptions & { readonly [TS_NODE_SERVICE_BRAND] ?: false | null | undefined }) ) | undefined ): Service => {
       if (!serviceOrOpts?.[TS_NODE_SERVICE_BRAND]) {
@@ -607,6 +607,37 @@ export function register(serviceOrOpts: Service | RegisterOptions | undefined): 
       }
     })(serviceOrOpts )
   ) ;
+
+  return service ;
+}
+
+/**
+ * create a new TypeScript compiler instance and
+ * register it for `require` (note that this currently doesn't handle `import`; it'd be done somewhere out)
+ * 
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
+ * @category Basic
+ * 
+ */
+function register(opts?: RegisterOptions): Service;
+/**
+ * register it for `require` (note that this currently doesn't handle `import`; it'd be done somewhere out)
+ * 
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
+ * @category Basic
+ * 
+ */
+function register(service: Service): Service;
+function register(serviceOrOpts: Service | RegisterOptions | undefined): Service
+{
+  const service = (
+    /** Is it a {@link Service} or a {@link RegisterOptions}? */
+    toService(serviceOrOpts )
+  ) ;
   {
   }
 
@@ -614,6 +645,20 @@ export function register(serviceOrOpts: Service | RegisterOptions | undefined): 
     onSecondTimeRegisterMethodCall(service, serviceOrOpts) ;
   }
 
+  return (
+    registerImpl(service)
+    ,
+    service
+  ) ;
+}
+
+/**
+ * finally actually hook the Service at places.
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
+ */
+function registerImpl(service: Service) {
   const originalJsHandler = require.extensions['.js'];
 
   // Expose registered instance globally.
@@ -2005,7 +2050,16 @@ function registerExtensions(
   }
 
   if (preferTsExts) {
-    const preferredExtensions = new Set([...exts, ...Object.keys(require.extensions)]);
+    /** Re-sort iteration order of Object.keys() */
+    sortForPreferredExtension(exts) ;
+  }
+}
+
+function sortForPreferredExtension(...[exts]: [exts: Iterable<string>] )
+{
+
+  {
+    const preferredExtensions = Immutable.OrderedSet<string>([...exts, ...Object.keys(require.extensions)]);
 
     // Re-sort iteration order of Object.keys()
     for (const ext of preferredExtensions) {
