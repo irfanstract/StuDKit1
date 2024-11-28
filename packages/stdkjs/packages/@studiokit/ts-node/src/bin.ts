@@ -55,15 +55,57 @@ import { findAndReadConfig } from './configuration';
  */
 export function main(argv: string[] = process.argv.slice(2), entrypointArgs: Record<string, any> = {}) {
   const args = parseArgv(argv, entrypointArgs);
-  const state: BootstrapState = {
+  const state = (
+    newBootstrapStateBag({
+      parseArgvResult: args ,
+    })
+  );
+  return bootstrap(state);
+}
+
+/**
+ * variation of {@link main} merely to create a Service from _argv_.
+ * 
+ * there's goood reasons you should instead use {@link create `create` from the top-level module (`require("<package>")`)}.
+ * 
+ * @experimental
+ * 
+ */
+export function createServiceFromArgv(argv: string[] , entrypointArgs: Record<string, any> = {})
+{
+  let s : ReturnType<typeof createFromPreloadedConfig> | undefined ;
+  const args = parseArgv(argv, entrypointArgs);
+  const state = (
+    newBootstrapStateBag({
+      parseArgvResult: args ,
+      onCreated: (x) => { s = x ; } ,
+    })
+  );
+  bootstrap(state);
+  if (!s) {
+    return (
+      assert.fail(new TypeError(`failed creating service: s=${s}`) )
+    ) ;
+  }
+  return s ;
+}
+
+function newBootstrapStateBag(...[opts ] : ArgsWithOptions<[], {
+  parseArgvResult: ReturnType<typeof parseArgv> ,
+  onCreated?: (Cso & {})["onCreated"] ,
+}>) : BootstrapState
+{
+  const { onCreated, parseArgvResult, } = opts;
+
+  return {
+    createServiceOnly: onCreated && { onCreated, },
     shouldUseChildProcess: false,
     isInChildProcess: false,
     isCli: true,
     tsNodeScript: __filename,
-    parseArgvResult: args,
-  };
-  return bootstrap(state);
-}
+    parseArgvResult: parseArgvResult,
+  } ;
+} /* `newBootstrapStateBag` */
 
 /**
  * @internal
@@ -71,6 +113,8 @@ export function main(argv: string[] = process.argv.slice(2), entrypointArgs: Rec
  * Can be marshalled when necessary to resume bootstrapping in a child process.
  */
 export interface BootstrapState {
+  createServiceOnly?: Cso;
+
   isInChildProcess: boolean;
   shouldUseChildProcess: boolean;
   /**
@@ -83,6 +127,8 @@ export interface BootstrapState {
   phase2Result?: ReturnType<typeof phase2>;
   phase3Result?: ReturnType<typeof phase3>;
 }
+
+interface Cso { onCreated: import("react").Dispatch<ReturnType<typeof createFromPreloadedConfig>> }
 
 /** @internal */
 export function bootstrap(state: BootstrapState) {
@@ -476,6 +522,9 @@ function phase3(payload: BootstrapState) {
 }
 
 /**
+ * Determines the entry-point information from the argv and phase2 result
+ * , unless {@link BootstrapState.createServiceOnly `createServiceOnly`} is set inwhichcase all will be `false`
+ * 
  * Determines the entry-point information from the argv and phase2 result. This
  * method will be invoked in two places:
  *
@@ -490,7 +539,19 @@ function phase3(payload: BootstrapState) {
  * configuration and entry-point information is only reliable in the final phase. More
  * details can be found in here: https://github.com/TypeStrong/ts-node/issues/1812.
  */
-function getEntryPointInfo(state: BootstrapState) {
+const getEntryPointInfo = (function (state: BootstrapState)
+{
+  const { createServiceOnly, } = state ;
+  if (createServiceOnly) {
+    return {
+      createServiceOnly ,
+      // executeEval : false,
+      // executeEntrypoint: false,
+      // executeRepl  : false,
+      // executeStdin : false,
+    } as const ;
+  }
+
   const { code, interactive, restArgs } = state.parseArgvResult!;
   const { cwd } = state.phase2Result!;
   const { isCli } = state;
@@ -507,25 +568,38 @@ function getEntryPointInfo(state: BootstrapState) {
    * Unresolved. May point to a symlink, not realpath. May be missing file extension
    * NOTE: resolution relative to cwd option (not `process.cwd()`) is legacy backwards-compat; should be changed in next major: https://github.com/TypeStrong/ts-node/issues/1834
    */
-  const entryPointPath = (
-    executeEntrypoint ?
-    (
+  if (executeEntrypoint) {
+    const entryPointPath = (
       isCli ?
       resolve(cwd, restArgs[0] ?? assert.fail(new TypeError) )
       :
       resolve(restArgs[0] ?? assert.fail(new TypeError) )
-    )
-    : undefined
-  );
+    ) ;
+    return {
+      executeEntrypoint ,
+      entryPointPath ,
+      // executeEval,
+      // executeRepl ,
+      // executeStdin ,
+    } as const ;
+  }
 
   return {
     executeEval,
     executeEntrypoint,
     executeRepl,
     executeStdin,
-    entryPointPath,
-  };
-}
+  } as const ;
+}) satisfies ((...args: never) => (
+  {
+    createServiceOnly ?: any ,
+    executeEval  ?: boolean,
+    executeEntrypoint?: boolean,
+    executeRepl  ?: boolean,
+    executeStdin ?: boolean,
+    entryPointPath ?: any ,
+  }
+)) ;
 
 ;
 /**
@@ -586,7 +660,10 @@ function phase4Pre(payload: BootstrapState)
     })()
   ) ;
 
-  const { entryPointPath, executeEntrypoint, executeEval, executeRepl, executeStdin } = getEntryPointInfo(payload);
+  const {
+    createServiceOnly,
+    entryPointPath, executeEntrypoint, executeEval, executeRepl, executeStdin,
+  } = getEntryPointInfo(payload);
 
   /**
    * <repl>, [stdin], and [eval] are all essentially virtual files that do not exist on disc and are backed by a REPL
@@ -654,17 +731,13 @@ function phase4Pre(payload: BootstrapState)
       tsTrace: DEFAULTS.tsTrace,
     },
   });
-  register(service);
-
-  if (replStuff) replStuff.state.path = join(cwd, REPL_FILENAME(service.ts.version));
-
-  if (isInChildProcess)
-    (require('./child/child-loader') as typeof import('./child/child-loader')).lateBindHooks(createEsmHooks(service));
 
   // Bind REPL service to ts-node compiler service (chicken-and-egg problem)
   replStuff?.repl.setService(service);
   evalStuff?.repl.setService(service);
   stdinStuff?.repl.setService(service);
+
+  if (replStuff) replStuff.state.path = join(cwd, REPL_FILENAME(service.ts.version));
 
   return {
     ...payload ,
@@ -676,13 +749,15 @@ function phase4Pre(payload: BootstrapState)
     evalAwarePartialHost ,
     service ,
 
+    createServiceOnly ,
     isInChildProcess ,
-    executeEntrypoint,
+    ...( executeEntrypoint ?
+      {executeEntrypoint   ,  entryPointPath ,      } :
+      {executeEntrypoint   ,  entryPointPath ,      } ) , //
     ...( {executeRepl   ,  replStuff ,      } ) , //
     ...( {executeEval   ,  evalStuff , code,} ) , //
     ...( {executeStdin  , stdinStuff ,      } ) , //
     noRunApp ,
-    entryPointPath ,
     argv , restArgs,
     showConfig ,
     scanAndPrintDeps ,
@@ -711,6 +786,7 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
     service ,
     parseArgvResult ,
 
+    createServiceOnly,
     isInChildProcess ,
     executeEntrypoint,
     executeRepl   ,  replStuff ,       //
@@ -731,15 +807,6 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
 
   } = payload ;
 
-  /**
-   * {@link parseArgvResult.iRlo1} corresponds to the programmatic-only switch `--only-register`.
-   * assumed to be run (with)in {@link phase4} after done {@link phase4Pre}, at this point we likely have done the Loaders stuff; if the flag is 1, then return immediately.
-   * 
-   */
-  if (parseArgvResult.iRlo1) {
-    return ;
-  }
-
   // Output project information.
   if (version === 2) {
     console.log(`ts-node v${VERSION}`);
@@ -752,6 +819,38 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
     console.log(`node ${process.version}`);
     console.log(`compiler v${service.ts.version} ${service.compilerPath ?? ''}`);
     return phaseRunProcessExit(0);
+  }
+
+  /**
+   * skip entrypoint if any of {@link createServiceOnly} or {@link parseArgvResult.iRlo1} is `true`ish - returning immediately.
+   * furthermore, if {@link createServiceOnly} is `true`ish,
+   * avoid actually registering the service, instead call {@link BootstrapState.createServiceOnly `cso.onCreated`} and return immediately
+   * 
+   * {@link parseArgvResult.iRlo1} corresponds to the programmatic-only switch `--only-register`.
+   * assumed to be run (with)in {@link phase4} after done {@link phase4Pre}, at this point we likely have done the Loaders stuff; if the flag is 1, then return immediately.
+   * 
+   */
+  {
+
+    if (createServiceOnly) {
+      const cso = createServiceOnly ;
+      cso.onCreated(service) ;
+      return ;
+    }
+
+    {
+      register(service);
+    
+      if (isInChildProcess)
+        (require('./child/child-loader') as typeof import('./child/child-loader')).lateBindHooks(createEsmHooks(service));
+    }
+
+    if (parseArgvResult.iRlo1 || createServiceOnly ) {
+
+      {
+        return ;
+      }
+    }
   }
 
   if (showConfig) {
@@ -792,6 +891,46 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
     );
     return phaseRunProcessExit(0);
   }
+
+  return (
+    phase4ImplWhenAppEntrypt(payload)
+  ) ;
+}
+
+function phase4ImplWhenAppEntrypt(payload: ReturnType<typeof phase4Pre> )
+{
+  const {
+    //
+
+    // version ,
+    preloadedConfig ,
+    tsNodeScript,
+    evalAwarePartialHost ,
+
+    service ,
+    parseArgvResult ,
+
+    // createServiceOnly,
+    isInChildProcess ,
+    executeEntrypoint,
+    executeRepl   ,  replStuff ,       //
+    executeEval   ,  evalStuff , code, //
+    executeStdin  , stdinStuff ,       //
+    noRunApp: nraArg ,
+
+    entryPointPath ,
+    argv , restArgs,
+    // showConfig ,
+    scanAndPrintDeps ,
+
+    cwd ,
+    iTryNativeRunmain ,
+    nativeRunmainConfigImpl ,
+    optAlwaysPreTranspile ,
+
+    print ,
+
+  } = payload ;
 
   /**
    * Execute the main contents (either eval, script or piped).
