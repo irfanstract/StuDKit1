@@ -571,26 +571,94 @@ export interface DiagnosticFilter {
   diagnosticsIgnored: number[];
 }
 
+export const registerByArgvFlags: (
+  (...x: [flags: readonly string[] ]) =>
+    void
+) = function (...[flags]) {
+
+  return (
+    (require("./bin") as typeof import("./bin") ).main(["--only-register", ...flags, ] )
+  ) ;
+} ;
+
 /**
  * Create a new TypeScript compiler instance and register it onto node.js
  *
- * @category Basic
  */
-export function register(opts?: RegisterOptions): Service;
-/**
- * Register TypeScript compiler instance onto node.js
+;
 
+export {
+  register ,
+} ;
+
+/** Is it a {@link Service} or a {@link RegisterOptions}? */
+function toService(serviceOrOpts: Service | RegisterOptions | undefined): Service
+{
+  const service = (
+    (/** Is it a {@link Service} or a {@link RegisterOptions}? */ (serviceOrOpts: (Service | (RegisterOptions & { readonly [TS_NODE_SERVICE_BRAND] ?: false | null | undefined }) ) | undefined ): Service => {
+      if (!serviceOrOpts?.[TS_NODE_SERVICE_BRAND]) {
+        ;
+        // Not a service; is options
+        return (
+          create(serviceOrOpts satisfies (RegisterOptions | undefined) )
+        );
+      } else {
+        return serviceOrOpts ;
+      }
+    })(serviceOrOpts )
+  ) ;
+
+  return service ;
+}
+
+/**
+ * create a new TypeScript compiler instance and
+ * register it for `require` (note that this currently doesn't handle `import`; it'd be done somewhere out)
+ * 
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
  * @category Basic
+ * 
  */
-export function register(service: Service): Service;
-export function register(serviceOrOpts: Service | RegisterOptions | undefined): Service {
-  // Is this a Service or a RegisterOptions?
-  let service = serviceOrOpts as Service;
-  if (!(serviceOrOpts as Service)?.[TS_NODE_SERVICE_BRAND]) {
-    // Not a service; is options
-    service = create((serviceOrOpts ?? {}) as RegisterOptions);
+function register(opts?: RegisterOptions): Service;
+/**
+ * register it for `require` (note that this currently doesn't handle `import`; it'd be done somewhere out)
+ * 
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
+ * @category Basic
+ * 
+ */
+function register(service: Service): Service;
+function register(serviceOrOpts: Service | RegisterOptions | undefined): Service
+{
+  const service = (
+    /** Is it a {@link Service} or a {@link RegisterOptions}? */
+    toService(serviceOrOpts )
+  ) ;
+  {
   }
 
+  if (fRegisterHasBeenCalled++) {
+    onSecondTimeRegisterMethodCall(service, serviceOrOpts) ;
+  }
+
+  return (
+    registerImpl(service)
+    ,
+    service
+  ) ;
+}
+
+/**
+ * finally actually hook the Service at places.
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
+ */
+function registerImpl(service: Service) {
   const originalJsHandler = require.extensions['.js'];
 
   // Expose registered instance globally.
@@ -608,6 +676,15 @@ export function register(serviceOrOpts: Service | RegisterOptions | undefined): 
 
   return service;
 }
+
+let fRegisterHasBeenCalled: number = 0 ;
+
+const onSecondTimeRegisterMethodCall = (
+
+  (...[s]: [s: Service, sO: Service | RegisterOptions | undefined]) => {
+    console["error"](`[studiokit-ts-node] 'register()' has only been designed to run at-most once. running it more-than-once may lead to untested, unexpected effects`) ;
+  }
+);
 
 /**
  * Create TypeScript compiler instance.
@@ -996,7 +1073,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
           );
         }
 
-        return [output.outputFiles[1].text, output.outputFiles[0].text, false];
+        return [output.outputFiles[1]!.text, output.outputFiles[0]!.text, false];
       };
 
       getTypeInfo = (code: string, fileName: string, position: number) => {
@@ -1881,6 +1958,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         dispatchSrcFile,
         eb ,
         dryDepScanningEb ,
+        getEmitExtension ,
         /** @deprecated */
         compilerHelper11,
       } as const
@@ -1972,7 +2050,16 @@ function registerExtensions(
   }
 
   if (preferTsExts) {
-    const preferredExtensions = new Set([...exts, ...Object.keys(require.extensions)]);
+    /** Re-sort iteration order of Object.keys() */
+    sortForPreferredExtension(exts) ;
+  }
+}
+
+function sortForPreferredExtension(...[exts]: [exts: Iterable<string>] )
+{
+
+  {
+    const preferredExtensions = Immutable.OrderedSet<string>([...exts, ...Object.keys(require.extensions)]);
 
     // Re-sort iteration order of Object.keys()
     for (const ext of preferredExtensions) {
@@ -1991,6 +2078,8 @@ function registerExtension(ext: string, service: Service, originalHandler: (m: N
 
   require.extensions[ext] = function (m: any, filename) {
     if (service.ignored(filename)) return old(m, filename);
+
+    /* TODO this is doing the thing backwards, isn't it? */
 
     assertScriptCanLoadAsCJS(service, m, filename);
 
