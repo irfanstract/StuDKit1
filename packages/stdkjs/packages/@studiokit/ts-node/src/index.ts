@@ -1,28 +1,36 @@
 import { relative, basename, extname, dirname, join } from 'path';
-import { Module } from 'module';
+import { builtinModules, Module } from 'node:module';
 import * as util from 'util';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { existsSync, readFileSync } from 'node:fs';
 
 import type * as _sourceMapSupport from '@cspotcode/source-map-support';
 import { BaseError } from 'make-error';
-import type * as _ts from 'typescript';
+import * as _ts from 'typescript';
 
 import type { Transpiler, TranspilerFactory } from './transpilers/types';
+import assert = require('assert');
 import {
   cachedLookup,
   createProjectLocalResolveHelper,
+  getStackOrMessage,
   hasOwnProperty,
+  memoize,
   normalizeSlashes,
   once,
   parse,
   ProjectLocalResolveHelper,
+  utilReiterated,
   split,
   versionGteLt,
   yn,
+  type ArgsWithOptions, 
+  Immutable,
+  isUnderCspNoEvalsPolicy,
 } from './util';
 import { findAndReadConfig, loadCompiler } from './configuration';
 import type { TSCommon, TSInternal } from './ts-compiler-types';
-import { createModuleTypeClassifier, ModuleTypeClassifier } from './module-type-classifier';
+import { createModuleTypeClassifier, ModuleTypeClassification, ModuleTypeClassifier } from './module-type-classifier';
 import { createResolverFunctions } from './resolver-functions';
 import type { createEsmHooks as createEsmHooksFn } from './esm';
 import { installCommonjsResolveHooksIfNecessary, ModuleConstructorWithInternals } from './cjs-resolve-hooks';
@@ -32,7 +40,28 @@ import type * as _nodeInternalModulesEsmGetFormat from '../dist-raw/node-interna
 import type * as _nodeInternalModulesCjsLoader from '../dist-raw/node-internal-modules-cjs-loader';
 import { Extensions, getExtensions } from './file-extensions';
 import { createTsTranspileModule } from './ts-transpile-module';
+import {
+  stripShebangIfPresent
+} from './module-transpiled-syntaxerrors';
 import { assertScriptCanLoadAsCJS } from '../dist-raw/node-internal-modules-cjs-loader';
+
+import {
+  isValidCjs,
+  isParseableAsCjs ,
+  checkParseableAsCjs,
+  isSyntaxErrorUnexpectedToken,
+} from './module-transpiled-syntaxerrors';
+
+const isWithEsImportStmt = (
+
+  function (...[code]: [code: string])
+  {
+
+    return (
+      (code.match(/\bimport\s*\(/g) )
+    ) ;
+  }
+) ;
 
 export { TSCommon };
 export { createRepl, CreateReplOptions, ReplService, EvalAwarePartialHost } from './repl';
@@ -138,59 +167,59 @@ export interface CreateOptions {
    *
    * @default process.cwd()
    */
-  cwd?: string;
+  readonly cwd?: string;
   /**
    * Legacy alias for `cwd`
    *
    * @deprecated use `projectSearchDir` or `cwd`
    */
-  dir?: string;
+  readonly dir?: string;
   /**
    * Emit output files into `.ts-node` directory.
    *
    * @default false
    */
-  emit?: boolean;
+  readonly emit?: boolean;
   /**
    * Scope compiler to files within `scopeDir`.
    *
    * @default false
    */
-  scope?: boolean;
+  readonly scope?: boolean;
   /**
    * @default First of: `tsconfig.json` "rootDir" if specified, directory containing `tsconfig.json`, or cwd if no `tsconfig.json` is loaded.
    */
-  scopeDir?: string;
+  readonly scopeDir?: string;
   /**
    * Use pretty diagnostic formatter.
    *
    * @default false
    */
-  pretty?: boolean;
+  readonly pretty?: boolean;
   /**
    * Use TypeScript's faster `transpileModule`.
    *
    * @default false
    */
-  transpileOnly?: boolean;
+  readonly transpileOnly?: boolean;
   /**
    * **DEPRECATED** Specify type-check is enabled (e.g. `transpileOnly == false`).
    *
    * @default true
    */
-  typeCheck?: boolean;
+  readonly typeCheck?: boolean;
   /**
    * Use TypeScript's compiler host API instead of the language service API.
    *
    * @default false
    */
-  compilerHost?: boolean;
+  readonly compilerHost?: boolean;
   /**
    * Logs TypeScript errors to stderr instead of throwing exceptions.
    *
    * @default false
    */
-  logError?: boolean;
+  readonly logError?: boolean;
   /**
    * Load "files" and "include" from `tsconfig.json` on startup.
    *
@@ -198,17 +227,17 @@ export interface CreateOptions {
    *
    * @default false
    */
-  files?: boolean;
+  readonly files?: boolean;
   /**
    * Specify a custom TypeScript compiler.
    *
    * @default "typescript"
    */
-  compiler?: string;
+  readonly compiler?: string;
   /**
    * Specify a custom transpiler for use with transpileOnly
    */
-  transpiler?: string | [string, object];
+  readonly transpiler?: string | [string, object];
   /**
    * Transpile with swc instead of the TypeScript compiler, and skip typechecking.
    *
@@ -216,7 +245,7 @@ export interface CreateOptions {
    *
    * For complete instructions: https://typestrong.org/ts-node/docs/transpilers
    */
-  swc?: boolean;
+  readonly swc?: boolean;
   /**
    * Paths which should not be compiled.
    *
@@ -228,38 +257,38 @@ export interface CreateOptions {
    *
    * @default ["(?:^|/)node_modules/"]
    */
-  ignore?: string[];
+  readonly ignore?: string[];
   /**
    * Path to TypeScript config file or directory containing a `tsconfig.json`.
    * Similar to the `tsc --project` flag: https://www.typescriptlang.org/docs/handbook/compiler-options.html
    */
-  project?: string;
+  readonly project?: string;
   /**
    * Search for TypeScript config file (`tsconfig.json`) in this or parent directories.
    */
-  projectSearchDir?: string;
+  readonly projectSearchDir?: string;
   /**
    * Skip project config resolution and loading.
    *
    * @default false
    */
-  skipProject?: boolean;
+  readonly skipProject?: boolean;
   /**
    * Skip ignore check, so that compilation will be attempted for all files with matching extensions.
    *
    * @default false
    */
-  skipIgnore?: boolean;
+  readonly skipIgnore?: boolean;
   /**
    * JSON object to merge with TypeScript `compilerOptions`.
    *
    * @allOf [{"$ref": "https://schemastore.azurewebsites.net/schemas/json/tsconfig.json#definitions/compilerOptionsDefinition/properties/compilerOptions"}]
    */
-  compilerOptions?: object;
+  readonly compilerOptions?: _ts.CompilerOptions;
   /**
    * Ignore TypeScript warnings by diagnostic code.
    */
-  ignoreDiagnostics?: Array<number | string>;
+  readonly ignoreDiagnostics?: Array<number | string>;
   /**
    * Modules to require, like node's `--require` flag.
    *
@@ -268,10 +297,10 @@ export interface CreateOptions {
    * If specified programmatically, each input string should be pre-resolved to an absolute path for
    * best results.
    */
-  require?: Array<string>;
-  readFile?: (path: string) => string | undefined;
-  fileExists?: (path: string) => boolean;
-  transformers?: _ts.CustomTransformers | ((p: _ts.Program) => _ts.CustomTransformers);
+  readonly require?: Array<string>;
+  readonly readFile?: (path: string) => string | undefined;
+  readonly fileExists?: (path: string) => boolean;
+  readonly transformers?: _ts.CustomTransformers | ((p: _ts.Program) => _ts.CustomTransformers);
   /**
    * Allows the usage of top level await in REPL.
    *
@@ -282,7 +311,7 @@ export interface CreateOptions {
    * **Note**: setting to `true` when tsconfig target is too low will throw an Error.  Leave as `undefined`
    * to get default, automatic behavior.
    */
-  experimentalReplAwait?: boolean;
+  readonly experimentalReplAwait?: boolean;
   /**
    * Override certain paths to be compiled and executed as CommonJS or ECMAScript modules.
    * When overridden, the tsconfig "module" and package.json "type" fields are overridden, and
@@ -298,7 +327,7 @@ export interface CreateOptions {
    * `package` overrides either of the above to default behavior, which obeys package.json "type" and
    * tsconfig.json "module" options.
    */
-  moduleTypes?: ModuleTypes;
+  readonly moduleTypes?: ModuleTypes;
   /**
    * @internal
    * Set by our configuration loader whenever a config file contains options that
@@ -306,19 +335,19 @@ export interface CreateOptions {
    * to know this.  Some options can be eagerly resolved to absolute paths by
    * the configuration loader, so it is *not* necessary for their source to be set here.
    */
-  optionBasePaths?: OptionBasePaths;
+  readonly optionBasePaths?: OptionBasePaths;
   /**
    * A function to collect trace messages from the TypeScript compiler, for example when `traceResolution` is enabled.
    *
    * @default console.log
    */
-  tsTrace?: (str: string) => void;
+  readonly tsTrace?: (str: string) => void;
   /**
    * Enable native ESM support.
    *
    * For details, see https://typestrong.org/ts-node/docs/imports#native-ecmascript-modules
    */
-  esm?: boolean;
+  readonly esm?: boolean;
   /**
    * Re-order file extensions so that TypeScript imports are preferred.
    *
@@ -326,13 +355,13 @@ export interface CreateOptions {
    *
    * @default false
    */
-  preferTsExts?: boolean;
+  readonly preferTsExts?: boolean;
   /**
    * Like node's `--experimental-specifier-resolution`, , but can also be set in your `tsconfig.json` for convenience.
    *
    * For details, see https://nodejs.org/dist/latest-v18.x/docs/api/esm.html#customizing-esm-specifier-resolution-algorithm
    */
-  experimentalSpecifierResolution?: 'node' | 'explicit';
+  readonly experimentalSpecifierResolution?: 'node' | 'explicit';
   /**
    * Allow using voluntary `.ts` file extension in import specifiers.
    *
@@ -343,7 +372,19 @@ export interface CreateOptions {
    * However, if you really want to use `.ts` in import specifiers, and are aware that this may
    * break tooling, you can enable this flag.
    */
-  experimentalTsImportSpecifiers?: boolean;
+  readonly experimentalTsImportSpecifiers?: boolean;
+}
+
+export interface CreateOptions extends AlwaysPreTranspileOptions {}
+
+interface AlwaysPreTranspileOptions
+{
+  //
+  /**
+   * {@link alwaysPreTranspile}; `false` by default
+   * 
+   */
+  readonly alwaysPreTranspile ?: boolean ;
 }
 
 export type ModuleTypes = Record<string, ModuleTypeOverride>;
@@ -370,7 +411,7 @@ export interface RegisterOptions extends CreateOptions {
    *
    * For details, see https://github.com/TypeStrong/ts-node/issues/1514
    */
-  experimentalResolver?: boolean;
+  readonly experimentalResolver?: boolean;
 }
 
 export type ExperimentalSpecifierResolution = 'node' | 'explicit';
@@ -414,7 +455,7 @@ export const DEFAULTS: RegisterOptions = {
   files: yn(env.TS_NODE_FILES),
   pretty: yn(env.TS_NODE_PRETTY),
   compiler: env.TS_NODE_COMPILER,
-  compilerOptions: parse(env.TS_NODE_COMPILER_OPTIONS),
+  compilerOptions: parse(env.TS_NODE_COMPILER_OPTIONS) as _ts.CompilerOptions,
   ignore: split(env.TS_NODE_IGNORE),
   project: env.TS_NODE_PROJECT,
   skipProject: yn(env.TS_NODE_SKIP_PROJECT),
@@ -468,7 +509,14 @@ const TS_NODE_SERVICE_BRAND = Symbol('TS_NODE_SERVICE_BRAND');
 /**
  * Primary ts-node service, which wraps the TypeScript API and can compile TypeScript to JavaScript
  */
-export interface Service {
+export interface Service extends ServiceCore
+{}
+interface ServiceCore {}
+
+/**
+ * Core ts-node service, which wraps the TypeScript API and can compile TypeScript to JavaScript
+ */
+interface ServiceCore {
   /** @internal */
   [TS_NODE_SERVICE_BRAND]: true;
   ts: TSCommon;
@@ -571,8 +619,14 @@ export function create(rawOptions: CreateOptions = {}): Service {
   return createFromPreloadedConfig(foundConfigResult);
 }
 
+export interface Service extends ReturnType<typeof createFromPreloadedConfigImpl> {}
+
 /** @internal */
 export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof findAndReadConfig>): Service {
+  return      createFromPreloadedConfigImpl(foundConfigResult) ;
+}
+
+function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof findAndReadConfig>) {
   const { configFilePath, cwd, options, config, compiler, projectLocalResolveDir, optionBasePaths } = foundConfigResult;
 
   const projectLocalResolveHelper = createProjectLocalResolveHelper(projectLocalResolveDir);
@@ -725,14 +779,14 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
     ? ts.formatDiagnosticsWithColorAndContext || ts.formatDiagnostics
     : ts.formatDiagnostics;
 
-  function createTSError(diagnostics: ReadonlyArray<_ts.Diagnostic>) {
+  function createTSError(diagnostics: ReadonlyArray<_ts.Diagnostic>, ctxDict ?: Record<string, {} | null>) {
     const diagnosticText = formatDiagnostics(diagnostics, diagnosticHost);
     const diagnosticCodes = diagnostics.map((x) => x.code);
-    return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+    return new TSError(diagnosticText + (ctxDict ? ` ${ util.inspect(ctxDict, false, undefined, false ) }` : ``), diagnosticCodes, diagnostics);
   }
 
-  function reportTSError(configDiagnosticList: _ts.Diagnostic[]) {
-    const error = createTSError(configDiagnosticList);
+  function reportTSError(configDiagnosticList: _ts.Diagnostic[], ctxDict?: Record<string, {} | null>) {
+    const error = createTSError(configDiagnosticList, ctxDict);
     if (options.logError) {
       // Print error in red color and continue execution.
       console.error('\x1b[31m%s\x1b[0m', error);
@@ -756,17 +810,23 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
       const ext = path.slice(lastDotIndex);
       switch (ext) {
         case '.js':
-        case '.ts':
-          return '.js';
         case '.jsx':
+        case '.ts':
         case '.tsx':
-          return jsxEmitPreserve ? '.jsx' : '.js';
         case '.mjs':
+        case '.mjsx':
         case '.mts':
-          return '.mjs';
+        case '.mtsx':
         case '.cjs':
+        case '.cjsx':
         case '.cts':
-          return '.cjs';
+        case '.ctsx':
+          let c: string = ext ;
+          c = c.replace(/t/g, "j" ) ;
+          if (!jsxEmitPreserve) {
+            c = c.replace(/x/g, "" ) ;
+          }
+          return c;
       }
     }
     return '.js';
@@ -988,7 +1048,7 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
       host.resolveModuleNames = resolveModuleNames;
       host.resolveTypeReferenceDirectives = resolveTypeReferenceDirectives;
 
-      let builderProgram = ts.createIncrementalProgram({
+      let builderProgram: import("typescript").EmitAndSemanticDiagnosticsBuilderProgram = ts.createIncrementalProgram({
         rootNames: Array.from(rootFileNames),
         options: config.options,
         host,
@@ -1156,7 +1216,9 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
       }
 
       const diagnosticList = filterDiagnostics(result.diagnostics || [], diagnosticFilters);
-      if (diagnosticList.length) reportTSError(diagnosticList);
+      if (diagnosticList.length) {
+        reportTSError(diagnosticList, { fileName, ...(fileName.match(/\.jsonc?$/) ? { code: code.slice(0, 200 ) } : {} ), });
+      }
 
       return [result.outputText, result.sourceMapText ?? '{}', false];
     };
@@ -1189,16 +1251,50 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
   const getOutputTranspileOnly = createTranspileOnlyGetOutputFunction();
 
   // Create a simple TypeScript compiler proxy.
-  function compile(code: string, fileName: string, lineOffset = 0) {
+  function compile(...[code, fileName, lineOffset = 0, { forcedModuleType = null, transpileOnly: traArg = false, } = {} ] : (
+
+    ArgsWithOptions<[code: string, fileName: string, lineOffset?: number], (
+      & {
+        transpileOnly?: boolean,
+        forcedModuleType ?: ModuleTypeClassification["moduleType"] | null,
+      }
+    )>
+  )) {
     const normalizedFileName = normalizeSlashes(fileName);
-    const classification = moduleTypeClassifier.classifyModuleByModuleTypeOverrides(normalizedFileName);
+    const classification = (
+      ((): ModuleTypeClassification => {
+        if (forcedModuleType) {
+          return {
+            moduleType: forcedModuleType ,
+          } ;
+        }
+        return (
+          moduleTypeClassifier.classifyModuleByModuleTypeOverrides(normalizedFileName)
+        ) ;
+      })()
+    );
     let value: string | undefined = '';
     let sourceMap: string | undefined = '';
     let emitSkipped = true;
-    if (getOutput) {
-      // Must always call normal getOutput to throw typechecking errors
-      [value, sourceMap, emitSkipped] = getOutput(code, normalizedFileName);
+
+    if (emitSkipped) {
+      /**
+       * generally,
+       * unless {@link traArg} (`transpileOnly`), we shall head it to {@link getOutput}.
+       * note however, that
+       * setting {@link forcedModuleType} is incompatible with {@link getOutput `program.getOutput`} and therefore
+       * in that case we can only safely skip this ATM (hopefully fixed in future).
+       * 
+       */
+      if (!forcedModuleType && !traArg) {
+        ;
+        if (getOutput) {
+          // Must always call normal getOutput to throw typechecking errors
+          [value, sourceMap, emitSkipped] = getOutput(code, normalizedFileName);
+        }
+      }
     }
+
     // If module classification contradicts the above, call the relevant transpiler
     if (classification.moduleType === 'cjs' && (shouldOverwriteEmitWhenForcingCommonJS || emitSkipped)) {
       [value, sourceMap] = getOutputForceCommonJS(code, normalizedFileName);
@@ -1261,7 +1357,498 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
     })
   );
 
-  return {
+  const compilerHelperExtra = (
+
+    (() => {
+      ;
+
+      ;
+      const createRequireCall = (
+        (args: readonly _ts.Expression[]): _ts.Expression => (
+          compilerHelper11.createRequireCall!(args)
+        )
+      ) ;
+
+      /**
+       * {@link getImportExprAndBinding}.
+       * note that
+       * `alias: false` means that the construct doesn't bind any name
+       * .
+       * 
+       */
+      const getImportExprAndBinding = (
+
+        function (...[node, oode]: [CjsifiableImportNode, oode: _ts.SourceFile] ): (
+          | (
+            { srcExpr: _ts.Expression, } & (
+              | {
+                  alias: (_ts.ObjectBindingPattern | _ts.BindingName) ;
+              }
+              | {
+                  alias: false;
+              }
+            )
+          )
+          | null
+        ) {
+          if (_ts.isImportDeclaration(node) ) {
+            ;
+            const srcImportingE = (
+              ((
+                createRequireCall((
+                  utilReiterated(function* () {
+                    yield node.moduleSpecifier  ;
+                    if (node.attributes) {
+                      yield translateEsmImportAttribsIntoObjectDictLiteral(node.attributes) ;
+                    }
+                  })
+                ))
+              ))
+            ) ;
+            const clause = node.importClause ?? null ;
+            const p = (
+              clause ?
+              translateEsmImportClauseIntoObjectDictPattern(clause)
+              :
+              false
+            ) ;
+            return {
+              srcExpr: srcImportingE,
+              alias: p ,
+            } ;
+          }
+          if (_ts.isImportEqualsDeclaration(node) ) {
+            ;
+            const {
+              moduleReference: mR ,
+            } = (
+              node
+            ) ;
+
+            if (_ts.isExternalModuleReference(mR) ) {
+              ;
+              return {
+                alias: node.name ,
+                srcExpr: (
+                  createRequireCall([mR.expression]) 
+                ) ,
+              } ;
+            } else {
+              return null ;
+            }
+          }
+          if (_ts.isCallExpression(node) ) {
+            const expr2 = (
+              (() => {
+                ;
+                if (node.expression.kind === _ts.SyntaxKind.ImportKeyword) {
+                  const importcImpl = (
+                    createRequireCall(node.arguments)
+                  ) ;
+                  return (
+                    _ts.factory.createCallExpression((
+                      _ts.factory.createPropertyAccessExpression(getStaticGlobalBuiltinQuery("Promise") , "resolve" )
+                    ) , undefined, [importcImpl])
+                  ) ;
+                }
+                return node ;
+              })()
+            ) ;
+            return {
+              alias: false ,
+              srcExpr: expr2 ,
+            } ;
+          }
+          throw ((node: _ts.Node) => assert.fail(`unsupported construct: (kind=${node.kind}) ${aptSPrintNodeVerbatim(node, oode) }`) )(node) ;
+        }
+      ) ;
+
+      type CjsifiableImportNode = (
+        | _ts.ImportDeclaration
+        | _ts.ImportEqualsDeclaration
+        | _ts.CallExpression
+      ) ;
+
+      ;
+      const cjsifyImport = (
+
+        function (...[node, oode]: [CjsifiableImportNode, oode: _ts.SourceFile] )
+        : (_ts.Statement | _ts.Expression)
+        {
+
+          ;
+          if (0) {
+            const code = aptSPrintNodeVerbatim(node, oode) ;
+          }
+
+          const impExprAndBinding = (
+            getImportExprAndBinding(node, oode)
+          ) ;
+
+          if (impExprAndBinding) {
+            ;
+            const { alias: aliasingExpr, srcExpr: srcExpr, } = impExprAndBinding;
+  
+            if (aliasingExpr !== false) {
+              ;
+              {
+                ;
+                return _ts.factory.createVariableStatement([
+                  // _ts.factory.createModifier(_ts.SyntaxKind.ConstKeyword),
+                ], (
+                  _ts.factory.createVariableDeclarationList((
+                    [(
+                      _ts.factory.createVariableDeclaration((
+                        aliasingExpr
+                      ) , undefined, undefined, (
+                        srcExpr
+                      ) )
+                    )]
+                  ) , _ts.NodeFlags.Const )
+                )) ;
+              }
+            } else {
+              return (
+                srcExpr
+              ) ;
+            }
+          } else {
+            return node ;
+          }
+        }
+      ) ;
+
+      return {
+        createRequireCall ,
+        cjsifyImport ,
+      } as const ;
+    })()
+  ) ;
+
+  /**
+   * ran by {@link translateInlineScriptIntoCjs}.
+   * 
+   */
+  const spclPreMainCompileDoRefmt = (
+
+    function (...[eh, nd, { } = {}] : ArgsWithOptions<[eh: _ts.EmitHint, _ts.Node, ] , {  } >)
+    : string
+    {
+      const oode = nd.getSourceFile() ;
+
+      const {
+        createRequireCall ,
+        cjsifyImport ,
+      } = compilerHelperExtra;
+      const createAdaptiveAwaitExpr = (
+        (x: _ts.Expression) => (
+          _ts.factory.createCallExpression((
+            _ts.factory.createIdentifier("doSsPrecompiledAwait")
+          ), undefined, [x])
+        )
+      ) ;
+
+      const printer = (
+        _ts.createPrinter({ newLine: _ts.NewLineKind.CarriageReturnLineFeed, }, {
+          substituteNode: (eh, node) => {
+            if (_ts.isImportDeclaration(node)  || _ts.isImportEqualsDeclaration(node) || ( _ts.isCallExpression(node) && aptSPrintNodeVerbatim(node, oode).match(/^import\b/ ) ) ) {
+              return (
+                cjsifyImport(node, oode)
+              ) ;
+            }
+            return node ;
+          } ,
+        })
+      ) ;
+
+      if (_ts.isSourceFile(nd) ) {
+        return printer.printFile(nd) ;
+      }
+      return printer.printNode(eh, nd, nd.getSourceFile() ) ;
+    }
+  ) ;
+
+  /**
+   * the right `getText()` method.
+   * 
+   */
+  const aptSPrintNodeVerbatim = (
+    (...[nod, sfile]: [node: _ts.Node, oode: _ts.SourceFile]) => (
+      aptSPrintNodeVerbatim1(_ts.EmitHint.Unspecified, nod, sfile)
+    )
+  ) ;
+  const aptSPrintNodeVerbatim1 = (
+    (() => {
+      const impl = _ts.createPrinter({ newLine: _ts.NewLineKind.CarriageReturnLineFeed, }) ;
+
+      return (
+
+        function (...[mode, node, srcfile] : [mode: _ts.EmitHint, node: _ts.Node, oode: _ts.SourceFile] )
+        {
+          return impl.printNode(mode, node, srcfile ) ;
+        }
+      ) ;
+    })()
+  ) ;
+
+  const translateInlineTsScriptIntoCjs = (
+
+    function (...[code, { fileExt: srcFileExt0, asSecondLevel = false, assumedSrcPath: assumedSrcPathArg, }] : (
+      Parameters<EB.EbTranslateInlineScriptIntoCjs>
+    ))
+    {
+
+      if (1) {
+        ;
+        /**
+         * OPTIMISATION; if it's CJS, and hence can be `Function`-ised immediately,
+         * return immediately
+         * 
+         */
+        if ((
+          srcFileExt0.match(/c?js$/)
+          &&
+          isValidCjs(code)
+          &&
+          (
+            isWithEsImportStmt(code) ?
+            (
+              console["info"](`[studk-ts-node] [TranslateInlineTsScriptIntoCjs] code contains Dynamic ESM Import which needs to be transformed `)
+              , false
+            )
+            : true
+          )
+        ) ) {
+          return code ;
+        }
+      }
+
+      {
+      //
+
+      /**
+       * the {@link compile `compile`}-emitted mdue-fmat (ie whether ESM, CJS, TS, etc)
+       * would change according to `fileName` we specify here
+       * 
+       */
+      const assumedSrcPath = (
+        assumedSrcPathArg ?? (
+          ("<repl>" + (
+            srcFileExt0
+          ) )
+        )
+      );
+
+      let outCode: string = (
+        compile((
+          1 ?
+          (
+            /* formatted this way, to allow (when debug) quickly stepping into the call `compile(...)` without opening the 200k-LOC `tsc.js` (which shouldn't happen, but did happen for no reason ) */
+            (() => {
+              return (
+                ((...args: Parameters<typeof spclPreMainCompileDoRefmt> ) => {
+                  return (
+                    spclPreMainCompileDoRefmt(...args)
+                  ) ;
+                } )(_ts.EmitHint.SourceFile , (
+                  (
+                    _ts.createSourceFile("<repl>", code , {
+                      languageVersion: _ts.ScriptTarget.ESNext
+                      ,
+                    } , true , (
+                      (() => {
+                        const isJsxTagsEnab = srcFileExt0.endsWith("x") ;
+                        const isTsFeatsEnab = srcFileExt0.includes("t") ;
+                        const isEsFeatsEnab = srcFileExt0.includes("j") ;
+                        return (
+                          isTsFeatsEnab ?
+                          (
+                            isJsxTagsEnab ? _ts.ScriptKind.TSX :
+                            _ts.ScriptKind.TS
+                          )
+                          :
+                          isEsFeatsEnab ?
+                          (
+                            _ts.ScriptKind.JSX
+                          )
+                          :
+                          undefined
+                        ) ;
+                      })()
+                    ) )
+                  )
+                ) )
+              )
+            })()
+          )
+          :
+          code
+        ), assumedSrcPath, undefined, {
+          forcedModuleType: "cjs" ,
+        } )
+      ) ;
+
+      ;
+      if (1) {
+        ;
+        /** strip shebang/hashbang(s); it causes syntax error when the obj-file began with shebang/hashbang */
+        outCode = (
+          stripShebangIfPresent(outCode)
+        ) ;
+      }
+
+      /** disabled; this causes syntax error when the obj-file began with shebang/hashbang */
+      if (0) {
+        outCode = (
+          `// fileExt: ${srcFileExt0 } ` + "\r\n\r\n" + outCode
+        ) ;
+      }
+
+      checkParseableAsCjs(outCode, {
+        assumedSrcPath ,
+        sfe: srcFileExt0 ,
+      }) ;
+
+      return outCode ;
+      }
+    }
+  ) ;
+
+  const translateInlineScriptIntoCjs = (
+
+    function (...[code, opts] : (
+      Parameters<EB.EbTranslateInlineScriptIntoCjs>
+    ))
+    : string
+    {
+
+      if (opts.fileExt.match(/\.([cm]?[cjt]sx?)$/) ) {
+        ;
+        return (
+          translateInlineTsScriptIntoCjs(code, opts)
+        ) ;
+  
+      }
+
+      if (opts.fileExt.match(/\.(jsonc?)$/) ) {
+        ;
+        // TODO
+        return (
+          `
+          // @ts-check
+          "use strict" ;
+          module.exports = ${(
+            code
+          ) } ;`
+        ) ;
+  
+      }
+
+      if (opts.fileExt.match(/\.((sa|s?c)ss)$/) ) {
+
+        /**
+         * CSS Modules deserves to compile to *stable* code;
+         * we have no idea how that should be exactly done
+         * 
+         * note that Global CSS wouldn't have such problem
+         * 
+         */
+        if (opts.assumedSrcPath?.match(/\.module\.(\w+)$/)) {
+          ;
+          throw new (class XTsError extends TypeError {} )(`unsupported CSS Modules`) ;
+        } else {
+          ;
+          //
+          return (
+            `
+            // @ts-check
+            /// <reference lib="DOM" />
+            "use strict" ;
+            /* compiled Global CSS */
+            // ${opts.assumedSrcPath ?? `(no path)` }
+            if (typeof window !== "undefined" ) {
+              // TODO
+              const s = document.createElement("style") ;
+              ${ opts.fileExt.match(/\.css /) ? `s.textContent = ${ JSON.stringify(code) } ;` : `// CSS Preproc Src File ` }
+              document.head.appendChild(s) ;
+            } `
+          ) ;
+        }
+      }
+
+      throw (
+        new TypeError(`unsupported file ${opts.fileExt} ${opts.assumedSrcPath ?? `(no path)` }`)
+      ) ;
+    }
+  ) ;
+
+  const oAlwaysPreTranspile = (
+    !!(options.alwaysPreTranspile)
+  ) ;
+
+  const eb = (
+    EB.createSpclNodeEngine({
+      oAlwaysPreTranspile: oAlwaysPreTranspile ,
+      compiler: { translateInlineScriptIntoCjs: translateInlineScriptIntoCjs, } ,
+      aux: { fs: require("fs"), } ,
+    })
+  ) ;
+
+  const {
+    dispatchInlineScript: dispatchInlineScript,
+    dispatchSrcFile     : dispatchSrcFile ,
+    dispatchSrcFileNatively: dispatchSrcFileNatively,
+    compilerHelper: compilerHelper11,
+  } = eb ;
+
+  ;
+  const { dryDepScanningEb, } = (
+    (() => {
+      ;
+
+      let paths1: Immutable.Map<string, { hasBeenReported: number, }> = (
+        Immutable.Map()
+      ) ;
+
+      return {
+        dryDepScanningEb: (
+          EB.createSpclNodeImportsScanningEngine({
+            oAlwaysPreTranspile: oAlwaysPreTranspile ,
+            aux: { fs: require("fs"), } ,
+            onNewDynamicPathExpr: (x) => {
+              const proceed = (...[msg, e]: [msg: string, _ts.Expression]) => {
+                // console["log"](`[ESM Analysis] ${msg }`) ;
+                paths1 = (
+                  paths1
+                  .set(msg, { hasBeenReported: 0, })
+                  .map(({ hasBeenReported: v, ...opts }) => {
+                    if (v) {
+                      ;
+                    } else {
+                      console["log"](`[ESM Imports-Scanning] ${aptSPrintNodeVerbatim(x, x.getSourceFile() ) }`) ;
+                    }
+                    return {
+                      ...opts ,
+                      hasBeenReported: v || 1 ,
+                    } ;
+                  })
+                ) ;
+              } ;
+              if (_ts.isStringLiteral(x) ) {
+                proceed(`static import from '${x.text }'`, x ) ;
+              } else {
+                //
+                const sf = x.getSourceFile() ;
+                proceed(`dynamix import '${aptSPrintNodeVerbatim(x, sf) }'`, x ) ;
+              }
+            } ,
+          })
+        ) ,
+      } ;
+    })()
+  ) ;
+
+  const s0 : ServiceCore = {
     [TS_NODE_SERVICE_BRAND]: true,
     ts,
     compilerPath: compiler,
@@ -1283,7 +1870,68 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
     getNodeCjsLoader,
     extensions,
   };
+  return {
+    ...(
+      {
+        ...s0 ,
+        /** @deprecated */
+        compileInlineScript: translateInlineScriptIntoCjs ,
+        dispatchInlineScript: dispatchInlineScript!,
+        dispatchSrcFileNatively,
+        dispatchSrcFile,
+        eb ,
+        dryDepScanningEb ,
+        /** @deprecated */
+        compilerHelper11,
+      } as const
+    ) ,
+  } ;
 }
+
+import {
+  getStaticGlobalBuiltinQuery,
+  translateEsmImportAttribsIntoObjectDictLiteral,
+  translateEsmImportClauseIntoBindingName ,
+  translateEsmImportClauseIntoObjectDictPattern,
+} from "./esmToCjs" ;
+
+import * as VM from "node:vm" ;
+import { createRequire, } from 'node:module';
+
+// interface ExportedValueHandler<out ReturnVal = any> {
+//   (vexport: any, originalExports: object, module: NodeJS.Module): ReturnVal ;
+// }
+
+import EB = require("./eb");
+
+abstract class EntryPtPathAndDispatchSchedule {
+  // @ts-ignore
+  #iEntryPointModeBrand = true ;
+  protected constructor(
+    protected readonly lsMode: EntryPtPathAndDispatchSchedule.Ls,
+  )
+  {
+    this.live   = lsMode === EntryPtPathAndDispatchSchedule.LIVE ;
+    this.toSave = lsMode === EntryPtPathAndDispatchSchedule.SAVE ;
+  }
+  readonly   live !: boolean ;
+  readonly toSave !: boolean ;
+}
+
+namespace EntryPtPathAndDispatchSchedule {
+  /** REPL        -      */ export           class      PROMPT extends EntryPtPathAndDispatchSchedule { protected constructor(lsMode: Ls) { super(lsMode) ; } }
+  /** REPL        - live */ export           class LIVE_PROMPT extends PROMPT { constructor() { super(LIVE) ; } }
+  /** REPL        - save */ export           class SAVE_PROMPT extends PROMPT { constructor() { super(SAVE) ; } }
+  /** READFILE    -      */ export           class      FILE   extends EntryPtPathAndDispatchSchedule { protected constructor(readonly srcFileUrl: string, lsMode: Ls) { super(lsMode) ; } }
+  /** READFILE    - live */ export           class LIVE_FILE   extends FILE { constructor(srcFilePath: string) { super(srcFilePath, LIVE) ; } }
+  /** READFILE    - save */ export           class SAVE_FILE   extends FILE { constructor(srcFilePath: string) { super(srcFilePath, SAVE) ; } }
+
+  export type Ls = typeof LIVE | typeof SAVE ;
+  export const LIVE = Symbol("LIVE") ;
+  export const SAVE = Symbol("SAVE") ;
+}
+
+export { EntryPtPathAndDispatchSchedule, } ;
 
 /**
  * Check if the filename should be ignored.

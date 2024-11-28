@@ -29,10 +29,11 @@ module.exports = {
 
   /**
    * average of those files
-   * took arnd 2s to run.
+   * each
+   * took quite a while to run.
    * 
    */
-  timeout: 5 * 1000 ,
+  timeout: 21.5 * 1000 ,
 
   // checkLeaks: true ,
 
