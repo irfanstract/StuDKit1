@@ -6,6 +6,17 @@
   ,
   "scripts": {
     "installAllDeps": "npm install"
+
+    ,"runStudkTsNodeHelpExe"      : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js --help"
+
+    ,"runStudkTsNodeReplExe"      : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js "
+
+    ,"quickRebuildStudkTsNodeHelpExe"      : "npm run -w packages/@studiokit/ts-node build-tsc "
+
+    ,"runStudkTsNodeSeriousExe"          : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js --alwaysPreTranspile --scanAndPrintDeps J:/Dev/StuDKitSrc/scripts/packageListingTest.mjs "
+
+    ,"runStudkTsNodeExe"          : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/hello-world.ts "
+    ,"runStudkTsNodeJsxExe"       : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/jsx-react.tsx "
   }
 
   ,

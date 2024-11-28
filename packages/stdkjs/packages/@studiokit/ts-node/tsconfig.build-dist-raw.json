@@ -10,6 +10,7 @@
     "noEmit": false,
     "emitDeclarationOnly": true,
     "rootDir": "dist-raw",
+    "noCheck": true,
     "outDir": "temp/dist-raw"
   },
   "include": [
