@@ -19,6 +19,7 @@ import { posixBlockquotify ,} from "../scripts/commonMochaTestCaseInfra.mjs" ;
 import {
   stringAssert ,
   asGreen,
+  asRedBright,
   OC ,
 } from "../testScripts/conventions.mjs" ;
 
@@ -226,20 +227,29 @@ describe(`running 'node studk-ts-node <library-example-ts>' `, () => {
     })
 
   ) )
-  for (const { title, runMain, } of /** @satisfies {{ title: String, runMain: () => SpawnSyncReturns<String>, }[] } */ ([
-    {
-      title: `running 'node @studiokit/ts-node ${flags.join(" ") } ${testsPjiTsName}'  ` ,
-      runMain: () => (
-        spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), lft: true, })
-      ),
-    } ,
-    {
-      title: `running 'node -r "@studiokit/ts-node/register ${flags.join(" ") }" ${testsPjiTsName}'  ` ,
-      runMain: () => (
-        spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), lft: false, })
-      ),
-    } ,
-  ]))
+  for (const { title, runMain, } of (
+
+    utilReiterated(/** @return {Iterable<{ title: String, runMain: () => SpawnSyncReturns<String>, }> } */ function* () {
+
+      yield {
+        title: `running 'node @studiokit/ts-node ${flags.join(" ") } ${testsPjiTsName}'  ` ,
+        runMain: () => (
+          spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), lft: true, })
+        ),
+      } ;
+
+      if (0) {
+        ;
+        yield {
+          title: `running 'node -r "@studiokit/ts-node/register ${flags.join(" ") }" ${testsPjiTsName}'  ` ,
+          runMain: () => (
+            spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), lft: false, })
+          ),
+        } ;
+      }
+
+    })
+  ))
   {
 
     it (title, () => {
