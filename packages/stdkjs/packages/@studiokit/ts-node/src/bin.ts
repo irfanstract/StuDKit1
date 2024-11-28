@@ -716,7 +716,7 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
     executeRepl   ,  replStuff ,       //
     executeEval   ,  evalStuff , code, //
     executeStdin  , stdinStuff ,       //
-    noRunApp ,
+    noRunApp: nraArg ,
     entryPointPath ,
     argv , restArgs,
     showConfig ,
@@ -859,7 +859,7 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
       ;
       ;
       if ((
-        !noRunApp
+        !nraArg
       ) ) {
         directRunfileMode : {
             ;
@@ -907,7 +907,7 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
       }
   
       if (scanAndPrintDeps ) {
-        if (noRunApp) {
+        if (nraArg) {
           ; 
           console["error"](`not running; only`) ;
         }
@@ -918,7 +918,7 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
           service.dryDepScanningEb.dispatchSrcFile(entryPointPath, {
             alwaysAvoidNativeImport: true ,
           } ) ;
-          if (noRunApp) {
+          if (nraArg) {
             ;
             // break RUN ;
             return ;
@@ -926,7 +926,7 @@ function phase4Impl(payload: ReturnType<typeof phase4Pre> )
         }
       }
 
-      if (!noRunApp ) {
+      if (!nraArg ) {
         preTranspiledRunfileMode : {
 
           console["log"](`trying 'service.dispatchSrcFile(entryPointPath, --alwaysAvoidNativeImport=true, )',`) ;
