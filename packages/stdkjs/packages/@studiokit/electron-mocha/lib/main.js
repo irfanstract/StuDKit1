@@ -1,3 +1,7 @@
+
+
+// @ts-check
+
 'use strict'
 
 const { join, resolve } = require('path')
@@ -14,12 +18,12 @@ const { types } = require('mocha/lib/cli/run-option-metadata')
 types.array.push('require-main', 'script')
 types.boolean.push('renderer', 'interactive')
 
-const { loadOptions, YARGS_PARSER_CONFIG } = require('mocha/lib/cli/options')
+const { loadOptions, YARGS_PARSER_CONFIG: parserConfigYargs, } = require('mocha/lib/cli/options')
 const run = require('./run')
 
 // Main entry point
 // See: mocha/lib/cli/cli.js
-exports.main = (argv = process.argv.slice(2)) => {
+exports.main = (/** @type {readonly String[] } */ argv = process.argv.slice(2)) => {
   module.paths.push(process.cwd(), resolve('node_modules'))
 
   const args = loadOptions(argv)
@@ -38,7 +42,7 @@ exports.main = (argv = process.argv.slice(2)) => {
     .version('version', 'Show version number and exit', version)
     .alias('version', 'V')
     .wrap(process.stdout.columns ? Math.min(process.stdout.columns, 80) : 80)
-    .parserConfiguration(YARGS_PARSER_CONFIG)
+    .parserConfiguration(parserConfigYargs)
     .config(args)
     .parse(args._)
 }
@@ -53,7 +57,7 @@ app.on('quit', () => {
   const child = spawn(process.execPath, ['cleanup.js', userData], {
     detached: true,
     stdio: 'ignore',
-    env: { ELECTRON_RUN_AS_NODE: 1 },
+    env: { ELECTRON_RUN_AS_NODE: "1" },
     cwd: __dirname,
     shell: process.platform === 'win32'
   })

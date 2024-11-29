@@ -1,0 +1,30 @@
+{
+  "extends": "../../../tsconfig.json" ,
+
+  //
+  "include": [
+    "**/*" ,
+    "bin/*" ,
+  ] ,
+  "exclude": [
+  ] ,
+
+  "references": [
+    //
+  ],
+
+  "compilerOptions": {
+
+    //
+    "composite": true,
+    "tsBuildInfoFile": ".local/tsconfig.build-dist.tsbuildinfo",
+    "rootDir": ".",
+
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+
+    "allowJs": true,
+
+  } ,
+
+}
