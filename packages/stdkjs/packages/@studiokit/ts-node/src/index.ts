@@ -1,24 +1,32 @@
 import { relative, basename, extname, dirname, join } from 'path';
-import { Module } from 'module';
+import { builtinModules, Module } from 'node:module';
 import * as util from 'util';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { existsSync, readFileSync } from 'node:fs';
 
 import type * as _sourceMapSupport from '@cspotcode/source-map-support';
 import { BaseError } from 'make-error';
-import type * as _ts from 'typescript';
+import * as _ts from 'typescript';
 
 import type { Transpiler, TranspilerFactory } from './transpilers/types';
+import assert = require('assert');
 import {
   cachedLookup,
   createProjectLocalResolveHelper,
+  getStackOrMessage,
   hasOwnProperty,
+  memoize,
   normalizeSlashes,
   once,
   parse,
   ProjectLocalResolveHelper,
+  utilReiterated,
   split,
   versionGteLt,
   yn,
+  type ArgsWithOptions, 
+  Immutable,
+  isUnderCspNoEvalsPolicy,
 } from './util';
 import { findAndReadConfig, loadCompiler } from './configuration';
 import type { TSCommon, TSInternal } from './ts-compiler-types';
@@ -725,14 +733,14 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
     ? ts.formatDiagnosticsWithColorAndContext || ts.formatDiagnostics
     : ts.formatDiagnostics;
 
-  function createTSError(diagnostics: ReadonlyArray<_ts.Diagnostic>) {
+  function createTSError(diagnostics: ReadonlyArray<_ts.Diagnostic>, ctxDict ?: Record<string, {} | null>) {
     const diagnosticText = formatDiagnostics(diagnostics, diagnosticHost);
     const diagnosticCodes = diagnostics.map((x) => x.code);
-    return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+    return new TSError(diagnosticText + (ctxDict ? ` ${ util.inspect(ctxDict, false, undefined, false ) }` : ``), diagnosticCodes, diagnostics);
   }
 
-  function reportTSError(configDiagnosticList: _ts.Diagnostic[]) {
-    const error = createTSError(configDiagnosticList);
+  function reportTSError(configDiagnosticList: _ts.Diagnostic[], ctxDict?: Record<string, {} | null>) {
+    const error = createTSError(configDiagnosticList, ctxDict);
     if (options.logError) {
       // Print error in red color and continue execution.
       console.error('\x1b[31m%s\x1b[0m', error);
@@ -1156,7 +1164,7 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
       }
 
       const diagnosticList = filterDiagnostics(result.diagnostics || [], diagnosticFilters);
-      if (diagnosticList.length) reportTSError(diagnosticList);
+      if (diagnosticList.length) reportTSError(diagnosticList, { fileName, ...(fileName.match(/\.jsonc?$/) ? { code: code.slice(0, 200 ) } : {} ), });
 
       return [result.outputText, result.sourceMapText ?? '{}', false];
     };
@@ -1189,7 +1197,9 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
   const getOutputTranspileOnly = createTranspileOnlyGetOutputFunction();
 
   // Create a simple TypeScript compiler proxy.
-  function compile(code: string, fileName: string, lineOffset = 0) {
+  function compile(...[code, fileName, lineOffset = 0] : (
+    ArgsWithOptions<[code: string, fileName: string, lineOffset?: number], {}>
+  )) {
     const normalizedFileName = normalizeSlashes(fileName);
     const classification = moduleTypeClassifier.classifyModuleByModuleTypeOverrides(normalizedFileName);
     let value: string | undefined = '';

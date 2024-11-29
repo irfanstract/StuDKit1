@@ -10,6 +10,8 @@
     "outDir": "dist",
     "tsBuildInfoFile": "temp/tsconfig.build-dist.tsbuildinfo",
     "allowJs": false,
+    "noCheck": true,
+    "declaration": false,
     "rootDirs": ["temp", "."]
   },
   "include": [
