@@ -52,6 +52,17 @@ import {
   isSyntaxErrorUnexpectedToken,
 } from './module-transpiled-syntaxerrors';
 
+const isWithEsImportStmt = (
+
+  function (...[code]: [code: string])
+  {
+
+    return (
+      (code.match(/\bimport\s*\(/g) )
+    ) ;
+  }
+) ;
+
 export { TSCommon };
 export { createRepl, CreateReplOptions, ReplService, EvalAwarePartialHost } from './repl';
 export type {
@@ -1564,6 +1575,15 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
           srcFileExt0.match(/c?js$/)
           &&
           isValidCjs(code)
+          &&
+          (
+            isWithEsImportStmt(code) ?
+            (
+              console["info"](`[studk-ts-node] [TranslateInlineTsScriptIntoCjs] code contains Dynamic ESM Import which needs to be transformed `)
+              , false
+            )
+            : true
+          )
         ) ) {
           return code ;
         }
