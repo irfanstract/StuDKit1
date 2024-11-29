@@ -1,3 +1,6 @@
+
+// @ts-check
+
 require('electron-window').parseArgs()
 
 const { ipcRenderer: ipc } = require('electron')
@@ -11,7 +14,7 @@ if (!opts.interactive) {
   require('./console')
 }
 
-const fail = error => {
+const fail = (/** @type {Error} */ error) => {
   ipc.send('mocha-error', {
     message: error.message || error,
     stack: error.stack
@@ -21,7 +24,7 @@ const fail = error => {
 try {
   const { Mocha, helpers } = require('../lib/mocha')
 
-  const handleScripts = (scripts = []) => {
+  const handleScripts = (/** @type {readonly string[] } */ scripts = []) => {
     for (const script of scripts) {
       const tag = document.createElement('script')
       tag.src = script
@@ -42,7 +45,7 @@ try {
 
   ipc.on('mocha-start', async () => {
     try {
-      await helpers.runMocha({ ...opts }, (...args) => {
+      await helpers.runMocha({ ...opts }, (/** @type {readonly string[] } */ ...args) => {
         ipc.send('mocha-done', ...args)
       })
     } catch (e) {
