@@ -1,5 +1,7 @@
 import { dirname } from 'path';
 
+import "./utilGlobalConsoleAlwaysStderr" ;
+
 /**
  * @internal
  * Copied from https://unpkg.com/yn@3.1.1/index.js
@@ -7,6 +9,7 @@ import { dirname } from 'path';
  * This is a lazy way to make the dep number go down, we haven't touched this
  * dep in ages, and we didn't use all its features, so we stripped them.
  */
+export function yn(input: string | undefined): boolean | undefined ;
 export function yn(input: string | undefined) {
   input = String(input).trim();
 
@@ -18,6 +21,18 @@ export function yn(input: string | undefined) {
     return false;
   }
 }
+
+export const isUnderCspNoEvalsPolicy = (
+
+  (): boolean => {
+    try {
+      new Function(``) ;
+      return false ;
+    } catch (z) {
+      return true ;
+    }
+  }
+) ;
 
 /**
  * Like `Object.assign`, but ignores `undefined` properties.
@@ -39,6 +54,8 @@ export function assign<T extends object>(initialValue: T, ...sources: Array<T>):
  * and remove empty strings from the resulting array.
  * @internal
  */
+export function split(value: string            ): string[]             ;
+export function split(value: string | undefined): string[] | undefined ;
 export function split(value: string | undefined) {
   return typeof value === 'string' ? value.split(/ *, */g).filter((v) => v !== '') : undefined;
 }
@@ -47,7 +64,9 @@ export function split(value: string | undefined) {
  * Parse a string as JSON.
  * @internal
  */
-export function parse(value: string | undefined): object | undefined {
+export function parse(value: string            ): object | null             ;
+export function parse(value: string | undefined): object | null | undefined ;
+export function parse(value: string | undefined): object | null | undefined {
   return typeof value === 'string' ? JSON.parse(value) : undefined;
 }
 
@@ -151,6 +170,14 @@ export function once<Fn extends (...args: any[]) => any>(fn: Fn) {
   return onceFn;
 }
 
+export { memoize, } from "lodash" ;
+
+export import Immutable = require("immutable") ;
+
+export function utilReiterated<const E>(src: () => Iterable<E> ) {
+  return [...src() ] ;
+}
+
 /** @internal */
 export function versionGteLt(version: string, gteRequirement: string, ltRequirement?: string) {
   const [major, minor, patch, extra] = parse(version);
@@ -168,3 +195,104 @@ export function versionGteLt(version: string, gteRequirement: string, ltRequirem
     return requirement.split(/[\.-]/).map((s) => parseInt(s, 10));
   }
 }
+
+export function getStackOrMessage(value: Error    ): string ;
+export function getStackOrMessage(value: unknown  ): string ;
+export function getStackOrMessage(...[o] : [unknown])
+{
+  if (o instanceof Error) {
+    const stack = o.stack ;
+    if (stack) {
+      return stack ;
+    }
+  }
+  return String(o) ;
+}
+
+export type ArgsWithOptions<P extends readonly unknown[], opt extends object > = (
+  [...P , ...(
+    [{}] extends [opt] ?
+    [options ?: opt]
+    : [opts : opt]
+  ) ]
+) ;
+
+export type AllOrNever1<Props extends object> = (
+  (
+    Props extends any ?
+    AnevImplEach<Props>
+    : never
+  )
+  |
+  { [k in PossibleKeyOf<Props>] ?: never ; }
+) ;
+
+type AnevImplEach<Props extends object> = (
+  Required<Props>
+) ;
+
+export type PossibleKeyOf<Props extends object> = (
+  Props extends any ?
+  PossibleKeyOfOneAlt<Props>
+  : never
+) ;
+
+export type KeyOf<Props extends object> = (
+  PossibleKeyOfOneAlt<Props>
+) ;
+
+type PossibleKeyOfOneAlt<Props extends object> = (
+  keyof Required<Props>
+) ;
+
+{
+  {
+    const ADPE = (x: AtLeastEitherProp<{
+      //
+      onNewKnownPath : (value: string) => void ,
+      onNewDynamicPathExpr : (expr: NodeRequire) => void ,
+    }>) => { x.onNewDynamicPathExpr ; } ;
+    ADPE({ onNewDynamicPathExpr: () => {} , }) ;
+    ADPE({ onNewKnownPath: () => {} , }) ;
+    ADPE({
+      onNewKnownPath: () => {} ,
+      onNewDynamicPathExpr: () => {} ,
+    }) ;
+    // @ts-expect-error
+    ADPE({
+    }) ;
+  }
+}
+
+export type AtLeastEitherProp<Props extends object> = (
+  Partial<Props>
+  & Required<PickEitherProp<Props > >
+) ;
+
+export type EitherOneProp<Props extends object> = (
+  OnlySelectEitherProp<Props, keyof Props>
+) ;
+
+export type PickEitherProp<D extends object, kChosen extends keyof D = keyof D > = (
+  kChosen extends any ?
+  Pick<D, kChosen>
+  : never
+) ;
+
+export type OnlySelectEitherProp<D extends object, kChosen extends keyof D = keyof D> = (
+  kChosen extends any ?
+  OnlySelectProps<D, kChosen>
+  : never
+) ;
+
+export type OnlySelectProps<D extends object, kChosen extends keyof D> = (
+  { [k1 in keyof D]?: ([k1] extends [kChosen] ? D[k1] : never ) ; }
+  &
+  Required<{ [k1 in kChosen]?: unknown ; }>
+) ;
+
+type EipSingleProp<k extends keyof any, val> = (
+  k extends any ?
+  { [k1 in k]: val ; }
+  : never
+) ;
