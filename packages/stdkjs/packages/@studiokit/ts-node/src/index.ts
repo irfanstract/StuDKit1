@@ -1941,6 +1941,9 @@ function createIgnore(ignoreBaseDir: string, ignore: RegExp[]) {
 
 /**
  * Register the extensions to support when importing files.
+ * 
+ * looks like this could safely run multiple times, but haven't checked it.
+ * 
  */
 function registerExtensions(
   preferTsExts: boolean | null | undefined,
