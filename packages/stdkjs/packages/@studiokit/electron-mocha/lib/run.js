@@ -40,7 +40,10 @@ exports.builder = yargs => {
 
   return yargs
     .default('exit', true)
-    .default('extension', [])
+    .default('extension', [
+      // "mjs", "mjsx", "js", "jsx", "cjs", "cjsx",
+      // "mts", "mtsx", "ts", "tsx", "cts", "ctsx",
+    ])
     .default('file', [])
     .default('ignore', [])
     .default('spec', ['test'])
