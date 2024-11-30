@@ -1,6 +1,10 @@
 
 // @ts-check
 
+if (1) {
+  debugger ;
+}
+
 require('electron-window').parseArgs()
 
 const { ipcRenderer: ipc } = require('electron')
