@@ -1795,10 +1795,25 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         ) ;
       }
 
-      checkParseableAsCjs(outCode, {
-        assumedSrcPath ,
-        sfe: srcFileExt0 ,
-      }) ;
+      ;
+
+      try {
+        ;
+        checkParseableAsCjs(outCode, {
+          assumedSrcPath ,
+          sfe: srcFileExt0 ,
+        }) ;
+      } catch (z) {
+        {
+          const stack = getStackOrMessage(z) ;
+          if (Number(globalThis.process?.env?.["STUDKTSNODE_TROUBLESHOOT_LEAKINGJSX"] ) ) {
+            if (stack.match(/(\bunexpected\s+token\b)/iug ) && stack.match(/('<'|"<")/iug ) ) {
+              debugger ;
+            }
+          }
+        }
+        throw z ;
+      }
 
       return outCode ;
       }

@@ -690,7 +690,7 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
               __dirname: join(assumedSrcPath, "..") ,
             }) ;
           } catch (z) {
-            if (globalThis.process?.env?.["STUDKTSNODE_DEBUG"] ) {
+            if (Number(globalThis.process?.env?.["STUDKTSNODE_DEBUG"] ) ) {
               if (getStackOrMessage(z).match(/\bSyntaxError\b/) ) {
                 debugger ;
               }
@@ -1317,7 +1317,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         id: (
           `[studk-dispatchInlineScript]`
           + encodeURIComponent(assumedSrcPath )
-          + Math.random()
+          + (0.25125125125125 )
         ),
         require: REQUIRE,
         // TODO
