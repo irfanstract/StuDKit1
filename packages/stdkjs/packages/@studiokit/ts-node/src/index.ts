@@ -696,7 +696,9 @@ export function create(rawOptions: CreateOptions = {}): Service {
   return createFromPreloadedConfig(foundConfigResult);
 }
 
-export interface Service extends ReturnType<typeof createFromPreloadedConfigImpl> {}
+export interface Service extends Omit<ServiceFromPreloadedConfigImpl , (
+  | "ndResolvers"
+)> {}
 
 /** @internal */
 export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof findAndReadConfig>): Service {
@@ -1434,6 +1436,20 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })
   );
 
+  const resolvers1 = (
+    (() => {
+      const gclImpl = {
+        getNodeEsmResolver ,
+        getNodeEsmGetFormat ,
+        getNodeCjsLoader ,
+      } as const ;
+
+      interface Gce extends Extract<Omit<typeof gclImpl, never > , any > {}
+
+      return gclImpl as Gce ;
+    })()
+  ) ;
+
   const compilerHelperExtra = (
 
     (() => {
@@ -1871,6 +1887,12 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })
   ) ;
 
+  eb.setNdImportResolvers({
+    getNodeCjsLoader ,
+    getNodeEsmGetFormat ,
+    getNodeEsmResolver ,
+  }) ;
+
   const {
     dispatchInlineScript: dispatchInlineScript,
     dispatchSrcFile     : dispatchSrcFile ,
@@ -1947,7 +1969,8 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     getNodeCjsLoader,
     extensions,
   };
-  return {
+  {
+  const s1 = {
     ...(
       {
         ...s0 ,
@@ -1959,12 +1982,33 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         eb ,
         dryDepScanningEb ,
         getEmitExtension ,
+        //
+        ndResolvers: resolvers1 ,
         /** @deprecated */
         compilerHelper11,
       } as const
     ) ,
+  } as const ;
+  return (
+    (() => {
+      interface S1Publ extends Extract<typeof s1, any > {}
+      return ((): S1Publ => s1 )() ;
+    })()
+  ) ;
   } ;
 }
+
+type ServiceFromPreloadedConfigImpl = (
+  ReturnType<typeof createFromPreloadedConfigImpl>
+) ;
+
+/**
+ * `ndResolvers`
+ * 
+ */
+export type NdResolversGcePublic = (
+  ReturnType<typeof createFromPreloadedConfigImpl>["ndResolvers"]
+) ;
 
 import {
   getStaticGlobalBuiltinQuery,
