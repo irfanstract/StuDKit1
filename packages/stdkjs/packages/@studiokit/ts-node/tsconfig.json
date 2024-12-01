@@ -29,7 +29,7 @@
     "noUncheckedIndexedAccess": true,
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
   ],
   "typedocOptions": {
     "entryPoints": ["./src/index.ts"],
