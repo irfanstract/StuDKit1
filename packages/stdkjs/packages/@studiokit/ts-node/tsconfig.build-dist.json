@@ -5,13 +5,15 @@
     "path": "./tsconfig.build-dist-raw.json"
   }],
   "compilerOptions": {
+    "composite": true,
     "noEmit": false,
+    "emitDeclarationOnly": false,
     "rootDir": "src",
     "outDir": "dist",
     "tsBuildInfoFile": "temp/tsconfig.build-dist.tsbuildinfo",
     "allowJs": false,
     "noCheck": true,
-    "declaration": false,
+    // "declaration": false,
     "rootDirs": ["temp", "."]
   },
   "include": [

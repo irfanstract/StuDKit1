@@ -16,6 +16,8 @@
     "./dist/bin-cwd.js": "./dist/bin-cwd.js",
     "./dist/bin-esm": "./dist/bin-esm.js",
     "./dist/bin-esm.js": "./dist/bin-esm.js",
+    "./dist/util"        : "./dist/util.js",
+    "./dist/util.js"     : "./dist/util.js",
     "./register": "./register/index.js",
     "./register/files": "./register/files.js",
     "./register/transpile-only": "./register/transpile-only.js",
