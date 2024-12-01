@@ -30,6 +30,7 @@
   },
   "include": [
     "src/**/*",
+    "dist-types/**/*",
   ],
   "typedocOptions": {
     "entryPoints": ["./src/index.ts"],
