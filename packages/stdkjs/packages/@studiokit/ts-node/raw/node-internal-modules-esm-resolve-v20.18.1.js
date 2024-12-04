@@ -1,36 +1,19 @@
-// Copied from https://raw.githubusercontent.com/nodejs/node/v15.3.0/lib/internal/modules/esm/resolve.js witth chgs
-
-// @ts-check
+/* verbatim copy of https://raw.githubusercontent.com/nodejs/node/refs/tags/v20.18.1/lib/internal/modules/esm/resolve.js */
 
 'use strict';
-
-const { fail } = require('node:assert');
-
-const {versionGteLt} = require('../dist/util');
-
-// Test for node >14.13.1 || (>=12.20.0 && <13)
-const builtinModuleProtocol =
-  versionGteLt(process.versions.node, '14.13.1') ||
-  versionGteLt(process.versions.node, '12.20.0', '13.0.0')
-    ? 'node:'
-    : 'nodejs:';
 
 const {
   ArrayIsArray,
   ArrayPrototypeJoin,
-  ArrayPrototypeShift,
   ArrayPrototypeMap,
-  JSONParse,
   JSONStringify,
-  ObjectFreeze,
   ObjectGetOwnPropertyNames,
   ObjectPrototypeHasOwnProperty,
   RegExpPrototypeExec,
-  RegExpPrototypeTest,
   RegExpPrototypeSymbolReplace,
   SafeMap,
   SafeSet,
-  // String,
+  String,
   StringPrototypeEndsWith,
   StringPrototypeIncludes,
   StringPrototypeIndexOf,
@@ -39,71 +22,29 @@ const {
   StringPrototypeSlice,
   StringPrototypeSplit,
   StringPrototypeStartsWith,
-  StringPrototypeSubstr,
-  // encodeURIComponent,
-  URLCanParse,
-} = require('./node-primordials');
-
-// const internalFS = require('internal/fs/utils');
-const Module = require('module');
-const { NativeModule } = require('./node-nativemodule');
-const {
-  realpathSync,
-  statSync,
-  Stats,
-} = require('fs');
-// const { URL, pathToFileURL, fileURLToPath } = require('internal/url');
-const { URL, pathToFileURL, fileURLToPath } = require('url');
-const URLParse = (
-  require("node:url").parse
-) ;
-const { getCWDURL, setOwnProperty } = require('./node-internal-util');
-
-
-
-/**
- * @typedef {object} DefgfCtx
- * 
- * @property {string  } [parentURL] - The URL of the parent module.
- * @property {string[]} [conditions] - The conditions for resolving the specifier.
- * 
- */
-
-/**
- * @param {{
- *  extensions: import('../src/file-extensions').Extensions,
- *  preferTsExts: boolean | undefined;
- *  tsNodeExperimentalSpecifierResolution: import('../src/index').ExperimentalSpecifierResolution | undefined;
- *  defaultGetFormatWithoutErrors: (...x: [href: URL, ctx?: DefgfCtx]) => any ;
- * }} opts
- */
-function createResolve(opts) {
-;
-
-// const { getOptionValue } = require('internal/options');
-// TODO
-const { getOptionValue } = require('./node-options');
-// // Do not eagerly grab .manifest, it may be in TDZ
-// const policy = getOptionValue('--experimental-policy') ?
-//   require('internal/process/policy') :
-//   null;
-// disabled for now.  I am not sure if/how we should support this
-const policy = null;
-const { sep, posix: { relative: relativePosixPath }, resolve } = require('path');
+  encodeURIComponent,
+} = primordials;
+const internalFS = require('internal/fs/utils');
+const { BuiltinModule } = require('internal/bootstrap/realm');
+const { realpathSync } = require('fs');
+const { getOptionValue } = require('internal/options');
+// Do not eagerly grab .manifest, it may be in TDZ
+const policy = getOptionValue('--experimental-policy') ?
+  require('internal/process/policy') :
+  null;
+const { sep, posix: { relative: relativePosixPath }, toNamespacedPath, resolve } = require('path');
 const preserveSymlinks = getOptionValue('--preserve-symlinks');
 const preserveSymlinksMain = getOptionValue('--preserve-symlinks-main');
-const inputTypeFlag = getOptionValue('--input-type');
-/** @deprecated alias of {@link inputTypeFlag} */
-const typeFlag = inputTypeFlag ;
 const experimentalNetworkImports =
   getOptionValue('--experimental-network-imports');
-// const { getCWDURL, setOwnProperty } = require('internal/util');
-// const { canParse: URLCanParse } = internalBinding('url');
-// const { legacyMainResolve: FSLegacyMainResolve } = internalBinding('fs');
+const inputTypeFlag = getOptionValue('--input-type');
+const { URL, pathToFileURL, fileURLToPath, isURL } = require('internal/url');
+const { getCWDURL, setOwnProperty } = require('internal/util');
+const { canParse: URLCanParse } = internalBinding('url');
+const { legacyMainResolve: FSLegacyMainResolve } = internalBinding('fs');
 const {
   ERR_INPUT_TYPE_NOT_ALLOWED,
   ERR_INVALID_ARG_TYPE,
-  ERR_INVALID_ARG_VALUE,
   ERR_INVALID_MODULE_SPECIFIER,
   ERR_INVALID_PACKAGE_CONFIG,
   ERR_INVALID_PACKAGE_TARGET,
@@ -112,50 +53,29 @@ const {
   ERR_PACKAGE_IMPORT_NOT_DEFINED,
   ERR_PACKAGE_PATH_NOT_EXPORTED,
   ERR_UNSUPPORTED_DIR_IMPORT,
-  ERR_UNSUPPORTED_ESM_URL_SCHEME,
   ERR_UNSUPPORTED_RESOLVE_REQUEST,
   ERR_NETWORK_IMPORT_DISALLOWED,
-// } = require('internal/errors').codes;
-} = require('./node-internal-errors').codes;
+} = require('internal/errors').codes;
 
-// const { Module: CJSModule } = require('internal/modules/cjs/loader');
-const CJSModule = Module;
-
-// const packageJsonReader = require('internal/modules/package_json_reader');
-const packageJsonReader = require('./node-internal-modules-package_json_reader');
-const { any } = require('expect');
-const userConditions = getOptionValue('--conditions');
-const DEFAULT_CONDITIONS = ObjectFreeze(['node', 'import', ...userConditions]);
-const DEFAULT_CONDITIONS_SET = new SafeSet(DEFAULT_CONDITIONS);
-
-// const { internalModuleStat } = internalBinding('fs');
-
-const pendingDeprecation = getOptionValue('--pending-deprecation');
+const { Module: CJSModule } = require('internal/modules/cjs/loader');
+const { getPackageScopeConfig } = require('internal/modules/esm/package_config');
+const { getConditionsSet } = require('internal/modules/esm/utils');
+const packageJsonReader = require('internal/modules/package_json_reader');
+const { internalModuleStat } = internalBinding('fs');
 
 /**
- * @typedef {import('@studiokit/ts-node').LoadedNodePackageConfig } PackageConfig
+ * @typedef {import('internal/modules/esm/package_config.js').PackageConfig} PackageConfig
  */
 
-/**
- * @typedef {import('@studiokit/ts-node').NodePackageJsonExports} PackageJsonExports
- */
-
-
-// TODO receive cached fs implementations here
-const {preferTsExts, tsNodeExperimentalSpecifierResolution, extensions} = opts;
-const esrnExtensions = extensions.experimentalSpecifierResolutionAddsIfOmitted;
-const {legacyMainResolveAddsIfOmitted, replacementsForCjs, replacementsForJs, replacementsForMjs, replacementsForJsx} = extensions;
-// const experimentalSpecifierResolution = tsNodeExperimentalSpecifierResolution ?? getOptionValue('--experimental-specifier-resolution');
-const experimentalSpecifierResolution = tsNodeExperimentalSpecifierResolution != null ? tsNodeExperimentalSpecifierResolution : getOptionValue('--experimental-specifier-resolution');
 
 const emittedPackageWarnings = new SafeSet();
 
 /**
  * Emits a deprecation warning for the use of a deprecated trailing slash pattern mapping in the "exports" field
  * module resolution of a package.
- * @param {string | URL} pjsonUrl - The URL of the package.json file.
  * @param {string} match - The deprecated trailing slash pattern mapping.
- * @param {string | URL} [base] - The URL of the module that imported the package.
+ * @param {string} pjsonUrl - The URL of the package.json file.
+ * @param {string} base - The URL of the module that imported the package.
  */
 function emitTrailingSlashPatternDeprecation(match, pjsonUrl, base) {
   if (process.noDeprecation) {
@@ -181,9 +101,9 @@ const doubleSlashRegEx = /[/\\][/\\]/;
  * @param {string} target - The target module.
  * @param {string} request - The requested module.
  * @param {string} match - The matched module.
- * @param {string | URL} pjsonUrl - The package.json URL.
+ * @param {string} pjsonUrl - The package.json URL.
  * @param {boolean} internal - Whether the module is in the "imports" or "exports" field.
- * @param {string | URL} base - The base URL.
+ * @param {string} base - The base URL.
  * @param {boolean} isTarget - Whether the target is a module.
  */
 function emitInvalidSegmentDeprecation(target, request, match, pjsonUrl, internal, base, isTarget) {
@@ -206,78 +126,19 @@ function emitInvalidSegmentDeprecation(target, request, match, pjsonUrl, interna
 /**
  * Emits a deprecation warning if the given URL is a module and
  * the package.json file does not define a "main" or "exports" field.
- * 
- * - {URL} url - The URL of the module being resolved.
- * - {URL} packageJSONUrl - The URL of the package.json file for the module.
- * - {string | URL} base - The base URL for the module being resolved.
- * - {string} [main] - The "main" field from the package.json file.
- * 
- * @param {(
- * | readonly [url: URL, ...([path: string, pkgPath: string,] | [packageJSONUrl: URL  ] ) , base: string | URL, ...([main?: string] ) ]
- * )} args0
- * 
- * @summary
- * in v20 this is 4-arg, yet in v22 this is 5-arg;
- * we need this to handle both
+ * @param {URL} url - The URL of the module being resolved.
+ * @param {URL} packageJSONUrl - The URL of the package.json file for the module.
+ * @param {string | URL} [base] - The base URL for the module being resolved.
+ * @param {string} [main] - The "main" field from the package.json file.
  */
-function emitLegacyIndexDeprecation(...args0 ) {
-  const args = (
-    (() => {
-      ;
-      /** @typedef {O extends any ? ({ readonly [key in K ] : O[key & keyof O] ; } & { l: O["length"], baseTyp: ([O[1]] extends [string] ? "string" : "URL" ) }) : never} PickX @template {readonly unknown[]} O @template {(keyof any) & (string | number)} K */
-      return (/** @type {PickX<typeof args0, 0 | 1 | 2 | 3 | 4 > } */ ({ ...args0,  l: args0.length, baseTyp: (typeof args0[1] === "string") ? "string" : "URL" , })) ;
-    })()
-  ) ;
-  const { 0: url, } = args ;
+function emitLegacyIndexDeprecation(url, packageJSONUrl, base, main) {
   if (process.noDeprecation) {
     return;
   }
   const format = defaultGetFormatWithoutErrors(url);
   if (format !== 'module') { return; }
-  /**
-   * 
-   * 
-   */
-  const {
-    path ,
-    pkgPath ,
-    base ,
-    main ,
-  } = (
-    (/** @return {{
-      packageJSONUrl?: URL ,
-      path: string ,
-      pkgPath: string,
-      base: string | URL,
-      main ?: string,
-    }} */ () => {
-      ;
-      const { 1: pathOrPjp, baseTyp, } = args ;
-      if (baseTyp === "URL") {
-        const {  1: packageJSONUrl, 2: base, 3: main  } = args ;
-        const path = fileURLToPath(url);
-        const pkgPath = fileURLToPath(new URL('.', packageJSONUrl));
-        return {
-          packageJSONUrl ,
-          path ,
-          pkgPath ,
-          base ,
-          main ,
-        } ;
-      }
-      if (baseTyp === "string") {
-        void [pathOrPjp, args] ;
-        const {     1: path, 2: pkgPath, 3: base, 4: main  } = args ;
-        return {
-          path ,
-          pkgPath ,
-          base ,
-          main ,
-        } ;
-      }
-      throw ERR_INVALID_ARG_TYPE(`expecting 4 or 5`, args0 ) ;
-    })()
-  );
+  const path = fileURLToPath(url);
+  const pkgPath = fileURLToPath(new URL('.', packageJSONUrl));
   const basePath = fileURLToPath(base);
   if (!main) {
     process.emitWarning(
@@ -300,62 +161,6 @@ function emitLegacyIndexDeprecation(...args0 ) {
     );
   }
 }
-
-/**
- * 
- * @param {string} match match
- * @param {URL | string} pjsonUrl assumed pjson url
- * @param {boolean} isExports is as exports
- * @param {string} base base
- * 
- */
-function emitFolderMapDeprecation(match, pjsonUrl, isExports, base) {
-  const pjsonPath = fileURLToPath(pjsonUrl);
-  if (!pendingDeprecation) {
-    const nodeModulesIndex = StringPrototypeLastIndexOf(pjsonPath,
-                                                        '/node_modules/');
-    if (nodeModulesIndex !== -1) {
-      const afterNodeModulesPath = StringPrototypeSlice(pjsonPath,
-                                                        nodeModulesIndex + 14,
-                                                        -13);
-      try {
-        /** @example TODO we should pass {@link base} as second arg, shouldn't we? */
-        const { packageSubpath } = parsePackageName(afterNodeModulesPath);
-        if (packageSubpath === '.')
-          return;
-      } catch {}
-    }
-  }
-  if (emittedPackageWarnings.has(pjsonPath + '|' + match))
-    return;
-  emittedPackageWarnings.add(pjsonPath + '|' + match);
-  process.emitWarning(
-    `Use of deprecated folder mapping "${match}" in the ${isExports ?
-      '"exports"' : '"imports"'} field module resolution of the package at ${
-      pjsonPath}${base ? ` imported from ${fileURLToPath(base)}` : ''}.\n` +
-      `Update this package.json to use a subpath pattern like "${match}*".`,
-    'DeprecationWarning',
-    'DEP0148'
-  );
-}
-
-/**
- * 
- * @param {readonly string[]} conditions 
- * @returns {Set<String> | Immutable.Set<string> }
- */
-function getConditionsSet(conditions) {
-  if (conditions !== undefined && conditions !== DEFAULT_CONDITIONS) {
-    if (!ArrayIsArray(conditions)) {
-      throw new ERR_INVALID_ARG_VALUE('conditions', conditions,
-                                      'expected an array');
-    }
-    return new SafeSet(conditions);
-  }
-  return DEFAULT_CONDITIONS_SET;
-}
-
-// const realpathCache = new SafeMap();
 
 const realpathCache = new SafeMap();
 
@@ -388,154 +193,6 @@ const legacyMainResolveExtensionsIndexes = {
   kResolvedByPackageAndNode: 9,
 };
 
-/** suppress "unused symbol" warnings */
-void {
-  legacyMainResolveExtensions ,
-  legacyMainResolveExtensionsIndexes ,
-} ;
-
-/**
- * 
- * @type {Map<string, PackageConfig> }
- */
-const packageJSONCache = new SafeMap();  /* string -> PackageConfig */
-
-const statSupportsThrowIfNoEntry = versionGteLt(process.versions.node, '15.3.0') ||
-  versionGteLt(process.versions.node, '14.17.0', '15.0.0');
-const tryStatSync = statSupportsThrowIfNoEntry ? tryStatSyncWithoutErrors : tryStatSyncWithErrors;
-const statsIfNotFound = new Stats();
-/**
- * 
- * @param {import("node:fs").PathLike } path
- */
-function tryStatSyncWithoutErrors(path) {
-  const stats = statSync(path, { throwIfNoEntry: false });
-  if(stats != null) return stats;
-  return statsIfNotFound;
-}
-/**
- * 
- * @param {import("node:fs").PathLike } path
- */
-function tryStatSyncWithErrors(path) {
-  try {
-    return statSync(path);
-  } catch {
-    return statsIfNotFound;
-  }
-}
-
-/**
- * 
- * @param {string | URL} specifier the main specifier
- * @param {string} path 
- * @param {string} [base] base path
- */
-function getPackageConfig(path, specifier, base) {
-  const existing = packageJSONCache.get(path);
-  if (existing !== undefined) {
-    return existing;
-  }
-  const source = packageJsonReader.read(path).string;
-  if (source === undefined) {
-    /** @type {PackageConfig} */
-    const packageConfig = {
-      pjsonPath: path,
-      exists: false,
-      main: undefined,
-      name: undefined,
-      type: 'none',
-      exports: undefined,
-      imports: undefined,
-    };
-    packageJSONCache.set(path, packageConfig);
-    return packageConfig;
-  }
-
-  let packageJSON;
-  try {
-    packageJSON = JSONParse(source);
-  } catch (error) {
-    throw new ERR_INVALID_PACKAGE_CONFIG(
-      path,
-      (base ? `"${specifier}" from ` : '') + fileURLToPath(base || specifier),
-      error.message
-    );
-  }
-
-  let { imports, main, name, type } = packageJSON;
-  const { exports } = packageJSON;
-  if (typeof imports !== 'object' || imports === null) imports = undefined;
-  if (typeof main !== 'string') main = undefined;
-  if (typeof name !== 'string') name = undefined;
-  // Ignore unknown types for forwards compatibility
-  if (type !== 'module' && type !== 'commonjs') type = 'none';
-
-  /** @type {PackageConfig} */
-  const packageConfig = {
-    pjsonPath: path,
-    exists: true,
-    main,
-    name,
-    type,
-    exports,
-    imports,
-  };
-  packageJSONCache.set(path, packageConfig);
-  return packageConfig;
-}
-
-/**
- * 
- * @param {string | URL} resolved resolved
- * 
- * @returns {PackageConfig}
- */
-function getPackageScopeConfig(resolved) {
-  let packageJSONUrl = new URL('./package.json', resolved);
-  while (true) {
-    const packageJSONPath = packageJSONUrl.pathname;
-    if (StringPrototypeEndsWith(packageJSONPath, 'node_modules/package.json'))
-      break;
-    const packageConfig = getPackageConfig(fileURLToPath(packageJSONUrl),
-                                           resolved);
-    if (packageConfig.exists) return packageConfig;
-
-    const lastPackageJSONUrl = packageJSONUrl;
-    packageJSONUrl = new URL('../package.json', packageJSONUrl);
-
-    // Terminates at root where ../package.json equals ../../package.json
-    // (can't just check "/package.json" for Windows support).
-    if (packageJSONUrl.pathname === lastPackageJSONUrl.pathname) break;
-  }
-  const packageJSONPath = fileURLToPath(packageJSONUrl);
-  const packageConfig = /** @satisfies {PackageConfig } */ ({
-    pjsonPath: packageJSONPath,
-    exists: false,
-    main: undefined,
-    name: undefined,
-    type: 'none',
-    exports: undefined,
-    imports: undefined,
-  });
-  packageJSONCache.set(packageJSONPath, packageConfig);
-  return packageConfig;
-}
-
-/*
- * Legacy CommonJS main resolution:
- * 1. let M = pkg_url + (json main field)
- * 2. TRY(M, M.js, M.json, M.node)
- * 3. TRY(M/index.js, M/index.json, M/index.node)
- * 4. TRY(pkg_url/index.js, pkg_url/index.json, pkg_url/index.node)
- * 5. NOT_FOUND
- */
-
-/** @type {(url: URL | string) => boolean} */
-function fileExists(url) {
-  return tryStatSync(fileURLToPath(url)).isFile();
-}
-
 /**
  * Legacy CommonJS main resolution:
  * 1. let M = pkg_url + (json main field)
@@ -543,123 +200,36 @@ function fileExists(url) {
  * 3. TRY(M/index.js, M/index.json, M/index.node)
  * 4. TRY(pkg_url/index.js, pkg_url/index.json, pkg_url/index.node)
  * 5. NOT_FOUND
- * 
- * see above for more
- * 
  * @param {URL} packageJSONUrl
  * @param {PackageConfig} packageConfig
- * @param {string | URL} base
+ * @param {string | URL | undefined} base
  * @returns {URL}
  */
 function legacyMainResolve(packageJSONUrl, packageConfig, base) {
-  let guess;
-  if (packageConfig.main !== undefined) {
-    // Note: fs check redundances will be handled by Descriptor cache here.
-    if(guess = resolveReplacementExtensions(new URL(`./${packageConfig.main}`, packageJSONUrl))) {
-      return guess;
-    }
-    if (fileExists(guess = new URL(`./${packageConfig.main}`,
-                                   packageJSONUrl))) {
-      return guess;
-    }
-    for(const extension of legacyMainResolveAddsIfOmitted) {
-      if (fileExists(guess = new URL(`./${packageConfig.main}${extension}`,
-                                    packageJSONUrl))) {
-        return guess;
-      }
-    }
-    for(const extension of legacyMainResolveAddsIfOmitted) {
-      if (fileExists(guess = new URL(`./${packageConfig.main}/index${extension}`,
-                                    packageJSONUrl))) {
-        return guess;
-      }
-    }
-    // Fallthrough.
+  const packageJsonUrlString = packageJSONUrl.href;
+
+  if (typeof packageJsonUrlString !== 'string') {
+    throw new ERR_INVALID_ARG_TYPE('packageJSONUrl', ['URL'], packageJSONUrl);
   }
-  for(const extension of legacyMainResolveAddsIfOmitted) {
-    if (fileExists(guess = new URL(`./index${extension}`, packageJSONUrl))) {
-      return guess;
-    }
-  }
-  // Not found.
-  throw new ERR_MODULE_NOT_FOUND(
-    fileURLToPath(new URL('.', packageJSONUrl)), fileURLToPath(base));
+
+  const baseStringified = isURL(base) ? base.href : base;
+
+  const resolvedOption = FSLegacyMainResolve(packageJsonUrlString, packageConfig.main, baseStringified);
+
+  const baseUrl = resolvedOption <= legacyMainResolveExtensionsIndexes.kResolvedByMainIndexNode ? `./${packageConfig.main}` : '';
+  const resolvedUrl = new URL(baseUrl + legacyMainResolveExtensions[resolvedOption], packageJSONUrl);
+
+  emitLegacyIndexDeprecation(resolvedUrl, packageJSONUrl, base, packageConfig.main);
+
+  return resolvedUrl;
 }
 
-/** attempts replacement extensions, then tries exact name, then attempts appending extensions */
-/**
- * attempts replacement extensions, then
- * tries exact name, then attempts appending extensions
- * 
- * @param {URL} search query
- * 
- *  */
-function resolveExtensionsWithTryExactName(search) {
-  const resolvedReplacementExtension = resolveReplacementExtensions(search);
-  if(resolvedReplacementExtension) return resolvedReplacementExtension;
-  if (fileExists(search)) return search;
-  return resolveExtensions(search);
-}
-
-// This appends missing extensions
-/**
- * this appends missing extensions.
- * restriction applies per the spec (eg it not happen on ESM).
- * 
- * @param {URL} search query
- */
-function resolveExtensions(search) {
-  for (let i = 0; i < esrnExtensions.length; i++) {
-    const extension = esrnExtensions[i];
-    const guess = new URL(`${search.pathname}${extension}`, search);
-    if (fileExists(guess)) return guess;
-  }
-  return undefined;
-}
-
-/** This replaces JS with TS extensions */
-/**
- * This replaces JS with TS extensions
- * 
- * @param {URL} search
- * 
- */
-function resolveReplacementExtensions(search) {
-  const lastDotIndex = search.pathname.lastIndexOf('.');
-  if(lastDotIndex >= 0) {
-    const ext = search.pathname.slice(lastDotIndex);
-    if (ext === '.js' || ext === '.jsx' || ext === '.mjs' || ext === '.cjs') {
-      const pathnameWithoutExtension = search.pathname.slice(0, lastDotIndex);
-      const replacementExts =
-        ext === '.js' ? replacementsForJs
-        : ext === '.jsx' ? replacementsForJsx
-        : ext === '.mjs' ? replacementsForMjs
-        : replacementsForCjs;
-      const guess = new URL(search.toString());
-      for (let i = 0; i < replacementExts.length; i++) {
-        const extension = replacementExts[i];
-        guess.pathname = `${pathnameWithoutExtension}${extension}`;
-        if (fileExists(guess)) return guess;
-      }
-    }
-  }
-  return undefined;
-}
-
-/**
- * 
- * @param {URL | string} search query
- */
-function resolveIndex(search) {
-  return resolveExtensions(new URL('index', search));
-}
-
-const encodedSepRegEx = /%2F|%2C/i;
+const encodedSepRegEx = /%2F|%5C/i;
 /**
  * Finalizes the resolution of a module specifier by checking if the resolved pathname contains encoded "/" or "\\"
  * characters, checking if the resolved pathname is a directory or file, and resolving any symlinks if necessary.
  * @param {URL} resolved - The resolved URL object.
- * @param {string | URL } base - The base URL object.
+ * @param {string | URL | undefined} base - The base URL object.
  * @param {boolean} preserveSymlinks - Whether to preserve symlinks or not.
  * @returns {URL} - The finalized URL object.
  * @throws {ERR_INVALID_MODULE_SPECIFIER} - If the resolved pathname contains encoded "/" or "\\" characters.
@@ -677,23 +247,14 @@ function finalizeResolution(resolved, base, preserveSymlinks) {
   try {
     path = fileURLToPath(resolved);
   } catch (err) {
+    const { setOwnProperty } = require('internal/util');
     setOwnProperty(err, 'input', `${resolved}`);
     setOwnProperty(err, 'module', `${base}`);
     throw err;
   }
 
-  const stats = (
-    /**
-     * TODO
-     * 
-     * https://nodejs.org/api/fs.html#statsmode ;
-     * 
-     *  */
-    statSync(
-      StringPrototypeEndsWith(path, '/') ? StringPrototypeSlice(path, -1) : path ,
-    )
-    .mode
-  );
+  const stats = internalModuleStat(toNamespacedPath(StringPrototypeEndsWith(path, '/') ?
+    StringPrototypeSlice(path, -1) : path));
 
   // Check for stats.isDirectory()
   if (stats === 1) {
@@ -709,6 +270,7 @@ function finalizeResolution(resolved, base, preserveSymlinks) {
 
   if (!preserveSymlinks) {
     const real = realpathSync(path, {
+      [internalFS.realpathCacheKey]: realpathCache,
     });
     const { search, hash } = resolved;
     resolved =
@@ -721,36 +283,24 @@ function finalizeResolution(resolved, base, preserveSymlinks) {
 }
 
 /**
- * @typedef {(keyof PackageJsonExports) | import('@studiokit/ts-node').NodePackageJsonExportsOrImportsValueCommon | PackageTargetIBeingArray} PackageTargetI
- * 
- * @typedef {(readonly unknown[] ) & { asPackageTargetIBeingArray ?: true, } } PackageTargetIBeingArray
- * @deprecated
- * 
- * @typedef {((string | URL) | RegExpMatchArray ) & { isSubpa ?: true, }} PackageSubpathI
- * 
- * @typedef {(ReadonlyArray<string> | Set<string>) & { isImportConditionI ?: true, } } PackageImportCondListI
- * 
- */
-
-/**
  * Returns an error object indicating that the specified import is not defined.
  * @param {string} specifier - The import specifier that is not defined.
  * @param {URL} packageJSONUrl - The URL of the package.json file, or null if not available.
  * @param {string | URL | undefined} base - The base URL to use for resolving relative URLs.
- * @returns - {ERR_PACKAGE_IMPORT_NOT_DEFINED} - The error object.
+ * @returns {ERR_PACKAGE_IMPORT_NOT_DEFINED} - The error object.
  */
 function importNotDefined(specifier, packageJSONUrl, base) {
   return new ERR_PACKAGE_IMPORT_NOT_DEFINED(
     specifier, packageJSONUrl && fileURLToPath(new URL('.', packageJSONUrl)),
-    base && fileURLToPath(base));
+    fileURLToPath(base));
 }
 
 /**
  * Returns an error object indicating that the specified subpath was not exported by the package.
  * @param {string} subpath - The subpath that was not exported.
- * @param {URL | string} packageJSONUrl - The URL of the package.json file.
+ * @param {URL} packageJSONUrl - The URL of the package.json file.
  * @param {string | URL | undefined} [base] - The base URL to use for resolving the subpath.
- * @returns - {ERR_PACKAGE_PATH_NOT_EXPORTED} - The error object.
+ * @returns {ERR_PACKAGE_PATH_NOT_EXPORTED} - The error object.
  */
 function exportsNotFound(subpath, packageJSONUrl, base) {
   return new ERR_PACKAGE_PATH_NOT_EXPORTED(
@@ -762,11 +312,10 @@ function exportsNotFound(subpath, packageJSONUrl, base) {
  * Throws an error indicating that the given request is not a valid subpath match for the specified pattern.
  * @param {string} request - The request that failed to match the pattern.
  * @param {string} match - The pattern that the request was compared against.
- * @param {URL | string} packageJSONUrl - The URL of the package.json file being resolved.
+ * @param {URL} packageJSONUrl - The URL of the package.json file being resolved.
  * @param {boolean} internal - Whether the resolution is for an "imports" or "exports" field in package.json.
  * @param {string | URL | undefined} base - The base URL for the resolution.
  * @throws {ERR_INVALID_MODULE_SPECIFIER} When the request is not a valid match for the pattern.
- * @returns {never}
  */
 function throwInvalidSubpath(request, match, packageJSONUrl, internal, base) {
   const reason = `request is not a valid match in pattern "${match}" for the "${
@@ -779,11 +328,11 @@ function throwInvalidSubpath(request, match, packageJSONUrl, internal, base) {
 /**
  * Creates an error object for an invalid package target.
  * @param {string} subpath - The subpath.
- * @param {PackageTargetI} target - The target.
- * @param {URL | string} packageJSONUrl - The URL of the package.json file.
+ * @param {import('internal/modules/esm/package_config.js').PackageTarget} target - The target.
+ * @param {URL} packageJSONUrl - The URL of the package.json file.
  * @param {boolean} internal - Whether the package is internal.
  * @param {string | URL | undefined} base - The base URL.
- * @returns - {ERR_INVALID_PACKAGE_TARGET} - The error object.
+ * @returns {ERR_INVALID_PACKAGE_TARGET} - The error object.
  */
 function invalidPackageTarget(
   subpath, target, packageJSONUrl, internal, base) {
@@ -803,27 +352,16 @@ const invalidPackageNameRegEx = /^\.|%|\\/;
 const patternRegEx = /\*/g;
 
 /**
- * in upstream src of these several methods, the `pattern` param is typed `RegExp`;
- * however,
- * in practice the actual usage of the param (again, `pattern`) is being passed `boolean`, which is insane.
- * for now, we implement this as `boolean, reflecting the actual usage;
- * hopefully later, we can`make appropriate edits to these several methods, for clarification
- * 
- * @typedef {(boolean ) & { asPackageTargetResolvePatternParamSpec ?: true , }} PackageTargetResolvePatternParamSpec
- * 
- */
-
-/**
  * Resolves the package target string to a URL object.
  * @param {string} target - The target string to resolve.
  * @param {string} subpath - The subpath to append to the resolved URL.
- * @param {string}  match - The matched string array from the import statement.
- * @param {URL | string} packageJSONUrl - The URL of the package.json file.
- * @param {URL | string} base - The base URL to resolve the target against.
- * @param {PackageTargetResolvePatternParamSpec} pattern - The pattern to replace in the target string.
+ * @param {RegExpMatchArray} match - The matched string array from the import statement.
+ * @param {string} packageJSONUrl - The URL of the package.json file.
+ * @param {string} base - The base URL to resolve the target against.
+ * @param {RegExp} pattern - The pattern to replace in the target string.
  * @param {boolean} internal - Whether the target is internal to the package.
  * @param {boolean} isPathMap - Whether the target is a path map.
- * @param {PackageImportCondListI} conditions - The import conditions.
+ * @param {string[]} conditions - The import conditions.
  * @returns {URL} - The resolved URL object.
  * @throws {ERR_INVALID_PACKAGE_TARGET} - If the target is invalid.
  * @throws {ERR_INVALID_SUBPATH} - If the subpath is invalid.
@@ -895,7 +433,7 @@ function resolvePackageTargetString(
         emitInvalidSegmentDeprecation(resolvedTarget, request, match, packageJSONUrl, internal, base, false);
       }
     } else {
-      return throwInvalidSubpath(request, match, packageJSONUrl, internal, base);
+      throwInvalidSubpath(request, match, packageJSONUrl, internal, base);
     }
   }
 
@@ -915,40 +453,25 @@ function resolvePackageTargetString(
  */
 function isArrayIndex(key) {
   const keyNum = +key;
-  if (`${keyNum}` !== key) return false;
+  if (`${keyNum}` !== key) { return false; }
   return keyNum >= 0 && keyNum < 0xFFFF_FFFF;
 }
 
-/** @typedef {{resolved: URL, exact?: boolean}} PackageExportsOrImportsResolvedDesc1 */
-
 /**
  * Resolves the target of a package based on the provided parameters.
- * @param {URL | string} packageJSONUrl - The URL of the package.json file.
- * @param {PackageTargetI} target - The target to resolve.
+ * @param {string} packageJSONUrl - The URL of the package.json file.
+ * @param {import('internal/modules/esm/package_config.js').PackageTarget} target - The target to resolve.
  * @param {string} subpath - The subpath to resolve.
  * @param {string} packageSubpath - The subpath of the package to resolve.
- * @param {string | URL} base - The base path to resolve.
- * @param {PackageTargetResolvePatternParamSpec} pattern - The pattern to match.
+ * @param {string} base - The base path to resolve.
+ * @param {RegExp} pattern - The pattern to match.
  * @param {boolean} internal - Whether the package is internal.
- * @param {[...([isPathMap: boolean] | []) , ...[conditions: PackageImportCondListI]]} ipmAndCond - overloaded:
- *  - {boolean} isPathMap - Whether the package is a path map.
- *  - {PackageImportCondListI} conditions - The conditions to match.
+ * @param {boolean} isPathMap - Whether the package is a path map.
+ * @param {Set<string>} conditions - The conditions to match.
  * @returns {URL | null | undefined} - The resolved target, or null if not found, or undefined if not resolvable.
  */
 function resolvePackageTarget(packageJSONUrl, target, subpath, packageSubpath,
-                              base, pattern, internal, ...ipmAndCond) {
-  ;
-  const { isPathMap = false, conditions, } = (/** @return {{ isPathMap?: Boolean, conditions: PackageImportCondListI, }} */ () => {
-    if (ipmAndCond.length === 2 ) {
-      const [isPathMap, conditions] = ipmAndCond ;
-      return {isPathMap, conditions} ;
-    }
-    if (ipmAndCond.length === 1 ) {
-      const [conditions] = ipmAndCond ;
-      return { conditions} ;
-    }
-    return fail() ;
-  })() ;
+                              base, pattern, internal, isPathMap, conditions) {
   if (typeof target === 'string') {
     return resolvePackageTargetString(
       target, subpath, packageSubpath, packageJSONUrl, base, pattern, internal,
@@ -982,31 +505,29 @@ function resolvePackageTarget(packageJSONUrl, target, subpath, packageSubpath,
       }
       return resolveResult;
     }
-    if (lastException == null) {
+    if (lastException === undefined || lastException === null) {
       return lastException;
     }
     throw lastException;
   } else if (typeof target === 'object' && target !== null) {
-    if ("length" in target) { return fail(`user-defined 'exports' or 'imports' may not use key 'length'. currently, 'length' is reserved internally as work-around to distinguish between types`) ; }
     const keys = ObjectGetOwnPropertyNames(target);
-    for (const key of keys ) {
-      // 
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
       if (isArrayIndex(key)) {
         throw new ERR_INVALID_PACKAGE_CONFIG(
           fileURLToPath(packageJSONUrl), base,
           '"exports" cannot contain numeric property keys.');
       }
     }
-    for (const key of keys) {
-      // const key = keys[i];
-      if (key === 'default' || new Set(conditions).has(key)) {
-        const conditionalTarget = target[key] ?? fail() ;
-        const resolved = resolvePackageTarget(
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      if (key === 'default' || conditions.has(key)) {
+        const conditionalTarget = target[key];
+        const resolveResult = resolvePackageTarget(
           packageJSONUrl, conditionalTarget, subpath, packageSubpath, base,
-          pattern, internal, conditions);
-        if (resolved === undefined)
-          continue;
-        return resolved;
+          pattern, internal, isPathMap, conditions);
+        if (resolveResult === undefined) { continue; }
+        return resolveResult;
       }
     }
     return undefined;
@@ -1019,11 +540,9 @@ function resolvePackageTarget(packageJSONUrl, target, subpath, packageSubpath,
 
 /**
  * Is the given exports object using the shorthand syntax?
- * 
- * @param {PackageJsonExports} exports exports dict
- * @param {URL | string} packageJSONUrl URL
- * @param {URL | string} base base url
- * @returns whether
+ * @param {import('internal/modules/esm/package_config.js').PackageConfig['exports']} exports
+ * @param {URL} packageJSONUrl The URL of the package.json file.
+ * @param {string | URL | undefined} base The base URL.
  */
 function isConditionalExportsMainSugar(exports, packageJSONUrl, base) {
   if (typeof exports === 'string' || ArrayIsArray(exports)) { return true; }
@@ -1032,8 +551,8 @@ function isConditionalExportsMainSugar(exports, packageJSONUrl, base) {
   const keys = ObjectGetOwnPropertyNames(exports);
   let isConditionalSugar = false;
   let i = 0;
-  for (const [j, key] of keys.entries() ) {
-    // const key = keys[j];
+  for (let j = 0; j < keys.length; j++) {
+    const key = keys[j];
     const curIsConditionalSugar = key === '' || key[0] !== '.';
     if (i++ === 0) {
       isConditionalSugar = curIsConditionalSugar;
@@ -1048,38 +567,18 @@ function isConditionalExportsMainSugar(exports, packageJSONUrl, base) {
   return isConditionalSugar;
 }
 
-const failPerImplNullPostCheck = fail ;
-const failingPerImplInspect = require("node:util").inspect ;
-
 /**
  * Resolves the exports of a package.
- * @param {URL | string} packageJSONUrl - The URL of the package.json file.
+ * @param {URL} packageJSONUrl - The URL of the package.json file.
  * @param {string} packageSubpath - The subpath of the package to resolve.
- * @param {PackageConfig} packageConfig
- * @param {string | URL } base - The base path to resolve from.
- * @param {PackageImportCondListI} conditions - An array of conditions to match.
+ * @param {import('internal/modules/esm/package_config.js').PackageConfig} packageConfig - The package metadata.
+ * @param {string | URL | undefined} base - The base path to resolve from.
+ * @param {Set<string>} conditions - An array of conditions to match.
+ * @returns {URL} - The resolved package target.
  */
 function packageExportsResolve(
   packageJSONUrl, packageSubpath, packageConfig, base, conditions) {
-  return (
-    packageExportsResolve1(packageJSONUrl, packageSubpath, packageConfig, base, conditions )
-    .resolved
-  ) ;
-}
-
-/**
- * 
- * @param {Parameters<typeof packageExportsResolve>} args
- * @returns {PackageExportsOrImportsResolvedDesc1}
- */
-function packageExportsResolve1(...[
-  packageJSONUrl,
-  packageSubpath,
-  packageConfig,
-  base,
-  conditions,
-]) {
-  let exports = packageConfig.exports ?? {} ;
+  let exports = packageConfig.exports;
   if (isConditionalExportsMainSugar(exports, packageJSONUrl, base)) {
     exports = { '.': exports };
   }
@@ -1087,7 +586,7 @@ function packageExportsResolve1(...[
   if (ObjectPrototypeHasOwnProperty(exports, packageSubpath) &&
       !StringPrototypeIncludes(packageSubpath, '*') &&
       !StringPrototypeEndsWith(packageSubpath, '/')) {
-    const { [packageSubpath]: target = fail() } = exports;
+    const target = exports[packageSubpath];
     const resolveResult = resolvePackageTarget(
       packageJSONUrl, target, '', packageSubpath, base, false, false, false,
       conditions,
@@ -1097,14 +596,14 @@ function packageExportsResolve1(...[
       throw exportsNotFound(packageSubpath, packageJSONUrl, base);
     }
 
-    return { resolved: resolveResult, exact: true };
+    return resolveResult;
   }
 
   let bestMatch = '';
   let bestMatchSubpath;
   const keys = ObjectGetOwnPropertyNames(exports);
-  for (const [i, key] of keys.entries() ) {
-    // const key = keys[i];
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
     const patternIndex = StringPrototypeIndexOf(key, '*');
     if (patternIndex !== -1 &&
         StringPrototypeStartsWith(packageSubpath,
@@ -1133,10 +632,7 @@ function packageExportsResolve1(...[
   }
 
   if (bestMatch) {
-    const target = exports[bestMatch] ;
-    if (!(target && bestMatchSubpath)) {
-      return failPerImplNullPostCheck(`failed. please file a bugreport. ${failingPerImplInspect({ target, bestMatchSubpath, }) }` ) ;
-    }
+    const target = exports[bestMatch];
     const resolveResult = resolvePackageTarget(
       packageJSONUrl,
       target,
@@ -1151,7 +647,7 @@ function packageExportsResolve1(...[
     if (resolveResult == null) {
       throw exportsNotFound(packageSubpath, packageJSONUrl, base);
     }
-    return { resolved: resolveResult,  };
+    return resolveResult;
   }
 
   throw exportsNotFound(packageSubpath, packageJSONUrl, base);
@@ -1181,25 +677,13 @@ function patternKeyCompare(a, b) {
 /**
  * Resolves the given import name for a package.
  * @param {string} name - The name of the import to resolve.
- * @param {string | URL } base - The base URL to resolve the import from.
+ * @param {string | URL | undefined} base - The base URL to resolve the import from.
  * @param {Set<string>} conditions - An object containing the import conditions.
  * @throws {ERR_INVALID_MODULE_SPECIFIER} If the import name is not valid.
  * @throws {ERR_PACKAGE_IMPORT_NOT_DEFINED} If the import name cannot be resolved.
  * @returns {URL} The resolved import URL.
  */
 function packageImportsResolve(name, base, conditions) {
-  return (
-    packageImportsResolve1(name, base, conditions )
-    .resolved
-  ) ;
-}
-
-/**
- * 
- * @param {Parameters<typeof packageImportsResolve>} args
- * @returns {PackageExportsOrImportsResolvedDesc1}
- */
-function packageImportsResolve1(...[name, base, conditions]) {
   if (name === '#' || StringPrototypeStartsWith(name, '#/') ||
       StringPrototypeEndsWith(name, '/')) {
     const reason = 'is not a valid internal imports specifier name';
@@ -1214,18 +698,18 @@ function packageImportsResolve1(...[name, base, conditions]) {
       if (ObjectPrototypeHasOwnProperty(imports, name) &&
           !StringPrototypeIncludes(name, '*')) {
         const resolveResult = resolvePackageTarget(
-          packageJSONUrl, imports[name] ?? failPerImplNullPostCheck(`error. please file a bugreport.`), '', name, base, false, true, false,
+          packageJSONUrl, imports[name], '', name, base, false, true, false,
           conditions,
         );
         if (resolveResult != null) {
-          return { resolved: resolveResult, exact: true };
+          return resolveResult;
         }
       } else {
         let bestMatch = '';
         let bestMatchSubpath;
         const keys = ObjectGetOwnPropertyNames(imports);
         for (let i = 0; i < keys.length; i++) {
-          const key = keys[i] ?? failPerImplNullPostCheck(`error. please file a bugreport.`);
+          const key = keys[i];
           const patternIndex = StringPrototypeIndexOf(key, '*');
           if (patternIndex !== -1 &&
               StringPrototypeStartsWith(name,
@@ -1244,21 +728,17 @@ function packageImportsResolve1(...[name, base, conditions]) {
         }
 
         if (bestMatch) {
-          bestMatchSubpath = bestMatchSubpath ?? failPerImplNullPostCheck(`error. please file a bugreport. ${failingPerImplInspect({ bestMatchSubpath, }) }`) ;
-          const target = imports[bestMatch] ?? failPerImplNullPostCheck(`error. please file a bugreport. ${failingPerImplInspect({ imports, }) }`) ;
+          const target = imports[bestMatch];
           const resolveResult = resolvePackageTarget(packageJSONUrl, target,
                                                      bestMatchSubpath,
                                                      bestMatch, base, true,
                                                      true, false, conditions);
           if (resolveResult != null) {
-            return { resolved: resolveResult,  };
+            return resolveResult;
           }
         }
       }
     }
-  }
-  if (!packageJSONUrl) {
-    return failPerImplNullPostCheck(`error. please file a bugreport. ${failingPerImplInspect({ packageJSONUrl }) }`)
   }
   throw importNotDefined(name, packageJSONUrl, base);
 }
@@ -1275,7 +755,7 @@ function getPackageType(url) {
 /**
  * Parse a package name from a specifier.
  * @param {string} specifier - The import specifier.
- * @param {string | URL } [base] - The parent URL.
+ * @param {string | URL | undefined} base - The parent URL.
  */
 function parsePackageName(specifier, base) {
   let separatorIndex = StringPrototypeIndexOf(specifier, '/');
@@ -1302,7 +782,7 @@ function parsePackageName(specifier, base) {
 
   if (!validPackageName) {
     throw new ERR_INVALID_MODULE_SPECIFIER(
-      specifier, 'is not a valid package name', base && fileURLToPath(base));
+      specifier, 'is not a valid package name', fileURLToPath(base));
   }
 
   const packageSubpath = '.' + (separatorIndex === -1 ? '' :
@@ -1314,8 +794,8 @@ function parsePackageName(specifier, base) {
 /**
  * Resolves a package specifier to a URL.
  * @param {string} specifier - The package specifier to resolve.
- * @param {string | URL } base - The base URL to use for resolution.
- * @param {PackageImportCondListI} conditions - An object containing the conditions for resolution.
+ * @param {string | URL | undefined} base - The base URL to use for resolution.
+ * @param {Set<string>} conditions - An object containing the conditions for resolution.
  * @returns {URL} - The resolved URL.
  */
 function packageResolve(specifier, base, conditions) {
@@ -1411,7 +891,7 @@ function shouldBeTreatedAsRelativeOrAbsolutePath(specifier) {
 /**
  * Resolves a module specifier to a URL.
  * @param {string} specifier - The module specifier to resolve.
- * @param {string | URL } base - The base URL to resolve against.
+ * @param {string | URL | undefined} base - The base URL to resolve against.
  * @param {Set<string>} conditions - An object containing environment conditions.
  * @param {boolean} preserveSymlinks - Whether to preserve symlinks in the resolved URL.
  */
@@ -1441,7 +921,7 @@ function moduleResolve(specifier, base, conditions, preserveSymlinks) {
     try {
       resolved = new URL(specifier);
     } catch (cause) {
-      if (isData && !BuiltinModule.canBeRequiredWithoutScheme(specifier)) {
+      if (isRemote && !BuiltinModule.canBeRequiredWithoutScheme(specifier)) {
         const error = new ERR_UNSUPPORTED_RESOLVE_REQUEST(specifier, base);
         setOwnProperty(error, 'cause', cause);
         throw error;
@@ -1504,11 +984,6 @@ function resolveAsCommonJS(specifier, parentURL) {
         found = `${pathToFileURL(found)}`;
       }
     }
-    // // Normalize the path separator to give a valid suggestion
-    // // on Windows
-    // if (process.platform === 'win32') {
-    //   found = StringPrototypeReplace(found, new RegExp(`\\${sep}`, 'g'), '/');
-    // }
     return found;
   } catch {
     return false;
@@ -1581,47 +1056,105 @@ function throwIfInvalidParentURL(parentURL) {
 
 /**
  * Resolves the given specifier using the provided context, which includes the parent URL and conditions.
- * Attempts to resolve the specifier and returns the resulting URL and format.
  * Throws an error if the parent URL is invalid or if the resolution is disallowed by the policy manifest.
  * Otherwise, attempts to resolve the specifier and returns the resulting URL and format.
  * @param {string} specifier - The specifier to resolve.
- * @param {DefgfCtx} [context={}] - The context object containing the parent URL and conditions.
+ * @param {object} [context={}] - The context object containing the parent URL and conditions.
+ * @param {string} [context.parentURL] - The URL of the parent module.
+ * @param {string[]} [context.conditions] - The conditions for resolving the specifier.
  */
 function defaultResolve(specifier, context = {}) {
-  let parentURL ;
-  /** @type {PackageImportCondListI | undefined} */
-  let conditions ;
-  ({ parentURL, conditions } = context);
+  let { parentURL, conditions } = context;
   throwIfInvalidParentURL(parentURL);
-
-  let parsedParentURL;
-  if (parentURL) {
-    parsedParentURL = URLParse(parentURL);
-  }
-
-  let parsed, protocol;
-  if (shouldBeTreatedAsRelativeOrAbsolutePath(specifier)) {
-    parsed = URLParse(specifier, parsedParentURL);
-  } else {
-    parsed = URLParse(specifier);
-  }
-
-  if (parsed != null) {
-    // Avoid accessing the `protocol` property due to the lazy getters.
-    protocol = parsed.protocol;
-
-    if (protocol === 'data:') {
-      return { __proto__: null, url: parsed.href };
+  if (parentURL && policy?.manifest) {
+    const redirects = policy.manifest.getDependencyMapper(parentURL);
+    if (redirects) {
+      const { resolve, reaction } = redirects;
+      const destination = resolve(specifier, new SafeSet(conditions));
+      let missing = true;
+      if (destination === true) {
+        missing = false;
+      } else if (destination) {
+        const href = destination.href;
+        return { __proto__: null, url: href };
+      }
+      if (missing) {
+        // Prevent network requests from firing if resolution would be banned.
+        // Network requests can extract data by doing things like putting
+        // secrets in query params
+        reaction(new ERR_MANIFEST_DEPENDENCY_MISSING(
+          parentURL,
+          specifier,
+          ArrayPrototypeJoin([...conditions], ', ')),
+        );
+      }
     }
   }
 
+  let parsedParentURL;
+  if (parentURL) {
+    try {
+      parsedParentURL = new URL(parentURL);
+    } catch {
+      // Ignore exception
+    }
+  }
+
+  let parsed, protocol;
+  try {
+    if (shouldBeTreatedAsRelativeOrAbsolutePath(specifier)) {
+      parsed = new URL(specifier, parsedParentURL);
+    } else {
+      parsed = new URL(specifier);
+    }
+    // Avoid accessing the `protocol` property due to the lazy getters.
+    protocol = parsed.protocol;
+
+    if (protocol === 'data:' &&
+      parsedParentURL.protocol !== 'file:' &&
+      experimentalNetworkImports) {
+      throw new ERR_NETWORK_IMPORT_DISALLOWED(
+        specifier,
+        parsedParentURL,
+        'import data: from a non file: is not allowed',
+      );
+    }
+    if (protocol === 'data:' ||
+      (experimentalNetworkImports &&
+        (
+          protocol === 'https:' ||
+          protocol === 'http:'
+        )
+      )
+    ) {
+      return { __proto__: null, url: parsed.href };
+    }
+  } catch (e) {
+    if (e?.code === 'ERR_NETWORK_IMPORT_DISALLOWED') {
+      throw e;
+    }
+    // Ignore exception
+  }
+
+  // There are multiple deep branches that can either throw or return; instead
+  // of duplicating that deeply nested logic for the possible returns, DRY and
+  // check for a return. This seems the least gnarly.
+  const maybeReturn = checkIfDisallowedImport(
+    specifier,
+    parsed,
+    parsedParentURL,
+  );
+
+  if (maybeReturn) { return maybeReturn; }
+
+  // This must come after checkIfDisallowedImport
   protocol ??= parsed?.protocol;
   if (protocol === 'node:') { return { __proto__: null, url: specifier }; }
 
 
   const isMain = parentURL === undefined;
-  if (isMain || parentURL === undefined) {
-    parentURL = pathToFileURL(`${process.cwd()}/`).href;
+  if (isMain) {
+    parentURL = getCWDURL().href;
 
     // This is the initial entry point to the program, and --input-type has
     // been passed as an option; but --input-type can only be used with
@@ -1632,7 +1165,7 @@ function defaultResolve(specifier, context = {}) {
     if (inputTypeFlag) { throw new ERR_INPUT_TYPE_NOT_ALLOWED(); }
   }
 
-  conditions = getConditionsSet([...(conditions ?? [])]);
+  conditions = getConditionsSet(conditions);
   let url;
   try {
     url = moduleResolve(
@@ -1683,10 +1216,12 @@ function decorateErrorWithCommonJSHints(error, specifier, parentURL) {
   }
 }
 
-const publics =  {
+module.exports = {
   decorateErrorWithCommonJSHints,
   defaultResolve,
   encodedSepRegEx,
+  getPackageScopeConfig,
+  getPackageType,
   packageExportsResolve,
   packageImportsResolve,
   throwIfInvalidParentURL,
@@ -1694,16 +1229,25 @@ const publics =  {
 };
 
 // cycle
-
-// /** @type {{ defaultGetFormatWithoutErrors: (...x: [href: URL, ctx: DefgfCtx]) => any, } } */
 const {
   defaultGetFormatWithoutErrors,
-} = opts ;
+} = require('internal/modules/esm/get_format');
 
-return {
-  ...publics ,
-};
+if (policy) {
+  const $defaultResolve = defaultResolve;
+  module.exports.defaultResolve = function defaultResolve(
+    specifier,
+    context,
+  ) {
+    const ret = $defaultResolve(specifier, context);
+    // This is a preflight check to avoid data exfiltration by query params etc.
+    policy.manifest.mightAllow(ret.url, () =>
+      new ERR_MANIFEST_DEPENDENCY_MISSING(
+        context.parentURL,
+        specifier,
+        context.conditions,
+      ),
+    );
+    return ret;
+  };
 }
-module.exports = {
-  createResolve
-};
