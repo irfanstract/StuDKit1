@@ -1,4 +1,6 @@
 // copied from https://github.com/nodejs/node/blob/v15.3.0/lib/internal/modules/package_json_reader.js
+
+// @ts-check
 'use strict';
 
 const { SafeMap } = require('./node-primordials');
@@ -9,11 +11,12 @@ const { toNamespacedPath } = require('path');
 
 const cache = new SafeMap();
 
+/** @type {any} */
 let manifest;
 
 /**
  * @param {string} jsonPath
- * @return {{string: string, containsKeys: boolean}}
+ * @return {import('@studiokit/ts-node').LoadedNodePackageConfig}
  */
 function read(jsonPath) {
   if (cache.has(jsonPath)) {
