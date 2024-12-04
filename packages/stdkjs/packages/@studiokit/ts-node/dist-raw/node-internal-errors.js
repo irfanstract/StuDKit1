@@ -1,3 +1,6 @@
+
+// @ts-check
+
 'use strict';
 
 const path = require('path');
@@ -19,12 +22,20 @@ exports.codes = {
   ERR_UNKNOWN_FILE_EXTENSION: createErrorCtor(joinArgs('ERR_UNKNOWN_FILE_EXTENSION')),
 }
 
+/**
+ * 
+ * @type {(name: string) => (...args: unknown[]) => string }
+ */
 function joinArgs(name) {
   return (...args) => {
     return [name, ...args].join(' ')
   }
 }
 
+/**
+ * 
+ * @param {ReturnType<typeof joinArgs>} errorMessageCreator 
+ */
 function createErrorCtor(errorMessageCreator) {
   return class CustomError extends Error {
     constructor(...args) {
@@ -36,6 +47,10 @@ exports.createErrRequireEsm = createErrRequireEsm;
 
 // Native ERR_REQUIRE_ESM Error is declared here:
 //   https://github.com/nodejs/node/blob/2d5d77306f6dff9110c1f77fefab25f973415770/lib/internal/errors.js#L1294-L1313
+/**
+ * 
+ * @type {{ (filename: string, parentPath: string, packageJsonPath: string): Error; }}
+ */
 // Error class factory is implemented here:
 //   function E: https://github.com/nodejs/node/blob/2d5d77306f6dff9110c1f77fefab25f973415770/lib/internal/errors.js#L323-L341
 //   function makeNodeErrorWithCode: https://github.com/nodejs/node/blob/2d5d77306f6dff9110c1f77fefab25f973415770/lib/internal/errors.js#L251-L278
@@ -60,6 +75,10 @@ function createErrRequireEsm(filename, parentPath, packageJsonPath) {
 
 // Copy-pasted from https://github.com/nodejs/node/blob/b533fb3508009e5f567cc776daba8fbf665386a6/lib/internal/errors.js#L1293-L1311
 // so that our error message is identical to the native message.
+/**
+ * 
+ * @type {{ (filename: string, parentPath?: string | null, packageJsonPath?: string | null ): string; }}
+ */
 function getErrRequireEsmMessage(filename, parentPath = null, packageJsonPath = null) {
   const ext = path.extname(filename)
   let msg = `Must use import to load ES Module: ${filename}`;
