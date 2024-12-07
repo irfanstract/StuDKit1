@@ -32,11 +32,11 @@ const builtinModules = (
     yield* builtinModulesListed ;
     try {
       ;
-      if (typeof require("electron") === "object" ) {
+      if (typeof require("electron") === "object" || typeof require("electron") === "function" ) {
         yield "electron" ;
       }
     } catch (z) {
-      console["warn"](String(z) ) ;
+      console["warn"](`[EbJs Enumerate BuiltinModules] cannot find module 'electron' `, String(z) ) ;
     }
   })
 ) ;
@@ -1229,13 +1229,17 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         }
       } ;
 
+      const mdObjDId = (
+        `[studk-dispatchInlineScript]`
+        + encodeURIComponent(assumedSrcPath )
+        + (0.25125125125125 )
+      );
+
       // @ts-ignore
       const newModule: NodeJS.Module = {
         exports: new Object,
         id: (
-          `[studk-dispatchInlineScript]`
-          + encodeURIComponent(assumedSrcPath )
-          + (0.25125125125125 )
+          mdObjDId
         ),
         require: REQUIRE,
         // TODO

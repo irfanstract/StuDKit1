@@ -29,6 +29,8 @@
     // Enable to assist in sanity-checking your changes to JS files, but note you will see many unrelated type errors!
     // "checkJs": true,
     // "noImplicitAny": false
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
     "noUncheckedIndexedAccess": true,
   },
   "include": [

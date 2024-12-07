@@ -8,7 +8,7 @@
 
     "test:main": "node bin/electron-mocha --config .mocharc.main.cjs test/main",
 
-    "test:renderer": "node bin/electron-mocha --config .mocharc.renderer.cjs test/renderer",
+    "test:renderer": "npm run build-tsc && node bin/electron-mocha --config .mocharc.renderer.cjs test/renderer",
 
     "build-tsc": "tsc -b ./tsconfig.json",
 
