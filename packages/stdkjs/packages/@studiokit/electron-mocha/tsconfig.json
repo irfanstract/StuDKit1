@@ -1,0 +1,37 @@
+{
+  "extends": "../../../tsconfig.json" ,
+
+  //
+  "include": [
+    "**/*" ,
+    "bin/*" ,
+  ] ,
+  "exclude": [
+  ] ,
+
+  "references": [
+    //
+    { "path": "../../@studiokit/ts-node/tsconfig.build-dist.json", } ,
+  ],
+
+  "compilerOptions": {
+
+    //
+    "composite": true,
+    "tsBuildInfoFile": ".local/tsconfig.build-dist.tsbuildinfo",
+    "rootDir": ".",
+
+    // "noEmit": false,
+    // "emitDeclarationOnly": true,
+    "noEmit": true,
+
+    "allowJs": true,
+
+    "noCheck": true,
+
+    //
+    "jsx": "react-jsx",
+
+  } ,
+
+}
