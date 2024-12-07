@@ -7,25 +7,21 @@ import assert from "assert";
 /**
  * @import { ArgsWithOptions, } from "../src/util.ts"
  */
-/**
- * 
- * @type {typeof import("../src/util.ts")}
- */
-const {
+
+import {
+  //
   memoize,
   utilReiterated,
-} = (await import("../dist/util.js")) ;
+} from "../scripts/commonMochaTestCaseInfra.mjs" ;
 
-const posixBlockquotify = (
+import { posixBlockquotify ,} from "../scripts/commonMochaTestCaseInfra.mjs" ;
 
-  /** @satisfies {(x: string) => string} */ ((x) => (
-
-    x.replace(/(^|\r?\n)/g, "$1> ")
-  ) )
-) ;
-
-/** @typedef {Extract<Extract<StdioOptions, readonly any[] >[2], `${"i" | "p" }${string}`> } */
-const EnumStdOutId = {} ;
+import {
+  stringAssert ,
+  asGreen,
+  asRedBright,
+  OC ,
+} from "../testScripts/conventions.mjs" ;
 
 /** @import { StdioOptions, SpawnSyncReturns, SpawnOptions, } from "child_process" */
 import {
@@ -33,6 +29,18 @@ import {
   execSync,
   spawnSync,
 } from "child_process";
+
+import {
+  runChildProcess ,
+  runChildProcessWithStat ,
+  checkChildProcessNoError ,
+  EnumStdOutId ,
+} from "../dist-raw/ChildProcessExecSyncWithErr.mjs" ;
+
+import {
+  //
+  assertProcSyncExitCode,
+} from "../scripts/commonMochaTestCaseInfra.mjs" ;
 
 import * as Path from "path";
 import { fileURLToPath } from "url";
@@ -47,162 +55,54 @@ const {
 
 
 
+const {
+
+  jsxTestsSpawnsyncPreDefs: {
+    //
+    //
+    RUN_TSFILE ,
+    RUN_TSFILE_DIAGNOSED ,
+    FAIL_WITH_SPAWNSYNCOUTPUT ,
+  
+  } ,
+
+} = (await import("../testScripts/conventions.mjs") ) ;
+
+
+
+
+
 import {
   provDir ,
-  RUN_TSFILE ,
-  RUN_TSFILE_DIAGNOSED ,
-} from "../scripts/commonMochaTestCaseInfra.mjs" ;
-
-const spclExecSync = (
-
-  /** @satisfies {(...args: ArgsWithOptions<[cmd: string], { stderr ?: EnumStdOutId, env ?: NodeJS.ProcessEnv, }> ) => any } */ (
-    (...cfg) => {
-      const [cmd, { stderr = "inherit", env = {}, } = {}] = cfg ;
-      return (
-        execSync(cmd, {
-          stdio: ["pipe", "pipe", stderr] ,
-          encoding: "utf-8" ,
-          env ,
-        })
-      ) ;
-    }
-  )
-) ;
-
-const spclExecSyncWithErr = (
-
-  /** @satisfies {(...args: ArgsWithOptions<[cmd: string], { env ?: NodeJS.ProcessEnv, }> ) => any } */ (
-    (...[cmd, { env = {}, } = {}]) => {
-      return (
-        spawnSync(cmd, {
-          shell: true ,
-          stdio: ["pipe", "pipe", "pipe"] ,
-          encoding: "utf-8" ,
-          env ,
-        })
-      ) ;
-    }
-  )
-) ;
-
-;
-const spclPrettifyStdioBothOutput = (
-
-  /** @type {(o: SpawnSyncReturns<string> ) => string } */ (pE) => (
-    [
-      `-- begin stderr --`,
-      posixBlockquotify(pE.stderr ?? ` `),
-      `-- end stderr, begin stdout --`,
-      posixBlockquotify(pE.stdout ?? ` `),
-      `-- end stdout --`,
-    ].join("\r\n\r\n")
-  )
-) ;
-
-/**
- * check that the process has exited with stat-code `0`, failing in caseof nonzero.
- * will also fail if the Process remains running.
- * 
- */
-const checkNoError = (
-
-  /** @type {(o: SpawnSyncReturns<string> ) => void } */ (o) => {
-    void (
-      Number(String(o.status) || "???" ) === 0
-      ||
-      assert.fail(new TypeError(`process ${typeof o.status === "number" ? `returned with Error ${o.status }` : `might havent exited` }:` + "\r\n" + posixBlockquotify(o.stderr ?? ``) ) )
-    ) ;
-  }
-) ;
-
-const stringAssert = (
-
-  /** @satisfies {<const V extends string>(x: string, x1: (x: string) => any ) => any } */ (function (...[x, x1])
-  {
-    x1(x) || assert.fail(`assertion failed: ${posixBlockquotify(x) }`) ;
-  })
-) ;
-
-
-
-
+} from "../testScripts/conventions.mjs";
 
 {
 //
 
-const spclExpectedEnvVars = /** @satisfies {NodeJS.ProcessEnv  } */ ({
-  STUDKTSNODE_GENERAL_SETUP_CONSOLEALWAYSSTDERR: "1",
-}) ;
+const {
 
-const spclMustTryProbSet = (
+  spweDefs: {
+    //
+    //
+  
+    spclExecSync ,
+    spclExecSyncWithErr ,
+    spclPrettifyStdioBothOutput,
+    checkNoError ,
+  
+    binJsPath,
+    testsHelloWorldTsPath,
+    testsNofileHelloWorldTsPath,
+  
+    spclMustTryProbSet,
+    spclExpectedEnvVars,
+  
+    spcl1WithErr ,
+    spclMeta1WithErr ,
+  
+  } ,
 
-  utilReiterated(function* () {
-    /**
-     * note that we need `--transpileOnly` since
-     * the app's path contains untyped compiled JS file(s)
-     * 
-     */
-    for (const withNoNativeRunmain          of (/** @return {Boolean[]} */ () => [false,  true])() )
-    for (const withAlwaysPreTranspile       of (/** @return {Boolean[]} */ () => [false,  true])() )
-    for (const withTranspileOnly            of (/** @return {Boolean[]} */ () => [        true])() )
-    for (const scanAndPrintDeps             of (/** @return {Boolean[]} */ () => [false,  true])() )
-    for (const {  } of /** @satisfies {{ }[] } */ ([
-      {} ,
-    ]) )
-    yield {
-      flags: (
-        utilReiterated(function* () {
-          if (withNoNativeRunmain       ) { yield "--noNativeRunmain"       ; }
-          if (withAlwaysPreTranspile    ) { yield "--alwaysPreTranspile"    ; }
-          if (withTranspileOnly         ) { yield "--transpileOnly"         ; }
-          if (scanAndPrintDeps          ) { yield "--scanAndPrintDeps"      ; }
-        })
-      ) ,
-    } ;
-  })
-) ;
-
-/**
- * path to the `<this-package-root>/dist/bin.js`,
- * assuming {@link https://www.typescriptlang.org/docs/handbook/typescript-from-scratch.html having successfully run emit}
- * 
- */
-const binJsPath = (
-
-  Path.join(provDir, "dist", "bin.js")
-  .replaceAll("\\", "/")
-) ;
-
-const spcl1WithErr = (
-
-  /** @satisfies {(...args: ArgsWithOptions<[cm: string], { flagsStr: string }>) => any } */ ((cm, { flagsStr, }) => {
-
-    const finalCm = `node ${binJsPath } ${flagsStr } ${cm }` ;
-
-    if (0) {
-      ;
-      console["log"]({
-        cm,
-        flagsStr,
-        spclExpectedEnvVars,
-        finalCm,
-      }) ;
-    }
-
-    return (
-      spclExecSyncWithErr(finalCm, {
-        env: spclExpectedEnvVars ,
-      })
-    ) ;
-  })
-) ;
-
-const spclMeta1WithErr = (
-
-  /** @satisfies {(...args: ArgsWithOptions<[cm: string], { flagsStr: string }>) => any } */ ((cm, { flagsStr, }) => (
-    spcl1WithErr(`${binJsPath } ${cm}`, { flagsStr, })
-  ))
-) ;
+} = (await import("../testScripts/conventions.mjs") ) ;
 
 describe(`running 'node studk-ts-node hello-world.ts' `, () => {
   ;
@@ -211,12 +111,11 @@ describe(`running 'node studk-ts-node hello-world.ts' `, () => {
     flags,
   } of spclMustTryProbSet )
   {
-    const flagsStr = flags.join(" ") ;
 
-    it (`running 'node studk-ts-node hello-world.ts' with ${flags.length ? `flags '${flagsStr }'` : `no flags` } `, () => {
+    it (`running 'node studk-ts-node ${flags.join(" ") } hello-world.ts'  `, () => {
 
       const pE = (
-        spcl1WithErr(`J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/hello-world.ts`, { flagsStr, })
+        spcl1WithErr(testsHelloWorldTsPath, { vmflagsStr: flags.join(" "), })
       ) ;
 
       checkNoError(pE) ;
@@ -239,15 +138,14 @@ describe(`running 'node studk-ts-node hello-world.ts' `, () => {
     flags,
   } of spclMustTryProbSet )
   {
-    const flagsStr = flags.join(" ") ;
 
-    it (`running 'node studk-ts-node nofile-hello-world.ts' with ${flags.length ? `flags '${flagsStr }'` : `no flags` } `, () => {
+    it (`running 'node studk-ts-node ${flags.join(" ") } nofile-hello-world.ts' `, () => {
 
       const pE = (
-        spcl1WithErr(`J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/nofile-hello-world.ts`, { flagsStr, })
+        spcl1WithErr(testsNofileHelloWorldTsPath, { vmflagsStr: flags.join(" "), })
       ) ;
 
-      assert(pE.status) ;
+      assertProcSyncExitCode(pE, c => !!c ) ;
 
       process.stderr.write(`exit code: ${pE.status }` + "\r\n") ;
 
@@ -262,6 +160,121 @@ describe(`running 'node studk-ts-node hello-world.ts' `, () => {
 
 }) ;
 
+describe(`running 'node studk-ts-node <library-example-ts>' `, () => {
+  ;
+
+  for (const {
+    //
+    fullNm: testsPjiTsPath ,
+    simpleNm: testsPjiTsName,
+    isExpectedOutTxt,
+    skipNativeRuntimeMode: shallSkipNativeRuntimeMode,
+  } of (
+
+    utilReiterated(/** @return {Iterable<{ readonly simpleNm: String, readonly ieo: OC, readonly skipNativeRuntimeMode?: Boolean, }>} */ function* () {
+
+      yield {
+        simpleNm: "PopularLibsCoreJsImmutable03.ts" ,
+        ieo: (
+          OC.byIsExpectedOutputStringChkFnc((o) => (
+            true
+            && o.includes("c=1,d=2,e=3 ===")
+          ) )
+        )
+        ,
+      } ;
+
+      yield {
+        simpleNm: "PopularLibsNativeFileSystemAdapterJs01.ts" ,
+        ieo: (
+          OC.byIsExpectedOutputStringChkFnc((o) => (
+            true
+            && o.includes("Not In Web Env")
+          ) )
+        )
+        ,
+        skipNativeRuntimeMode: true,
+      } ;
+
+    })
+
+    .map(({ simpleNm, ieo, skipNativeRuntimeMode, }) => /** @type {const} */ ({
+      simpleNm,
+      fullNm: (
+        Path.join(provDir, "tests", simpleNm)
+        .replaceAll("\\", "/")
+      ) ,
+      isExpectedOutTxt: ieo.isExpectedOut,
+      skipNativeRuntimeMode ,
+    }))
+
+  ) )
+
+  for (const {
+    flags,
+  } of (
+    spclMustTryProbSet
+
+    .filter(e => {
+      if ((
+        shallSkipNativeRuntimeMode &&
+        !(e.flags.includes("--noNativeRunmain") || e.flags.includes("--alwaysPreTranspile") )
+      ) ) {
+        return false
+      }
+
+      return true ;
+    })
+
+  ) )
+  for (const { title, runMain, } of (
+
+    utilReiterated(/** @return {Iterable<{ title: String, runMain: () => SpawnSyncReturns<String>, }> } */ function* () {
+
+      yield {
+        title: `running 'node @studiokit/ts-node ${flags.join(" ") } ${testsPjiTsName}'  ` ,
+        runMain: () => (
+          spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), lft: true, })
+        ),
+      } ;
+
+      if (0) {
+        ;
+        yield {
+          title: `running 'node -r "@studiokit/ts-node/register ${flags.join(" ") }" ${testsPjiTsName}'  ` ,
+          runMain: () => (
+            spcl1WithErr(testsPjiTsPath, { vmflagsStr: flags.join(" "), lft: false, })
+          ),
+        } ;
+      }
+
+    })
+  ))
+  {
+
+    it (title, () => {
+
+      const pE = (
+        runMain()
+      ) ;
+
+      checkNoError(pE) ;
+
+      const o = (
+        spclPrettifyStdioBothOutput(pE)
+      );
+
+      stringAssert(o, o => isExpectedOutTxt(o) ) ;
+
+    }) ;
+  
+    ;
+  }
+
+  ;;
+
+}) ; /* running 'node studk-ts-node <library-example-ts>' */
+
 describe(`running 'node studk-ts-node studk-ts-node' `, () => {
 
   for (const {
@@ -270,10 +283,10 @@ describe(`running 'node studk-ts-node studk-ts-node' `, () => {
   {
     const flagsStr = flags.join(" ") ;
 
-    it (`running 'node studk-ts-node studk-ts-node --version' with ${flags.length ? `flags '${flagsStr }'` : `no flags` } `, () => {
+    it (`running 'node studk-ts-node ${flags.join(" ") } studk-ts-node --version' `, () => {
 
       const pE = (
-        spclMeta1WithErr(`--version`, { flagsStr, })
+        spclMeta1WithErr(`--version`, { firstLevelVmFlagsStr: flagsStr, })
       ) ;
 
       checkNoError(pE) ;
@@ -298,10 +311,10 @@ describe(`running 'node studk-ts-node studk-ts-node' `, () => {
   {
     const flagsStr = flags.join(" ") ;
 
-    it (`running 'node studk-ts-node studk-ts-node --help' with ${flags.length ? `flags '${flagsStr }'` : `no flags` } `, () => {
+    it (`running 'node studk-ts-node ${flags.join(" ") } studk-ts-node --help'  `, () => {
 
       const pE = (
-        spclMeta1WithErr(`--help`, { flagsStr, })
+        spclMeta1WithErr(`--help`, { firstLevelVmFlagsStr: flagsStr, })
       ) ;
 
       checkNoError(pE) ;
@@ -328,15 +341,29 @@ describe(`running 'node studk-ts-node studk-ts-node' `, () => {
   }
 
   for (const {
-    flags,
-  } of spclMustTryProbSet )
+    flags: firstLevelVmFlags,
+  } of (
+    spclMustTryProbSet
+  ) )
+  for (const {
+    flags: secndLevelVmFlags,
+  } of (
+    spclMustTryProbSet
+    .filter(e => {
+      /** skip cases of double-level `--alwaysPreTranspile`, to save device resource */
+      if (e.flags.includes("--alwaysPreTranspile") ) { return false ; }
+      return true ;
+    } )
+  ) )
   {
-    const flagsStr = flags.join(" ") ;
 
-    it (`running 'node studk-ts-node studk-ts-node hello-world.ts' with ${flags.length ? `flags '${flagsStr }'` : `no flags` } `, () => {
+    it (`running 'node studk-ts-node ${firstLevelVmFlags.join(" ") } studk-ts-node ${secndLevelVmFlags.join(" ") } hello-world.ts' `, () => {
 
       const pE = (
-        spclMeta1WithErr(`J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/hello-world.ts`, { flagsStr, })
+        spclMeta1WithErr(testsHelloWorldTsPath, {
+          firstLevelVmFlagsStr: firstLevelVmFlags.join(" "),
+          secndLevelVmFlagsStr: secndLevelVmFlags.join(" "),
+        })
       ) ;
 
       checkNoError(pE) ;
