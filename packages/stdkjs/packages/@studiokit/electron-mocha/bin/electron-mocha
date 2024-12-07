@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// @ts-check
+
 'use strict'
 
 const { join } = require('path')
@@ -7,6 +9,7 @@ const { spawn } = require('child_process')
 
 const electron =
   process.env.ELECTRON_PATH ||
+  /** done outside Electron, `require("electron")` and `import (main) from "electron"` will just return string path to the package. dammit */
   resolve('electron') ||
   resolve('electron-prebuilt') ||
   resolve('electron', require('which').sync)
@@ -21,15 +24,16 @@ if (!electron) {
 
 run(electron)
 
-function resolve(module, resolver) {
+function resolve(/** @type {Parameters<NodeRequire>[0]} */ module, /** @type {NodeRequire | typeof import('which').sync} */ resolver) {
   try {
     return (resolver || require)(module)
-  } catch (_) {
+  } catch (z) {
     // ignore
+    console["info"](`[studk-electron-mocha] failed resolve(${module}, resolver)`, String(z) ) ;
   }
 }
 
-function run(electron) {
+function run(/** to be passed to {@link spawn}. @type {String} */ electron) {
   let args = [
     join(__dirname, '../lib/main.js'),
     ...process.argv.slice(2)
