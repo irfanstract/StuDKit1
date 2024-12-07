@@ -205,6 +205,73 @@ export function utilReiterated<const E>(src: () => Iterable<E> ) {
   return [...src() ] ;
 }
 
+/**
+ * transform given URL String, thru localised in-place ops `applyMod`
+ * 
+ */
+const mutationallyTransformUrl = (
+
+  function (...[x0, applyMod]: [x0: string, applyMod: (x: URL) => (URL | undefined | void) ])
+  : string
+  {
+    const o = new URL(x0, 'resolve://') ;
+    const o1 = (applyMod(o) ?? null ) ?? o ;
+    return o1.toString() ;
+  }
+) ;
+
+export {
+  mutationallyTransformUrl,
+} ;
+
+import {
+  resolve as resolveUrl ,
+} from "node:url" ;
+
+/**
+ * joins {@link dropSearchParamAndHash `dropSearchParamAndHash(from)`} and `to`;
+ * equivalent to this
+ * 
+ * ```
+ *  resolveUrl(
+ *    dropSearchParamAndHash(x0, ).replace(/(\/?)$/, () => "/index")
+ *    ,
+ *    x1)
+ * ```
+ * 
+ */
+const joinUrlNoBsp = (
+
+  (...[x0, x1] : Parameters<typeof resolveUrl>) => (
+
+    // TODO
+    resolveUrl(
+      dropSearchParamAndHash(x0, ).replace(/(\/?)$/, () => "/index")
+      ,
+      x1)
+  )
+) ;
+
+/**
+ * omitting `from`'s `search` and `hash`
+ * 
+ */
+const dropSearchParamAndHash = (
+
+  (...[x0]: [x: string]) => (
+
+    mutationallyTransformUrl(x0, e => { e.hash = "" ; e.search = "" ; } )
+  )
+) ;
+
+export {
+  resolveUrl ,
+  dropSearchParamAndHash,
+  joinUrlNoBsp ,
+  /** implemented as {@link joinUrlNoBsp}. @deprecated */
+  joinUrlNoBsp as joinUrl ,
+} ;
+
 /** @internal */
 export function versionGteLt(version: string, gteRequirement: string, ltRequirement?: string) {
   const [major = failMissingArgName("major"), minor, patch, extra] = parse(version);
@@ -295,33 +362,60 @@ type PossibleKeyOfOneAlt<Props extends object> = (
 
 export type AtLeastEitherProp<Props extends object> = (
   Partial<Props>
-  & Required<PickEitherProp<Props > >
+  & Required<PickEitherProp1<Props > >
 ) ;
 
-export type EitherOneProp<Props extends object> = (
+export type { EitherOneProp, } ;
+
+/**
+ * 
+ * @deprecated
+ */
+export type EitherOneProp1<Props extends object> = (
   OnlySelectEitherProp<Props, keyof Props>
 ) ;
 
-export type PickEitherProp<D extends object, kChosen extends keyof D = keyof D > = (
+/**
+ * 
+ * @deprecated
+ */
+type PickEitherProp1<D extends object, kChosen extends keyof D = keyof D > = (
   kChosen extends any ?
   Pick<D, kChosen>
   : never
 ) ;
 
-export type OnlySelectEitherProp<D extends object, kChosen extends keyof D = keyof D> = (
+type OnlySelectEitherProp<D extends object, kChosen extends keyof D = keyof D> = (
   kChosen extends any ?
   OnlySelectProps<D, kChosen>
   : never
 ) ;
 
-export type OnlySelectProps<D extends object, kChosen extends keyof D> = (
+type OnlySelectProps<D extends object, kChosen extends keyof D> = (
   { [k1 in keyof D]?: ([k1] extends [kChosen] ? D[k1] : never ) ; }
   &
   Required<{ [k1 in kChosen]?: unknown ; }>
 ) ;
+
+export type {
+  PickEitherProp1 as PickEitherProp ,
+  OnlySelectEitherProp ,
+  OnlySelectProps ,
+} ;
 
 type EipSingleProp<k extends keyof any, val> = (
   k extends any ?
   { [k1 in k]: val ; }
   : never
 ) ;
+
+import type {
+  EitherOneProp,
+  PickGivenAndDenyOthers ,
+} from "./util-recordtypes" ;
+
+
+
+
+
+
