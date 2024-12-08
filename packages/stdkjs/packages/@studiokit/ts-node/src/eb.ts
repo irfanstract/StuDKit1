@@ -1068,9 +1068,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
   const setNdImportResolvers = (
     (() => {
-      interface I {
-        (...[x]: [x: import("./index").NdResolversGcePublic ] ) : void ;
-      }
+      type I = import("./index").NdResolversGcePropagator ;
       const impl: I = (...[x] ) => {
         resolversVar = x ;
       } ;
