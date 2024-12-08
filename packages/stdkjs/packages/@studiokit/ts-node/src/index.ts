@@ -1442,11 +1442,9 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         getNodeEsmResolver ,
         getNodeEsmGetFormat ,
         getNodeCjsLoader ,
-      } as const ;
+      } satisfies NdResolversGcePublic ;
 
-      interface Gce extends Extract<Omit<typeof gclImpl, never > , any > {}
-
-      return gclImpl as Gce ;
+      return gclImpl  ;
     })()
   ) ;
 
@@ -1995,12 +1993,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
       } as const
     ) ,
   } as const ;
-  return (
-    (() => {
-      interface S1Publ extends Extract<typeof s1, any > {}
-      return ((): S1Publ => s1 )() ;
-    })()
-  ) ;
+  return s1 ;
   } ;
 }
 
@@ -2012,9 +2005,24 @@ type ServiceFromPreloadedConfigImpl = (
  * `ndResolvers`
  * 
  */
-export type NdResolversGcePublic = (
-  ReturnType<typeof createFromPreloadedConfigImpl>["ndResolvers"]
-) ;
+interface NdResolversGcePublic extends Extract<(
+  (
+    {
+      getNodeEsmResolver:  () => ReturnType<typeof _nodeInternalModulesEsmResolve.createResolve       > ,
+      getNodeEsmGetFormat: () => ReturnType<typeof _nodeInternalModulesEsmGetFormat.createGetFormat   > ,
+      getNodeCjsLoader:    () => ReturnType<typeof _nodeInternalModulesCjsLoader.createCjsLoader      > ,
+    }
+  )
+), any > {}
+
+interface NdResolversGcePropagator {
+  (...[x]: [x: NdResolversGcePublic ] ) : void ;
+}
+
+export {
+  NdResolversGcePublic ,
+  NdResolversGcePropagator ,
+} ;
 
 import {
   getStaticGlobalBuiltinQuery,
