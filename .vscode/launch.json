@@ -26,6 +26,21 @@
          "type": "node" ,
          "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
       } ,
+      {
+         "name": "Run StudkTsNodeDevServer.Exe",
+         "request": "launch",
+         "cwd": "${workspaceFolder}/packages/stdkjs",
+         "runtimeArgs": [
+            "run",
+            "runStudkTsNodeDevServerExe",
+         ],
+         "runtimeExecutable": "npm",
+         "skipFiles": [
+            "<node_internals>/**"
+         ],
+         "type": "node" ,
+         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      } ,
    ] ,
 
 }
