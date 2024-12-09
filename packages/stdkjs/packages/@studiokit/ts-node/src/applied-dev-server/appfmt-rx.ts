@@ -123,6 +123,8 @@ namespace RxEv {
     : React.ReactElement
     {
   
+      assert(React.lazy, new ReferenceError(`'React.lazy' is not available. make sure the React Version is 18 or later, and try again` ) )
+
       const C = (
         React.lazy(async () => {
           ;
@@ -132,7 +134,9 @@ namespace RxEv {
             )
           ) ;
   
-          const CImpl: React.FC = function CImpl() { return codeReturnValue; };
+          const CImpl: React.FC<{}> = (
+            function CSpclRenderedContentDisplayC() { return codeReturnValue; }
+          );
   
           return { default: CImpl, } ;
         } )
@@ -206,8 +210,11 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
             return (
               React.createElement("html", {}, (
                 React.createElement("head", {}, ...[
-                  React.createElement("meta", { charset: "utf-8", } ) ,
-                  React.createElement("title", { }, `this page have no title`, ` - `, inspect({ path, pathnameHref, }) ) ,
+                  React.createElement("meta", { charSet: "utf-8", } ) ,
+                  React.createElement(
+                    "title", { },
+                    /** `<title>`s doesn't support `<!-- ... -->`s */
+                    [`this page have no title`, ` - `, inspect({ path, pathnameHref, }) ].join("") ) ,
                   React.createElement("base", { href: basePathnameHref, } ) ,
                 ] )
               ), (
