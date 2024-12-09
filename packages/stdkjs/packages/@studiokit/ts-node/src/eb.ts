@@ -4,7 +4,7 @@
 
 
 
-import { builtinModules as builtinModulesListed, Module } from 'node:module';
+import { builtinModules as builtinModulesListed0, Module } from 'node:module';
 import * as util from 'node:util';
 
 import assert = require('node:assert');
@@ -27,18 +27,91 @@ import {
   AtLeastEitherProp,
 } from './util';
 
+;
+/**
+ * verbatim what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
+ * 
+ */
+const builtinModulesListed = builtinModulesListed0 ;
+
+/**
+ * {@link builtinModules}
+ * 
+ * - return verbatim
+ *   what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
+ * 
+ * - the harder case of
+ *   `electron`, Electron's official "module"
+ *   whose `require(...)`ing gives different results depending on whether the running platform ({@link process.execPath}) is Electron (inwhichcase it ends with `namespace` or, possibly, Function) or Node (including `electron --as-regular-nodejs`) (inwhichcase it returns `string` Path ).
+ *   assuming that `require` refers to {@link Module.createRequire the native `require`},
+ *   `require("node:electron")`, unlike values listed in {@link builtinModulesListed0 `builtinModules`}, will fail (with `ERR_MODULE_NOT_FOUND: cannot find module 'node:electron'`),
+ *   raising debate astowhether `electron` deserves to be in this list.
+ * 
+ */
 const builtinModules = (
+
   utilReiterated(function* () {
+
+    /**
+     * return verbatim
+     * what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
+     * 
+     */
     yield* builtinModulesListed ;
+
+    /**
+     * the harder case of
+     * `electron`, Electron's official "module"
+     * whose `nativeRequire(...)`ing gives different results depending on whether the running platform ({@link process.execPath}) is Electron (inwhichcase it ends with `namespace` or, possibly, Function) or Node (including `electron --as-regular-nodejs`) (inwhichcase it returns `string` Path ).
+     * `nativeRequire("node:electron")`, unlike values listed in {@link builtinModulesListed0 `builtinModules`}, will fail (with `ERR_MODULE_NOT_FOUND: cannot find module 'node:electron'`),
+     * raising debate astowhether `electron` deserves to be in this list.
+     * 
+     */
+    {
+    ;
     try {
       ;
-      if (typeof require("electron") === "object" ) {
+      if (isWithinElectronJsInTermsOfRequireElectronPackage() ) {
         yield "electron" ;
       }
     } catch (z) {
-      console["warn"](String(z) ) ;
+      console["warn"](`[EbJs Enumerate BuiltinModules] cannot find module 'electron' `, String(z) ) ;
     }
+    }
+
   })
+) ;
+
+/**
+ * whether
+ * the running platform is Electron rather than Regular NodeJS,
+ * intermsa {@link hasAlivatedElectronJsPackageLoadTreatment}
+ * 
+ */
+const isWithinElectronJsInTermsOfRequireElectronPackage = (
+
+  function () {
+
+    return (
+      hasAlivatedElectronJsPackageLoadTreatment()
+    ) ;
+  }
+) ;
+/**
+ * whether
+ * `require("electron")` (or {@link ImportMeta the default-import of it })
+ * will end with "alivated" `namespace` `ElectronApp`, instead of ending with String Path,
+ * which will vary depending on whether being run on Electron or Regular NodeJS
+ * 
+ */
+const hasAlivatedElectronJsPackageLoadTreatment = (
+
+  function () {
+
+    return (
+      typeof require("electron") === "object" || typeof require("electron") === "function"
+    ) ;
+  }
 ) ;
 
 import { createRequire, } from 'node:module';
