@@ -27,12 +27,17 @@ const {
 const {
   EPWR,
   assertContainsItAndPrint ,
+  assertMatchesItAndPrint ,
   posixBlockquotify ,
   Path ,
   pathToFileURL ,
+  assertHttpOk ,
   startTestEjsApp ,
   createSpclApp ,
   RxStyleApp ,
+  SpclApps, 
+  SpclTests,
+  RxstaPreToPolyDesc ,
 } = require("../../../testPredef.cjs") ;
 
 
@@ -43,32 +48,20 @@ const {
 
 const appRootDir = Path.resolve(__filename, "..", ".." ) ;
 
-const appPagesDir = Path.resolve(appRootDir, "pages") ;
-
-console.warn({
-  appRootDir ,
-  appPagesDir ,
+const appDesc = /** @satisfies {RxstaPreToPolyDesc } */ ({
+  srcs: {
+    basePath: appRootDir ,
+    mainPagesRelativeFromBasePath: Path.join(".", "pages") ,
+    psnta: RxStyleApp.PathSimpleNameTranslator.createNoOpInstance() ,
+  } ,
 }) ;
 
-
-describe(`[sttsn-devserver-tests] testing Site S1`, () => {
+SpclTests.describeRootedRxStyleAppPreToPolyTest1({
+  metaDesc: appDesc ,
+}, ({
+  appPn ,
+}) => {
   ;
-
-  ;
-  const appE = (
-    createSpclApp((
-      RxStyleApp.describeSrcRootedIe(appPagesDir , {
-        //
-        pathSimpleNameToActual: RxStyleApp.PathSimpleNameTranslator.createNoOpInstance()
-        ,
-      } )
-    ))
-  ) ;
-
-  const {
-    appPn ,
-    close ,
-  } = startTestEjsApp(appE ) ;
 
   it(`shall render this for Dir '/'`, async () => {
     ;
@@ -78,21 +71,16 @@ describe(`[sttsn-devserver-tests] testing Site S1`, () => {
 
     console.warn(`output: ${posixBlockquotify(o) } `) ;
 
+    assertHttpOk(oF) ;
+    assertContainsItAndPrint(o, 'this page have no title') ;
+    assertContainsItAndPrint(o, 'path: &#x27;/&#x27;') ;
     assertContainsItAndPrint(o, '<p>date: <input type="datetime-local"/></p>') ;
     assertContainsItAndPrint(o, '<p>status: <input type="text"/></p>') ;
 
     // resolve() ;
   }) ;
 
-  ;
-  it(`shall close it after all these tests`, async () => {
-    ;
-
-    close() ;
-  }) ;
-
-  ;
-} ) ;
+}) ;
 
 
 
