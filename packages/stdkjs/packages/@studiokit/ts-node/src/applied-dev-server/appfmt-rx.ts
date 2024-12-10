@@ -284,10 +284,23 @@ namespace RxStyleApp {
     } = pOpts;
 
     const tsNodeService = (
-      getTsNodeServiceFromProps({
-        tsNodeService: tsNodeServiceArg ,
-        tsNodeServiceConfig: tsNodeServiceConfigArg ,
-      })
+      getTsNodeServiceFromProps((
+        tsNodeServiceArg ?
+        {
+          tsNodeService: tsNodeServiceArg ,
+          tsNodeServiceConfig: tsNodeServiceConfigArg ,
+        } :
+        {
+          tsNodeService: tsNodeServiceArg ,
+          tsNodeServiceConfig: {
+            /** needs to do good enough to ensure TS-Node doesn't fill this with `process.cwd()` */
+            cwd: srcBaseDir ,
+            /** needs to do good enough to ensure Studiokit-TS-Node doesn't fill all these with unexpected values */
+            // alwaysPreTranspile: true ,
+            ...(tsNodeServiceConfigArg ?? {}) ,
+          } ,
+        }
+      ))
     ) ;
 
     return (
@@ -527,10 +540,16 @@ namespace RxStyleApp {
       const tsNodeService =  (
         TsNode.create(
           tsNodeServiceArg ??
-          tsNodeServiceConfigArg ??
-          (shallWarn && console["warn"](`deprecated passing of neither (tsNodeServiceArg ?? tsNodeServiceConfigArg)`) , {
+          {
+            /** needs to do good enough to ensure Studiokit-TS-Node doesn't fill all these with unexpected values */
             alwaysPreTranspile: true,
-          } ) )
+            ...(
+              tsNodeServiceConfigArg ??
+              (shallWarn && console["warn"](`deprecated passing of neither (tsNodeServiceArg ?? tsNodeServiceConfigArg)`) , {
+              } )
+            ) ,
+          },
+        )
       );
 
       return tsNodeService ;
