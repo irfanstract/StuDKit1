@@ -16,11 +16,14 @@ import {
   ProjectLocalResolveHelper,
   utilReiterated,
   split,
+  resolveUrl ,
   versionGteLt,
   yn,
   type ArgsWithOptions, 
   Immutable,
   isUnderCspNoEvalsPolicy,
+  dropSearchParamAndHash,
+  mutationallyTransformUrl,
 } from '../util';
 
 import type {
@@ -60,6 +63,8 @@ import Path = require("node:path") ;
 
 import { fileURLToPath, pathToFileURL, } from 'node:url';
 
+import NativeFs = require("node:fs") ;
+
 import Express = require("express") ;
 
 import {
@@ -75,6 +80,7 @@ const getEnclosingUrlInfo = (
 ) ;
 
 import {
+  readFileSync,
   statSync,
 } from 'node:fs';
 
@@ -96,6 +102,18 @@ import TsNode = require("../index") ;
 import React = require('react');
 
 import ReactDOMServer = require('react-dom/server');
+
+const allTscSupportedExtsLowercased = (
+  utilReiterated(function* () {
+    for (const esmNess of ["", "C", "M"] )
+    for (const allowJJsx of [false, true] )
+    for (const dialectId of ["J", "T"] )
+      yield (
+        ("" + esmNess + ("" + dialectId + "S" ) + (allowJJsx ? "X" : "" ) )
+        .toLowerCase()
+      ) ;
+  })
+) ;
 
 ;
 /**
@@ -394,26 +412,50 @@ namespace RxStyleApp {
         } ,
       } = parseRelativePath(rUrl) ;
 
-      const concatEdPath = (
-        Path.join(srcBaseDirPath , rUrlO.pathname )
+      const qpVerbatim = rUrlO.pathname ;
+
+      const qp1 = dropSearchParamAndHash(qpVerbatim) ;
+
+      if (!(qpVerbatim.startsWith(qp1) ) ) {
+        return assert.fail(`assertion failed: ${inspect({ qpVerbatim, qp1, }) }` ) ;
+      }
+
+      const pr2 = (
+        qp1.endsWith("/") ?
+        qp1
+        :
+        pathSimpleNameToActual.translateInAppFullName(qp1, {
+          srcBasePath: srcBaseDirPath ,
+        } )
       ) ;
 
-      const actualPath = (
-        statSync(concatEdPath).isDirectory() ?
-        Path.join(concatEdPath, "index.ts") :
-        concatEdPath
+      const p3 = (
+        Path.join(srcBaseDirPath , pr2 )
       ) ;
+
+      /** `throw`s if it doesn't exist */
+      statSync(p3) ;
+
+      const finalPath = (
+        statSync(p3).isDirectory() ?
+        Path.join(p3, "index.ts") :
+        p3
+      ) ;
+
+      /** `throw`s if it doesn't strict exist as Regular File */
+      readFileSync(finalPath, ) ;
 
       console["warn"](Date(), {
         rUrl,
         rUrlO,
-        concatEdPath,
-        actualPath,
+        pr2 ,
+        p3,
+        finalPath,
       }) ;
 
       const returnVal = (
         rtService.dispatchSrcFile((
-          actualPath
+          finalPath
         ))
       ) ;
 
@@ -584,12 +626,18 @@ namespace RxStyleApp {
     )) satisfies ((x: TsNodeServiceDependentProps) => any )
   ) ;
 
-  export interface PathSimpleNameTranslator extends Extract<(
-    & (
-      & { /** @deprecated */ readonly isPathSimpleNameTranslator ?: unknown }
-      & { readonly translate: (x: string) => string, }
-    )
-  ), any > {}
+  export class PathSimpleNameTranslator
+  {
+
+    readonly translateInAppFullName!: (...x: ArgsWithOptions<[x: string, ], { srcBasePath: string, }>) => string ;
+
+    // readonly translate?: (...x: ArgsWithOptions<[x: string, ], { base: string, }>) => string ;
+
+    constructor(
+       )
+    {}
+
+  }
 
   export namespace PathSimpleNameTranslator {
     ;
@@ -600,11 +648,113 @@ namespace RxStyleApp {
      */
     export const createNoOpInstance = (
       function createNoOpPathSimpleNameTranslator()
-      : PathSimpleNameTranslator
       {
-        return { translate: (e) => e, } ;
+        return new PathSimpleNameTranslatorSimp((e) => e ) ;
       }
     ) ;
+
+  }
+
+  export class PathSimpleNameTranslatorSimp
+  extends PathSimpleNameTranslator
+  {
+    isPathSimpleNameTranslatorSimp = true as const ;
+
+    /** @deprecated */
+    constructor(
+      readonly translateInAppFullName: (x: string) => string, )
+    { super() ; }
+
+  }
+
+  export namespace PathSimpleNameTranslator {
+    ;
+
+    export const createTsInstance = (
+      function createTsInstanceImpl()
+      {
+        return new PathSimpleNameTranslatorRea((...[e, { srcBasePath: sbp0, }]) => {
+          {
+
+            const sbu1WithoutTrailingSlash = (
+              pathToFileURL(sbp0).href
+            ) ;
+            const sbu1 = (
+              mutationallyTransformUrl(sbu1WithoutTrailingSlash , e => {
+                e.hash = "" ;
+                e.search = "" ;
+                e.pathname = e.pathname.replace(/\/?$/, () => "/index" )
+              } )
+            ) ;
+
+            const resolveP = (
+
+              function (...[e]: [e: string])
+              {
+                return fileURLToPath(resolveUrl(sbu1, "." + e ) ) ;
+              }
+            ) ;
+
+            let shallVerbose: boolean = true ;
+
+            ;
+            shallVerbose && console.warn({
+              e,
+              sbp0,
+              sbu1WithoutTrailingSlash,
+              sbu1,
+            }) ;
+
+            const xExistsSync = NativeFs.existsSync ;
+
+            ;
+            // const p1 = resolveP(e) ;
+
+            const extfMatch = (
+              // e.match(/\.([cm]?[jt]sx?)$/)
+              e.match(/\.\w+$/)
+            ) ;
+            if (extfMatch ) {
+              const ffnl = resolveP(e) ;
+              shallVerbose && console.warn({ ffnl, }) ;
+              if (xExistsSync(ffnl ) ) {
+                return e ;
+              }
+            }
+            
+            if (e.match(/\/$/) ) {
+              ;
+            } else {
+              for (const extnm of (
+                allTscSupportedExtsLowercased
+              ) )
+              {
+                const pToAdd = ("." + extnm ) ;
+                const ffnl = resolveP(e) + pToAdd ;
+                const efnl =           e + pToAdd ;
+                shallVerbose && console.warn({ pToAdd, ffnl, efnl, }) ;
+                if (xExistsSync(ffnl) ) {
+                  return efnl ;
+                }
+              }
+            }
+          }
+          return e ;
+        } ) ;
+      }
+    ) ;
+
+  }
+
+  class PathSimpleNameTranslatorRea
+  extends PathSimpleNameTranslator
+  {
+    isPathSimpleNameTranslatorRea = true as const ;
+
+    /** @deprecated */
+    constructor(
+      readonly translateInAppFullName: (...x: Parameters<PathSimpleNameTranslator["translateInAppFullName"]> ) => string, )
+    { super() ; }
 
   }
 
