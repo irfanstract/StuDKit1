@@ -169,6 +169,10 @@ namespace RxEv {
   ;
 }
 
+class RxFileNotFoundException extends TypeError
+{
+}
+
 class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
   ;
 
@@ -252,9 +256,20 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
               //
               onShellError: (error) => {
                 ;
+                if (error instanceof RxFileNotFoundException) {
+                  void ( console["warn"](`Special-Cased FIle-Not-Found-Exception:`, String(error) ) ) ;
+                  respo.status(404);
+                  respo.setHeader('content-type', 'text/html');
+                  respo.send('<h1>Path Not Available</h1>' + `<pre> ${String(error) }`); 
+                  return ;
+                }
+                {
+                ;
+                void ( console["warn"](`Code Exception:`, (error) ) ) ;
                 respo.status(500);
                 respo.setHeader('content-type', 'text/html');
                 respo.send('<h1>Something went wrong</h1>' + `<pre> ${getStackOrMessage(error) }`); 
+                }
               } ,
               onShellReady: (...e) => {
                 respo.setHeader("content-type", "text/html") ;
@@ -400,6 +415,20 @@ namespace RxStyleApp {
       } as const ;
     }
 
+    const xCheckPathExists = (
+
+      /** `throw`s {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      function (...[finalPath]: [path: string])
+      {
+
+      /** `throw`s if it doesn't strict exist as Regular File */
+      if (!NativeFs.existsSync(finalPath,) ) {
+        throw new RxFileNotFoundException(`for: ${inspect({ finalPath, }) }`) ;
+      }
+
+      }
+    ) ;
+
     /**
      * rerun {@link URL.path relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
      * 
@@ -433,6 +462,9 @@ namespace RxStyleApp {
         Path.join(srcBaseDirPath , pr2 )
       ) ;
 
+      /** `throw` {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      xCheckPathExists(p3 ) ;
+
       /** `throw`s if it doesn't exist */
       statSync(p3) ;
 
@@ -442,7 +474,10 @@ namespace RxStyleApp {
         p3
       ) ;
 
-      /** `throw`s if it doesn't strict exist as Regular File */
+      /** `throw` {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      xCheckPathExists(finalPath ) ;
+
+      /** `throw`s native Node Exception if it doesn't strict exist as Regular File */
       readFileSync(finalPath, ) ;
 
       console["warn"](Date(), {
