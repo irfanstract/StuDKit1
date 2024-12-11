@@ -153,7 +153,31 @@ namespace RxEv {
           ) ;
   
           const CImpl: React.FC<{}> = (
-            function CSpclRenderedContentDisplayC() { return codeReturnValue; }
+            function CSpclRenderedContentDisplayC()
+            {
+
+              return (
+
+                ((...[e]: [e: unknown]) => {
+                  ;
+
+                  if ((
+                    (((typeof e === "object" || typeof e === "function" ) /** it didn't outrule `null` */ && e ) && Object.getOwnPropertyNames(e).length <= 0 )
+                  ) ) {
+                    return (
+                      React.createElement("p", {}, `cannot render element:`, (
+                        React.createElement("code", {}, (
+                          `${String(e) }`
+                        ) )
+                      ) )
+                    ) ;
+                  }
+
+                  return e;
+                })
+                (codeReturnValue)
+              ) ;
+            }
           );
   
           return { default: CImpl, } ;
