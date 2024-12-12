@@ -1765,6 +1765,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         )
         & EbPickFromExportedProps
         & { readonly XRError ?: ErrorConstructor, }
+        & Partial<WhenImportantEsmImportAttribsProps>
       )>
     ))
     {
@@ -1775,6 +1776,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
           alwaysPreTranspile: elAlwaysPreTranspileArg = null,
           cached: aCached = false , rerun: aRerun = false ,
           XRError: TypeError = globalThis.ReferenceError ,
+          esmImportAttribs ,
         } = null || {},
       ] = null ?? dpArgs ;
 
@@ -1815,7 +1817,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
           assert.fail(new TypeError(`please turn-on either. ${util.inspect({ cached: aCached, rerun: aRerun, })}`) )
         ) ;
         const result0 = (
-          evaluateModuleFilePretranspilativelyAtPath(entryPointPath , { scmc: finalScmc, with: { type: SupportedEsmImportAttribProps.cjsTypeString, } , } )
+          evaluateModuleFilePretranspilativelyAtPath(entryPointPath , { scmc: finalScmc, with: { type: SupportedEsmImportAttribProps.cjsTypeString, ...(esmImportAttribs ?? {} ) , } , } )
         );
         const result = (
           (pickFromExporteds ?? ((e) => e ) )(result0.vecport, result0.originalExports, result0.module)
