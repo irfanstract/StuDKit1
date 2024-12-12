@@ -27,103 +27,15 @@ import {
   AtLeastEitherProp,
 } from './util';
 
-;
-/**
- * verbatim what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
- * 
- */
-const builtinModulesListed = builtinModulesListed0 ;
+import {
+  MockBlob ,
+} from "./rt/EbMockBlob" ;
 
-/**
- * {@link builtinModules}
- * 
- * - return verbatim
- *   what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
- * 
- * - the harder case of
- *   `electron`, Electron's official "module"
- *   whose `require(...)`ing gives different results depending on whether the running platform ({@link process.execPath}) is Electron (inwhichcase it ends with `namespace` or, possibly, Function) or Node (including `electron --as-regular-nodejs`) (inwhichcase it returns `string` Path ).
- *   assuming that `require` refers to {@link Module.createRequire the native `require`},
- *   `require("node:electron")`, unlike values listed in {@link builtinModulesListed0 `builtinModules`}, will fail (with `ERR_MODULE_NOT_FOUND: cannot find module 'node:electron'`),
- *   raising debate astowhether `electron` deserves to be in this list.
- * 
- */
-const builtinModules = (
-
-  utilReiterated(function* () {
-
-    /**
-     * return verbatim
-     * what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
-     * 
-     */
-    yield* builtinModulesListed ;
-
-    /**
-     * the harder case of
-     * `electron`, Electron's official "module"
-     * whose `nativeRequire(...)`ing gives different results depending on whether the running platform ({@link process.execPath}) is Electron (inwhichcase it ends with `namespace` or, possibly, Function) or Node (including `electron --as-regular-nodejs`) (inwhichcase it returns `string` Path ).
-     * `nativeRequire("node:electron")`, unlike values listed in {@link builtinModulesListed0 `builtinModules`}, will fail (with `ERR_MODULE_NOT_FOUND: cannot find module 'node:electron'`),
-     * raising debate astowhether `electron` deserves to be in this list.
-     * 
-     */
-    {
-    ;
-    try {
-      ;
-      if (isWithinElectronJsInTermsOfRequireElectronPackage() ) {
-        yield "electron" ;
-      }
-    } catch (z) {
-      console["warn"](`[EbJs Enumerate BuiltinModules] cannot find module 'electron' `, String(z) ) ;
-    }
-    }
-
-  })
-) ;
-
-/* avoid using `const isSomeDoSome = function () { ... ... }` since we use forward reference! */
-
-/**
- * whether
- * the running platform is Electron rather than Regular NodeJS,
- * intermsa {@link hasAlivatedElectronJsPackageLoadTreatment}
- * 
- */
-function isWithinElectronJsInTermsOfRequireElectronPackage()
-{
-
-    return (
-      hasAlivatedElectronJsPackageLoadTreatment()
-    ) ;
-}
-/**
- * whether
- * `require("electron")` (or {@link ImportMeta the default-import of it })
- * will end with "alivated" `namespace` `ElectronApp`, instead of ending with String Path,
- * which will vary depending on whether being run on Electron or Regular NodeJS
- * 
- */
-function hasAlivatedElectronJsPackageLoadTreatment()
-{
-
-  /**
-   * {@link happensProperElectronJsNamespace};
-   * it'd be
-   * `object` or `function` if the underlying platform is run as Electron (see also "run Electron as regular Node process"!), or
-   * `string` (`path/to/electron.exe`) otherwise
-   * 
-   * to anticipate future possibility of it yielding object with different `typeof` result
-   * we may deserve to handle additional value/result eg `"function"`
-   * 
-   */
-  const happensProperElectronJsNamespace = (
-    (typeof require("electron") === "object" )
-    || (typeof require("electron") === "function" )
-  ) ;
-
-  return happensProperElectronJsNamespace ;
-}
+import {
+  builtinModules ,
+  builtinModulesListed ,
+  // builtinModulesListed0 ,
+} from "./rt/BuiltinModules" ;
 
 import { createRequire, } from 'node:module';
 
@@ -154,6 +66,39 @@ export interface WhenImportantEsmImportAttribsProps
   readonly esmImportAttribs: ImportAttributes ;
 }
 
+declare global {
+  interface ImportAttributes {
+    /**
+     * 
+     * {@link SupportedEsmImportAttribProps.cjsTypeString} for both CJS and ESM,
+     * - `"json"` for JSON File,
+     * - `"string"` if u want it raw as {@link string},
+     * - `"raw"` or `"blob"` if u want it raw as {@link Blob},
+     * - `"url"` if u want it raw as {@link URL.href URL-String} (may be Remote URL, or Blob-URL, or Data-URL, depending on config or platform),
+     * 
+     * ```
+     * const RecordType =
+     * evaluateModule("./util-recordtypes", {
+     *   with: {
+     *     type: SupportedEsmImportAttribProps.cjsTypeString,
+     *   }
+     * })
+     * ```
+     * 
+     * ```
+     * const img =
+     * evaluateModule("./MainBackground.svg", {
+     *   with: {
+     *     type: "blob",
+     *   }
+     * })
+     * ```
+     * 
+     */
+    type: string ,
+  }
+}
+
 /**
  * supported subset of known attribs
  * 
@@ -163,9 +108,31 @@ interface SupportedEsmImportAttribProps extends Extract<(
 ), any > {}
 
 namespace SupportedEsmImportAttribProps {
-  export const cjsTypeString: "cjs" | "commonjs" = (
+
+  /**
+   * "dummy" value implied by use of `require(...)` or ESM `import * as L` or `await import(...)`
+   * 
+   */
+  export const cjsTypeString: "cjs" | "commonjs" | "js-module" | "jsm" = (
     "cjs"
   ) ;
+
+  /**
+   * the CharSet assumed by `translateInlineScriptIntoCjs` for given value of `esmImportAttribs.type`
+   * 
+   */
+  export function getCharsetNameForTypev(x: string ): NodeJS.BufferEncoding
+  {
+
+    if ((
+      ["raw", "blob", "bytes", ].includes(x)
+    )) {
+      return "latin1" ;
+    }
+
+    return "utf8" ;
+  }
+
 }
 
 const compactStringifyImportAttribs = (
@@ -203,30 +170,7 @@ type SupportedImportConfig<SpclExtraProps extends object = {}> = (
   & {
     /**
      * obligatory;
-     * set its `type` to
-     * {@link SupportedEsmImportAttribProps.cjsTypeString} for both CJS and ESM,
-     * `"json"` for JSON File,
-     * `"string"` if u want it raw as {@link string},
-     * `"blob"` if u want it raw as {@link Blob},
-     * `"url"` if u want it raw as {@link URL.href URL-String} (may be Remote URL, or Blob-URL, or Data-URL, depending on config or platform),
-     * 
-     * ```
-     * const RecordType =
-     * evaluateModule("./util-recordtypes", {
-     *   with: {
-     *     type: SupportedEsmImportAttribProps.cjsTypeString,
-     *   }
-     * })
-     * ```
-     * 
-     * ```
-     * const img =
-     * evaluateModule("./MainBackground.svg", {
-     *   with: {
-     *     type: "blob",
-     *   }
-     * })
-     * ```
+     * set its `type` to a value iterated in {@link ImportAttributes.type}
      * 
      */
     readonly with: SupportedEsmImportAttribProps,
@@ -1406,6 +1350,12 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
       const initialExportsObj = new Object;
 
+      const mdObjDId = (
+        `[studk-dispatchInlineScript]`
+        + encodeURIComponent(assumedSrcPath )
+        + (0.25125125125125 )
+      );
+
       // @ts-ignore
       const newModule: (
         NodeJS.Module & {
@@ -1414,9 +1364,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
       ) = {
         exports: initialExportsObj,
         id: (
-          `[studk-dispatchInlineScript]`
-          + encodeURIComponent(assumedSrcPath )
-          + (0.25125125125125 )
+          mdObjDId
         ),
         require: REQUIRE,
         // TODO
@@ -1482,7 +1430,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     (...args: Parameters<XT> ) => (
       & {
         readonly assumedSrcPath: string;
-        readonly srcCode: string;
+        readonly srcCode: string | Blob;
         readonly sfe: string;
         readonly compiledCjsCode: string;
       }
@@ -1494,6 +1442,54 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
   let ccc: import("lodash").MemoizedFunction | null = (
     null
+  ) ;
+
+  const spclReadFileSync = (
+
+    (...spArgs : ArgsWithOptions<[path: string], {
+      // encoding?: NodeJS.BufferEncoding,
+    }> ) => {
+      const [path, {
+        // encoding: encodingSpec = null,
+      } = {}] = spArgs ;
+
+      // const attemptibleEncods = (
+      //   encodingSpec ?
+      //   [encodingSpec]
+      //   : (Immutable.Seq.Indexed(["utf8", "latin1" ]) satisfies Immutable.Seq.Indexed<NodeJS.BufferEncoding>).toArray()
+      // ) ;
+
+      const c0 = (
+        spclFs.readFileSync(path, )
+      ) ;
+
+      // for (const encoding of attemptibleEncods) {
+      //   const s = new TextDecoder(encoding, ).decode(c0) ;
+      //   if ((
+      //     ((): boolean => {
+      //       try {
+      //         btoa(s) ;
+      //         return true ;
+      //       } catch (z) {
+      //         console.warn({ path, encoding0: encodingSpec, attemptibleEncods, encoding } , String(z)) ;
+      //         return false ;
+      //       }
+      //     })()
+      //   ) ) {
+      //     return s ;
+      //   }
+      // }
+
+      // throw new TypeError() ;
+
+      return (
+        // new Blob([c0], {
+        //   // type: "application/octet"
+        // })
+        // { data: c0, type: "application/octet", }
+        new MockBlob(c0, "application/octet-stream")
+      ) ;
+    }
   ) ;
 
   const spclReadTxtFileSync = (
@@ -1566,7 +1562,22 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         getFileNameExt(assumedSrcPath) ?? ".tsx"
       ) ;
 
-      const srcCode = spclReadTxtFileSync(assumedSrcPath, ) ;
+      const appropriateSrcFileDecodeCharset = (
+
+        SupportedEsmImportAttribProps.getCharsetNameForTypev(imptAttribs.type )
+      ) ;
+
+      if (!appropriateSrcFileDecodeCharset.match(/^utf-?8$/ ) ) {
+        console.warn({ appropriateSrcFileDecodeCharset, imptAttribs, assumedSrcPath, }) ;
+      }
+
+      const srcCode = (
+
+        spclReadFileSync(assumedSrcPath, {
+          // encoding: appropriateSrcFileDecodeCharset
+          // ,
+        } )
+      ) ;
 
       const compiledCjsCode = (
         translateInlineScriptIntoCjs(srcCode, {
@@ -1639,6 +1650,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         propagateNewKnownPath(assumedSrcPath) ;
 
         const compiledCjsCode = (
+          /** TODO although it seems clear static assets need to first be converted into CJS, maybe someone else 'd say otherwise */
           spclReadTxtFileSync(assumedSrcPath)
         ) ;
 
@@ -2023,10 +2035,10 @@ export type {
 } ;
 
 export type EbTranslateInlineScriptIntoCjsAlt<P2 extends {}> = (
-  EbTranslateInlineScriptIntoCjs<never, never, never, P2 >
+  EbTranslateInlineScriptIntoCjs<never, never, never, P2, string | MockBlob >
 ) ;
 
-export interface EbTranslateInlineScriptIntoCjs<dmmy1 = never, dmmy2 = never, dmmy3 = never, P2 extends object = {}, P1 extends {} = (
+export interface EbTranslateInlineScriptIntoCjs<dmmy1 = never, dmmy2 = never, dmmy3 = never, P2 extends object = {}, SpclCodeT extends string | Blob | MockBlob = string, P1 extends {} = (
   //
   & WhenImportantAssumedActualFileNameExtProps
   & {
@@ -2043,7 +2055,7 @@ export interface EbTranslateInlineScriptIntoCjs<dmmy1 = never, dmmy2 = never, dm
 )>
 {
   (...args: (
-    ArgsWithOptions<[code: string] , (
+    ArgsWithOptions<[code: SpclCodeT] , (
       & P1
       & P2
       & Partial<WhenImportantAssumedActualSrcFilePathInfoProps>

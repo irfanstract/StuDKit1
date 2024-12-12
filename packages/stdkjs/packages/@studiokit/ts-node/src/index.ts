@@ -1830,7 +1830,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
 
   const translateInlineScriptIntoCjs = (
 
-    function (...[code, opts] : (
+    function (...[code0, opts] : (
       Parameters<(
         EB.EbTranslateInlineScriptIntoCjsAlt<(
           & EB.WhenImportantEsmImportAttribsProps
@@ -1840,24 +1840,116 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     : string
     {
 
-      if (opts.fileExt.match(/\.([cm]?[cjt]sx?)$/) ) {
-        ;
-        return (
-          translateInlineTsScriptIntoCjs(code, opts)
-        ) ;
+      const decodeAsUtf8 = (
+        (): string => {
+          if (typeof code0 === "string") {
+            return code0 ;
+          }
+          return code0.data.toString("utf8") ;
+        }
+      ) ;
+
+      const inferMimeType = (
+
+        once((): string => {
+
+          const {
+            fileExt: assumedFileExt ,
+          } = opts ;
+
+          // if (opts.fileExt.match(/^(svg|png|jp(eg|)2000|jpe?g|gif)$/) ) {
+          //   ;
+          //   return "" ;
+          // }
+
+          if (1) {
+            ;
+
+            if ((
+              assumedFileExt
+            )) {
+              ;
+
+              const DMmT = (
+                (() => {
+                  try {
+                    return (
+                      require("../dist-raw/MimeTypeFromFileName.cjs") as typeof import("../dist-raw/MimeTypeFromFileName.cjs")
+                    ) ;
+                  } catch (z) {
+                    console.warn(`cannot import 'MimeTypeFromFileName.cjs'`, String(z) ) ;
+                    return null ;
+                  }
+                })()
+              ) ;
+
+              try {
+
+                if (DMmT) {
+                  ;
+
+                  const {
+                    getMimeTypeFromShortName ,
+                  } = DMmT ;
   
+                  const c = (
+                    getMimeTypeFromShortName(assumedFileExt )
+                  ) ;
+
+                  if (c) {
+                    return c ;
+                  }
+
+                } else {
+                  ;
+                  console.warn(`couldn't import 'MimeTypeFromFileName.cjs', cannot perform Sniffing `,) ;
+                }
+
+              } catch (z) {
+                console.error(String(z) ) ;
+              }
+
+            }
+
+          }
+
+          return "application/octet-stream" ;
+        })
+      ) ;
+
+      C1: {
+      ;
+
+      if (["raw", "blob", "bytes", ].includes(opts.esmImportAttribs.type ) ) {
+        break C1 ;
       }
 
-      if (opts.fileExt.match(/\.(jsonc?)$/) ) {
+      ;
+      {
+      ;
+
+      ;
+      const code = decodeAsUtf8() ;
+
+      if (["---cjs", EB.SupportedEsmImportAttribProps.cjsTypeString, null].includes(opts.esmImportAttribs["type"] ?? EB.SupportedEsmImportAttribProps.cjsTypeString ) ) {
+        ;
+        if (opts.fileExt.match(/\.([cm]?[cjt]sx?)$/) ) {
+          ;
+          return (
+            translateInlineTsScriptIntoCjs(code, opts)
+          ) ;
+    
+        }
+      }
+
+      if (opts.fileExt.match(/\.(jsonc?)$/) || ["json", "jsonc", ].includes(opts.esmImportAttribs.type ) ) {
         ;
         // TODO
         return (
           `
           // @ts-check
           "use strict" ;
-          module.exports = ${(
-            code
-          ) } ;`
+          module.exports = eval('() => (' + ${JSON.stringify(code) } + ')' ) ;`
         ) ;
   
       }
@@ -1873,7 +1965,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
          */
         if (opts.assumedSrcPath?.match(/\.module\.(\w+)$/)) {
           ;
-          throw new (class XTsError extends TypeError {} )(`unsupported CSS Modules`) ;
+          throw new (class XTsError extends TypeError {} )(`unsupported CSS Modules (currently we only support Global CSS(es) )`) ;
         } else {
           ;
           //
@@ -1890,6 +1982,71 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
               ${ opts.fileExt.match(/\.css /) ? `s.textContent = ${ JSON.stringify(code) } ;` : `// CSS Preproc Src File ` }
               document.head.appendChild(s) ;
             } `
+          ) ;
+        }
+      }
+
+      }
+
+      }
+
+      if (!(typeof code0 === "string")) {
+        ;
+        if ((
+          ["raw", "blob", "bytes", ...(0 ? [null] : [] )].includes(opts.esmImportAttribs.type )
+          ||
+          (1 && [EB.SupportedEsmImportAttribProps.cjsTypeString , "  esm" ].includes(opts.esmImportAttribs.type ))
+          ||
+          0
+        ) ) {
+          // const bytes = Array.from(code).map(c => c.charCodeAt(0) ) ;
+          // Uint8Array ;
+          const inferredMimeType = (
+
+            inferMimeType()
+          ) ;
+          // TODO
+          return (
+            `
+            // @ts-check
+            "use strict" ;
+
+            /**
+             * decode Base64 String as Blob
+             * 
+             * @param {string} x 
+             * @return {Blob}
+             */
+            function atoblob(x, { type: mimeType = "application/octet-stream", } = {} )
+            {
+              return new Blob(/** don't forget to pack as array */ [(
+                // new Uint8Array((
+                //   Array.from(atob(x) )
+                //   .map(c => c.charCodeAt(0) )
+                // ) )
+                Uint8Array.from(atob(x) , c => c.charCodeAt(0) )
+              )] , { type: mimeType, } ) ;
+            }
+
+            const expAsBlob = atoblob((
+              ${JSON.stringify((
+                (() => {
+                  try {
+                    return btoa(code0.data.toString("latin1") ) ;
+                  } catch (z) {
+                    throw TypeError(`for ${util.inspect({ opts, }) }: ${String(z) }`) ;
+                  }
+                })()
+              ) ) }
+            ), ${util.inspect({ type: inferredMimeType, }, { colors: false, depth: 20, } ) } ) ;
+            if (1) {
+              require("node:assert")(expAsBlob.size === ${code0.data.length     }, '     length error: ' + require("node:util").inspect({ expected: ${util.inspect({ length: code0.data.length     } , { colors: false, }) }, actual: { length: expAsBlob.size, }, } ) ) ;
+              require("node:assert")(expAsBlob.size === ${code0.data.byteLength }, 'byte-length error: ' + require("node:util").inspect({ expected: ${util.inspect({ length: code0.data.byteLength } , { colors: false, }) }, actual: { length: expAsBlob.size, }, } ) ) ;
+              //
+            }
+
+            module.exports = expAsBlob ;
+            `
           ) ;
         }
       }
