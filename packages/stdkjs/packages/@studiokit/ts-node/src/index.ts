@@ -1823,7 +1823,11 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
   const translateInlineScriptIntoCjs = (
 
     function (...[code, opts] : (
-      Parameters<EB.EbTranslateInlineScriptIntoCjs>
+      Parameters<(
+        EB.EbTranslateInlineScriptIntoCjsAlt<(
+          & EB.WhenImportantEsmImportAttribsProps
+        )>
+      ) >
     ))
     : string
     {
