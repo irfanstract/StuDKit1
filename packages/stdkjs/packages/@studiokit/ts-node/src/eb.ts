@@ -135,9 +135,24 @@ import type * as _ts from 'typescript';
 
 import type { Transpiler, TranspilerFactory } from './transpilers/types';
 
+interface WhenImportantAssumedActualFileNameExtProps
+{
+  readonly fileExt: string ;
+}
+
+interface WhenImportantAssumedActualSrcFilePathInfoProps
+{
+  readonly assumedSrcPath : string,
+}
+
 import { relative, basename, extname, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
+
+export interface WhenImportantEsmImportAttribsProps
+{
+  readonly esmImportAttribs: ImportAttributes ;
+}
 
 /**
  * supported subset of known attribs
@@ -1154,13 +1169,14 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     }
   ) ;
 
-  interface ToDispatchCompiledCjsOptions extends Extract<{
-    //
-    fileExt: string,
-    assumedSrcPath: string ,
-    scmc: SCMC ,
-    esmImportAttribs: ImportAttributes ,
-  }, any> {}
+  interface ToDispatchCompiledCjsOptions extends Extract<(
+    & WhenImportantAssumedActualSrcFilePathInfoProps
+    & WhenImportantAssumedActualFileNameExtProps
+    & {
+      scmc: SCMC ,
+    }
+    & WhenImportantEsmImportAttribsProps
+  ), any> {}
 
   interface ToDispatchCompiledCjsOptionsAndPickFromOuter<out R> extends Extract<ToDispatchCompiledCjsOptions & {
     pickFromExporteds: ExportedValueHandler<R>,
@@ -1505,6 +1521,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         translateInlineScriptIntoCjs(srcCode, {
           fileExt: sfe,
           assumedSrcPath,
+          esmImportAttribs ,
         } )
       ) ;
 
@@ -1545,6 +1562,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         translateInlineScriptIntoCjs(srcCode, {
           fileExt: sfe,
           assumedSrcPath ,
+          esmImportAttribs: imptAttribs ,
         } )
       ) ;
 
@@ -1887,7 +1905,9 @@ interface LiveRunningCsneOptions extends Extract<(
          * 
          */
         translateInlineScriptIntoCjs: (
-          EbTranslateInlineScriptIntoCjs
+          EbTranslateInlineScriptIntoCjsAlt<(
+            & WhenImportantEsmImportAttribsProps
+          )>
         )
         ,
       }
@@ -1933,11 +1953,15 @@ interface GnCsneOptions<out XHelper extends object | null = object | null> exten
       //
       readonly dispatchCompiledCjsImpl: {
         //
-        (...dpArgs : ArgsWithOptions<[code: string] , {
-          fileExt: string,
-          assumedSrcPath: string ,
-          module: GnCsneXoduleObj ,
-        } >) : {
+        (...dpArgs : ArgsWithOptions<[code: string] , (
+          & WhenImportantAssumedActualSrcFilePathInfoProps
+          & WhenImportantAssumedActualFileNameExtProps
+          & {
+            // fileExt: string,
+            // assumedSrcPath: string ,
+            module: GnCsneXoduleObj ,
+          }
+        ) >) : {
           readonly finalMainExports: any;
           readonly originalExports: object;
           readonly module: NodeJS.Module;
@@ -1986,19 +2010,32 @@ export type {
   CsneAux ,
 } ;
 
-export interface EbTranslateInlineScriptIntoCjs<dmmy1 = never, dmmy2 = never, dmmy3 = never, P1 extends {} = (
+export type EbTranslateInlineScriptIntoCjsAlt<P2 extends {}> = (
+  EbTranslateInlineScriptIntoCjs<never, never, never, P2 >
+) ;
+
+export interface EbTranslateInlineScriptIntoCjs<dmmy1 = never, dmmy2 = never, dmmy3 = never, P2 extends object = {}, P1 extends {} = (
   //
+  & WhenImportantAssumedActualFileNameExtProps
   & {
-    fileExt: string,
+
+    /**
+     * don't use
+     * 
+     * @deprecated
+     * 
+     */
     asSecondLevel?: boolean,
+
   }
 )>
 {
   (...args: (
     ArgsWithOptions<[code: string] , (
       & P1
+      & P2
+      & Partial<WhenImportantAssumedActualSrcFilePathInfoProps>
       & {
-        assumedSrcPath ?: string,
       }
     ) >
   )): string ;
@@ -2009,7 +2046,7 @@ export interface EbTranslateInlineScriptIntoCjs<dmmy1 = never, dmmy2 = never, dm
 
 
 
-export type {
+export {
   SupportedEsmImportAttribProps ,
 } ;
 
