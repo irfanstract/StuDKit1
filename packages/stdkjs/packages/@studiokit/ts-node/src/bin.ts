@@ -1056,6 +1056,7 @@ function phase4ImplWhenAppEntrypt(payload: ReturnType<typeof phase4Pre> )
         preTranspiledRunfileMode : {
           service.dryDepScanningEb.dispatchSrcFile(entryPointPath, {
             alwaysAvoidNativeImport: true ,
+            rerun: true ,
           } ) ;
           if (nraArg) {
             ;
@@ -1072,6 +1073,7 @@ function phase4ImplWhenAppEntrypt(payload: ReturnType<typeof phase4Pre> )
 
           service.dispatchSrcFile(entryPointPath, {
             alwaysAvoidNativeImport: true ,
+            rerun: true ,
           } ) ;
 
           // break RUN ;
