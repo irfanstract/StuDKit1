@@ -223,6 +223,9 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
       const this1 = this ;
       ;
 
+      try {
+      ;
+
       if (1) {
         const {
           xPath: path ,
@@ -343,6 +346,14 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         return ;
         } /* fmt: HTML */
 
+      }
+
+      } catch (z) {
+        return (
+          runHtmlTypedInternalServerErrorResponse(z)
+          ,
+          void 0
+        ) ;
       }
 
       function warnSpecialcasedFileNotFoundException(...[error]: [error: any])
