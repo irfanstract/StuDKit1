@@ -72,6 +72,20 @@ SpclTests.describeRootedRxStyleAppPreToPolyTest1({
     // resolve() ;
   }) ;
 
+  it(`shall render this for Dir '/myicon.png'`, async () => {
+    ;
+
+    const oF = await fetch(("http://" + ("localhost:" + appPn ) ) + "/myicon.png" )  ;
+    const o = await oF.text() ;
+
+    // console.warn(`output: ${posixBlockquotify(o) } `) ;
+
+    assertHttpOk(oF) ;
+    // assertContainsItAndPrint(o, 'SummerHitsPlayMeApp') ;
+
+    // resolve() ;
+  }) ;
+
 }) ;
 
 
