@@ -26,6 +26,8 @@ import {
   mutationallyTransformUrl,
 } from '../util';
 
+import L = require("lodash") ;
+
 import type {
 
   AllOrNeither,
@@ -92,6 +94,10 @@ import {
   XMapperImpl ,
   XWhitelistOrBlacklistImpl ,
 } from "./generic-mapper" ;
+
+import {
+  getMimeTypeFromShortName ,
+} from "../../dist-raw/MimeTypeFromFileName.cjs" ;
 
 
 
@@ -211,6 +217,94 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
   (() => {
   ;
 
+  /**
+   * whether the path ends with name-ext, and then
+   * returns the analyses
+   * 
+   */
+  const isFileNameExtensionedPath = (
+
+    (path: string) => {
+
+      const c = (
+        (
+          path
+          .replace(/\/$/, () => "" )
+          .match(/\.(\w+)$/)?.[1]
+        )
+        // TODO
+        ?.match(/^(\w+)$/)
+      ) || false ;
+
+      if (c) {
+        ;
+        const fmtShortName = c[1]! ;
+  
+        const fmtMimeType = (
+          getMimeTypeFromShortName(fmtShortName)
+          // ?? "application/octet-stream"
+        ) ;
+  
+        return (
+          {
+            fmtShortName ,
+            fmtMimeType ,
+          } as const
+        ) ;
+      } else {
+        return false ;
+      }
+    }
+  ) ;
+
+  // TODO
+  /**
+   * whether it's a path we wld pretend as "referring to file having one of the known fmts"
+   * 
+   */
+  const isKnownFmtFilePath = (
+
+    (path: string) => {
+
+      const beingNameExtensioned = isFileNameExtensionedPath(path) ;
+
+      return (
+        (
+          (beingNameExtensioned && getMimeTypeFromShortName(beingNameExtensioned.fmtShortName ) )
+        )
+        || false
+      ) ;
+    }
+  ) ;
+
+  /**
+   * whether it's a path we shall treat as static-asset path
+   * 
+   */
+  const isShallBeTreatedAsStaticFilePath = (
+
+    (path: string) => {
+
+      const beingNameExtensioned = isFileNameExtensionedPath(path) ;
+      // if (beingNameExtensioned) {
+      //   ;
+      //   if ((
+      //     beingNameExtensioned.fmtShortName
+      //     ?.match(/^(txt|csv|svg|[am]?e?ps\d+|[am]?(png|we?b[map]|tiff|(jp(eg|g|)2000|jpe?g))|gif|wa(sm|t)|[ot]tf)$/)
+      //   )) {
+      //     return beingNameExtensioned ;
+      //   } else {
+      //     return false ;
+      //   }
+      // } else {
+      //   return beingNameExtensioned ;
+      // }
+      return (
+        beingNameExtensioned
+      ) ;
+    }
+  ) ;
+
   return (
 
     /**
@@ -242,13 +336,12 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           hostnamev ,
         }) ;
 
-        const stta = (
-
-          (() => {
-            if (req.accepts("text/html") ) {
-              return "cjs" ;
-            }
-          })()
+        /**
+         * the value for `with.type` to run the main script (via {@link this1.peer.rerunRelativePath})
+         * 
+         */
+        let stta: string = (
+          "unknown"
         ) ;
 
         const evaluateMainOnce = (
@@ -269,10 +362,24 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           })
         ) ;
 
+        const shallStatic = (
+          isShallBeTreatedAsStaticFilePath((path /* `pathname` */ ) )
+        ) ;
+
+        console.warn({ shallStatic, }) ;
+
         if ((
           req.accepts("html")
+          &&
+          (
+            1 ? (
+              !shallStatic
+            ) : 1
+          )
         ) ) {
         ;
+
+        stta = "cjs" ;
 
         const finalCont = (
 
@@ -288,9 +395,24 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
                */
               RxEv.evaluateSyncFunction(() => {
 
-                return (
+                const value = (
                   evaluateMainOnce()
                 ) ;
+
+                if ((
+                  isShallBeTreatedAsStaticFilePath(path )
+                ) ) {
+                  return (
+                    React.createElement("div", {}, (
+                      React.createElement(
+                        "p", {},
+                        `Unexpected React Rendition Of Static-Asset File`, ` `, (
+                          React.createElement("code", {}, path )
+                        ) )
+                    ))
+                  ) ;
+                }
+                return value ;
               })
             ) ;
 
@@ -324,6 +446,102 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         // renderInp.pipe(respo) ;
         return ;
         } /* fmt: HTML */
+
+        if ((
+          0
+          &&
+          req.accepts(["json", "application/jsonc"])
+        )) {
+          ;
+          stta = "json" ;
+
+          const returnObj = (
+            evaluateMainOnce()
+          ) ;
+
+          respo.status(200) ;
+
+          return (
+            /**
+             * unftntely, this will omit the commts in
+             * 
+             */
+            respo.send((
+              JSON.stringify(returnObj)
+            ))
+            ,
+            void 0
+          ) ;
+        }
+
+        if ((
+          1
+        )) {
+          ;
+
+          stta = "raw" ;
+
+          const returnVal = (
+            evaluateMainOnce()
+          ) ;
+
+          if ((
+            (
+              typeof returnVal === "object" || typeof returnVal === "string"
+              ||
+              /**
+               * these primitive-value(s) cannot be meaningfully translated into string response, so
+               * we'd better bail out
+               * 
+               */
+              (
+                (
+                  ["symbol"].includes(typeof returnVal)
+                  // ||
+                  // ["number", "bigint"].includes(typeof returnVal)
+                ) && assert.fail(new TypeError(inspect({ returnVal, })) )
+                ,
+                false
+              )
+            )
+            &&
+            returnVal
+          )) {
+            ;
+
+            if ((
+              !(
+                (returnVal instanceof Blob )
+                || (returnVal instanceof Buffer )
+                || ((returnVal instanceof (globalThis.ArrayBuffer || Uint8Array ) ) )
+                || (returnVal instanceof Uint8Array )
+              )
+            )) {
+              console["warn"](`unsupported return-value ${(returnVal as Record<string, unknown>).constructor?.toString }`) ;
+            }
+
+            ;
+            respo.status(200) ;
+
+            respo.setHeader("content-type", (
+              (shallStatic || null)?.fmtMimeType
+              ?? "application/octet-stream"
+            )) ;
+  
+            respo.send((
+              (typeof returnVal === "boolean" || typeof returnVal === "number") ?
+              String(Number(returnVal) ) :
+              (returnVal instanceof Blob || returnVal instanceof (globalThis.Response) ) ?
+              /** Express can't directly handle {@link Blob}; convert to Buffer first */
+              (((e: ArrayBuffer) => (Buffer.copyBytesFrom(new Uint8Array(e ) ) ) )(await returnVal.arrayBuffer() ) ) :
+              returnVal
+            )) ;
+
+            return ;
+          }
+
+          ;
+        }
 
       }
 
