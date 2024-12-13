@@ -486,6 +486,16 @@ namespace RxStyleApp {
         Path.join(srcBaseDirPath , pr2 )
       ) ;
 
+      if (shallVerboseResol) {
+        ;
+        console.warn({
+          srcBaseDirPath ,
+          qp1,
+          pr2 ,
+          p3 ,
+        }) ;
+      }
+
       /** `throw` {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
       xCheckPathExists(p3 ) ;
 
@@ -504,13 +514,19 @@ namespace RxStyleApp {
       /** `throw`s native Node Exception if it doesn't strict exist as Regular File */
       readFileSync(finalPath, ) ;
 
-      console["warn"](Date(), {
-        rUrl,
-        rUrlO,
-        pr2 ,
-        p3,
-        finalPath,
-      }) ;
+      if ((
+        shallVerboseResol
+        || 1
+      )) {
+        ;
+        console["warn"](Date(), {
+          rUrl,
+          rUrlO,
+          pr2 ,
+          p3,
+          finalPath,
+        }) ;
+      }
 
       const returnVal = (
         rtService.dispatchSrcFile((
@@ -526,15 +542,26 @@ namespace RxStyleApp {
     return (
 
       new RxStyleApp((
-        {
+
+        (
+          /**
+           * implementing `peer`.
+           * 
+           * if we _straight passed this directly as options_ rather than holding on and applying this idiom,
+           * we risk breaking existing code when renaming any members of {@link PeerItcMethods}, because presently Ver of `tsserver` doesn't properly make the link in that case
+           * 
+           */
+          function <T0, const T1 extends NoInfer<T0> & Record<string, unknown>>(c0: import("react").Dispatch<T0>, x: T1): T0 & T1
+          { return x ; }
+        )((x: PeerItcMethods) => {} , {
           //
     
           isWhitelistedSrcUrl ,
     
-          rerunRelativePath ,
+          rerunRelativePath: rerunRelativePath ,
     
-        } as const
-      ) satisfies (PeerItcMethods & Record<string, unknown>))
+        })
+      ))
     ) ;
   }
 
@@ -627,6 +654,11 @@ namespace RxStyleApp {
     ;
   }
 
+  /**
+   * {@link ConformOrNever `ConformOrNever<TsNodeServiceDependentProps>`} -
+   * additionally allowing to specify neither of them.
+   * 
+   */
   export type OptionalTsNodeServiceDependentProps = (
     ConformOrNever<TsNodeServiceDependentProps>
   ) ;
@@ -638,6 +670,12 @@ namespace RxStyleApp {
     }>
   ) ;
 
+  /**
+   * altered version of {@link getTsNodeServiceFromProps} which
+   * expects {@link OptionalTsNodeServiceDependentProps} instead of {@link TsNodeServiceDependentProps}.
+   * helper to instantiate `TSNode.Service`, in lieu of the possibility of neither of those props having been set.
+   * 
+   */
   export const getTsNodeServiceFromOptionalizedProps = (
 
     ((...[{
@@ -664,6 +702,10 @@ namespace RxStyleApp {
     }) satisfies ((...x: ArgsWithOptions<[OptionalTsNodeServiceDependentProps], { warn ?: boolean, }>) => any )
   ) ;
 
+  /**
+   * helper to instantiate `TSNode.Service`, in lieu of the possibility of neither of those props having been set.
+   * 
+   */
   export const getTsNodeServiceFromProps = (
 
     (({
@@ -684,6 +726,8 @@ namespace RxStyleApp {
       })
     )) satisfies ((x: TsNodeServiceDependentProps) => any )
   ) ;
+
+  let shallVerboseResol: boolean = true ;
 
   export class PathSimpleNameTranslator
   {
@@ -754,7 +798,7 @@ namespace RxStyleApp {
               }
             ) ;
 
-            let shallVerbose: boolean = true ;
+            const shallVerbose = shallVerboseResol ;
 
             ;
             shallVerbose && console.warn({
