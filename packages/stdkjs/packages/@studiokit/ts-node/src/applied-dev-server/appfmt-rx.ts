@@ -198,6 +198,9 @@ class RxFileNotFoundException extends TypeError
 {
 }
 
+;
+import TsNodeEb = require("../eb") ;
+
 class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
   ;
 
@@ -206,6 +209,10 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
    * 
    */
   ejsFrontend: Express.Handler = (
+  (() => {
+  ;
+
+  return (
 
     /**
      * for the right way to do it
@@ -215,6 +222,7 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
     async (...[req, respo, inext]) => {
       const this1 = this ;
       ;
+
       if (1) {
         const {
           xPath: path ,
@@ -223,6 +231,7 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           originHref,
           hostnamev ,
         } = getEnclosingUrlInfo(req) ;
+
         console["warn"](Date(), {
           path ,
           pathnameHref,
@@ -230,6 +239,39 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           originHref,
           hostnamev ,
         }) ;
+
+        const stta = (
+
+          (() => {
+            if (req.accepts("text/html") ) {
+              return "cjs" ;
+            }
+          })()
+        ) ;
+
+        const evaluateMainOnce = (
+
+          once((): unknown => {
+
+            if (path === "/%20" ) {
+              throw new TypeError(`illegal access: ${inspect({ path, pathnameHref, }) }`) ;
+            }
+
+            return (
+              this1.peer.rerunRelativePath(path, {
+                with: {
+                  type: stta ,
+                } ,
+              })
+            ) ;
+          })
+        ) ;
+
+        if ((
+          req.accepts("html")
+        ) ) {
+        ;
+
         const finalCont = (
 
           (() => {
@@ -244,12 +286,8 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
                */
               RxEv.evaluateSyncFunction(() => {
 
-                if (path === "/%20" ) {
-                  throw new TypeError(`illegal access: ${inspect({ path, pathnameHref, }) }`) ;
-                }
-
                 return (
-                  this1.peer.rerunRelativePath(path)
+                  evaluateMainOnce()
                 ) ;
               })
             ) ;
@@ -282,18 +320,14 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
               onShellError: (error) => {
                 ;
                 if (error instanceof RxFileNotFoundException) {
-                  void ( console["warn"](`Special-Cased FIle-Not-Found-Exception:`, String(error) ) ) ;
-                  respo.status(404);
-                  respo.setHeader('content-type', 'text/html');
-                  respo.send('<h1>Path Not Available</h1>' + `<pre> ${String(error) }`); 
+                  warnSpecialcasedFileNotFoundException(error) ;
+                  runHtmlTypedFileNotFoundErrorResponse(error) ;
                   return ;
                 }
                 {
                 ;
                 void ( console["warn"](`Code Exception:`, (error) ) ) ;
-                respo.status(500);
-                respo.setHeader('content-type', 'text/html');
-                respo.send('<h1>Something went wrong</h1>' + `<pre> ${getStackOrMessage(error) }`); 
+                runHtmlTypedInternalServerErrorResponse(error) ;
                 }
               } ,
               onShellReady: (...e) => {
@@ -307,9 +341,35 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         // (await new ReadableStreamDefaultReader(renderInp)) ;
         // renderInp.pipe(respo) ;
         return ;
+        } /* fmt: HTML */
+
       }
+
+      function warnSpecialcasedFileNotFoundException(...[error]: [error: any])
+      {
+        ;
+        void ( console["warn"](`Special-Cased FIle-Not-Found-Exception:`, String(error) ) ) ;
+      }
+
+      function runHtmlTypedFileNotFoundErrorResponse(...[error]: [error: any])
+      {
+        ;
+        respo.status(404);
+        respo.setHeader('content-type', 'text/html');
+        respo.send('<h1>Path Not Available</h1>' + `<pre> ${String(error) }`); 
+      }
+      function runHtmlTypedInternalServerErrorResponse(...[error]: [error: any])
+      {
+        ;
+        respo.status(500);
+        respo.setHeader('content-type', 'text/html');
+        respo.send('<h1>Something went wrong</h1>' + `<pre> ${getStackOrMessage(error) }`); 
+      }
+
       return inext() ;
     }
+  ) ;
+  })()
   ) ;
 
   /** @deprecated */
@@ -458,8 +518,9 @@ namespace RxStyleApp {
      * rerun {@link URL.path relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
      * 
      */
-    function rerunRelativePath(...[rUrl]: Parameters<PeerItcMethods["rerunRelativePath"] > )
+    function rerunRelativePath(...rerArgs: Parameters<PeerItcMethods["rerunRelativePath"] > )
     {
+      const [rUrl, { with: { type: typeAttribv0 = "???" } = { }, } = {}] = rerArgs ;
       const {
         md: {
           rUrlO ,
@@ -515,6 +576,15 @@ namespace RxStyleApp {
       /** `throw`s native Node Exception if it doesn't strict exist as Regular File */
       readFileSync(finalPath, ) ;
 
+      const typeAttribvFinal = (
+
+        /** TODO Content Sniffing */
+        (
+          (typeAttribv0 === "???") ? TsNodeEb.SupportedEsmImportAttribProps.cjsTypeString :
+          typeAttribv0
+        )
+      ) satisfies string ;
+
       if ((
         shallVerboseResol
         || 1
@@ -532,7 +602,10 @@ namespace RxStyleApp {
       const returnVal = (
         rtService.dispatchSrcFile((
           finalPath
-        ))
+        ), {
+          rerun: true ,
+          esmImportAttribs: { type: typeAttribvFinal, } ,
+        })
       ) ;
 
       return returnVal ;
@@ -572,7 +645,15 @@ namespace RxStyleApp {
    * @deprecated
    */
   export interface PeerItcMethods {
-    rerunRelativePath: (...[rUrl]: [x: string] ) => any ,
+
+    /**
+     * 
+     * 
+     */
+    readonly rerunRelativePath: (...[rUrl]: (
+      ArgsWithOptions<[x: string], { with?: ImportAttributes, }>
+    ) ) => any ,
+
   }
 
   export namespace SrcRootedLinearRxApp {
