@@ -25,6 +25,9 @@ export = (
     >
       { }
     </div>
+    <p>
+      <a href="myicon.png" children={<code>myicon.png</code>} />
+    </p>
   </div>
 ) ;
 
