@@ -1864,6 +1864,74 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         }
       ) ;
 
+      const inferMimeType = (
+
+        once((): string => {
+
+          const {
+            fileExt: assumedFileExt ,
+          } = opts ;
+
+          // if (opts.fileExt.match(/^(svg|png|jp(eg|)2000|jpe?g|gif)$/) ) {
+          //   ;
+          //   return "" ;
+          // }
+
+          if (1) {
+            ;
+
+            if ((
+              assumedFileExt
+            )) {
+              ;
+
+              const DMmT = (
+                (() => {
+                  try {
+                    return (
+                      require("../dist-raw/MimeTypeFromFileName.cjs") as typeof import("../dist-raw/MimeTypeFromFileName.cjs")
+                    ) ;
+                  } catch (z) {
+                    console.warn(`cannot import 'MimeTypeFromFileName.cjs'`, String(z) ) ;
+                    return null ;
+                  }
+                })()
+              ) ;
+
+              try {
+
+                if (DMmT) {
+                  ;
+
+                  const {
+                    getMimeTypeFromShortName ,
+                  } = DMmT ;
+  
+                  const c = (
+                    getMimeTypeFromShortName(assumedFileExt )
+                  ) ;
+
+                  if (c) {
+                    return c ;
+                  }
+
+                } else {
+                  ;
+                  console.warn(`couldn't import 'MimeTypeFromFileName.cjs', cannot perform Sniffing `,) ;
+                }
+
+              } catch (z) {
+                console.error(String(z) ) ;
+              }
+
+            }
+
+          }
+
+          return "application/octet-stream" ;
+        })
+      ) ;
+
       C1: {
       ;
 
@@ -1950,10 +2018,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
           // Uint8Array ;
           const inferredMimeType = (
 
-            ((): string => {
-
-              return "application/octet-stream" ;
-            })()
+            inferMimeType()
           ) ;
           // TODO
           return (
