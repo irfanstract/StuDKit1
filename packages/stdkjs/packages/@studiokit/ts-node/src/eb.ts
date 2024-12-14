@@ -1145,6 +1145,28 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     }
   ) ;
 
+  let resolversVar: import("./index").NdResolversGcePublic | null = (
+
+    null
+  ) ;
+
+  const setNdImportResolvers = (
+    (() => {
+      interface I {
+        (...[x]: [x: import("./index").NdResolversGcePublic ] ) : void ;
+      }
+      const impl: I = (...[x] ) => {
+        resolversVar = x ;
+      } ;
+      return impl satisfies I as I ;
+    })()
+  ) ;
+
+  const getNdResolversOverallExpectNonnull = () => (
+    resolversVar
+    ?? assert.fail(new TypeError(`[studk-ts-node] [EB] this engine hasn't received the resolvers yet. please first register one via 'setNdImportResolvers'.`) )
+  );
+
   /**
    * 
    * @deprecated
@@ -1175,6 +1197,14 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
       ;
       const assumedSrcUrl = pathToFileURL(assumedSrcPath) ;
 
+      const {
+        // getNodeCjsLoader ,
+        // getNodeEsmGetFormat ,
+        // getNodeEsmResolver ,
+      } = (
+        getNdResolversOverallExpectNonnull()
+      ) ;
+
       const irqr: NodeJS.RequireResolve = (spcfier: string) => {
         const spcfierResolvedPath = createRequire(assumedSrcUrl).resolve(spcfier) ;
         return (
@@ -1184,7 +1214,9 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
       irqr.paths = nativeRequire.resolve.paths ;
 
       ;
-      const REQUIRE: NodeRequire = (spcfier) => {
+
+      // TODO
+      const requireCjsPath = (...[spcfier]: [string ]) => {
         /**
          * this seemingly extraneous `try .. catch` enclosure
          * is to give place for breakpoints in case things goes wrong
@@ -1222,6 +1254,62 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
           // }
 
           throw z ;
+        }
+      } ;
+
+      // TODO
+      const requireS = function requireFromFUrlImpl(...[spcfr]: [urlOrSpecifier: string ]) {
+        ;
+
+        (typeof spcfr === "string") || assert.fail(`${util.inspect(spcfr) }` ) ;
+
+        if (spcfr.match(/^https?\:/) ) {
+          throw new TypeError(`Illegal Internet Imports (${spcfr })`) ;
+        }
+
+        if (spcfr.match(/^file\:/) ) {
+          const fpath = fileURLToPath(spcfr) ;
+          return (
+            requireCjsPath(fpath)
+          ) ;
+        }
+
+        /**
+         * single-letter protocols are generally held as sugar for corresponding (longer) `file:` URL
+         * eg `J:/Dev/Py3Pt10` becomes `file:///J:/Dev/Py3Pt10`, and `J:\Dev\Node21p1` become `file:///J:/Dev/Node21p1`
+         * 
+         */
+        if (spcfr.match(/^(\w)\:/) ) {
+          const fpath = (spcfr) ;
+          return (
+            requireCjsPath(fpath)
+          ) ;
+        }
+
+        // throw new TypeError(`TODO`) ;
+        return (
+
+          requireCjsPath(spcfr)
+        ) ;
+      } ;
+
+      // TODO
+      const REQUIRE: NodeRequire = (...[spcfier0]: [string | URL ]) => {
+        if ((
+          (spcfier0 instanceof URL)
+          /* the above is subject to fail for Cross-Realm */
+          || (typeof spcfier0 === "object")
+        )) {
+          console["warn"](new TypeError(`[studk-ts-node] [EB] deprecated use of 'URL(...)' ('[object URL]') as Specifier; please convert your Specifier into String first `) , { spcfier0, } );
+          const spcfUrl = String(spcfier0) ;
+          return (
+            requireS(spcfUrl)
+          ) ;
+        } else {
+          (typeof spcfier0 === "string") || assert.fail(`${util.inspect(spcfier0) }` ) ;
+          return (
+            requireS(spcfier0)
+          ) ;
         }
       } ;
 
@@ -1538,6 +1626,10 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
     behingMdueReentranceCheck,
 
+    /* Late-Bound Handlers */
+
+    setNdImportResolvers,
+
     /* Compiler Helper */
 
     compilerHelper: dccLinkerHelper,
@@ -1687,6 +1779,20 @@ export interface EbTranslateInlineScriptIntoCjs {
   )): string ;
 }
 
+
+
+
+
+
+export type {
+  SupportedEsmImportAttribProps ,
+} ;
+
+export type {
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ EbAaniAptProps ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ EbPickFromExportedProps ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ GnCsneXoduleObj ,
+} ;
 
 
 
