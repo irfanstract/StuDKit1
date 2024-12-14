@@ -3,6 +3,26 @@
 
 
 
+import {
+  getStackOrMessage,
+  hasOwnProperty,
+  memoize,
+  assert ,
+  once,
+  parse,
+  ProjectLocalResolveHelper,
+  utilReiterated,
+  split,
+  versionGteLt,
+  yn,
+  type ArgsWithOptions, 
+  Immutable,
+  isUnderCspNoEvalsPolicy,
+} from '../util';
+
+
+
+
 /* `express` top-level can't be safely imported by ESM */
 import Express = require("express") ;
 
@@ -10,77 +30,107 @@ import Express = require("express") ;
 
 
 /**
- * {@link createApp} .
+ * {@link createBaseAppMiddleware} .
  * doesn't automatically start;
  * please manually run `listen` or `serve` or
  * pass it to custom backend of choice (eg `https` etc).
  * 
  */
-export const createApp = (
+const createBaseAppMiddleware = (
 
   function ()
   {
-    const app = Express() ;
-    app.use(function (requ, respo, inext) {
-      try {
-        /**
-         * note: while browsers still respect `no-store`,
-         * some browsers has started ignoring `no-cache`
-         * 
-         */
-        respo.setHeader("Cache-Control", "no-store") ;
-      } finally {
-        ;
-        inext() ;
-      }
-      ;
-    } ) ;
-    const respondWithHtmlPageCont = (
 
-      (...[requ, respo, code]: [Express.Request<any>, Express.Response<any>, code: string] ) => {
-        ;
-        const dt = Date() ;
-        const origin = requ.header("host") ?? "???" ;
-        const originHref = "http://" + origin ;
-        const pathnameHref = originHref.replace(/\/?$/, () => requ.path )  ;
-        const visibleTrailer = (
-          `<p> <code>${pathnameHref }</code> <code>${dt}</code> - <code>${origin }</code> </p>`
-        ) ;
-        respo.send((
-          `<!doctype html>
-          <html>
-          <head>
-          <meta charset="utf-8" >
-          <base href="${originHref.replace(/\/?$/, () => "/" ) }">
-          </head>
-          <body>
-          <x-econtentdivshallnotoverflowoff>
-          ${code }
-          </x-econtentdivshallnotoverflowoff>
-          <div>
-          <script>
-            "use strict";
-            { setTimeout(() => location.reload() , 90 * 1000 ); console["info"](${JSON.stringify(`autoreload activated`) }); }
-          </script>
-          ${visibleTrailer } 
-          `
-        )) ;
-      }
+    const app = Express() ;
+
+    /**
+     * ensures that browsers avoid using stale, cached versions,
+     * by making sure the necessary Header(s) get set on each Response
+     * 
+     */
+    app.use(createCacheControlNoStoreMiddleware() ) ;
+
+    const homePageApp = (
+      RHPC.byHtmlContentTemplate(`<h1> Welcome </h1> <p> this Middleware powered by <code>@studiokit/ts-node</code> in terms of Express. </p>`, { })
     ) ;
-    app.get("/", function (requ, respo) {
-      respo.setHeader("Content-Type", "text/html") ;
-      respo.status(200);
-      respondWithHtmlPageCont(requ, respo, `<h1> Welcome </h1> <p> powered by <code>@studiokit/ts-node</code> </p>` ) ;
-      ;
-    } ) ;
-    if (0) {
+
+    /**
+     * install handler for `/`
+     * 
+     */
+    app.get("/", (requ, respo, inext) => (
+      homePageApp.applyToHttpRequest(requ, respo, inext)
+    ) ) ;
+
+    return app ;
+  }
+) ;
+
+export {
+
+  createBaseAppMiddleware ,
+
+  // /** @deprecated this is WIP */
+  // createBaseApp ,
+  // /** {@link createBaseApp}. @deprecated this might be not what u want */
+  // createBaseApp as createApp ,
+
+} ;
+
+import {
+  RHPC ,
+} from "./base-ejs" ;
+
+
+
+
+/**
+ * {@link createFriendlisedApp} .
+ * doesn't automatically start;
+ * please manually run `listen` or `serve` or
+ * pass it to custom backend of choice (eg `https` etc).
+ * 
+ */
+const createFriendlisedApp = (
+
+  function (...[mainCoreM]: (
+    ArgsWithOptions<[Express.Handler], {} >
+  ))
+  {
+
+    const app = Express() ;
+
+    const homePageApp = (
+      RHPC.byHtmlContentTemplate(`<h1> Welcome </h1> <p> powered by <code>@studiokit/ts-node</code> </p>`, { })
+    ) ;
+
+    const forbiddenPathPageApp = (
+      RHPC.byHtmlContentTemplate(`<h1> Sorry... Forbidden </h1>`, { })
+    ) ;
+
+    /**
+     * ensures that browsers avoid using stale, cached versions,
+     * by making sure the necessary Header(s) get set on each Response
+     * 
+     */
+    app.use(createCacheControlNoStoreMiddleware() ) ;
+
+    /**
+     * install handler for `/`
+     * 
+     */
+    app.get("/", (requ, respo, inext) => (
+      homePageApp.applyToHttpRequest(requ, respo, inext)
+    ) ) ;
+
+    app.use(mainCoreM ) ;
+
+    if (1) {
       ;
       app.use(function (requ, respo, inext) {
-        if (((requ.accepted ?? [] ).map(e => e.type ) ).includes("text/html") ) {
+        if (((requ.accepted ?? [] ).map(e => ("" + e.type + "/" + e.subtype ) ) ).includes("text/html") ) {
           ;
-          respo.setHeader("Content-Type", "text/html") ;
-          respo.status(404);
-          respondWithHtmlPageCont(requ, respo, `<h1> Sorry... Forbidden </h1>` ) ;
+          forbiddenPathPageApp.applyToHttpRequest(requ, respo, inext, { statNumber: 404, } ) ;
         } else {
           inext() ;
         }
@@ -95,9 +145,62 @@ export const createApp = (
         ;
       } ) ;
     }
+
     return app ;
   }
 ) ;
+
+export {
+  //
+  createFriendlisedApp,
+} ;
+
+
+
+
+/**
+ * setting `Cache-Control: no-store`
+ * ensures that browsers avoid using stale, cached versions,
+ * by making sure the necessary Header(s) get set on each Response
+ * 
+ * note:
+ * while browsers still respect `no-store`,
+ * some browsers has started ignoring `no-cache` including recent Edge and likely others,
+ * (note, however, that `no-store` tends to degrade SEO)
+ * 
+ */
+export const createCacheControlNoStoreMiddleware = (
+
+  () => (
+    (
+      function (requ, respo, inext) {
+        try {
+  
+          /**
+           * ensures that browsers avoid using stale, cached versions,
+           * by setting the relevant Header(s)
+           * 
+           * note:
+           * while browsers still respect `no-store`,
+           * some browsers has started ignoring `no-cache` including recent Edge and likely others,
+           * (note, however, that `no-store` tends to degrade SEO)
+           * 
+           */
+          respo.setHeader("Cache-Control", "no-store") ;
+  
+        } finally {
+          ;
+          inext() ;
+        }
+        ;
+      }
+    ) satisfies Express.Handler
+  )
+) ;
+
+import {
+  rhpcGeneric ,
+} from "./base-ejs" ;
 
 
 
