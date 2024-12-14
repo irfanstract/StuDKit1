@@ -72,9 +72,10 @@
 
     "test-mocha": "npm run build-tsc && npm run test-mocha-skip ",
     "test-mocha-skip": "mocha ",
+    "test-mocha-ntns-skip": "mocha test/nodeTs*.mjs ",
     "test-spec": "ava",
     "test-cov": "nyc ava",
-    "test": "npm run fmt && npm run build-tsc && npm run build-pack && npm run test-spec",
+    "test": "npm run build-tsc && npm run test-mocha-skip",
     "test-full": "npm run build && npm run lint && npm run test-cov",
     "pre-debug": "npm run build-tsc && npm run build-pack",
     "coverage-report": "nyc report --reporter=lcov",
