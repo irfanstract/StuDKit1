@@ -315,31 +315,11 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
          * see https://18.react.dev/reference/react-dom/server/renderToPipeableStream#rendering-a-react-tree-as-html-to-a-nodejs-stream ,
          * 
          */
-        const renderInp = ((
-          (
-            ReactDOMServer.renderToPipeableStream(finalCont, {
-              //
-              onShellError: (error) => {
-                ;
-                if (error instanceof RxFileNotFoundException) {
-                  warnSpecialcasedFileNotFoundException(error) ;
-                  runHtmlTypedFileNotFoundErrorResponse(error) ;
-                  return ;
-                }
-                {
-                ;
-                void ( console["warn"](`Code Exception:`, (error) ) ) ;
-                runHtmlTypedInternalServerErrorResponse(error) ;
-                }
-              } ,
-              onShellReady: (...e) => {
-                respo.setHeader("content-type", "text/html") ;
-                respo.status(200) ;
-                renderInp.pipe(respo) ;
-              } ,
-            } )
-          )
-        )) ;
+        const {
+          renderInp,
+        } = (
+          runHtmlTypedReactJsxResponse(finalCont)
+        ) ;
         // (await new ReadableStreamDefaultReader(renderInp)) ;
         // renderInp.pipe(respo) ;
         return ;
@@ -368,6 +348,51 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         respo.setHeader('content-type', 'text/html');
         respo.send('<h1>Path Not Available</h1>' + `<pre> ${String(error) }`); 
       }
+
+      function runHtmlTypedReactJsxResponse(...[finalCont]: [finalCont: React.ReactElement | React.ReactPortal ])
+      {
+        ;
+
+        /**
+         * have look at https://18.react.dev/reference/react-dom/server/renderToPipeableStream#rendering-a-react-tree-as-html-to-a-nodejs-stream ,
+         * for full listing of `ReactDOMServer`
+         * 
+         */
+        const renderInp = ((
+          (
+            ReactDOMServer.renderToPipeableStream(finalCont, {
+              //
+              onShellError: (error): void => {
+                ;
+                if (error instanceof RxFileNotFoundException) {
+                  warnSpecialcasedFileNotFoundException(error) ;
+                  runHtmlTypedFileNotFoundErrorResponse(error) ;
+                  return ;
+                }
+                {
+                ;
+                void ( console["warn"](`Code Exception:`, (error) ) ) ;
+                runHtmlTypedInternalServerErrorResponse(error) ;
+                }
+              } ,
+              onShellReady: (...e) => {
+                respo.setHeader("content-type", "text/html") ;
+                respo.status(200) ;
+                renderInp.pipe(respo) ;
+              } ,
+              onError(error, errorInfo) {
+                /** we already sent this to client, so bypass full stacktrace */
+                console.warn(String(error)) ;
+              },
+            } )
+          )
+        )) ;
+
+        return {
+          renderInp: renderInp as Pick<typeof renderInp, "abort" > ,
+        } as const ;
+      }
+
       function runHtmlTypedInternalServerErrorResponse(...[error]: [error: any])
       {
         ;
