@@ -8,6 +8,9 @@
     "rootDir": ".",
     "outDir": "temp",
     "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo",
+    // "composite": true,
+    // "noEmit": false,
+    // "emitDeclarationOnly": true,
     "noEmit": true,
     "module": "commonjs",
     "moduleResolution": "node",
@@ -29,7 +32,8 @@
     "noUncheckedIndexedAccess": true,
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "dist-types/**/*",
   ],
   "typedocOptions": {
     "entryPoints": ["./src/index.ts"],
