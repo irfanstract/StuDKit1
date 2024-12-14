@@ -1963,7 +1963,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
               )] , { type: mimeType, } ) ;
             }
 
-            module.exports = atoblob((
+            const expAsBlob = atoblob((
               ${JSON.stringify((
                 (() => {
                   try {
@@ -1973,7 +1973,15 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
                   }
                 })()
               ) ) }
-            ), ${util.inspect({ type: inferredMimeType, }, { colors: false, depth: 20, } ) } ) ;`
+            ), ${util.inspect({ type: inferredMimeType, }, { colors: false, depth: 20, } ) } ) ;
+            if (1) {
+              require("node:assert")(expAsBlob.size === ${code0.data.length     }, '     length error: ' + require("node:util").inspect({ expected: ${util.inspect({ length: code0.data.length     } , { colors: false, }) }, actual: { length: expAsBlob.size, }, } ) ) ;
+              require("node:assert")(expAsBlob.size === ${code0.data.byteLength }, 'byte-length error: ' + require("node:util").inspect({ expected: ${util.inspect({ length: code0.data.byteLength } , { colors: false, }) }, actual: { length: expAsBlob.size, }, } ) ) ;
+              //
+            }
+
+            module.exports = expAsBlob ;
+            `
           ) ;
         }
       }

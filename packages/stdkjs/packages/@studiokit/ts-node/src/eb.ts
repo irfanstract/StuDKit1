@@ -66,6 +66,39 @@ export interface WhenImportantEsmImportAttribsProps
   readonly esmImportAttribs: ImportAttributes ;
 }
 
+declare global {
+  interface ImportAttributes {
+    /**
+     * 
+     * {@link SupportedEsmImportAttribProps.cjsTypeString} for both CJS and ESM,
+     * - `"json"` for JSON File,
+     * - `"string"` if u want it raw as {@link string},
+     * - `"raw"` or `"blob"` if u want it raw as {@link Blob},
+     * - `"url"` if u want it raw as {@link URL.href URL-String} (may be Remote URL, or Blob-URL, or Data-URL, depending on config or platform),
+     * 
+     * ```
+     * const RecordType =
+     * evaluateModule("./util-recordtypes", {
+     *   with: {
+     *     type: SupportedEsmImportAttribProps.cjsTypeString,
+     *   }
+     * })
+     * ```
+     * 
+     * ```
+     * const img =
+     * evaluateModule("./MainBackground.svg", {
+     *   with: {
+     *     type: "blob",
+     *   }
+     * })
+     * ```
+     * 
+     */
+    type: string ,
+  }
+}
+
 /**
  * supported subset of known attribs
  * 
@@ -137,30 +170,7 @@ type SupportedImportConfig<SpclExtraProps extends object = {}> = (
   & {
     /**
      * obligatory;
-     * set its `type` to
-     * {@link SupportedEsmImportAttribProps.cjsTypeString} for both CJS and ESM,
-     * `"json"` for JSON File,
-     * `"string"` if u want it raw as {@link string},
-     * `"blob"` if u want it raw as {@link Blob},
-     * `"url"` if u want it raw as {@link URL.href URL-String} (may be Remote URL, or Blob-URL, or Data-URL, depending on config or platform),
-     * 
-     * ```
-     * const RecordType =
-     * evaluateModule("./util-recordtypes", {
-     *   with: {
-     *     type: SupportedEsmImportAttribProps.cjsTypeString,
-     *   }
-     * })
-     * ```
-     * 
-     * ```
-     * const img =
-     * evaluateModule("./MainBackground.svg", {
-     *   with: {
-     *     type: "blob",
-     *   }
-     * })
-     * ```
+     * set its `type` to a value iterated in {@link ImportAttributes.type}
      * 
      */
     readonly with: SupportedEsmImportAttribProps,
@@ -1340,6 +1350,12 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
       const initialExportsObj = new Object;
 
+      const mdObjDId = (
+        `[studk-dispatchInlineScript]`
+        + encodeURIComponent(assumedSrcPath )
+        + (0.25125125125125 )
+      );
+
       // @ts-ignore
       const newModule: (
         NodeJS.Module & {
@@ -1348,9 +1364,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
       ) = {
         exports: initialExportsObj,
         id: (
-          `[studk-dispatchInlineScript]`
-          + encodeURIComponent(assumedSrcPath )
-          + (0.25125125125125 )
+          mdObjDId
         ),
         require: REQUIRE,
         // TODO
