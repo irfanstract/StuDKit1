@@ -82,21 +82,21 @@ const builtinModules = (
   })
 ) ;
 
+/* avoid using `const isSomeDoSome = function () { ... ... }` since we use forward reference! */
+
 /**
  * whether
  * the running platform is Electron rather than Regular NodeJS,
  * intermsa {@link hasAlivatedElectronJsPackageLoadTreatment}
  * 
  */
-const isWithinElectronJsInTermsOfRequireElectronPackage = (
-
-  function () {
+function isWithinElectronJsInTermsOfRequireElectronPackage()
+{
 
     return (
       hasAlivatedElectronJsPackageLoadTreatment()
     ) ;
-  }
-) ;
+}
 /**
  * whether
  * `require("electron")` (or {@link ImportMeta the default-import of it })
@@ -104,15 +104,26 @@ const isWithinElectronJsInTermsOfRequireElectronPackage = (
  * which will vary depending on whether being run on Electron or Regular NodeJS
  * 
  */
-const hasAlivatedElectronJsPackageLoadTreatment = (
+function hasAlivatedElectronJsPackageLoadTreatment()
+{
 
-  function () {
+  /**
+   * {@link happensProperElectronJsNamespace};
+   * it'd be
+   * `object` or `function` if the underlying platform is run as Electron (see also "run Electron as regular Node process"!), or
+   * `string` (`path/to/electron.exe`) otherwise
+   * 
+   * to anticipate future possibility of it yielding object with different `typeof` result
+   * we may deserve to handle additional value/result eg `"function"`
+   * 
+   */
+  const happensProperElectronJsNamespace = (
+    (typeof require("electron") === "object" )
+    || (typeof require("electron") === "function" )
+  ) ;
 
-    return (
-      typeof require("electron") === "object" || typeof require("electron") === "function"
-    ) ;
-  }
-) ;
+  return happensProperElectronJsNamespace ;
+}
 
 import { createRequire, } from 'node:module';
 
