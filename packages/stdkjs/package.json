@@ -5,7 +5,10 @@
 
   ,
   "scripts": {
-    "installAllDeps": "npm install"
+
+    "uni-publish": "npx tsx scripts/PublishUniSnapshot.cjs"
+
+    ,"installAllDeps": "npm install"
 
     ,"runStudkTsNodeHelpExe"      : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js --help"
 
@@ -17,6 +20,9 @@
 
     ,"runStudkTsNodeExe"          : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/hello-world.ts "
     ,"runStudkTsNodeJsxExe"       : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/jsx-react.tsx "
+
+    ,"runStudkTsNodeDevServerExe"     : "npm run quickRebuildStudkTsNodeHelpExe && node            node_modules/@studiokit/ts-node/tests/applied-dev-server/sites/SummerHitsPlayMeApp/scripts/start.cjs "
+    ,"runStudkTsNodeDevServerExe05"   : "npm run quickRebuildStudkTsNodeHelpExe && npx tsx --watch node_modules/@studiokit/ts-node/dist/applied-dev-server.js "
   }
 
   ,
