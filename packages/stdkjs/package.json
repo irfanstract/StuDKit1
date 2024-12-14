@@ -17,6 +17,8 @@
 
     ,"runStudkTsNodeExe"          : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/hello-world.ts "
     ,"runStudkTsNodeJsxExe"       : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/jsx-react.tsx "
+
+    ,"runStudkTsNodeDevServerExe": "npm run quickRebuildStudkTsNodeHelpExe && npx tsx --watch node_modules/@studiokit/ts-node/dist/applied-dev-server.js "
   }
 
   ,
@@ -75,7 +77,7 @@
     , "@lexical/html": "^0.18.0"
 
     ,
-    "@types/mocha": "10.0.6"
+    "@types/mocha": "10.0.10"
     ,
     "@types/node": "20.11.17"
     ,
@@ -94,7 +96,7 @@
     ,
     "hereby": "^1.8.9"
     ,
-    "mocha": "^10.3.0"
+    "mocha": "^10.7.0"
 
     ,
     "@types/express": "5.0.0"
