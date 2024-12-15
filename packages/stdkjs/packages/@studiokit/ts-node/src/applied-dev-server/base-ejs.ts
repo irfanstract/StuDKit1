@@ -605,7 +605,7 @@ function analyseRphrc(...anRphrcArgs: ArgsWithOptions<[], { invokingRequestEvt: 
         pathnameHref ,
         /** full, up to the base-url of the most-enclosing App (or Router?), address  */
         basePathnameHref ,
-        /** value of {@link requ.path }, verbatim as returned */
+        /** value of {@link requ.path } (defined to be `NodeJsUrl.parse(req.url).pathname`), verbatim as returned */
         xPath ,
     
         defaultVisibleTrailer ,
