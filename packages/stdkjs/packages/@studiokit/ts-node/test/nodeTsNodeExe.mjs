@@ -266,6 +266,13 @@ describe(`running 'node studk-ts-node <library-example-ts>' `, () => {
 
       stringAssert(o, o => isExpectedOutTxt(o) ) ;
 
+      if (1) {
+        console["warn"](asRedBright`[${testsPjiTsName }] stderr: : ${posixBlockquotify(pE.stderr || ``)}`) ;
+      }
+      if (1) {
+        console["warn"](    asGreen`[${testsPjiTsName }] stdout: : ${posixBlockquotify(pE.stdout || ``)}`) ;
+      }
+
     }) ;
   
     ;

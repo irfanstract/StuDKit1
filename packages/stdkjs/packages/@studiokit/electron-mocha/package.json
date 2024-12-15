@@ -6,8 +6,10 @@
     "pretest": "standard",
     "test": "npm run test:main && npm run test:renderer",
 
+    "test:a-main": "npm run build-tsc && npm run test:main",
     "test:main": "node bin/electron-mocha --config .mocharc.main.cjs test/main",
 
+    "test:a-renderer": "npm run build-tsc && npm run test:renderer",
     "test:renderer": "node bin/electron-mocha --config .mocharc.renderer.cjs test/renderer",
 
     "build-tsc": "tsc -b ./tsconfig.json",
