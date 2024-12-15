@@ -266,11 +266,103 @@ const SpclTests = (
      */
     const MainInstantiatedProps = {} ;
 
+    /**
+     * 
+     * the snippet within {@link describeRootedRxStyleAppPreToPolyTest1}
+     * was written purely to schedule the tests (Mocha).
+     * now
+     * the `function` has subsequently been refactored for more general usecase, inwhichcase
+     * you're supposed to control the calls by means of
+     * 
+     * 
+     * @typedef {{ describe: (...x: [title: string, fn: () => MoSuiteCallbackR]) => MoSuiteR , it: (...x: [title: string, fn?: Mocha.AsyncFunc | Mocha.Func]) => MoIndivR, }}
+     * 
+     * @template [MoSuiteR=any]
+     * @template [MoIndivR=MoSuiteR]
+     * @template [MoSuiteCallbackR=MoIndivR]
+     * 
+     */
+    const ProceedingyMocha = {} ;
+
+    /**
+     * 
+     * the snippet within {@link describeRootedRxStyleAppPreToPolyTest1}
+     * was written purely to schedule the tests (Mocha).
+     * now
+     * the `function` has subsequently been refactored for more general usecase, inwhichcase
+     * you're supposed to control the calls by means of
+     * 
+     * 
+     * @typedef {[...ArgsWithOptions<[], { readonly metaDesc: RxstaPreToPolyDesc, } & SpclExtraOps>, describeMain1: (ctx: MainInstantiatedProps ) => R ] }
+     * 
+     * @template R
+     * 
+     * @template {object} [SpclExtraOps={}]
+     * 
+     */
+    const RootedRxStyleAppPreToPolyProceedingParams = {} ;
+
+    const spawnRootedRxStyleAppPreToPoly1 = (
+
+      /**
+       * 
+       * @param {RootedRxStyleAppPreToPolyProceedingParams<void , { } >} spwnArgs
+       * 
+       */
+      function (...spwnArgs )
+      {
+        const [{ ...opts }, ...xdm ] = spwnArgs ;
+
+        return (
+          describeRootedRxStyleAppPreToPolyProceeding1({
+            xd: /** @satisfies {ProceedingyMocha<MainInstantiatedProps> } */ ({
+              describe: (_, e) => e(),
+              it: (_, e = assert.fail(`missing callback`)) => e(),
+            }) ,
+            xdp: (/** @type {MainInstantiatedProps} */ r) => r,
+            xClose: e => {} ,
+            ...opts,
+          }, e => e )
+        ) ;
+      }
+    ) ;
+
     const describeRootedRxStyleAppPreToPolyTest1 = (
 
       /**
        * 
-       * @param {[...ArgsWithOptions<[], { readonly metaDesc: RxstaPreToPolyDesc, }>, describeMain1: (ctx: MainInstantiatedProps ) => void ]} args
+       * @param {RootedRxStyleAppPreToPolyProceedingParams<void , {} >} args
+       * 
+       */
+      function (...[opts, ...xdm ] )
+      {
+        return (
+          describeRootedRxStyleAppPreToPolyProceeding1({
+            xd: { describe, it, },
+            xdp: (r) => {},
+            xClose: e => e.close() ,
+            ...opts,
+          }, ...xdm )
+        ) ;
+      }
+    ) ;
+
+    const describeRootedRxStyleAppPreToPolyProceeding1 = (
+
+      /**
+       * this function
+       * was written purely to schedule the tests (Mocha).
+       * now
+       * the `function` has subsequently been refactored for more general usecase, inwhichcase
+       * you're supposed to control the calls by means of
+       * 
+       * 
+       * @param {RootedRxStyleAppPreToPolyProceedingParams<MoAllIndivsR, { xd: ProceedingyMocha<MoSuiteR, MoIndivR, MoSuiteCallbackR> , xdp: (...x: [x: MoAllIndivsR]) => MoSuiteCallbackR , xClose: import("react").Dispatch<{ close: () => void, }> , } >} args
+       * 
+       * @template MoSuiteR
+       * @template MoSuiteCallbackR
+       * @template MoAllIndivsR
+       * @template MoIndivR
        * 
        */
       function (...[...pArgs ] )
@@ -278,6 +370,11 @@ const SpclTests = (
         const [pOpts, describeMain1] = pArgs ;
         const {
           metaDesc: appDesc ,
+        } = pOpts ;
+        const {
+          xd: { describe, it, } ,
+          xdp ,
+          xClose ,
         } = pOpts ;
 
         const {
@@ -300,6 +397,8 @@ const SpclTests = (
           appPagesDir ,
         }) ;
 
+        return (
+        //
         describe(`[sttsn-devserver-tests] testing Site '${title }'`, () => {
           ;
         
@@ -318,29 +417,37 @@ const SpclTests = (
             ))
           ) ;
 
+          const r1 = xdp((
+          //
           describeMain1({
             appPn ,
-          }) ;
+          })
+          ))
+          ;
         
           ;
           it(`shall stop the server and let associated resources go after all these tests`, async () => {
             ;
         
-            close() ;
+            xClose({ close, }) ;
           }) ;
         
-          ;
-        } ) ;
-        
-        return {} ;
+          return r1 ;
+        } )
+        );
       }
     ) ;
 
     return {
+      spawnRootedRxStyleAppPreToPoly1,
       describeRootedRxStyleAppPreToPolyTest1 ,
+      describeRootedRxStyleAppPreToPolyProceeding1 ,
+      RootedRxStyleAppPreToPolyProceedingParams ,
     } ;
   })()
 ) ;
+
+require("../../dist/utilGlobalConsoleAlwaysStderr").setupGlobalConsoleAlwaysStderr() ;
 
 exports.EPWR = EPWR ;
 exports.assertContainsItAndPrint = assertContainsItAndPrint ;
