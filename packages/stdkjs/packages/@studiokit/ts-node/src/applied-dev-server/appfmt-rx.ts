@@ -345,8 +345,9 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
       {
         ;
         respo.status(404);
+        respo.statusMessage = `Denied` ;
         respo.setHeader('content-type', 'text/html');
-        respo.send('<h1>Path Not Available</h1>' + `<pre> ${String(error) }`); 
+        respo.send('<h1>Not a Public Page</h1>' + `<p><u>this path does not name a public page. <br/> please make sure the path is properly-spelled.</u></p> <pre>${String(error) }`); 
       }
 
       function runHtmlTypedReactJsxResponse(...[finalCont]: [finalCont: React.ReactElement | React.ReactPortal ])
@@ -398,7 +399,7 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         ;
         respo.status(500);
         respo.setHeader('content-type', 'text/html');
-        respo.send('<h1>Something went wrong</h1>' + `<pre> ${getStackOrMessage(error) }`); 
+        respo.send('<h1>Unexpected Failure</h1>' + `<p>Unexpected Failure</p> <pre>${getStackOrMessage(error) }`); 
       }
 
       return inext() ;
