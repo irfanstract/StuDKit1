@@ -42,12 +42,12 @@ const runChildProcess = (
 
   /** @satisfies {(...args: ArgsWithOptions<[cmd: string], { stderr ?: EnumStdOutId, env ?: NodeJS.ProcessEnv, }> ) => any } */ (
     (...cfg) => {
-      const [cmd, { stderr = "inherit", env = {}, } = {}] = cfg ;
+      const [cmd, { stderr = "inherit", env: optEnv = {}, } = {}] = cfg ;
       return (
         execSync(cmd, {
           stdio: ["pipe", "pipe", stderr] ,
           encoding: "utf-8" ,
-          env ,
+          env: rcpConcatEnv(process.env ?? {}, optEnv) ,
         })
       ) ;
     }
@@ -57,17 +57,29 @@ const runChildProcess = (
 const runChildProcessWithStat = (
 
   /** @satisfies {(...args: ArgsWithOptions<[cmd: string], { env ?: NodeJS.ProcessEnv, }> ) => any } */ (
-    (...[cmd, { env = {}, } = {}]) => {
+    (...[cmd, { env: optEnv = {}, } = {}]) => {
       return (
         spawnSync(cmd, {
           shell: true ,
           stdio: ["pipe", "pipe", "pipe"] ,
           encoding: "utf-8" ,
-          env ,
+          env: rcpConcatEnv(process.env ?? {}, optEnv) ,
         })
       ) ;
     }
   )
+) ;
+
+const rcpConcatEnv = (
+
+  /**
+   * 
+   * @satisfies {(d1: NodeJS.ProcessEnv, d2: NodeJS.ProcessEnv) => any }
+   */
+  (function (...[d1, d2]) {
+
+    return { ...d1 , ...d2 } ;
+  } )
 ) ;
 
 /**
