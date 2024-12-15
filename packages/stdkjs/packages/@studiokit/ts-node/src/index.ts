@@ -1474,9 +1474,11 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
             { srcExpr: _ts.Expression, } & (
               | {
                   alias: (_ts.ObjectBindingPattern | _ts.BindingName) ;
+                  readonly shallBothLazyAndSynchronous: boolean ;
               }
               | {
                   alias: false;
+                  readonly shallBothLazyAndSynchronous?: boolean ;
               }
             )
           )
@@ -1490,7 +1492,13 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
                   utilReiterated(function* () {
                     yield node.moduleSpecifier  ;
                     if (node.attributes) {
-                      yield translateEsmImportAttribsIntoObjectDictLiteral(node.attributes) ;
+                      yield (
+                        _ts.factory.createObjectLiteralExpression([(
+                          _ts.factory.createPropertyAssignment("with", (
+                            translateEsmImportAttribsIntoObjectDictLiteral(node.attributes)
+                          ))
+                        )])
+                      ) ;
                     }
                   })
                 ))
@@ -1506,6 +1514,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
             return {
               srcExpr: srcImportingE,
               alias: p ,
+              shallBothLazyAndSynchronous: false ,
             } ;
           }
           if (_ts.isImportEqualsDeclaration(node) ) {
@@ -1523,6 +1532,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
                 srcExpr: (
                   createRequireCall([mR.expression]) 
                 ) ,
+                shallBothLazyAndSynchronous: true ,
               } ;
             } else {
               return null ;
@@ -1639,23 +1649,23 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         )
       ) ;
 
-      const printer = (
-        _ts.createPrinter({ newLine: _ts.NewLineKind.CarriageReturnLineFeed, }, {
-          substituteNode: (eh, node) => {
-            if (_ts.isImportDeclaration(node)  || _ts.isImportEqualsDeclaration(node) || ( _ts.isCallExpression(node) && aptSPrintNodeVerbatim(node, oode).match(/^import\b/ ) ) ) {
-              return (
-                cjsifyImport(node, oode)
-              ) ;
-            }
-            return node ;
-          } ,
-        })
-      ) ;
+      return (
 
-      if (_ts.isSourceFile(nd) ) {
-        return printer.printFile(nd) ;
-      }
-      return printer.printNode(eh, nd, nd.getSourceFile() ) ;
+        scanTransformNodesEh(nd, (eh, node) => {
+
+          if (_ts.isImportDeclaration(node)  || _ts.isImportEqualsDeclaration(node) || ( _ts.isCallExpression(node) && aptSPrintNodeVerbatim(node, oode).match(/^import\b/ ) ) ) {
+            return (
+              cjsifyImport(node, oode)
+            ) ;
+          }
+
+          return node ;
+        }, {
+          skipReparse: true ,
+          eh,
+        } )
+
+      ) ;
     }
   ) ;
 
@@ -2207,6 +2217,10 @@ export {
   NdResolversGcePublic ,
   NdResolversGcePropagator ,
 } ;
+
+import {
+  scanTransformNodesEh ,
+} from "./syntaxconv/NodeScanConv" ;
 
 import {
   getStaticGlobalBuiltinQuery,
