@@ -28,6 +28,8 @@ class MockBlob<dmmy1 = any, out XType extends string = string>
   get size()
   { return this.data.length ; }
 
+  bytesSync() { return new Uint8Array(this.data) ; }
+
   constructor(
     dataOrElems: (Buffer | (Uint8Array | Uint8ClampedArray) ) | readonly (Uint8Array | Buffer)[],
     typeOrOpts: XType | { readonly type: XType; } )
@@ -62,6 +64,22 @@ class MockBlob<dmmy1 = any, out XType extends string = string>
     }
 
   }
+
+  slice() {
+    return (
+      new MockBlob([this.bytesSync() ] , { type: this.type, } )
+    ) ;
+  }
+
+  utf8DecodedSync() { return this.data.toString("utf8") ; }
+
+  /* the remaining methods */
+
+  arrayBuffer() { return Promise.resolve(new Uint8Array(this.bytesSync()).buffer ) ; }
+
+  text() { return Promise.resolve(this.utf8DecodedSync() ) ; }
+
+  stream() { return new (globalThis.Blob )([this.bytesSync() ]).stream() ; }
 
 }
 
