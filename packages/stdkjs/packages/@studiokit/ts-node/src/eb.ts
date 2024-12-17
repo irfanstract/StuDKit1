@@ -777,7 +777,7 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
         ) ;
 
         ;
-        const createRequireCall = (
+        const createEscapedRequireCall = (
           (...[args]: [argExprs: readonly _ts.Expression[]] ) => (
             tsc.factory.createCallExpression(
               createEscapedBuiltinRef("require") ,
@@ -788,7 +788,7 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
         return {
           dccEscapeBuiltinRef ,
           createEscapedBuiltinRef,
-          createRequireCall,
+          createEscapedRequireCall: createEscapedRequireCall,
         } as const ;
       } else {
         return {} as const ;
