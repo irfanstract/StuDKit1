@@ -1471,18 +1471,18 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
       ;
       const createRequireCall = (
         (args: readonly _ts.Expression[]): _ts.Expression => (
-          compilerHelper11.createRequireCall!(args)
+          compilerHelper11.createEscapedRequireCall!(args)
         )
       ) ;
 
       /**
-       * {@link getImportExprAndBinding}.
+       * {@link translateImportlikeStatementOrExpression}.
        * note that
        * `alias: false` means that the construct doesn't bind any name
        * .
        * 
        */
-      const getImportExprAndBinding = (
+      const translateImportlikeStatementOrExpression = (
 
         function (...[node, oode]: [CjsifiableImportNode, oode: _ts.SourceFile] ): (
           | (
@@ -1598,7 +1598,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
           }
 
           const impExprAndBinding = (
-            getImportExprAndBinding(node, oode)
+            translateImportlikeStatementOrExpression(node, oode)
           ) ;
 
           if (impExprAndBinding) {
