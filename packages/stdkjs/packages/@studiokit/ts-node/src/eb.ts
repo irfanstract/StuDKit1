@@ -1415,11 +1415,6 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
   let dispatchInlineScript : (
     | (
       (...args : ArgsWithOptions<[code: string] , (
-        // {
-        //   fileExt: string,
-        //   assumedSrcPath: string ,
-        //   // pickFromExporteds?: (vexport: any, originalExports: object, module: NodeJS.Module) => ({} | null ),
-        // }
         Omit<ToDispatchCompiledCjsOptions, keyof Pick<ToDispatchCompiledCjsOptions, "esmImportAttribs">>
       ) >) => any
     )
