@@ -510,15 +510,16 @@ const TS_NODE_SERVICE_BRAND = Symbol('TS_NODE_SERVICE_BRAND');
  * Primary ts-node service, which wraps the TypeScript API and can compile TypeScript to JavaScript
  */
 export interface Service extends ServiceCore
-{}
+{
+  /** @internal */
+  [TS_NODE_SERVICE_BRAND]: true;
+}
 interface ServiceCore {}
 
 /**
  * Core ts-node service, which wraps the TypeScript API and can compile TypeScript to JavaScript
  */
 interface ServiceCore {
-  /** @internal */
-  [TS_NODE_SERVICE_BRAND]: true;
   ts: TSCommon;
   /** @internal */
   compilerPath: string;
@@ -702,7 +703,10 @@ export interface Service extends Omit<ServiceFromPreloadedConfigImpl , (
 
 /** @internal */
 export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof findAndReadConfig>): Service {
-  return      createFromPreloadedConfigImpl(foundConfigResult) ;
+  return {
+    ...  createFromPreloadedConfigImpl(foundConfigResult),
+    [TS_NODE_SERVICE_BRAND]: true ,
+  } ;
 }
 
 function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof findAndReadConfig>) {
@@ -2155,7 +2159,6 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
   ) ;
 
   const s0 : ServiceCore = {
-    [TS_NODE_SERVICE_BRAND]: true,
     ts,
     compilerPath: compiler,
     config,
