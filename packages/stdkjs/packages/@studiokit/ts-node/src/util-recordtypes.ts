@@ -50,8 +50,46 @@ type AllOrNeither<O extends object> = (
 type ConformOrNever<O extends object> = (
 
   | O
-  | { readonly [k in keyof O] ?: never ; }
+  | { readonly [k in AllPossibleKeys<O>] ?: never ; }
 ) ;
+
+/**
+ * like {@link ConformOrNever}, but allows setting to `false`
+ * 
+ */
+type ConformOrAssignFalse<O extends Record<keyof any, true | object>, SO extends O | {} = O | {}> = (
+
+  SO extends any ?
+  (
+    //
+    & { readonly [k in AllPossibleKeys<O>] ?: SO[k] | false ; }
+    & SO
+  )
+  : never
+) ;
+
+{
+  (x: ConformOrAssignFalse<{ fromEsm: true, }>) => {
+    if (x.fromEsm) {
+      x.fromEsm ;
+      return ;
+    }
+    x.fromEsm ;
+  } ;
+  (x: ConformOrAssignFalse<{ fromEsm: true, fromCjs: true, }>) => {
+    if (x.fromEsm) {
+      x.fromEsm ;
+      x.fromCjs ;
+      return ;
+    }
+    if (x.fromCjs) {
+      x.fromEsm ;
+      x.fromCjs ;
+      return ;
+    }
+    x.fromEsm ;
+  } ;
+}
 
 /**
  * either of the props
@@ -102,6 +140,7 @@ export type {
   AllOrNeither as AllOrNever ,
   AllOrNeither ,
   ConformOrNever,
+  ConformOrAssignFalse,
   /** alias of {@link EitherOneProp}. */
   EitherOneProp as EitherProp ,
   EitherOneProp ,
@@ -172,6 +211,94 @@ export type {
   MayOptRecordRevalue ,
 
 } ;
+
+
+
+
+
+
+
+
+;
+
+type Extract<T, U> = (
+  T extends U ? T : never
+) ;
+
+type ExtractSupertype<T, U> = (
+  T extends any ?
+  ([U] extends [T] ? T : never )
+  : never
+) ;
+
+type Exclude<T, U> = (
+  T extends U ? never : T
+) ;
+
+type ExcludeSupertype<T, U> = (
+  T extends any ?
+  ([U] extends [T] ? never : T )
+  : never
+) ;
+
+{
+  (x: Extract                 <{ c: 3, } | { d: 3, } | { e: 3, } | { readonly g?: 5, }, {}>) => {} ;
+  (x: ExtractSupertype        <{ c: 3, } | { d: 3, } | { e: 3, } | { readonly g?: 5, }, {}>) => {} ;
+  (x: Exclude                 <{ c: 3, } | { d: 3, } | { e: 3, } | { readonly g?: 5, }, {}>) => {} ;
+  (x: ExcludeSupertype        <{ c: 3, } | { d: 3, } | { e: 3, } | { readonly g?: 5, }, {}>) => {} ;
+}
+
+type Parameters<T extends (...args: any) => any> = (
+  [T] extends [(...args: infer P) => any ] ? P : never
+) ;
+
+/**
+ * convert `A1 | A2 | ... | AN` into
+ * `A1 & A2 & ... & AN`
+ * 
+ */
+type LxIntersection<T extends object> = (
+
+  /**
+   * `T extends any ?` distributes, so
+   * eg `number | string` become `number[] | string[]` and not `(number | string)[]`.
+   * atthesametime,
+   * Function Param(s) have inverted variance, so
+   * `((x: number ) => void ) | ((x: string ) => void )` becomes `((x: number & string ) => void )`
+   * 
+   */
+  Parameters<(
+    //
+    T extends any ?
+    ((x: T) => void )
+    : never
+  )>[0]
+) ;
+
+{
+  (x: LxIntersection<NumberConstructor | DateConstructor | OscillatorNode>) => {} ;
+}
+
+type AllPossibleKeys<T extends object> = (
+
+  keyof LxIntersection<T>
+) ;
+
+{
+  ((x: AllPossibleKeys<NumberConstructor | DateConstructor | OscillatorNode>) => {} )("UTC") ;
+}
+
+export {
+  type Extract ,
+  type ExtractSupertype ,
+  type Exclude ,
+  type ExcludeSupertype ,
+  type Parameters ,
+  type LxIntersection ,
+  type AllPossibleKeys ,
+} ;
+
+;
 
 
 
