@@ -3,4 +3,9 @@
 {
   "extends": "../tsconfig.json" ,
 
+  /** `extends` in `tsconfig` excludes `references`es and `include`es, so we need to duplicate these here. */
+  "references": [{
+    "path": "../../tsconfig.build-dist.json",
+  }],
+
 }
