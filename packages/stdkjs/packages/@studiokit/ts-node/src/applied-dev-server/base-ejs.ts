@@ -514,7 +514,7 @@ type SupportedStringOrBloblike = (
 function analyseRphrc(...anRphrcArgs: (
   ArgsWithOptions<[], (
     & { readonly invokingRequestEvt: Express.Request, }
-    & { readonly useTls: boolean, }
+    & { readonly useTls?: boolean, }
   ) >
 ))
 {
