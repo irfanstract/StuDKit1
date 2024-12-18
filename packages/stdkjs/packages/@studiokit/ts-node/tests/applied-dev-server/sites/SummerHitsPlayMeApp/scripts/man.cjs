@@ -52,35 +52,22 @@ const appDesc = /** @satisfies {RxstaPreToPolyDesc } */ ({
   srcs: {
     basePath: appRootDir ,
     mainPagesRelativeFromBasePath: Path.join(".", "pages") ,
-    psnta: RxStyleApp.PathSimpleNameTranslator.createNoOpInstance() ,
+    psnta: RxStyleApp.PathSimpleNameTranslator.createTsInstance() ,
   } ,
 }) ;
 
-SpclTests.describeRootedRxStyleAppPreToPolyTest1({
-  metaDesc: appDesc ,
-}, ({
-  appPn ,
-}) => {
-  ;
 
-  it(`shall render this for Dir '/'`, async () => {
-    ;
 
-    const oF = await fetch("http://" + ("localhost:" + appPn ) )  ;
-    const o = await oF.text() ;
+exports.appRootDir = appRootDir ;
+exports.appDesc = appDesc ;
 
-    console.warn(`output: ${posixBlockquotify(o) } `) ;
 
-    assertHttpOk(oF) ;
-    // assertContainsItAndPrint(o, 'this page have no title') ;
-    // assertContainsItAndPrint(o, 'path: &#x27;/&#x27;') ;
-    assertContainsItAndPrint(o, '<p>date: <input type="datetime-local"/></p>') ;
-    assertContainsItAndPrint(o, '<p>status: <input type="text"/></p>') ;
 
-    // resolve() ;
-  }) ;
 
-}) ;
+
+
+
+
 
 
 
