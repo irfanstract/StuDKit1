@@ -1434,8 +1434,18 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
   return main ;
   }
 
-  const defaultScmc = (
-    newScmc()
+  /**
+   * the default {@link SCMC}
+   * to use for eg {@link evaluateModuleOrSrcFileAtPath} when `cached: true` (rather than explicit {@link SCMC} ref)
+   * 
+   * cannot use `const bar = ...` syntax because
+   * such def syntax implies immediate c/d/i to {@link getNdResolversOverallExpectNonnull} even with {@link resolversVar} not having been (re)assigned yet;
+   * 
+   */
+  const getDefaultScmc = (
+    once(() => (
+      newScmc()
+    ))
   ) ;
 
   let dispatchInlineScript : (
@@ -1788,7 +1798,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
           return assert.fail(new TypeError(`requires either be set. ${util.inspect({ cached: aCached, rerun: aRerun, })}` ) ) ;
         }
         const finalScmc: SCMC = (
-          aCached ? (aCached === true ? defaultScmc : aCached ) :
+          aCached ? (aCached === true ? getDefaultScmc() : aCached ) :
           aRerun ? (
             console["warn"](`initialising new/fresh EUV/SCMC (due to 'rerun')`)
             ,
