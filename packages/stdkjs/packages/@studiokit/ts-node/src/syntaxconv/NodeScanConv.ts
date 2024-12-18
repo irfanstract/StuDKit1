@@ -102,7 +102,11 @@ const scanTransformNodesEh = (
     function scanTransformNodesEhImpl(...scArgs: (
       | SctnEhArgsImpl<false  >
       | SctnEhArgsImpl<true   >
-    ) )
+    ) ): string | _ts.Node
+    function scanTransformNodesEhImpl(...scArgs: (
+      | SctnEhArgsImpl<false  >
+      | SctnEhArgsImpl<true   >
+    ) ): string | _ts.Node
     {
       const [nd, snImpl, { eh, skipReparse, }] = scArgs ;
   
@@ -131,7 +135,10 @@ const scanTransformNodesEh = (
         s1 :
         (
           _ts.isSourceFile(nd) ?
-          _ts.createSourceFile(s1, ndOrignlSf.text, ndOrignlSf.languageVersion, true, ) :
+          _ts.createSourceFile(s1, ndOrignlSf.text, {
+            languageVersion: ndOrignlSf.languageVersion,
+
+          }, true, ) :
           assert.fail(new TypeError(`unsupported. consider passing the whole 'SourceFile' or instead setting 'skipReparse: false'.`) )
         )
       ) ;
