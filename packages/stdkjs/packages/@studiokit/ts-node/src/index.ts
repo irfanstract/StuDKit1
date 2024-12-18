@@ -709,7 +709,15 @@ export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof f
   } ;
 }
 
-function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof findAndReadConfig>) {
+namespace FoundConfigExpansion {
+;
+
+type FCR = ReturnType<typeof findAndReadConfig> ;
+
+export function expandO11(foundConfigResult: FCR )
+{
+  ;
+
   const { configFilePath, cwd, options, config, compiler, projectLocalResolveDir, optionBasePaths } = foundConfigResult;
 
   const projectLocalResolveHelper = createProjectLocalResolveHelper(projectLocalResolveDir);
@@ -719,14 +727,15 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
   const readFile = options.readFile || ts.sys.readFile;
   const fileExists = options.fileExists || ts.sys.fileExists;
 
-  // Experimental REPL await is not compatible targets lower than ES2018
-  const targetSupportsTla = config.options.target! >= ts.ScriptTarget.ES2018;
-  if (options.experimentalReplAwait === true && !targetSupportsTla) {
-    throw new Error('Experimental REPL await is not compatible with targets lower than ES2018');
-  }
+  const getCanonicalFileName = (ts as unknown as TSInternal).createGetCanonicalFileName(
+    ts.sys.useCaseSensitiveFileNames
+  );
 
-  const shouldReplAwait = options.experimentalReplAwait !== false && targetSupportsTla;
-
+  const moduleTypeClassifier = createModuleTypeClassifier({
+    basePath: options.optionBasePaths?.moduleTypes,
+    patterns: options.moduleTypes,
+  });
+  
   // swc implies two other options
   // typeCheck option was implemented specifically to allow overriding tsconfig transpileOnly from the command-line
   // So we should allow using typeCheck to override swc
@@ -739,18 +748,6 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     }
   }
 
-  // typeCheck can override transpileOnly, useful for CLI flag to override config file
-  const transpileOnly = (options.transpileOnly === true || options.swc === true) && options.typeCheck !== true;
-  let transpiler: RegisterOptions['transpiler'] | undefined = undefined;
-  let transpilerBasePath: string | undefined = undefined;
-  if (options.transpiler) {
-    transpiler = options.transpiler;
-    transpilerBasePath = optionBasePaths.transpiler;
-  } else if (options.swc) {
-    transpiler = require.resolve('./transpilers/swc.js');
-    transpilerBasePath = optionBasePaths.swc;
-  }
-  const transformers = options.transformers || undefined;
   const diagnosticFilters: Array<DiagnosticFilter> = [
     {
       appliesToAllFiles: true,
@@ -770,12 +767,6 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
   ];
 
   const configDiagnosticList = filterDiagnostics(config.errors, diagnosticFilters);
-  const outputCache = new Map<
-    string,
-    {
-      content: string;
-    }
-  >();
 
   const configFileDirname = configFilePath ? dirname(configFilePath) : null;
   const scopeDir = options.scopeDir ?? config.options.rootDir ?? configFileDirname ?? cwd;
@@ -825,9 +816,55 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     });
   }
 
+  const shouldHavePrettyErrors = options.pretty === undefined ? process.stdout.isTTY : options.pretty;
+
+  const formatDiagnostics = shouldHavePrettyErrors
+    ? ts.formatDiagnosticsWithColorAndContext || ts.formatDiagnostics
+    : ts.formatDiagnostics;
+
+  function createTSError(diagnostics: ReadonlyArray<_ts.Diagnostic>, ctxDict ?: Record<string, {} | null>) {
+    const diagnosticText = formatDiagnostics(diagnostics, diagnosticHost);
+    const diagnosticCodes = diagnostics.map((x) => x.code);
+    return new TSError(diagnosticText + (ctxDict ? ` ${ util.inspect(ctxDict, false, undefined, false ) }` : ``), diagnosticCodes, diagnostics);
+  }
+
+  function reportTSError(configDiagnosticList: _ts.Diagnostic[], ctxDict?: Record<string, {} | null>) {
+    const error = createTSError(configDiagnosticList, ctxDict);
+    if (options.logError) {
+      // Print error in red color and continue execution.
+      console.error('\x1b[31m%s\x1b[0m', error);
+    } else {
+      // Throw error and exit the script.
+      throw error;
+    }
+  }
+
+  const extensions = getExtensions(config, options, ts.version);
+
+  // typeCheck can override transpileOnly, useful for CLI flag to override config file
+  const transpileOnly = (options.transpileOnly === true || options.swc === true) && options.typeCheck !== true;
+  let transpiler: RegisterOptions['transpiler'] | undefined = undefined;
+  let transpilerBasePath: string | undefined = undefined;
+  if (options.transpiler) {
+    transpiler = options.transpiler;
+    transpilerBasePath = optionBasePaths.transpiler;
+  } else if (options.swc) {
+    transpiler = require.resolve('./transpilers/swc.js');
+    transpilerBasePath = optionBasePaths.swc;
+  }
+  const transformers = options.transformers || undefined;
+
   if (options.transpileOnly && typeof transformers === 'function') {
     throw new TypeError('Transformers function is unavailable in "--transpile-only"');
   }
+
+  const outputCache = new Map<
+    string,
+    {
+      content: string;
+    }
+  >();
+
   let createTranspiler = initializeTranspilerFactory();
   function initializeTranspilerFactory() {
     if (transpiler) {
@@ -889,29 +926,6 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     });
   }
 
-  const shouldHavePrettyErrors = options.pretty === undefined ? process.stdout.isTTY : options.pretty;
-
-  const formatDiagnostics = shouldHavePrettyErrors
-    ? ts.formatDiagnosticsWithColorAndContext || ts.formatDiagnostics
-    : ts.formatDiagnostics;
-
-  function createTSError(diagnostics: ReadonlyArray<_ts.Diagnostic>, ctxDict ?: Record<string, {} | null>) {
-    const diagnosticText = formatDiagnostics(diagnostics, diagnosticHost);
-    const diagnosticCodes = diagnostics.map((x) => x.code);
-    return new TSError(diagnosticText + (ctxDict ? ` ${ util.inspect(ctxDict, false, undefined, false ) }` : ``), diagnosticCodes, diagnostics);
-  }
-
-  function reportTSError(configDiagnosticList: _ts.Diagnostic[], ctxDict?: Record<string, {} | null>) {
-    const error = createTSError(configDiagnosticList, ctxDict);
-    if (options.logError) {
-      // Print error in red color and continue execution.
-      console.error('\x1b[31m%s\x1b[0m', error);
-    } else {
-      // Throw error and exit the script.
-      throw error;
-    }
-  }
-
   // Render the configuration errors.
   if (configDiagnosticList.length) reportTSError(configDiagnosticList);
 
@@ -948,24 +962,197 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     return '.js';
   }
 
-  type GetOutputFunction = (code: string, fileName: string) => SourceOutput;
+  return {
+    ...foundConfigResult ,
+
+    /* NEW FIELDS */
+
+    projectLocalResolveHelper ,
+    ts ,
+
+    readFile ,
+    fileExists ,
+    getCanonicalFileName ,
+
+    moduleTypeClassifier ,
+
+    configFileDirname ,
+    scopeDir ,
+    ignoreBaseDir ,
+    isScoped ,
+    shouldIgnore ,
+    diagnosticHost,
+    configDiagnosticList ,
+    diagnosticFilters ,
+    enabled ,
+    ignored ,
+    addDiagnosticFilter ,
+    //
+    shouldHavePrettyErrors,
+    formatDiagnostics ,
+    createTSError ,
+    reportTSError,
+
+    extensions,
+
+    //
+    transpileOnly ,
+    transpiler ,
+    transpilerBasePath ,
+    transformers ,
+    jsxEmitPreserve ,
+    getEmitExtension ,
+    outputCache ,
+    createTranspiler ,
+    // configFilePath ,
+    initializeTranspilerFactory ,
+    installSourceMapSupport ,
+
+  } as const ;
+}
+
+export function conferGetResolvers(foundConfigResult: FCR & ReturnType<typeof expandO11> )
+{
+  ;
+
+  const {
+    configFilePath, cwd, options, config, compiler, projectLocalResolveDir, optionBasePaths ,
+
+    /* NEW FIELDS */
+
+    // projectLocalResolveHelper ,
+    ts ,
+
+    // readFile ,
+    // fileExists ,
+
+    extensions ,
+
+  } = foundConfigResult;
+
+  /**
+   * node16 or nodenext
+   * [MUST_UPDATE_FOR_NEW_MODULEKIND]
+   */
+  const isNodeModuleType =
+    (ts.ModuleKind.Node16 && config.options.module === ts.ModuleKind.Node16) ||
+    (ts.ModuleKind.NodeNext && config.options.module === ts.ModuleKind.NodeNext);
+
+  const getNodeEsmResolver = once(() =>
+    (require('../dist-raw/node-internal-modules-esm-resolve') as typeof _nodeInternalModulesEsmResolve).createResolve({
+      extensions,
+      preferTsExts: options.preferTsExts,
+      tsNodeExperimentalSpecifierResolution: options.experimentalSpecifierResolution,
+    })
+  );
+  const getNodeEsmGetFormat = once(() =>
+    (
+      require('../dist-raw/node-internal-modules-esm-get_format') as typeof _nodeInternalModulesEsmGetFormat
+    ).createGetFormat(options.experimentalSpecifierResolution, getNodeEsmResolver())
+  );
+  const getNodeCjsLoader = once(() =>
+    (require('../dist-raw/node-internal-modules-cjs-loader') as typeof _nodeInternalModulesCjsLoader).createCjsLoader({
+      extensions,
+      preferTsExts: options.preferTsExts,
+      nodeEsmResolver: getNodeEsmResolver(),
+    })
+  );
+
+  const resolvers1 = (
+    (() => {
+      const gclImpl = {
+        getNodeEsmResolver ,
+        getNodeEsmGetFormat ,
+        getNodeCjsLoader ,
+      } satisfies NdResolversGcePublic ;
+
+      return gclImpl  ;
+    })()
+  ) ;
+
+  return {
+    // ...foundConfigResult ,
+
+    /* NEW FIELDS */
+
+    isNodeModuleType ,
+    getNodeEsmResolver ,
+    getNodeEsmGetFormat ,
+    getNodeCjsLoader ,
+
+    resolvers1 ,
+
+  } as const ;
+}
+
+export function conferO12(foundConfigResult: FCR & ReturnType<typeof expandO11> & ReturnType<typeof conferGetResolvers> )
+{
+  ;
+
+  const {
+    configFilePath, cwd, options, config, compiler, projectLocalResolveDir, optionBasePaths ,
+
+    /* NEW FIELDS */
+
+    /* expandO11 */
+
+    projectLocalResolveHelper ,
+    ts ,
+
+    readFile ,
+    fileExists ,
+    getCanonicalFileName ,
+
+    moduleTypeClassifier ,
+
+    configFileDirname ,
+    scopeDir ,
+    ignoreBaseDir ,
+    isScoped ,
+    shouldIgnore ,
+    diagnosticHost,
+    configDiagnosticList ,
+    diagnosticFilters ,
+    enabled ,
+    ignored ,
+    addDiagnosticFilter ,
+    shouldHavePrettyErrors,
+    formatDiagnostics ,
+    createTSError ,
+    reportTSError,
+
+    extensions ,
+
+    //
+    transpileOnly ,
+    transpiler ,
+    transpilerBasePath ,
+    transformers ,
+    jsxEmitPreserve ,
+    getEmitExtension ,
+    outputCache ,
+    createTranspiler ,
+    // configFilePath ,
+    initializeTranspilerFactory ,
+    installSourceMapSupport ,
+
+    /* conferGetResolvers */
+
+    isNodeModuleType ,
+    getNodeEsmResolver ,
+    getNodeEsmGetFormat ,
+    getNodeCjsLoader ,
+
+    resolvers1 ,
+
+  } = foundConfigResult;
+
   /**
    * Get output from TS compiler w/typechecking.  `undefined` in `transpileOnly`
    * mode.
    */
-  let getOutput: GetOutputFunction | undefined;
+  let getOutput: SourceFileCompileFunction | undefined;
   let getTypeInfo: (_code: string, _fileName: string, _position: number) => TypeInfo;
-
-  const getCanonicalFileName = (ts as unknown as TSInternal).createGetCanonicalFileName(
-    ts.sys.useCaseSensitiveFileNames
-  );
-
-  const moduleTypeClassifier = createModuleTypeClassifier({
-    basePath: options.optionBasePaths?.moduleTypes,
-    patterns: options.moduleTypes,
-  });
-
-  const extensions = getExtensions(config, options, ts.version);
 
   // Use full language services when the fast option is disabled.
   if (!transpileOnly) {
@@ -1297,7 +1484,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
   function createTranspileOnlyGetOutputFunction(
     overrideModuleType?: _ts.ModuleKind,
     nodeModuleEmitKind?: NodeModuleEmitKind
-  ): GetOutputFunction {
+  ): SourceFileCompileFunction {
     const compilerOptions = { ...config.options };
     if (overrideModuleType !== undefined) compilerOptions.module = overrideModuleType;
     let customTranspiler = createTranspiler?.(compilerOptions, nodeModuleEmitKind);
@@ -1350,13 +1537,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     (ts.ModuleKind.ES2022 && config.options.module === ts.ModuleKind.ES2022) ||
     config.options.module === ts.ModuleKind.ESNext
   );
-  /**
-   * node16 or nodenext
-   * [MUST_UPDATE_FOR_NEW_MODULEKIND]
-   */
-  const isNodeModuleType =
-    (ts.ModuleKind.Node16 && config.options.module === ts.ModuleKind.Node16) ||
-    (ts.ModuleKind.NodeNext && config.options.module === ts.ModuleKind.NodeNext);
+
   const getOutputForceCommonJS = createTranspileOnlyGetOutputFunction(ts.ModuleKind.CommonJS);
   const getOutputForceNodeCommonJS = createTranspileOnlyGetOutputFunction(ts.ModuleKind.NodeNext, 'nodecjs');
   const getOutputForceNodeESM = createTranspileOnlyGetOutputFunction(ts.ModuleKind.NodeNext, 'nodeesm');
@@ -1435,36 +1616,174 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     return output;
   }
 
-  const getNodeEsmResolver = once(() =>
-    (require('../dist-raw/node-internal-modules-esm-resolve') as typeof _nodeInternalModulesEsmResolve).createResolve({
-      extensions,
-      preferTsExts: options.preferTsExts,
-      tsNodeExperimentalSpecifierResolution: options.experimentalSpecifierResolution,
-    })
-  );
-  const getNodeEsmGetFormat = once(() =>
-    (
-      require('../dist-raw/node-internal-modules-esm-get_format') as typeof _nodeInternalModulesEsmGetFormat
-    ).createGetFormat(options.experimentalSpecifierResolution, getNodeEsmResolver())
-  );
-  const getNodeCjsLoader = once(() =>
-    (require('../dist-raw/node-internal-modules-cjs-loader') as typeof _nodeInternalModulesCjsLoader).createCjsLoader({
-      extensions,
-      preferTsExts: options.preferTsExts,
-      nodeEsmResolver: getNodeEsmResolver(),
-    })
-  );
+  const compilery = {
+    //
 
-  const resolvers1 = (
-    (() => {
-      const gclImpl = {
-        getNodeEsmResolver ,
-        getNodeEsmGetFormat ,
-        getNodeCjsLoader ,
-      } satisfies NdResolversGcePublic ;
+    getOutput ,
+    getTypeInfo ,
+    createTranspileOnlyGetOutputFunction ,
 
-      return gclImpl  ;
-    })()
+    shouldOverwriteEmitWhenForcingCommonJS ,
+    shouldOverwriteEmitWhenForcingEsm ,
+
+    getOutputForceCommonJS ,
+    getOutputForceESM ,
+    getOutputForceNodeCommonJS ,
+    getOutputForceNodeESM ,
+    getOutputTranspileOnly ,
+
+    compile ,
+
+  } as const ;
+
+  // Experimental REPL await is not compatible targets lower than ES2018
+  const targetSupportsTla = config.options.target! >= ts.ScriptTarget.ES2018;
+  if (options.experimentalReplAwait === true && !targetSupportsTla) {
+    throw new Error('Experimental REPL await is not compatible with targets lower than ES2018');
+  }
+
+  const shouldReplAwait = options.experimentalReplAwait !== false && targetSupportsTla;
+
+  return {
+    // ...foundConfigResult ,
+
+    /* NEW FIELDS */
+
+    ...compilery ,
+    targetSupportsTla ,
+    shouldReplAwait ,
+
+  } as const ;
+}
+
+/**
+ * TEMPLATE
+ * 
+ */
+function expandOx(foundConfigResult: FCR & ReturnType<typeof expandO11> )
+{
+  ;
+
+  const {
+    configFilePath, cwd, options, config, compiler, projectLocalResolveDir, optionBasePaths ,
+
+    /* NEW FIELDS */
+
+    projectLocalResolveHelper ,
+    ts ,
+
+    readFile ,
+    fileExists ,
+
+  } = foundConfigResult;
+
+  return {
+    ...foundConfigResult ,
+
+    /* NEW FIELDS */
+
+  } as const ;
+}
+
+;
+}
+
+function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof findAndReadConfig>) {
+  const { configFilePath, cwd, options, config, compiler, projectLocalResolveDir, optionBasePaths } = foundConfigResult;
+
+  const expandedO11 = FoundConfigExpansion.expandO11(foundConfigResult) ;
+  const {
+    //
+
+    projectLocalResolveHelper ,
+    ts ,
+
+    readFile ,
+    fileExists ,
+    getCanonicalFileName ,
+
+    moduleTypeClassifier ,
+
+    configFileDirname ,
+    scopeDir ,
+    ignoreBaseDir ,
+    isScoped ,
+    shouldIgnore ,
+    diagnosticHost,
+    configDiagnosticList ,
+    diagnosticFilters ,
+    enabled ,
+    ignored ,
+    addDiagnosticFilter ,
+    shouldHavePrettyErrors,
+    formatDiagnostics ,
+    createTSError ,
+    reportTSError,
+
+    extensions ,
+
+    //
+    transpileOnly ,
+    transpiler ,
+    transpilerBasePath ,
+    transformers ,
+    jsxEmitPreserve ,
+    getEmitExtension ,
+    outputCache ,
+    createTranspiler ,
+    // configFilePath ,
+    initializeTranspilerFactory ,
+    installSourceMapSupport ,
+
+  } = expandedO11 ;
+
+  const {
+    
+    isNodeModuleType ,
+    getNodeEsmResolver ,
+    getNodeEsmGetFormat ,
+    getNodeCjsLoader ,
+
+    resolvers1 ,
+
+  } = (
+    FoundConfigExpansion.conferGetResolvers(expandedO11)
+  ) ;
+
+  const {
+    //
+
+    getOutput ,
+    getTypeInfo ,
+    createTranspileOnlyGetOutputFunction ,
+
+    shouldOverwriteEmitWhenForcingCommonJS ,
+    shouldOverwriteEmitWhenForcingEsm ,
+
+    getOutputForceCommonJS ,
+    getOutputForceESM ,
+    getOutputForceNodeCommonJS ,
+    getOutputForceNodeESM ,
+    getOutputTranspileOnly ,
+
+    compile ,
+
+    targetSupportsTla ,
+    shouldReplAwait ,
+
+  } = (
+
+    FoundConfigExpansion.conferO12({
+      ...expandedO11 ,
+
+      isNodeModuleType ,
+      getNodeEsmResolver ,
+      getNodeEsmGetFormat ,
+      getNodeCjsLoader ,
+  
+      resolvers1 ,
+  
+    })
   ) ;
 
   const compilerHelperExtra = (
@@ -1779,32 +2098,23 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
                     spclPreMainCompileDoRefmt(...args)
                   ) ;
                 } )(_ts.EmitHint.SourceFile , (
-                  (
-                    _ts.createSourceFile("<repl>", code , {
-                      languageVersion: _ts.ScriptTarget.ESNext
-                      ,
-                    } , true , (
-                      (() => {
-                        const isJsxTagsEnab = srcFileExt0.endsWith("x") ;
-                        const isTsFeatsEnab = srcFileExt0.includes("t") ;
-                        const isEsFeatsEnab = srcFileExt0.includes("j") ;
-                        return (
-                          isTsFeatsEnab ?
-                          (
-                            isJsxTagsEnab ? _ts.ScriptKind.TSX :
-                            _ts.ScriptKind.TS
-                          )
-                          :
-                          isEsFeatsEnab ?
-                          (
-                            _ts.ScriptKind.JSX
-                          )
-                          :
-                          undefined
-                        ) ;
-                      })()
-                    ) )
-                  )
+
+                  parseTsFileEb(code, {
+                    fileExt: (
+                      /**
+                       * in the absence of this info
+                       * we tryna accomodate for as many feats as possible,
+                       * by setting it to `tsx`;
+                       * we raise warning
+                       * 
+                       */
+                      srcFileExt0 ?? (
+                        console.warn(`[translateInlineTsScriptIntoCjs] file ext not specified`, { srcFileExt0, assumedSrcPath, } )
+                        ,
+                        "tsx"
+                      )
+                    ) ,
+                  } )
                 ) )
               )
             })()
@@ -2236,6 +2546,36 @@ export {
   NdResolversGcePropagator ,
 } ;
 
+const parseTsFileEb = (
+
+  (...[code, { fileExt, assumedSrcPath = "<repl>", }] : Parameters<EB.EbTranslateInlineScriptIntoCjs>) => (
+    _ts.createSourceFile(assumedSrcPath, code , {
+      languageVersion: _ts.ScriptTarget.ESNext
+      ,
+    } , true , (
+      (() => {
+        const isJsxTagsEnab = fileExt.toLowerCase().endsWith("x") ;
+        const isTsFeatsEnab = fileExt.toLowerCase().includes("t") ;
+        const isEsFeatsEnab = fileExt.toLowerCase().includes("j") ;
+        return (
+          isTsFeatsEnab ?
+          (
+            isJsxTagsEnab ? _ts.ScriptKind.TSX :
+            _ts.ScriptKind.TS
+          )
+          :
+          isEsFeatsEnab ?
+          (
+            _ts.ScriptKind.JSX
+          )
+          :
+          undefined
+        ) ;
+      })()
+    ) )
+  )
+) ;
+
 import {
   scanTransformNodesEh ,
 } from "./syntaxconv/NodeScanConv" ;
@@ -2256,32 +2596,9 @@ import { createRequire, } from 'node:module';
 
 import EB = require("./eb");
 
-abstract class EntryPtPathAndDispatchSchedule {
-  // @ts-ignore
-  #iEntryPointModeBrand = true ;
-  protected constructor(
-    protected readonly lsMode: EntryPtPathAndDispatchSchedule.Ls,
-  )
-  {
-    this.live   = lsMode === EntryPtPathAndDispatchSchedule.LIVE ;
-    this.toSave = lsMode === EntryPtPathAndDispatchSchedule.SAVE ;
-  }
-  readonly   live !: boolean ;
-  readonly toSave !: boolean ;
-}
-
-namespace EntryPtPathAndDispatchSchedule {
-  /** REPL        -      */ export           class      PROMPT extends EntryPtPathAndDispatchSchedule { protected constructor(lsMode: Ls) { super(lsMode) ; } }
-  /** REPL        - live */ export           class LIVE_PROMPT extends PROMPT { constructor() { super(LIVE) ; } }
-  /** REPL        - save */ export           class SAVE_PROMPT extends PROMPT { constructor() { super(SAVE) ; } }
-  /** READFILE    -      */ export           class      FILE   extends EntryPtPathAndDispatchSchedule { protected constructor(readonly srcFileUrl: string, lsMode: Ls) { super(lsMode) ; } }
-  /** READFILE    - live */ export           class LIVE_FILE   extends FILE { constructor(srcFilePath: string) { super(srcFilePath, LIVE) ; } }
-  /** READFILE    - save */ export           class SAVE_FILE   extends FILE { constructor(srcFilePath: string) { super(srcFilePath, SAVE) ; } }
-
-  export type Ls = typeof LIVE | typeof SAVE ;
-  export const LIVE = Symbol("LIVE") ;
-  export const SAVE = Symbol("SAVE") ;
-}
+import {
+  EntryPtPathAndDispatchSchedule ,
+} from "./EntryPtPathAndDispatchSchedule1" ;
 
 export { EntryPtPathAndDispatchSchedule, } ;
 
@@ -2371,6 +2688,10 @@ function registerExtension(ext: string, service: Service, originalHandler: (m: N
 
     return old(m, filename);
   };
+}
+
+interface SourceFileCompileFunction {
+  (code: string, fileName: string): SourceOutput ;
 }
 
 /**
