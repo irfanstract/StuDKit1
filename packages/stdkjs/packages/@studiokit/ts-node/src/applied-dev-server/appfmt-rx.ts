@@ -26,6 +26,8 @@ import {
   mutationallyTransformUrl,
 } from '../util';
 
+import L = require("lodash") ;
+
 import type {
 
   AllOrNeither,
@@ -92,6 +94,10 @@ import {
   XMapperImpl ,
   XWhitelistOrBlacklistImpl ,
 } from "./generic-mapper" ;
+
+import {
+  getMimeTypeFromShortName ,
+} from "../../dist-raw/MimeTypeFromFileName.cjs" ;
 
 
 
@@ -198,6 +204,9 @@ class RxFileNotFoundException extends TypeError
 {
 }
 
+;
+import TsNodeEb = require("../eb") ;
+
 class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
   ;
 
@@ -206,6 +215,98 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
    * 
    */
   ejsFrontend: Express.Handler = (
+  (() => {
+  ;
+
+  /**
+   * whether the path ends with name-ext, and then
+   * returns the analyses
+   * 
+   */
+  const isFileNameExtensionedPath = (
+
+    (path: string) => {
+
+      const c = (
+        (
+          path
+          .replace(/\/$/, () => "" )
+          .match(/\.(\w+)$/)?.[1]
+        )
+        // TODO
+        ?.match(/^(\w+)$/)
+      ) || false ;
+
+      if (c) {
+        ;
+        const fmtShortName = c[1]! ;
+  
+        const fmtMimeType = (
+          getMimeTypeFromShortName(fmtShortName)
+          // ?? "application/octet-stream"
+        ) ;
+  
+        return (
+          {
+            fmtShortName ,
+            fmtMimeType ,
+          } as const
+        ) ;
+      } else {
+        return false ;
+      }
+    }
+  ) ;
+
+  // TODO
+  /**
+   * whether it's a path we wld pretend as "referring to file having one of the known fmts"
+   * 
+   */
+  const isKnownFmtFilePath = (
+
+    (path: string) => {
+
+      const beingNameExtensioned = isFileNameExtensionedPath(path) ;
+
+      return (
+        (
+          (beingNameExtensioned && getMimeTypeFromShortName(beingNameExtensioned.fmtShortName ) )
+        )
+        || false
+      ) ;
+    }
+  ) ;
+
+  /**
+   * whether it's a path we shall treat as static-asset path
+   * 
+   */
+  const isShallBeTreatedAsStaticFilePath = (
+
+    (path: string) => {
+
+      const beingNameExtensioned = isFileNameExtensionedPath(path) ;
+      // if (beingNameExtensioned) {
+      //   ;
+      //   if ((
+      //     beingNameExtensioned.fmtShortName
+      //     ?.match(/^(txt|csv|svg|[am]?e?ps\d+|[am]?(png|we?b[map]|tiff|(jp(eg|g|)2000|jpe?g))|gif|wa(sm|t)|[ot]tf)$/)
+      //   )) {
+      //     return beingNameExtensioned ;
+      //   } else {
+      //     return false ;
+      //   }
+      // } else {
+      //   return beingNameExtensioned ;
+      // }
+      return (
+        beingNameExtensioned
+      ) ;
+    }
+  ) ;
+
+  return (
 
     /**
      * for the right way to do it
@@ -215,6 +316,10 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
     async (...[req, respo, inext]) => {
       const this1 = this ;
       ;
+
+      try {
+      ;
+
       if (1) {
         const {
           xPath: path ,
@@ -223,6 +328,7 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           originHref,
           hostnamev ,
         } = getEnclosingUrlInfo(req) ;
+
         console["warn"](Date(), {
           path ,
           pathnameHref,
@@ -230,6 +336,52 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           originHref,
           hostnamev ,
         }) ;
+
+        /**
+         * the value for `with.type` to run the main script (via {@link this1.peer.rerunRelativePath})
+         * 
+         */
+        let stta: string = (
+          "unknown"
+        ) ;
+
+        const evaluateMainOnce = (
+
+          once((): unknown => {
+
+            if (path === "/%20" ) {
+              throw new TypeError(`illegal access: ${inspect({ path, pathnameHref, }) }`) ;
+            }
+
+            return (
+              this1.peer.rerunRelativePath(path, {
+                with: {
+                  type: stta ,
+                } ,
+              })
+            ) ;
+          })
+        ) ;
+
+        const shallStatic = (
+          isShallBeTreatedAsStaticFilePath((path /* `pathname` */ ) )
+        ) ;
+
+        console.warn({ shallStatic, }) ;
+
+        if ((
+          req.accepts("html")
+          &&
+          (
+            1 ? (
+              !shallStatic
+            ) : 1
+          )
+        ) ) {
+        ;
+
+        stta = "cjs" ;
+
         const finalCont = (
 
           (() => {
@@ -244,13 +396,24 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
                */
               RxEv.evaluateSyncFunction(() => {
 
-                if (path === "/%20" ) {
-                  throw new TypeError(`illegal access: ${inspect({ path, pathnameHref, }) }`) ;
-                }
-
-                return (
-                  this1.peer.rerunRelativePath(path)
+                const value = (
+                  evaluateMainOnce()
                 ) ;
+
+                if ((
+                  isShallBeTreatedAsStaticFilePath(path )
+                ) ) {
+                  return (
+                    React.createElement("div", {}, (
+                      React.createElement(
+                        "p", {},
+                        `Unexpected React Rendition Of Static-Asset File`, ` `, (
+                          React.createElement("code", {}, path )
+                        ) )
+                    ))
+                  ) ;
+                }
+                return value ;
               })
             ) ;
 
@@ -275,25 +438,161 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
          * see https://18.react.dev/reference/react-dom/server/renderToPipeableStream#rendering-a-react-tree-as-html-to-a-nodejs-stream ,
          * 
          */
+        const {
+          renderInp,
+        } = (
+          runHtmlTypedReactJsxResponse(finalCont)
+        ) ;
+        // (await new ReadableStreamDefaultReader(renderInp)) ;
+        // renderInp.pipe(respo) ;
+        return ;
+        } /* fmt: HTML */
+
+        if ((
+          0
+          &&
+          req.accepts(["json", "application/jsonc"])
+        )) {
+          ;
+          stta = "json" ;
+
+          const returnObj = (
+            evaluateMainOnce()
+          ) ;
+
+          respo.status(200) ;
+
+          return (
+            /**
+             * unftntely, this will omit the commts in
+             * 
+             */
+            respo.send((
+              JSON.stringify(returnObj)
+            ))
+            ,
+            void 0
+          ) ;
+        }
+
+        if ((
+          1
+        )) {
+          ;
+
+          stta = "raw" ;
+
+          const returnVal = (
+            evaluateMainOnce()
+          ) ;
+
+          if ((
+            (
+              typeof returnVal === "object" || typeof returnVal === "string"
+              ||
+              /**
+               * these primitive-value(s) cannot be meaningfully translated into string response, so
+               * we'd better bail out
+               * 
+               */
+              (
+                (
+                  ["symbol"].includes(typeof returnVal)
+                  // ||
+                  // ["number", "bigint"].includes(typeof returnVal)
+                ) && assert.fail(new TypeError(inspect({ returnVal, })) )
+                ,
+                false
+              )
+            )
+            &&
+            returnVal
+          )) {
+            ;
+
+            if ((
+              !(
+                (returnVal instanceof Blob )
+                || (returnVal instanceof Buffer )
+                || ((returnVal instanceof (globalThis.ArrayBuffer || Uint8Array ) ) )
+                || (returnVal instanceof Uint8Array )
+              )
+            )) {
+              console["warn"](`unsupported return-value ${(returnVal as Record<string, unknown>).constructor?.toString }`) ;
+            }
+
+            ;
+            respo.status(200) ;
+
+            respo.setHeader("content-type", (
+              (shallStatic || null)?.fmtMimeType
+              ?? "application/octet-stream"
+            )) ;
+  
+            respo.send((
+              (typeof returnVal === "boolean" || typeof returnVal === "number") ?
+              String(Number(returnVal) ) :
+              (returnVal instanceof Blob || returnVal instanceof (globalThis.Response) ) ?
+              /** Express can't directly handle {@link Blob}; convert to Buffer first */
+              (((e: ArrayBuffer) => (Buffer.copyBytesFrom(new Uint8Array(e ) ) ) )(await returnVal.arrayBuffer() ) ) :
+              returnVal
+            )) ;
+
+            return ;
+          }
+
+          ;
+        }
+
+      }
+
+      } catch (z) {
+        return (
+          runHtmlTypedInternalServerErrorResponse(z)
+          ,
+          void 0
+        ) ;
+      }
+
+      function warnSpecialcasedFileNotFoundException(...[error]: [error: any])
+      {
+        ;
+        void ( console["warn"](`Special-Cased FIle-Not-Found-Exception:`, String(error) ) ) ;
+      }
+
+      function runHtmlTypedFileNotFoundErrorResponse(...[error]: [error: any])
+      {
+        ;
+        respo.status(404);
+        respo.statusMessage = `Denied` ;
+        respo.setHeader('content-type', 'text/html');
+        respo.send('<h1>Not a Public Page</h1>' + `<p><u>this path does not name a public page. <br/> please make sure the path is properly-spelled.</u></p> <pre>${String(error) }`); 
+      }
+
+      function runHtmlTypedReactJsxResponse(...[finalCont]: [finalCont: React.ReactElement | React.ReactPortal ])
+      {
+        ;
+
+        /**
+         * have look at https://18.react.dev/reference/react-dom/server/renderToPipeableStream#rendering-a-react-tree-as-html-to-a-nodejs-stream ,
+         * for full listing of `ReactDOMServer`
+         * 
+         */
         const renderInp = ((
           (
             ReactDOMServer.renderToPipeableStream(finalCont, {
               //
-              onShellError: (error) => {
+              onShellError: (error): void => {
                 ;
                 if (error instanceof RxFileNotFoundException) {
-                  void ( console["warn"](`Special-Cased FIle-Not-Found-Exception:`, String(error) ) ) ;
-                  respo.status(404);
-                  respo.setHeader('content-type', 'text/html');
-                  respo.send('<h1>Path Not Available</h1>' + `<pre> ${String(error) }`); 
+                  warnSpecialcasedFileNotFoundException(error) ;
+                  runHtmlTypedFileNotFoundErrorResponse(error) ;
                   return ;
                 }
                 {
                 ;
                 void ( console["warn"](`Code Exception:`, (error) ) ) ;
-                respo.status(500);
-                respo.setHeader('content-type', 'text/html');
-                respo.send('<h1>Something went wrong</h1>' + `<pre> ${getStackOrMessage(error) }`); 
+                runHtmlTypedInternalServerErrorResponse(error) ;
                 }
               } ,
               onShellReady: (...e) => {
@@ -301,15 +600,31 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
                 respo.status(200) ;
                 renderInp.pipe(respo) ;
               } ,
+              onError(error, errorInfo) {
+                /** we already sent this to client, so bypass full stacktrace */
+                console.warn(String(error)) ;
+              },
             } )
           )
         )) ;
-        // (await new ReadableStreamDefaultReader(renderInp)) ;
-        // renderInp.pipe(respo) ;
-        return ;
+
+        return {
+          renderInp: renderInp as Pick<typeof renderInp, "abort" > ,
+        } as const ;
       }
+
+      function runHtmlTypedInternalServerErrorResponse(...[error]: [error: any])
+      {
+        ;
+        respo.status(500);
+        respo.setHeader('content-type', 'text/html');
+        respo.send('<h1>Unexpected Failure</h1>' + `<p>Unexpected Failure</p> <pre>${getStackOrMessage(error) }`); 
+      }
+
       return inext() ;
     }
+  ) ;
+  })()
   ) ;
 
   /** @deprecated */
@@ -458,8 +773,9 @@ namespace RxStyleApp {
      * rerun {@link URL.path relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
      * 
      */
-    function rerunRelativePath(...[rUrl]: Parameters<PeerItcMethods["rerunRelativePath"] > )
+    function rerunRelativePath(...rerArgs: Parameters<PeerItcMethods["rerunRelativePath"] > )
     {
+      const [rUrl, { with: { type: typeAttribv0 = "???" } = { }, } = {}] = rerArgs ;
       const {
         md: {
           rUrlO ,
@@ -515,6 +831,15 @@ namespace RxStyleApp {
       /** `throw`s native Node Exception if it doesn't strict exist as Regular File */
       readFileSync(finalPath, ) ;
 
+      const typeAttribvFinal = (
+
+        /** TODO Content Sniffing */
+        (
+          (typeAttribv0 === "???") ? TsNodeEb.SupportedEsmImportAttribProps.cjsTypeString :
+          typeAttribv0
+        )
+      ) satisfies string ;
+
       if ((
         shallVerboseResol
         || 1
@@ -532,7 +857,10 @@ namespace RxStyleApp {
       const returnVal = (
         rtService.dispatchSrcFile((
           finalPath
-        ))
+        ), {
+          rerun: true ,
+          esmImportAttribs: { type: typeAttribvFinal, } ,
+        })
       ) ;
 
       return returnVal ;
@@ -572,7 +900,15 @@ namespace RxStyleApp {
    * @deprecated
    */
   export interface PeerItcMethods {
-    rerunRelativePath: (...[rUrl]: [x: string] ) => any ,
+
+    /**
+     * 
+     * 
+     */
+    readonly rerunRelativePath: (...[rUrl]: (
+      ArgsWithOptions<[x: string], { with?: ImportAttributes, }>
+    ) ) => any ,
+
   }
 
   export namespace SrcRootedLinearRxApp {
