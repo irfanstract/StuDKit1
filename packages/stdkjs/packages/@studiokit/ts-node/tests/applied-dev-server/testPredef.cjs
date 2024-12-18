@@ -99,7 +99,7 @@ const startTestEjsApp = (
    */
   function (...[app, ] )
   {
-    const pn = random(50700, 65500) ;
+    const pn = steaPortNumberGen.next().value ;
     const {
       close ,
     } = (
@@ -112,6 +112,20 @@ const startTestEjsApp = (
       })
     ) ;
   }
+) ;
+
+const steaPortNumberGen = (
+
+  (function* () {
+    yield 55576 ;
+    yield 53076 ;
+    yield 58076 ;
+    yield 57210 ;
+    for (;;) {
+      yield random(50700, 65500) ;
+    }
+  } )
+  ()
 ) ;
 
 
