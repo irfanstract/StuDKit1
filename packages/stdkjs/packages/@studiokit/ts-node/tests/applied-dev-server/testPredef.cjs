@@ -169,7 +169,7 @@ const EPWR = (
    * @param {[x: (resolve: () => void ) => void ]} args
    */
   function (...[m1]) {
-    const p = new Promise((/** @type {() => void} */ r) => m1(r) ) ;
+    const p = new Promise((/** @type {(x: void) => void} */ r) => m1(r) ) ;
     return {
       p,
     } ;
@@ -289,7 +289,7 @@ const SpclTests = (
      * you're supposed to control the calls by means of
      * 
      * 
-     * @typedef {{ describe: (...x: [title: string, fn: () => MoSuiteCallbackR]) => MoSuiteR , it: (...x: [title: string, fn?: Mocha.AsyncFunc | Mocha.Func]) => MoIndivR, }}
+     * @typedef {{ describe: (...x: [title: string, fn: () => MoSuiteCallbackR]) => MoSuiteR , it: (...x: [title: string, fn?: (() => (MoIndivR | Promise<MoIndivR> ) )]) => MoIndivR, }}
      * 
      * @template [MoSuiteR=any]
      * @template [MoIndivR=MoSuiteR]
