@@ -157,7 +157,8 @@ namespace RxEv {
               startCode()
             )
           ) ;
-  
+
+          // @ts-expect-error
           const CImpl: React.FC<{}> = (
             function CSpclRenderedContentDisplayC()
             {
