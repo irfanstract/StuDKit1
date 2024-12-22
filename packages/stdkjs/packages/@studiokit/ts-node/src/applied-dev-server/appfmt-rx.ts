@@ -234,8 +234,6 @@ export {
 
 
 
-import { CoreFnfC, } from './corefnf';
-
 class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
   ;
 
@@ -417,6 +415,13 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
   function renderFileNotFoundPageContent()
   : React.ReactElement
   {
+
+    const { CoreFnfC, } = (
+      delete require.cache[require.resolve('./corefnf') ]
+      ,
+      require('./corefnf') as typeof import('./corefnf')
+    ) ;
+
     return (
       React.createElement(CoreFnfC )
     ) ;
