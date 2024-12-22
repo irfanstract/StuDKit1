@@ -285,15 +285,61 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
     isKnownFmtFilePath ,
   } = IKNFEP() ;
 
+  ;
   /**
-   * whether it's a path we shall treat as static-asset path
+   * whether
+   * it's
+   * a path forwhich we're __permitted to__ simply send the resolved File Raw/Verbatim
+   * 
+   */
+  const isCanBeTreatedAsStaticFilePath = (
+
+    (path: string) => (
+
+      isFileNameExtensionedPath(path)
+    )
+  ) ;
+
+  /**
+   * whether
+   * it's
+   * a path forwhich we're __necessitated to__ simply send the resolved File Raw/Verbatim
    * 
    */
   const isShallBeTreatedAsStaticFilePath = (
 
-    (path: string) => {
+    (path: string): false | ReturnType<typeof isCanBeTreatedAsStaticFilePath> => {
 
-      const beingNameExtensioned = isFileNameExtensionedPath(path) ;
+      const st = (
+        
+        isCanBeTreatedAsStaticFilePath(path)
+      ) ;
+
+      const {
+        finalAbsolPath: p4 ,
+        p3v: p3 ,
+      } = (
+
+        isWouldResolve(path)
+        ||
+        {
+          finalAbsolPath: null ,
+          p3v: null ,
+        }
+      ) ;
+
+      const {
+        p3v: staticP3 ,
+      } = (
+
+        isWouldResolve(path, { extRewr: false, })
+        ||
+        {
+          // finalAbsolPath: null ,
+          p3v: null ,
+        }
+      ) ;
+
       // if (beingNameExtensioned) {
       //   ;
       //   if ((
@@ -307,9 +353,64 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
       // } else {
       //   return beingNameExtensioned ;
       // }
-      return (
-        beingNameExtensioned
-      ) ;
+
+      // return (
+      //   (((p4 && p3 ) && p4 === p3 ) && NativeFs.existsSync(p4) ) ? 1 :
+      //   v
+      // ) ;
+
+      if (1) {
+
+        console.warn(`[isShallBeTreatedAsStaticFilePath]`, {
+          st ,
+          staticP3 ,
+          p3 ,
+          p4 ,
+        }) ;
+      }
+
+      /**
+       * The Path _Needs To_ Resolve
+       * 
+       */
+      if (p4 && p3 && staticP3) {
+        ;
+
+        /**
+         * If Ext-Rewriting Were Disabled,
+         * The Path _Needs To_ Exist
+         * 
+         */
+        if ((
+          NativeFs.existsSync(staticP3)
+        )) {
+
+          /**
+           * The Path _Shall Not_ Point To `/index` Or Thelikewise
+           * 
+           */
+          if ((
+            (p4 === p3 )
+          )) {
+
+            /**
+             * The Path Shall Pass {@link isCanBeTreatedAsStaticFilePath},
+             * Likely Correlated With The Path Having Name-Ext (Eg `.json`, `.svg`, `.jpg`, `.png`, etc)
+             * 
+             */
+            if (st) {
+              return st ;
+            }
+
+          }
+
+        }
+
+      }
+
+      // return v ;
+
+      return false ;
     }
   ) ;
 
@@ -326,10 +427,51 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
     renderBoxedContentPage ,
   } = makeSsrEssentialRx() ;
 
+  /**
+   * whether one shall abort,
+   * when `path` is taken as Static Asset Path and yet `exports` resolve to primitive value `undefined`
+   * 
+   */
   function shallFailForUndefinedValueAsStatiicAsset(): boolean
   {
     return true ;
   }
+
+  const isWouldResolve = (
+
+    function (...[path, { extRewr = undefined, with: iwith = undefined, } = {}]: (
+      ArgsWithOptions<[inappPath: string], (
+        RxStyleApp.PeerItcImportConfigProps
+      )>
+    ))
+    {
+
+      return (
+
+        (() => {
+          try {
+            return (
+        
+              this1.peer.resolveOrRerunRelativePath(path, ({ finalAbsolPath: finalAbsolPath0, p3, }) => ({
+                finalAbsolPath: finalAbsolPath0,
+                p3v: p3 ,
+              }) , {
+                extRewr ,
+                with: iwith,
+              } )
+            ) ;
+          } catch (z) {
+            if (rxMustSpecialcaseExceptions.isFileNotFoundException(z) ) {
+              console.warn(`[isShallBeTreatedAsStaticFilePath] nf:` , path, String(z) ) ;
+              return null ;
+            }
+            throw z ;
+          }
+        })()
+
+      ) ;
+    }
+  ) ;
 
   /**
    * proxy for {@link RxStyleApp.PeerItcMethods.rerunRelativePath `this.peer.rerunRelativePath`}.
@@ -356,7 +498,7 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
    */
   const rerunInappPath = (
 
-    function (...[path, { impoAttribs, }]: (
+    function (...[path, { impoAttribs, rewriteExt, }]: (
       ArgsWithOptions<[inappPath: string,], {
 
         /**
@@ -368,11 +510,19 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           type: string,
         },
 
+        rewriteExt?: boolean ,
+
       } >
     ) )
     {
 
-      return this1.peer.rerunRelativePath(path, { with: impoAttribs , } ) ;
+      return (
+        
+        this1.peer.resolveOrRerunRelativePath(
+          path,
+          c => c.rerun() ,
+          { with: impoAttribs , extRewr: rewriteExt, } )
+      ) ;
     }
   ) ;
 
@@ -592,18 +742,24 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           })
         ) ;
 
-        const shallStatic = (
-          isShallBeTreatedAsStaticFilePath((path /* `pathname` */ ) )
-        ) ;
+        // const shallStatic = (
+        //   isShallBeTreatedAsStaticFilePath((path /* `pathname` */ ) )
+        // ) ;
 
-        console.warn({ shallStatic, }) ;
+        // console.warn({ shallStatic, }) ;
 
         if ((
           req.accepts("html")
           &&
           (
             1 ? (
-              !shallStatic
+              !isShallBeTreatedAsStaticFilePath((path /* `pathname` */ ) )
+              &&
+              (
+                1 ?
+                !isCanBeTreatedAsStaticFilePath((path /* `pathname` */ ) )
+                : true
+              )
             ) : 1
           )
         ) ) {
@@ -726,8 +882,13 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         )) {
           ;
 
-          // stta = "raw" ;
-          setStta("raw") ;
+          // TODO
+          setStta((
+            isShallBeTreatedAsStaticFilePath(path) ?
+            "raw"
+            :
+            "cjs"
+          )) ;
 
           const {
             returnVal: returnVal ,
@@ -772,7 +933,7 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
             ;
 
             const mimeTypeV = (
-              (shallStatic || null)?.fmtMimeType
+              (isCanBeTreatedAsStaticFilePath((path /* `pathname` */ ) ) || null)?.fmtMimeType
               ?? "application/octet-stream"
             ) ;
 
@@ -987,12 +1148,22 @@ namespace RxStyleApp {
     ) ;
 
     /**
-     * rerun {@link URL.pathname relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
+     * resolve-or-rerun {@link URL.pathname relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
      * 
      */
-    function rerunRelativePath(...rerArgs: Parameters<PeerItcMethods["rerunRelativePath"] > )
+    function resolveOrRerunRelativePath<const R>(...rerArgs: Parameters<ReturnType<(x: PeerItcMethods) => typeof x.resolveOrRerunRelativePath<R>> > )
     {
-      const [rUrl, { with: { type: typeAttribv0 = "???" } = { }, } = {}] = rerArgs ;
+      const [
+        rUrl,
+        pproc,
+        {
+          extRewr: extRewrOpt = true,
+          with: { type: typeAttribv0 = "???" } = { },
+        } = {},
+      ] = rerArgs ;
+
+      const { errorIfNf: errorIfNfOpt = false, } : { errorIfNf?: boolean, } = { };
+
       const {
         md: {
           rUrlO ,
@@ -1013,6 +1184,7 @@ namespace RxStyleApp {
         :
         pathSimpleNameToActual.translateInAppFullName(qp1, {
           srcBasePath: srcBaseDirPath ,
+          extRewr: extRewrOpt ,
         } )
       ) ;
 
@@ -1030,23 +1202,36 @@ namespace RxStyleApp {
         }) ;
       }
 
-      /** `throw` {@link rxMustSpecialcaseExceptions.newFileNotFoundException `RxFileNotFoundException`} if it doesn't strict exist as Regular File */
-      xCheckPathExists(p3 ) ;
+      if (errorIfNfOpt) {
+        ;
+        /** `throw` {@link rxMustSpecialcaseExceptions.newFileNotFoundException `RxFileNotFoundException`} if it doesn't strict exist as Regular File */
+        xCheckPathExists(p3 ) ;
 
-      /** `throw`s if it doesn't exist */
-      statSync(p3) ;
+        ;
+        /** `throw`s if it doesn't exist */
+        statSync(p3) ;
+  
+      }
 
       const finalPath = (
-        statSync(p3).isDirectory() ?
+        (
+          (errorIfNfOpt || NativeFs.existsSync(p3)) &&
+          statSync(p3).isDirectory()
+        ) ?
         Path.join(p3, "index.ts") :
         p3
       ) ;
 
-      /** `throw` {@link rxMustSpecialcaseExceptions.newFileNotFoundException `RxFileNotFoundException`} if it doesn't strict exist as Regular File */
-      xCheckPathExists(finalPath ) ;
+      if (errorIfNfOpt) {
+        ;
+        /** `throw` {@link rxMustSpecialcaseExceptions.newFileNotFoundException `RxFileNotFoundException`} if it doesn't strict exist as Regular File */
+        xCheckPathExists(finalPath ) ;
 
-      /** `throw`s native Node Exception if it doesn't strict exist as Regular File */
-      readFileSync(finalPath, ) ;
+        ;
+        /** `throw`s native Node Exception if it doesn't strict exist as Regular File */
+        readFileSync(finalPath, ) ;
+  
+      }
 
       const typeAttribvFinal = (
 
@@ -1057,30 +1242,64 @@ namespace RxStyleApp {
         )
       ) satisfies string ;
 
-      if ((
-        shallVerboseResol
-        || 1
-      )) {
-        ;
-        console["warn"](Date(), {
-          rUrl,
-          rUrlO,
-          pr2 ,
-          p3,
-          finalPath,
-        }) ;
-      }
+      return (
 
-      const returnVal = (
-        rtService.dispatchSrcFile((
-          finalPath
-        ), {
-          rerun: true ,
-          esmImportAttribs: { type: typeAttribvFinal, } ,
+        pproc({
+
+          finalAbsolPath: finalPath ,
+          p3 ,
+
+          rerun: () => {
+            ;
+
+            if ((
+              shallVerboseResol
+              || 1
+            )) {
+              ;
+              console["warn"](Date(), {
+                rUrl,
+                rUrlO,
+                pr2 ,
+                p3,
+                finalPath,
+              }) ;
+            }
+      
+            if (1) {
+              ;
+              /** `throw` {@link rxMustSpecialcaseExceptions.newFileNotFoundException `RxFileNotFoundException`} if it doesn't strict exist as Regular File */
+              xCheckPathExists(finalPath ) ;
+
+            }
+
+            const returnVal = (
+              rtService.dispatchSrcFile((
+                finalPath
+              ), {
+                rerun: true ,
+                esmImportAttribs: { type: typeAttribvFinal, } ,
+              })
+            ) ;
+      
+            return returnVal ;
+          } ,
+
         })
       ) ;
+    }
 
-      return returnVal ;
+    ;
+    /**
+     * rerun {@link URL.pathname relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
+     * 
+     */
+    function rerunRelativePath(...[c, { ...opts }]: Parameters<PeerItcMethods["rerunRelativePath"] > )
+    {
+
+      return (
+        resolveOrRerunRelativePath(c, ({ rerun, }) => rerun(), opts )
+      ) ;
     }
 
     ;
@@ -1105,6 +1324,8 @@ namespace RxStyleApp {
           isWhitelistedSrcUrl ,
     
           rerunRelativePath: rerunRelativePath ,
+
+          resolveOrRerunRelativePath: resolveOrRerunRelativePath,
     
         })
       ))
@@ -1138,12 +1359,43 @@ namespace RxStyleApp {
      * /!static/MotorEngine/worker.mjs
      * ```
      * 
+     * {@link resolveOrRerunRelativePath}
+     * 
      */
     readonly rerunRelativePath: (...[rUrl]: (
-      ArgsWithOptions<[x: string], { with?: ImportAttributes, }>
+      ArgsWithOptions<[x: string], PeerItcImportConfigProps>
     ) ) => any ,
 
+    /**
+     * Resolve {@link URL.pathname this app-specific relative path (ie rooted at `/`) (with the trailing `?<params>`) } to a Template File or Static File,
+     * and/or
+     * Rerun The Resolved File
+     * 
+     * ```sh
+     * /
+     * /favicon.ico
+     * /users/a123
+     * /users/a123/casts.json
+     * /users/a456/casts.jsonc
+     * /!static/MotorEngine/index
+     * /!static/MrDrSmartCtrlIntro.webm
+     * /!static/MotorEngine/meng.wasm
+     * /!static/MotorEngine/worker.mjs
+     * ```
+     * 
+     * {@link rerunRelativePath}
+     * 
+     */
+    readonly resolveOrRerunRelativePath: <const R>(...[rUrl]: (
+      ArgsWithOptions<[
+        x: string,
+        (...x: ArgsWithOptions<[], { p3: string, finalAbsolPath: string, rerun(): unknown, } >) => R ,
+      ], PeerItcImportConfigProps>
+    ) ) => R ,
+
   }
+
+  export interface PeerItcImportConfigProps extends Extract<{ with?: ImportAttributes, extRewr?: false | true, }, any> {}
 
   export namespace SrcRootedLinearRxApp {
     ;
@@ -1303,7 +1555,12 @@ namespace RxStyleApp {
   export class PathSimpleNameTranslator
   {
 
-    readonly translateInAppFullName!: (...x: ArgsWithOptions<[x: string, ], { srcBasePath: string, }>) => string ;
+    readonly translateInAppFullName!: (
+      (...x: ArgsWithOptions<[x: string, ], (
+        & { srcBasePath: string, }
+        & { extRewr?: false | true | 1, }
+      )>) => string
+    ) ;
 
     // readonly translate?: (...x: ArgsWithOptions<[x: string, ], { base: string, }>) => string ;
 
@@ -1347,7 +1604,7 @@ namespace RxStyleApp {
     export const createTsInstance = (
       function createTsInstanceImpl()
       {
-        return new PathSimpleNameTranslatorRea((...[e, { srcBasePath: sbp0, }]) => {
+        return new PathSimpleNameTranslatorRea((...[e, { srcBasePath: sbp0, extRewr = 1, }]) => {
           {
 
             const sbu1WithoutTrailingSlash = (
@@ -1395,7 +1652,10 @@ namespace RxStyleApp {
                 return e ;
               }
             }
-            
+
+            if (extRewr) {
+            ;
+
             if (e.match(/\/$/) ) {
               ;
             } else {
@@ -1412,6 +1672,9 @@ namespace RxStyleApp {
                 }
               }
             }
+
+            }
+
           }
           return e ;
         } ) ;
