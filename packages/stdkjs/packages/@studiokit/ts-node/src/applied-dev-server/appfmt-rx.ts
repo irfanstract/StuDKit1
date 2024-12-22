@@ -26,7 +26,13 @@ import {
   mutationallyTransformUrl,
 } from '../util';
 
-import L = require("lodash") ;
+import {
+  once1 ,
+  L ,
+  inspect ,
+  parseUrl ,
+  Dispatch ,
+} from "./util-alt" ;
 
 import type {
 
@@ -42,180 +48,94 @@ import type {
 
 } from "../util-recordtypes" ;
 
-import { inspect, } from 'node:util';
-
-const parseUrl = (
-
-  function (...[x] : [x: string])
-  : URL
-  {
-
-    return URL.canParse(x) ? Object.freeze(new URL(x) ) : assert.fail(new TypeError(`${inspect(x) }`) ) ;
-  }
-) ;
-
-import type {
-  Dispatch ,
-} from "react" ;
 
 
 
-
-import Path = require("node:path") ;
-
-import { fileURLToPath, pathToFileURL, } from 'node:url';
-
-import NativeFs = require("node:fs") ;
-
-import Express = require("express") ;
+;
 
 import {
+  TsNode ,
+  allTscSupportedExtsLowercased ,
+  TsNodeEb ,
+} from "./util-ws" ;
+
+import {
+  React ,
+  ReactDOM ,
+  ReactDOMServer ,
+} from "./util-ws" ;
+
+import {
+  fileURLToPath ,
+  pathToFileURL ,
+  Path ,
+  NativeFs,
+  readFileSync ,
+  statSync ,
+} from "./util-ws" ;
+
+import {
+  getMimeTypeFromShortName ,
+  Express ,
   analyseRphrc ,
-} from "./base-ejs" ;
-
-const getEnclosingUrlInfo = (
-
-  function (...[e]: [e: Express.Request])
-  {
-    return analyseRphrc({ invokingRequestEvt: e, }) ;
-  }
-) ;
+  getEnclosingUrlInfo ,
+} from "./util-ws" ;
 
 import {
-  readFileSync,
-  statSync,
+  XMapperImpl ,
+  XWhitelistOrBlacklistImpl ,
+} from "./util-ws" ;
+
+;
+
+;
+
+
+
+
+import {
 } from 'node:fs';
 
 
 
 
 
-import {
-  XMapperImpl ,
-  XWhitelistOrBlacklistImpl ,
-} from "./generic-mapper" ;
+;
 
-import {
-  getMimeTypeFromShortName ,
-} from "../../dist-raw/MimeTypeFromFileName.cjs" ;
-
-
-
-
-
-import TsNode = require("../index") ;
-
-import React = require('react');
-
-import ReactDOMServer = require('react-dom/server');
-
-const allTscSupportedExtsLowercased = (
-  utilReiterated(function* () {
-    for (const esmNess of ["", "C", "M"] )
-    for (const allowJJsx of [false, true] )
-    for (const dialectId of ["J", "T"] )
-      yield (
-        ("" + esmNess + ("" + dialectId + "S" ) + (allowJJsx ? "X" : "" ) )
-        .toLowerCase()
-      ) ;
-  })
-) ;
+// import {
+//   XMapperImpl ,
+//   XWhitelistOrBlacklistImpl ,
+// } from "./generic-mapper" ;
 
 ;
-/**
- * since React 18 doesn't have native support for `Promise`s,
- * we need to simulate via rather unsemantic means eg {@link React.lazy `React.lazy`}
- * 
- */
-namespace RxEv {
-  ;
 
-  export const evaluateSyncFunction = (
 
-    function <const Value> (...[runCode] : [() => Value ])
-    {
-  
-      return (
-        evaluateAsyncFunction(async () => runCode() )
-      ) ;
-    }
-  ) ;
 
-  export const evaluateAsyncFunction = (
 
-    function <const Value> (...[startCode] : [() => Promise<Value> ])
-    : React.ReactElement
-    {
-  
-      assert(React.lazy, new ReferenceError(`'React.lazy' is not available. make sure the React Version is 18 or later, and try again` ) )
 
-      const C = (
-        React.lazy(async () => {
-          ;
-          const codeReturnValue = (
-            await (
-              startCode()
-            )
-          ) ;
+;
 
-          // @ts-expect-error
-          const CImpl: React.FC<{}> = (
-            function CSpclRenderedContentDisplayC()
-            {
-
-              return (
-
-                ((...[e]: [e: unknown]) => {
-                  ;
-
-                  if ((
-                    (((typeof e === "object" || typeof e === "function" ) /** it didn't outrule `null` */ && e ) && Object.getOwnPropertyNames(e).length <= 0 )
-                  ) ) {
-                    return (
-                      React.createElement("p", {}, `cannot render element:`, (
-                        React.createElement("code", {}, (
-                          `${String(e) }`
-                        ) )
-                      ) )
-                    ) ;
-                  }
-
-                  return e;
-                })
-                (codeReturnValue)
-              ) ;
-            }
-          );
-  
-          return { default: CImpl, } ;
-        } )
-      ) ;
-  
-      return (
-        React.createElement(C, {} )
-      ) ;
-    }
-  ) ;
-
-  ;
-}
-
-class RxFileNotFoundException extends TypeError
+interface INfFlagAndReturnVal<out value extends unknown = unknown, out nfT extends boolean = boolean >
 {
+  readonly nf: nfT,
+  readonly returnVal: value,
 }
 
-;
-import TsNodeEb = require("../eb") ;
+import {
+  RxEv ,
+  tryRxRenderAsJsx ,
+} from "./RxEv" ;
 
-class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
-  ;
+import {
+  makeSpclEjsResponseStarter ,
+} from "./base-ejs-reactdom" ;
 
-  /**
-   * an {@link Express.Handler Express-based frontend } for this App.
-   * 
-   */
-  ejsFrontend: Express.Handler = (
-  (() => {
+import {
+  makeSsrEssentialRx,
+} from './SsrEssentialRx';
+
+function IKNFEP()
+{
   ;
 
   /**
@@ -278,6 +198,93 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
     }
   ) ;
 
+  return {
+    isFileNameExtensionedPath ,
+    isKnownFmtFilePath ,
+  } as const ;
+}
+
+const rxMustSpecialcaseExceptions = (
+
+  (() => {
+
+    class RxFileNotFoundException extends TypeError
+    {
+    }
+    
+    function isRxFileNotFoundException(z: unknown): z is RxFileNotFoundException
+    {
+    
+      return (
+        z instanceof RxFileNotFoundException
+      ) ;
+    }
+    
+    return {
+      isFileNotFoundException: isRxFileNotFoundException,
+      newFileNotFoundException: (...x: ConstructorParameters<typeof RxFileNotFoundException>) => new RxFileNotFoundException(...x ) ,
+    } as const ;
+  })()
+) ;
+
+export {
+
+  rxMustSpecialcaseExceptions as rxMustSpecialcaseExceptions ,
+} ;
+
+
+
+import { CoreFnfC, } from './corefnf';
+
+class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
+  ;
+
+  /**
+   * proxy for {@link RxStyleApp.PeerItcMethods.rerunRelativePath `this.peer.rerunRelativePath`}.
+   * 
+   * Resolve {@link URL.pathname this app-specific relative path (ie rooted at `/`) (with the trailing `?<params>`) } to a Template File or Static File,
+   * and
+   * Rerun The Resolved File
+   * 
+   * ```sh
+   * /
+   * /index
+   * /favicon.ico
+   * /users/a123
+   * /users/a456
+   * /i/a789
+   * /!static/index
+   * /!static/MotorEngine/meng.wasm
+   * /!static/MotorEngine/worker.mjs
+   * ```
+   * 
+   */
+  rerunRelativePath(...args: Parameters<RxStyleApp.PeerItcMethods["rerunRelativePath"]> )
+  {
+    return (
+      this.peer.rerunRelativePath(...args)
+    ) ;
+  }
+
+  /**
+   * eventhough presently we only support Express,
+   * there's open doors for future possible supports for additional FW(s), which share a lot of shared/common code (mostly `function`s)
+   * 
+   */
+  protected readonly ejsSpawner = (
+  //
+  (() => {
+  ;
+
+  ;
+  const this1 = this ;
+
+  const {
+    //
+    isFileNameExtensionedPath ,
+    isKnownFmtFilePath ,
+  } = IKNFEP() ;
+
   /**
    * whether it's a path we shall treat as static-asset path
    * 
@@ -306,7 +313,222 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
     }
   ) ;
 
-  return (
+  function renderFileNotFoundPageContent()
+  : React.ReactElement
+  {
+    return (
+      React.createElement(CoreFnfC )
+    ) ;
+  }
+
+  const {
+    renderArbitraryContentPage ,
+    renderBoxedContentPage ,
+  } = makeSsrEssentialRx() ;
+
+  function shallFailForUndefinedValueAsStatiicAsset(): boolean
+  {
+    return true ;
+  }
+
+  /**
+   * proxy for {@link RxStyleApp.PeerItcMethods.rerunRelativePath `this.peer.rerunRelativePath`}.
+   * 
+   * Resolve {@link URL.pathname this app-specific relative path (ie rooted at `/`) (with the trailing `?<params>`) } to a Template File or Static File,
+   * and
+   * Rerun The Resolved File
+   * 
+   * ```sh
+   * /
+   * /index
+   * /favicon.ico
+   * /users/a123
+   * /users/a123/casts.json
+   * /users/a456
+   * /users/a456/casts.jsonc
+   * /i/a789
+   * /!static/index
+   * /!static/MrDrSmartCtrlIntro.webm
+   * /!static/MotorEngine/meng.wasm
+   * /!static/MotorEngine/worker.mjs
+   * ```
+   * 
+   */
+  const rerunInappPath = (
+
+    function (...[path, { impoAttribs, }]: (
+      ArgsWithOptions<[inappPath: string,], {
+
+        /**
+         * we'll pass, as {@link ImportMeta `importConfig`}, {@link impoAttribs `{ with: { type: opts.impoAttribs.type, }, }` }, so
+         * you'll need to set `opts.impoAttribs.type`
+         * 
+         */
+        impoAttribs: {
+          type: string,
+        },
+
+      } >
+    ) )
+    {
+
+      return this1.peer.rerunRelativePath(path, { with: impoAttribs , } ) ;
+    }
+  ) ;
+
+  /**
+   * Another Engine For Multi-Stage/Multi-Step Dispatch Of Given In-App Path.
+   * the returned Ctx can only be used once, and only for the path(name) you pass for creation;
+   * please create another if you want another run
+   * 
+   */
+  const newUserRenderableInappPathRun = (
+
+    function (...[{ path, onIllegalAccessException, }] : ArgsWithOptions<[], { path: string, onIllegalAccessException: () => never, }> ) {
+      ;
+
+      ;
+      /**
+       * the value to use as {@link ImportAttributes.type `with.type`} to run the main script (via {@link rerunInappPath})
+       * 
+       */
+      let stta: string = (
+        "unknown"
+      ) ;
+
+      /**
+       * assign
+       * the value to use as {@link ImportAttributes.type `with.type`} to run the main script (via {@link rerunInappPath})
+       * 
+       */
+      function setStta<const v extends string>(newStta: v): void
+      {
+        stta = newStta ;
+      }
+
+      const evaluateMainOnceA = (
+
+        once1((): INfFlagAndReturnVal => {
+
+          if (0) {
+
+            if (path === "/%20" ) {
+              return (
+                onIllegalAccessException()
+              ) ;
+            }
+          }
+
+          const appOrErrorPathTryArray = (
+
+            utilReiterated(function* (): Iterable<{ iStta: string, xPath: string, }>
+            {
+              yield { iStta: stta, xPath: path, } ;
+            })
+          ) ;
+          L1 :
+          for (const { iStta: stta, xPath: path, } of appOrErrorPathTryArray ) {
+            ;
+
+            const vl0 = (() => {
+
+              try {
+                const v = (
+                  rerunInappPath(path, {
+                    impoAttribs: {
+                      type: stta ,
+                    } ,
+                  })
+                ) ;
+                return { value: v, } ;
+              } catch (z) {
+                if (rxMustSpecialcaseExceptions.isFileNotFoundException(z) ) {
+                  console.warn(String(z) ) ;
+                  return null ;
+                }
+                throw z ;
+              }
+            })() ;
+            if (!vl0) { continue L1 ; }
+
+            const { value: vl, } = vl0 ;
+
+            return (
+              {
+                nf: false ,
+                returnVal: vl ,
+              } satisfies INfFlagAndReturnVal
+            ) ;
+
+          }
+
+          if (1) {
+            ;
+
+            if (1) {
+              ;
+              return (
+                {
+                  nf: true ,
+                  returnVal: (
+                    renderFileNotFoundPageContent()
+                  ) ,
+                } satisfies INfFlagAndReturnVal
+              ) ;
+            }
+
+            return (
+              {
+                nf: true ,
+                returnVal: (
+                  React.createElement("div", {}, (
+                    React.createElement("p", {}, `not found:`, ` `, (
+                      React.createElement("code", {}, path )
+                    ) )
+                  ) )
+                ) ,
+              } satisfies INfFlagAndReturnVal
+            ) ;
+          }
+
+          return (
+            assert.fail(new TypeError() )
+          ) ;
+        })
+      ) ;
+
+      const evaluateMainOnce = (
+
+        () => (
+          evaluateMainOnceA()
+          .returnVal
+        )
+      ) ;
+
+      return {
+
+        /**
+         * PREREQUISITE.
+         * the value to use as {@link ImportAttributes.type `with.type`} to run the main script (via {@link rerunInappPath})
+         * 
+         * 
+         */
+        setStta ,
+
+        /** MAIN COMPLETION */
+        completeA: evaluateMainOnceA ,
+        /** MAIN COMPLETION */
+        complete: evaluateMainOnce,
+
+      } ;
+    }
+  ) ;
+
+  /**
+   * implementation for `this.ejsFrontend`
+   * 
+   */
+  const respondToHttpRequest: Express.Handler = (
 
     /**
      * for the right way to do it
@@ -314,8 +536,24 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
      * 
      */
     async (...[req, respo, inext]) => {
-      const this1 = this ;
       ;
+
+      const {
+        //
+
+        runModelledJsonResponse,
+        startRawFileResponse,
+    
+        runHtmlTypedFileNotFoundErrorResponse ,
+        runHtmlTypedInternalServerErrorResponse ,
+        runHtmlTypedReactJsxResponse ,
+    
+        warnSpecialcasedFileNotFoundException ,
+    
+        setResponseNfOrDeniedStatusCode ,
+        setResponseNfStatusCode ,
+    
+      } = makeSpclEjsResponseStarter(respo) ;
 
       try {
       ;
@@ -337,29 +575,20 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           hostnamev ,
         }) ;
 
-        /**
-         * the value for `with.type` to run the main script (via {@link this1.peer.rerunRelativePath})
-         * 
-         */
-        let stta: string = (
-          "unknown"
-        ) ;
+        const {
+          //
+          setStta ,
+          completeA: evaluateMainOnceA ,
+          complete: evaluateMainOnce,
+        } = (
 
-        const evaluateMainOnce = (
-
-          once((): unknown => {
-
-            if (path === "/%20" ) {
-              throw new TypeError(`illegal access: ${inspect({ path, pathnameHref, }) }`) ;
-            }
-
-            return (
-              this1.peer.rerunRelativePath(path, {
-                with: {
-                  type: stta ,
-                } ,
-              })
-            ) ;
+          newUserRenderableInappPathRun({
+            path,
+            onIllegalAccessException: () => {
+              throw (
+                rxMustSpecialcaseExceptions.newFileNotFoundException(`illegal access: ${inspect({ path, pathnameHref, }) }`)
+              ) ;
+            } ,
           })
         ) ;
 
@@ -380,7 +609,8 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         ) ) {
         ;
 
-        stta = "cjs" ;
+        // stta = "cjs" ;
+        setStta("cjs");
 
         const finalCont = (
 
@@ -396,8 +626,10 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
                */
               RxEv.evaluateSyncFunction(() => {
 
-                const value = (
-                  evaluateMainOnce()
+                const {
+                  returnVal: value,
+                } = (
+                  evaluateMainOnceA()
                 ) ;
 
                 if ((
@@ -417,23 +649,32 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
               })
             ) ;
 
+            const titleElem = (
+              0 ?
+              (
+                React.createElement(
+                  "title", { },
+                  /** `<title>`s doesn't support `<!-- ... -->`s */
+                  [`this page have no title`, ` - `, inspect({ path, pathnameHref, }) ].join("") )
+              )
+              : null
+            ) ;
+
             return (
-              React.createElement("html", {}, (
-                React.createElement("head", {}, ...[
-                  React.createElement("meta", { charSet: "utf-8", } ) ,
-                  React.createElement(
-                    "title", { },
-                    /** `<title>`s doesn't support `<!-- ... -->`s */
-                    [`this page have no title`, ` - `, inspect({ path, pathnameHref, }) ].join("") ) ,
-                  React.createElement("base", { href: basePathnameHref, } ) ,
-                ] )
-              ), (
-                React.createElement("body", {}, c )
-              ) )
+              renderArbitraryContentPage(c, {
+                basePathnameHref ,
+                titleElem ,
+              })
             ) ;
           })()
         ) ;
+
+        const {
+          nf: wasNf,
+        } = evaluateMainOnceA() ;
+
         respo.status(200) ;
+
         /**
          * see https://18.react.dev/reference/react-dom/server/renderToPipeableStream#rendering-a-react-tree-as-html-to-a-nodejs-stream ,
          * 
@@ -441,10 +682,11 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         const {
           renderInp,
         } = (
-          runHtmlTypedReactJsxResponse(finalCont)
+          runHtmlTypedReactJsxResponse(finalCont, wasNf ? 404 : 200 )
         ) ;
         // (await new ReadableStreamDefaultReader(renderInp)) ;
         // renderInp.pipe(respo) ;
+
         return ;
         } /* fmt: HTML */
 
@@ -454,23 +696,27 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           req.accepts(["json", "application/jsonc"])
         )) {
           ;
-          stta = "json" ;
+          // stta = "json" ;
+          setStta("json") ;
 
-          const returnObj = (
-            evaluateMainOnce()
+          const {
+            nf: wasNf ,
+            returnVal: returnObj,
+          } = (
+            evaluateMainOnceA()
           ) ;
 
-          respo.status(200) ;
+          if (returnObj === undefined) {
+            return (
+              assert.fail(new TypeError(`cannot translate 'undefined' into JSON Response, check your src-file. (${path })`) )
+            ) ;
+          }
+
+          runModelledJsonResponse(returnObj, {
+            wasNf,
+          } ) ;
 
           return (
-            /**
-             * unftntely, this will omit the commts in
-             * 
-             */
-            respo.send((
-              JSON.stringify(returnObj)
-            ))
-            ,
             void 0
           ) ;
         }
@@ -480,63 +726,81 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         )) {
           ;
 
-          stta = "raw" ;
+          // stta = "raw" ;
+          setStta("raw") ;
 
-          const returnVal = (
-            evaluateMainOnce()
+          const {
+            returnVal: returnVal ,
+            nf: wasNf ,
+          } = (
+            evaluateMainOnceA()
           ) ;
 
           if ((
+
             (
-              typeof returnVal === "object" || typeof returnVal === "string"
-              ||
               /**
-               * these primitive-value(s) cannot be meaningfully translated into string response, so
+               * cannot convert `symbol` into `string` regardless what we've been doing, so
                * we'd better bail out
                * 
                */
               (
-                (
-                  ["symbol"].includes(typeof returnVal)
-                  // ||
-                  // ["number", "bigint"].includes(typeof returnVal)
-                ) && assert.fail(new TypeError(inspect({ returnVal, })) )
+                (typeof returnVal === "symbol")
+              ) && assert.fail(new TypeError(`cannot convert Symbol into String. ${inspect({ returnVal, }) }`) )
+              ?
+              false :
+              /**
+               * these primitive-value(s) cannot be meaningfully translated into string response, so
+               * we'd better skip
+               * 
+               */
+              (
+                (returnVal === undefined)
+              ) && (
+                shallFailForUndefinedValueAsStatiicAsset() &&
+                assert.fail(new TypeError(`cannot meaningfully translate: ${inspect({ returnVal, }) }` ) )
                 ,
                 false
               )
+              ?
+              false :
+
+              true
             )
-            &&
-            returnVal
+
           )) {
             ;
 
-            if ((
-              !(
-                (returnVal instanceof Blob )
-                || (returnVal instanceof Buffer )
-                || ((returnVal instanceof (globalThis.ArrayBuffer || Uint8Array ) ) )
-                || (returnVal instanceof Uint8Array )
-              )
-            )) {
-              console["warn"](`unsupported return-value ${(returnVal as Record<string, unknown>).constructor?.toString }`) ;
-            }
-
-            ;
-            respo.status(200) ;
-
-            respo.setHeader("content-type", (
+            const mimeTypeV = (
               (shallStatic || null)?.fmtMimeType
               ?? "application/octet-stream"
-            )) ;
-  
-            respo.send((
-              (typeof returnVal === "boolean" || typeof returnVal === "number") ?
-              String(Number(returnVal) ) :
-              (returnVal instanceof Blob || returnVal instanceof (globalThis.Response) ) ?
-              /** Express can't directly handle {@link Blob}; convert to Buffer first */
-              (((e: ArrayBuffer) => (Buffer.copyBytesFrom(new Uint8Array(e ) ) ) )(await returnVal.arrayBuffer() ) ) :
-              returnVal
-            )) ;
+            ) ;
+
+            void (
+              await
+              (async (...[v0] : [{}] ) => {
+
+                if ((
+                  !(
+                    (v0 instanceof Blob )
+                    || (v0 instanceof Buffer )
+                    || ((v0 instanceof (globalThis.ArrayBuffer || Uint8Array ) ) )
+                    || (v0 instanceof Uint8Array )
+                  )
+                )) {
+                  console["warn"](`unsupported return-value ${(v0 as Record<string, unknown>).constructor?.toString }`) ;
+                }
+            
+                return (
+
+                  startRawFileResponse(v0, {
+                    mTypeV: mimeTypeV,
+                    wasNf,
+                  })
+                ) ;
+              })
+              (returnVal ?? "null")
+            ) ;
 
             return ;
           }
@@ -554,76 +818,29 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
         ) ;
       }
 
-      function warnSpecialcasedFileNotFoundException(...[error]: [error: any])
-      {
-        ;
-        void ( console["warn"](`Special-Cased FIle-Not-Found-Exception:`, String(error) ) ) ;
-      }
-
-      function runHtmlTypedFileNotFoundErrorResponse(...[error]: [error: any])
-      {
-        ;
-        respo.status(404);
-        respo.statusMessage = `Denied` ;
-        respo.setHeader('content-type', 'text/html');
-        respo.send('<h1>Not a Public Page</h1>' + `<p><u>this path does not name a public page. <br/> please make sure the path is properly-spelled.</u></p> <pre>${String(error) }`); 
-      }
-
-      function runHtmlTypedReactJsxResponse(...[finalCont]: [finalCont: React.ReactElement | React.ReactPortal ])
-      {
-        ;
-
-        /**
-         * have look at https://18.react.dev/reference/react-dom/server/renderToPipeableStream#rendering-a-react-tree-as-html-to-a-nodejs-stream ,
-         * for full listing of `ReactDOMServer`
-         * 
-         */
-        const renderInp = ((
-          (
-            ReactDOMServer.renderToPipeableStream(finalCont, {
-              //
-              onShellError: (error): void => {
-                ;
-                if (error instanceof RxFileNotFoundException) {
-                  warnSpecialcasedFileNotFoundException(error) ;
-                  runHtmlTypedFileNotFoundErrorResponse(error) ;
-                  return ;
-                }
-                {
-                ;
-                void ( console["warn"](`Code Exception:`, (error) ) ) ;
-                runHtmlTypedInternalServerErrorResponse(error) ;
-                }
-              } ,
-              onShellReady: (...e) => {
-                respo.setHeader("content-type", "text/html") ;
-                respo.status(200) ;
-                renderInp.pipe(respo) ;
-              } ,
-              onError(error, errorInfo) {
-                /** we already sent this to client, so bypass full stacktrace */
-                console.warn(String(error)) ;
-              },
-            } )
-          )
-        )) ;
-
-        return {
-          renderInp: renderInp as Pick<typeof renderInp, "abort" > ,
-        } as const ;
-      }
-
-      function runHtmlTypedInternalServerErrorResponse(...[error]: [error: any])
-      {
-        ;
-        respo.status(500);
-        respo.setHeader('content-type', 'text/html');
-        respo.send('<h1>Unexpected Failure</h1>' + `<p>Unexpected Failure</p> <pre>${getStackOrMessage(error) }`); 
-      }
-
       return inext() ;
     }
   ) ;
+
+  return {
+    respondToHttpRequest ,
+  } as const ;
+  })()
+  ) ;
+
+  /**
+   * an {@link Express.Handler Express-based frontend } for this App.
+   * 
+   */
+  ejsFrontend: Express.Handler = (
+  (() => {
+  ;
+
+  const {
+    respondToHttpRequest: eH ,
+  } = this.ejsSpawner ;
+
+  return eH ;
   })()
   ) ;
 
@@ -734,7 +951,7 @@ namespace RxStyleApp {
     ;
 
     /**
-     * parse {@link URL.path relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
+     * parse {@link URL.pathname relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
      * 
      */
     function parseRelativePath(...[rUrl]: [x: string] )
@@ -757,20 +974,20 @@ namespace RxStyleApp {
 
     const xCheckPathExists = (
 
-      /** `throw`s {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      /** `throw`s {@link rxMustSpecialcaseExceptions.newFileNotFoundException `RxFileNotFoundException`} if it doesn't strict exist as Regular File */
       function (...[finalPath]: [path: string])
       {
 
       /** `throw`s if it doesn't strict exist as Regular File */
       if (!NativeFs.existsSync(finalPath,) ) {
-        throw new RxFileNotFoundException(`for: ${inspect({ finalPath, }) }`) ;
+        throw rxMustSpecialcaseExceptions.newFileNotFoundException(`for: ${inspect({ finalPath, }) }`) ;
       }
 
       }
     ) ;
 
     /**
-     * rerun {@link URL.path relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
+     * rerun {@link URL.pathname relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
      * 
      */
     function rerunRelativePath(...rerArgs: Parameters<PeerItcMethods["rerunRelativePath"] > )
@@ -813,7 +1030,7 @@ namespace RxStyleApp {
         }) ;
       }
 
-      /** `throw` {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      /** `throw` {@link rxMustSpecialcaseExceptions.newFileNotFoundException `RxFileNotFoundException`} if it doesn't strict exist as Regular File */
       xCheckPathExists(p3 ) ;
 
       /** `throw`s if it doesn't exist */
@@ -825,7 +1042,7 @@ namespace RxStyleApp {
         p3
       ) ;
 
-      /** `throw` {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      /** `throw` {@link rxMustSpecialcaseExceptions.newFileNotFoundException `RxFileNotFoundException`} if it doesn't strict exist as Regular File */
       xCheckPathExists(finalPath ) ;
 
       /** `throw`s native Node Exception if it doesn't strict exist as Regular File */
@@ -902,7 +1119,24 @@ namespace RxStyleApp {
   export interface PeerItcMethods {
 
     /**
+     * Resolve {@link URL.pathname this app-specific relative path (ie rooted at `/`) (with the trailing `?<params>`) } to a Template File or Static File,
+     * and
+     * Rerun The Resolved File
      * 
+     * ```sh
+     * /
+     * /index
+     * /favicon.ico
+     * /users/a123
+     * /users/a123/casts.json
+     * /users/a456
+     * /users/a456/casts.jsonc
+     * /i/a789
+     * /!static/index
+     * /!static/MrDrSmartCtrlIntro.webm
+     * /!static/MotorEngine/meng.wasm
+     * /!static/MotorEngine/worker.mjs
+     * ```
      * 
      */
     readonly rerunRelativePath: (...[rUrl]: (
