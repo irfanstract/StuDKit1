@@ -1,13 +1,16 @@
 // This tsconfig.json drives Intellisense
 {
-  "$schema": "./tsconfig.schemastore-schema.json",
+  // "$schema": "./tsconfig.schemastore-schema.json",
   "compilerOptions": {
     // `target` and `lib` match @tsconfig/bases for node14, since that's the oldest node LTS, so it's the oldest node we support
     "target": "es2020",
-    "lib": ["es2020"],
+    // "lib": ["es2020"],
     "rootDir": ".",
     "outDir": "temp",
     "tsBuildInfoFile": "temp/tsconfig.tsbuildinfo",
+    // "composite": true,
+    // "noEmit": false,
+    // "emitDeclarationOnly": true,
     "noEmit": true,
     "module": "commonjs",
     "moduleResolution": "node",
@@ -15,19 +18,23 @@
     "declaration": true,
     "sourceMap": true,
     "inlineSources": true,
-    "types": ["node"],
+    // "types": ["node"],
     "stripInternal": true,
     "incremental": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     // "importsNotUsedAsValues": "error",
     "allowJs": true,
+    "jsx": "react-jsx",
 
     // Enable to assist in sanity-checking your changes to JS files, but note you will see many unrelated type errors!
     // "checkJs": true,
     // "noImplicitAny": false
+    "noUncheckedIndexedAccess": true,
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "dist-types/**/*",
   ],
   "typedocOptions": {
     "entryPoints": ["./src/index.ts"],

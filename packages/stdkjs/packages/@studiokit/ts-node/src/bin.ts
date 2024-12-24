@@ -6,6 +6,9 @@ import assert = require('assert');
 import { inspect } from 'util';
 import Module = require('module');
 let arg: typeof import('arg');
+import { /* util */
+  ArgsWithOptions,
+} from './util';
 import { parse, hasOwnProperty, versionGteLt, getStackOrMessage, } from './util';
 import {
   EVAL_FILENAME,
@@ -23,6 +26,8 @@ import {
   VERSION,
   TSError,
   register,
+  registerByArgvFlags,
+  create ,
   createEsmHooks,
   createFromPreloadedConfig,
   DEFAULTS,
@@ -42,19 +47,65 @@ import { findAndReadConfig } from './configuration';
  * The functions are intentionally given uncreative names and left in the same order as the original code, to make a
  * smaller git diff.
  *
- * @internal
+ * ```
+ * // the default
+ * main(argv: string[] = process.argv.slice(2), entrypointArgs: Record<string, any> = {})
+ * ```
+ * 
  */
 export function main(argv: string[] = process.argv.slice(2), entrypointArgs: Record<string, any> = {}) {
   const args = parseArgv(argv, entrypointArgs);
-  const state: BootstrapState = {
+  const state = (
+    newBootstrapStateBag({
+      parseArgvResult: args ,
+    })
+  );
+  return bootstrap(state);
+}
+
+/**
+ * variation of {@link main} merely to create a Service from _argv_.
+ * 
+ * there's goood reasons you should instead use {@link create `create` from the top-level module (`require("<package>")`)}.
+ * 
+ * @experimental
+ * 
+ */
+export function createServiceFromArgv(argv: string[] , entrypointArgs: Record<string, any> = {})
+{
+  let s : ReturnType<typeof createFromPreloadedConfig> | undefined ;
+  const args = parseArgv(argv, entrypointArgs);
+  const state = (
+    newBootstrapStateBag({
+      parseArgvResult: args ,
+      onCreated: (x) => { s = x ; } ,
+    })
+  );
+  bootstrap(state);
+  if (!s) {
+    return (
+      assert.fail(new TypeError(`failed creating service: s=${s}`) )
+    ) ;
+  }
+  return s ;
+}
+
+function newBootstrapStateBag(...[opts ] : ArgsWithOptions<[], {
+  parseArgvResult: ReturnType<typeof parseArgv> ,
+  onCreated?: (Cso & {})["onCreated"] ,
+}>) : BootstrapState
+{
+  const { onCreated, parseArgvResult, } = opts;
+
+  return {
+    createServiceOnly: onCreated && { onCreated, },
     shouldUseChildProcess: false,
     isInChildProcess: false,
     isCli: true,
     tsNodeScript: __filename,
-    parseArgvResult: args,
-  };
-  return bootstrap(state);
-}
+    parseArgvResult: parseArgvResult,
+  } ;
+} /* `newBootstrapStateBag` */
 
 /**
  * @internal
@@ -62,6 +113,8 @@ export function main(argv: string[] = process.argv.slice(2), entrypointArgs: Rec
  * Can be marshalled when necessary to resume bootstrapping in a child process.
  */
 export interface BootstrapState {
+  createServiceOnly?: Cso;
+
   isInChildProcess: boolean;
   shouldUseChildProcess: boolean;
   /**
@@ -74,6 +127,8 @@ export interface BootstrapState {
   phase2Result?: ReturnType<typeof phase2>;
   phase3Result?: ReturnType<typeof phase3>;
 }
+
+interface Cso { onCreated: import("react").Dispatch<ReturnType<typeof createFromPreloadedConfig>> }
 
 /** @internal */
 export function bootstrap(state: BootstrapState) {
@@ -104,6 +159,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     ...arg(
       {
         // Node.js-like options.
+        /** hidden, dummy argv-fmt flag meant for programmatic usage from eg (sorry, wrong syntax) {@link registerByArgvFlags `--import "require('@studiokit/ts-node').registerByArgvFlags(flags) "`}, to register the comprehensive range of the loaders, */ '--only-register': Boolean,
         '--eval': String,
         '--interactive': Boolean,
         '--print': Boolean,
@@ -208,6 +264,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
   // defaults.
   const {
     '--cwd': cwdArg,
+    "--only-register": iRlo1,
     '--help': help = false,
     '--scriptMode': scriptMode,
     '--cwdMode': cwdMode,
@@ -252,6 +309,7 @@ function parseArgv(argv: string[], entrypointArgs: Record<string, any>) {
     restArgs,
 
     cwdArg,
+    iRlo1 ,
     help,
     scriptMode,
     cwdMode,
@@ -464,6 +522,9 @@ function phase3(payload: BootstrapState) {
 }
 
 /**
+ * Determines the entry-point information from the argv and phase2 result
+ * , unless {@link BootstrapState.createServiceOnly `createServiceOnly`} is set inwhichcase all will be `false`
+ * 
  * Determines the entry-point information from the argv and phase2 result. This
  * method will be invoked in two places:
  *
@@ -478,7 +539,19 @@ function phase3(payload: BootstrapState) {
  * configuration and entry-point information is only reliable in the final phase. More
  * details can be found in here: https://github.com/TypeStrong/ts-node/issues/1812.
  */
-function getEntryPointInfo(state: BootstrapState) {
+const getEntryPointInfo = (function (state: BootstrapState)
+{
+  const { createServiceOnly, } = state ;
+  if (createServiceOnly) {
+    return {
+      createServiceOnly ,
+      // executeEval : false,
+      // executeEntrypoint: false,
+      // executeRepl  : false,
+      // executeStdin : false,
+    } as const ;
+  }
+
   const { code, interactive, restArgs } = state.parseArgvResult!;
   const { cwd } = state.phase2Result!;
   const { isCli } = state;
@@ -495,18 +568,59 @@ function getEntryPointInfo(state: BootstrapState) {
    * Unresolved. May point to a symlink, not realpath. May be missing file extension
    * NOTE: resolution relative to cwd option (not `process.cwd()`) is legacy backwards-compat; should be changed in next major: https://github.com/TypeStrong/ts-node/issues/1834
    */
-  const entryPointPath = executeEntrypoint ? (isCli ? resolve(cwd, restArgs[0]) : resolve(restArgs[0])) : undefined;
+  if (executeEntrypoint) {
+    const entryPointPath = (
+      isCli ?
+      resolve(cwd, restArgs[0] ?? assert.fail(new TypeError) )
+      :
+      resolve(restArgs[0] ?? assert.fail(new TypeError) )
+    ) ;
+    return {
+      executeEntrypoint ,
+      entryPointPath ,
+      // executeEval,
+      // executeRepl ,
+      // executeStdin ,
+    } as const ;
+  }
 
   return {
     executeEval,
     executeEntrypoint,
     executeRepl,
     executeStdin,
-    entryPointPath,
-  };
+  } as const ;
+}) satisfies ((...args: never) => (
+  {
+    createServiceOnly ?: any ,
+    executeEval  ?: boolean,
+    executeEntrypoint?: boolean,
+    executeRepl  ?: boolean,
+    executeStdin ?: boolean,
+    entryPointPath ?: any ,
+  }
+)) ;
+
+;
+/**
+ * <repl>, [stdin], and [eval] are all essentially virtual files that do not exist on disc and are backed by a REPL
+ * service to handle eval-ing of code.
+ */
+interface TsNodeVirtualFileState {
+  state: EvalState;
+  repl: ReplService;
+  module?: Module;
+} /* `TsNodeVirtualFileState` */
+
+function phase4(payload: BootstrapState)
+{
+  return (
+    phase4Impl(phase4Pre(payload) )
+  ) ;
 }
 
-function phase4(payload: BootstrapState) {
+function phase4Pre(payload: BootstrapState)
+{
   const { isInChildProcess, tsNodeScript } = payload;
   const { version, showConfig, restArgs, code, print, argv } = payload.parseArgvResult;
   const {
@@ -526,17 +640,36 @@ function phase4(payload: BootstrapState) {
     optTryNativeRunmain || (!optNoNativeRunmain)
   ) ;
 
-  const { entryPointPath, executeEntrypoint, executeEval, executeRepl, executeStdin } = getEntryPointInfo(payload);
+  const nativeRunmainConfigImpl = (
+
+    (function (): (
+      & {
+        /**
+         * performance-wise at glance we should only clear cache for the entrypt ({@link entryPointPath}), but
+         * that'd lead to bugs because the seen module now differ despite sesolving to same path.
+         * the only sound choice 'd be clearing out all at once, but
+         * maybe the user is opposing that.
+         * 
+         */
+        skipClearingNonEntrypointCjsRequireCache: boolean,
+      }
+    ) {
+      return {
+        skipClearingNonEntrypointCjsRequireCache: false ,
+      } ;
+    })()
+  ) ;
+
+  const {
+    createServiceOnly,
+    entryPointPath, executeEntrypoint, executeEval, executeRepl, executeStdin,
+  } = getEntryPointInfo(payload);
 
   /**
    * <repl>, [stdin], and [eval] are all essentially virtual files that do not exist on disc and are backed by a REPL
    * service to handle eval-ing of code.
    */
-  interface VirtualFileState {
-    state: EvalState;
-    repl: ReplService;
-    module?: Module;
-  }
+  type VirtualFileState = TsNodeVirtualFileState ;
   let evalStuff: VirtualFileState | undefined;
   let replStuff: VirtualFileState | undefined;
   let stdinStuff: VirtualFileState | undefined;
@@ -598,37 +731,133 @@ function phase4(payload: BootstrapState) {
       tsTrace: DEFAULTS.tsTrace,
     },
   });
-  register(service);
-
-  if (replStuff) replStuff.state.path = join(cwd, REPL_FILENAME(service.ts.version));
-
-  if (isInChildProcess)
-    (require('./child/child-loader') as typeof import('./child/child-loader')).lateBindHooks(createEsmHooks(service));
 
   // Bind REPL service to ts-node compiler service (chicken-and-egg problem)
   replStuff?.repl.setService(service);
   evalStuff?.repl.setService(service);
   stdinStuff?.repl.setService(service);
 
+  if (replStuff) replStuff.state.path = join(cwd, REPL_FILENAME(service.ts.version));
+
+  return {
+    ...payload ,
+    //
+
+    version ,
+    preloadedConfig ,
+    tsNodeScript,
+    evalAwarePartialHost ,
+    service ,
+
+    createServiceOnly ,
+    isInChildProcess ,
+    ...( executeEntrypoint ?
+      {executeEntrypoint   ,  entryPointPath ,      } :
+      {executeEntrypoint   ,  entryPointPath ,      } ) , //
+    ...( {executeRepl   ,  replStuff ,      } ) , //
+    ...( {executeEval   ,  evalStuff , code,} ) , //
+    ...( {executeStdin  , stdinStuff ,      } ) , //
+    noRunApp ,
+    argv , restArgs,
+    showConfig ,
+    scanAndPrintDeps ,
+
+    cwd ,
+    iTryNativeRunmain ,
+    nativeRunmainConfigImpl ,
+    optAlwaysPreTranspile ,
+    optTryNativeRunmain,
+    optNoNativeRunmain ,
+
+    print ,
+
+  } as const ;
+}
+
+function phase4Impl(payload: ReturnType<typeof phase4Pre> )
+{
+  const {
+    //
+
+    version ,
+    preloadedConfig ,
+    tsNodeScript,
+    evalAwarePartialHost ,
+    service ,
+    parseArgvResult ,
+
+    createServiceOnly,
+    isInChildProcess ,
+    executeEntrypoint,
+    executeRepl   ,  replStuff ,       //
+    executeEval   ,  evalStuff , code, //
+    executeStdin  , stdinStuff ,       //
+    noRunApp: nraArg ,
+    entryPointPath ,
+    argv , restArgs,
+    showConfig ,
+    scanAndPrintDeps ,
+
+    cwd ,
+    iTryNativeRunmain ,
+    nativeRunmainConfigImpl ,
+    optAlwaysPreTranspile ,
+
+    print ,
+
+  } = payload ;
+
   // Output project information.
   if (version === 2) {
     console.log(`ts-node v${VERSION}`);
     console.log(`node ${process.version}`);
     console.log(`compiler v${service.ts.version}`);
-    process.exit(0);
+    return phaseRunProcessExit(0);
   }
   if (version >= 3) {
     console.log(`ts-node v${VERSION} ${dirname(__dirname)}`);
     console.log(`node ${process.version}`);
     console.log(`compiler v${service.ts.version} ${service.compilerPath ?? ''}`);
-    process.exit(0);
+    return phaseRunProcessExit(0);
+  }
+
+  /**
+   * skip entrypoint if any of {@link createServiceOnly} or {@link parseArgvResult.iRlo1} is `true`ish - returning immediately.
+   * furthermore, if {@link createServiceOnly} is `true`ish,
+   * avoid actually registering the service, instead call {@link BootstrapState.createServiceOnly `cso.onCreated`} and return immediately
+   * 
+   * {@link parseArgvResult.iRlo1} corresponds to the programmatic-only switch `--only-register`.
+   * assumed to be run (with)in {@link phase4} after done {@link phase4Pre}, at this point we likely have done the Loaders stuff; if the flag is 1, then return immediately.
+   * 
+   */
+  {
+
+    if (createServiceOnly) {
+      const cso = createServiceOnly ;
+      cso.onCreated(service) ;
+      return ;
+    }
+
+    {
+      register(service);
+    
+      if (isInChildProcess)
+        (require('./child/child-loader') as typeof import('./child/child-loader')).lateBindHooks(createEsmHooks(service));
+    }
+
+    if (parseArgvResult.iRlo1 || createServiceOnly ) {
+
+      {
+        return ;
+      }
+    }
   }
 
   if (showConfig) {
     const ts = service.ts as any as TSInternal;
     if (typeof ts.convertToTSConfig !== 'function') {
       console.error('Error: --showConfig requires a typescript versions >=3.2 that support --showConfig');
-      process.exit(1);
+      return phaseRunProcessExit(1);
     }
     let moduleTypes = undefined;
     if (service.options.moduleTypes) {
@@ -660,27 +889,67 @@ function phase4(payload: BootstrapState) {
       // replacer function.
       JSON.stringify(json, null, 2)
     );
-    process.exit(0);
+    return phaseRunProcessExit(0);
   }
+
+  return (
+    phase4ImplWhenAppEntrypt(payload)
+  ) ;
+}
+
+function phase4ImplWhenAppEntrypt(payload: ReturnType<typeof phase4Pre> )
+{
+  const {
+    //
+
+    // version ,
+    preloadedConfig ,
+    tsNodeScript,
+    evalAwarePartialHost ,
+
+    service ,
+    parseArgvResult ,
+
+    // createServiceOnly,
+    isInChildProcess ,
+    executeEntrypoint,
+    executeRepl   ,  replStuff ,       //
+    executeEval   ,  evalStuff , code, //
+    executeStdin  , stdinStuff ,       //
+    noRunApp: nraArg ,
+
+    entryPointPath ,
+    argv , restArgs,
+    // showConfig ,
+    scanAndPrintDeps ,
+
+    cwd ,
+    iTryNativeRunmain ,
+    nativeRunmainConfigImpl ,
+    optAlwaysPreTranspile ,
+
+    print ,
+
+  } = payload ;
+
+  /**
+   * Execute the main contents (either eval, script or piped).
+   * 
+   * optionally delegate to {@link Module.runMain} lol https://github.com/nodejs/node/pull/43763#issuecomment-1179815175
+   * > the actual introduction of {@link Module.runMain `runMain` } goes back further than that.
+   * > https://github.com/TypeStrong/ts-node/blob/aa5ec36526bf817b09345449492d5b9da11c0b93/src/bin.ts#L568-L579
+   * > we manipulate `argv` and `execArgv` and then run {@link Module.runMain `runMain` }
+   * 
+   * otherwise
+   * we instead delegate to `runmain-hack.js`
+   * 
+   *  */
+  return (function () {
+  ;
 
   const nativeRunmainConfig = (
 
-    (function (): (
-      & {
-        /**
-         * performance-wise at glance we should only clear cache for the entrypt ({@link entryPointPath}), but
-         * that'd lead to bugs because the seen module now differ despite sesolving to same path.
-         * the only sound choice 'd be clearing out all at once, but
-         * maybe the user is opposing that.
-         * 
-         */
-        skipClearingNonEntrypointCjsRequireCache: boolean,
-      }
-    ) {
-      return {
-        skipClearingNonEntrypointCjsRequireCache: false ,
-      } ;
-    })()
+    nativeRunmainConfigImpl
   ) ;
 
   const shallTryNativeRunmain = (
@@ -697,27 +966,17 @@ function phase4(payload: BootstrapState) {
   ) ;
 
   // Prepend `ts-node` arguments to CLI for child processes.
-  process.execArgv.push(tsNodeScript, ...argv.slice(2, argv.length - restArgs.length));
+  process.execArgv = [
+    ...process.execArgv,
+    tsNodeScript,
+    ...argv.slice(2, argv.length - restArgs.length),
+  ];
 
   // TODO this comes from BootstrapState
-  process.argv = [process.argv[1]]
+  process.argv = [process.argv[1] || assert.fail(new TypeError(`'process.argv[1]' is ${process.argv[1] }`) ) ]
     .concat(executeEntrypoint ? ([entryPointPath] as string[]) : [])
     .concat(restArgs.slice(executeEntrypoint ? 1 : 0));
 
-  /**
-   * Execute the main contents (either eval, script or piped).
-   * 
-   * optionally delegate to {@link Module.runMain} lol https://github.com/nodejs/node/pull/43763#issuecomment-1179815175
-   * > the actual introduction of {@link Module.runMain `runMain` } goes back further than that.
-   * > https://github.com/TypeStrong/ts-node/blob/aa5ec36526bf817b09345449492d5b9da11c0b93/src/bin.ts#L568-L579
-   * > we manipulate `argv` and `execArgv` and then run {@link Module.runMain `runMain` }
-   * 
-   * otherwise
-   * we instead delegate to `runmain-hack.js`
-   * 
-   *  */
-  void (function () {
-  ;
   if (executeEntrypoint) {
     assert(entryPointPath) ;
 
@@ -739,7 +998,7 @@ function phase4(payload: BootstrapState) {
       ;
       ;
       if ((
-        !noRunApp
+        !nraArg
       ) ) {
         directRunfileMode : {
             ;
@@ -787,7 +1046,7 @@ function phase4(payload: BootstrapState) {
       }
   
       if (scanAndPrintDeps ) {
-        if (noRunApp) {
+        if (nraArg) {
           ; 
           console["error"](`not running; only`) ;
         }
@@ -797,8 +1056,9 @@ function phase4(payload: BootstrapState) {
         preTranspiledRunfileMode : {
           service.dryDepScanningEb.dispatchSrcFile(entryPointPath, {
             alwaysAvoidNativeImport: true ,
+            rerun: true ,
           } ) ;
-          if (noRunApp) {
+          if (nraArg) {
             ;
             // break RUN ;
             return ;
@@ -806,13 +1066,14 @@ function phase4(payload: BootstrapState) {
         }
       }
 
-      if (!noRunApp ) {
+      if (!nraArg ) {
         preTranspiledRunfileMode : {
 
           console["log"](`trying 'service.dispatchSrcFile(entryPointPath, --alwaysAvoidNativeImport=true, )',`) ;
 
           service.dispatchSrcFile(entryPointPath, {
             alwaysAvoidNativeImport: true ,
+            rerun: true ,
           } ) ;
 
           // break RUN ;
@@ -859,6 +1120,12 @@ function phase4(payload: BootstrapState) {
     }
   }
   })() ;
+}
+
+function phaseRunProcessExit(...args: Parameters<typeof process.exit> ) {
+  return (
+    process.exit(...args )
+  ) ;
 }
 
 /**
