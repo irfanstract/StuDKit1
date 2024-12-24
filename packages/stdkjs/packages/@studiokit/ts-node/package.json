@@ -73,7 +73,8 @@
     "build-manifest": "node ./scripts/build-manifest.mjs",
 
     "test-mocha": "npm run build-tsc && npm run test-mocha-skip ",
-    "test-mocha-skip": "mocha ",
+    "test-mocha-skip": "mocha test/**/*js ",
+    "test-mocha-quickies-skip": "mocha --ignore test/nodeTs*.mjs ",
     "test-mocha-ntns-skip": "mocha test/nodeTs*.mjs ",
     "test-spec": "ava",
     "test-cov": "nyc ava",

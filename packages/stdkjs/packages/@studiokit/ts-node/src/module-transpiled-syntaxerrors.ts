@@ -211,7 +211,7 @@ const newCpcErrorException = (
           `failed to construct Function (${String(z) }) ${(
             dueToSyntaxError ? `due to syntax error` :
             ``
-          ) }, check your config!! ${util.inspect({ assumedSrcPath, sfe, }, undefined, undefined, true ) }`
+          ) }; chances are you did some misconfig(s) (eg 'module'? 'jsx'? using wrong file-extension? 'moduleResolution'? 'target'? 'include' and 'exclude'? 'noEmit' or 'emitDeclarationOnly'? 'references'? others maybe?), you need to check/review your config-file for potential issues; or there's something one needs to report up. ${util.inspect({ assumedSrcPath, sfe, }, undefined, undefined, true ) }`
         ), ...(z instanceof Error ? [{ cause: z, }] : []) )
       ) ;
     }
