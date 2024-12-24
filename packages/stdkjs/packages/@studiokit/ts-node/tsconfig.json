@@ -1,6 +1,9 @@
 // This tsconfig.json drives Intellisense
 {
   // "$schema": "./tsconfig.schemastore-schema.json",
+  "references": [{
+    "path": "./tsconfig.build-dist.json",
+  }],
   "compilerOptions": {
     // `target` and `lib` match @tsconfig/bases for node14, since that's the oldest node LTS, so it's the oldest node we support
     "target": "es2020",
@@ -30,10 +33,12 @@
     // Enable to assist in sanity-checking your changes to JS files, but note you will see many unrelated type errors!
     // "checkJs": true,
     // "noImplicitAny": false
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
     "noUncheckedIndexedAccess": true,
   },
   "include": [
-    "src/**/*",
+    // "src/**/*",
     "dist-types/**/*",
   ],
   "typedocOptions": {

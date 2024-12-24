@@ -153,12 +153,12 @@
   "references": [
     // { "path": "./packages/studk-demos", } ,
     // { "path": "./packages/studk-cli"            , } ,
-    { "path": "./packages/typexpe-commons"      , } ,
-    { "path": "./packages/studk-fwcore"         , } ,
-    { "path": "./packages/studk-video-fwcore"   , } ,
-    { "path": "./packages/studk-audio-fwcore"   , } ,
-    { "path": "./packages/studpresenters"       , } ,
-    { "path": "./packages/studk-dom-mediarecorder"   , } ,
+    // { "path": "./packages/typexpe-commons"      , } ,
+    // { "path": "./packages/studk-fwcore"         , } ,
+    // { "path": "./packages/studk-video-fwcore"   , } ,
+    // { "path": "./packages/studk-audio-fwcore"   , } ,
+    // { "path": "./packages/studpresenters"       , } ,
+    // { "path": "./packages/studk-dom-mediarecorder"   , } ,
   ] ,
   "exclude": [
     "node_modules" ,
