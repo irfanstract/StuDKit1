@@ -10,6 +10,21 @@
    //
 
    "configurations": [
+      { /* MOCHA TESTS */
+         "name": "Run StudkTsNodeTests.Exe Mocha Debug",
+         "request": "launch",
+         "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
+         "runtimeArgs": [
+            "run",
+            "test-mocha",
+         ],
+         "runtimeExecutable": "npm",
+         "skipFiles": [
+            "<node_internals>/**"
+         ],
+         "type": "node" ,
+         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      } ,
       {
          "name": "Run StudkTsNodeDevServer.Exe",
          "request": "launch",
@@ -71,21 +86,21 @@
       //    "type": "node" ,
       //    "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
       // } ,
-      {
-         "name": "Run StudkTsNodeTests.Exe Mocha Debug",
-         "request": "launch",
-         "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
-         "runtimeArgs": [
-            "run",
-            "test-mocha",
-         ],
-         "runtimeExecutable": "npm",
-         "skipFiles": [
-            "<node_internals>/**"
-         ],
-         "type": "node" ,
-         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
-      } ,
+      // {
+      //    "name": "Run StudkTsNodeTests.Exe Mocha Debug",
+      //    "request": "launch",
+      //    "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
+      //    "runtimeArgs": [
+      //       "run",
+      //       "test-mocha",
+      //    ],
+      //    "runtimeExecutable": "npm",
+      //    "skipFiles": [
+      //       "<node_internals>/**"
+      //    ],
+      //    "type": "node" ,
+      //    "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      // } ,
       {
          "name": "Run StudkTsNodeMetaDemo.Exe Debug Skip ReBuild",
          "request": "launch",
