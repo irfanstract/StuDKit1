@@ -1,16 +1,27 @@
 {
 	"license": "MIT",
 	"version": "0.0.1"
+	,
+	"scripts": {
+		"test": "npx mocha"
+
+		, "run-gitrefnamegents": "npx tsx src/L/GitRefNameGen.ts"
+
+	}
+  ,
+	"exports": {
+		"./src/*": "./src/*"
+		, "./Immutable": "./src/L/Immutable.cjs"
+		, "./GeneratorFunctionEnum": "./src/L/GeneratorFunctionEnum.cjs"
+		, "./api/Immutable": "./src/L/Immutable.cjs"
+		, "./api/GeneratorFunctionEnum": "./src/L/GeneratorFunctionEnum.cjs"
+		, "./L/Immutable": "./src/L/Immutable.cjs"
+		, "./L/GeneratorFunctionEnum": "./src/L/GeneratorFunctionEnum.cjs"
+	}
   ,
 	"dependencies": {
 	}
   ,
 	"devDependencies": {
 	}
-	,
-	"scripts": {
-		"test": "npx mocha"
-	}
-	,
-	"type": "module"
 }

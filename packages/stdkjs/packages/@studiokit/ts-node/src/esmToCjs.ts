@@ -118,7 +118,15 @@ export const translateEsmImportClauseIntoObjectDictPattern = (
 ) ;
 
 
-export const translateEsmImportAttribsIntoObjectDictLiteral = (
+/**
+ * {@link translateEsmImportAttribsIntoObjectDictLiteral}.
+ * 
+ * note that
+ * one'll still need
+ * another step, which is, assuming that `attribs` refer to the resulting dict, packing it as `{ with: attribs, }`, the way TC-39 defines it.
+ * 
+ */
+const translateEsmImportAttribsIntoObjectDictLiteral = (
 
   //
   function (...[clause]: [_ts.ImportAttributes ])
@@ -136,6 +144,10 @@ export const translateEsmImportAttribsIntoObjectDictLiteral = (
     ) ;
   }
 ) ;
+
+export {
+  translateEsmImportAttribsIntoObjectDictLiteral ,
+} ;
 
 
 
