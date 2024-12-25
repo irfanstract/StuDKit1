@@ -16,12 +16,17 @@ import {
   ProjectLocalResolveHelper,
   utilReiterated,
   split,
+  resolveUrl ,
   versionGteLt,
   yn,
   type ArgsWithOptions, 
   Immutable,
   isUnderCspNoEvalsPolicy,
+  dropSearchParamAndHash,
+  mutationallyTransformUrl,
 } from '../util';
+
+import L = require("lodash") ;
 
 import type {
 
@@ -60,6 +65,8 @@ import Path = require("node:path") ;
 
 import { fileURLToPath, pathToFileURL, } from 'node:url';
 
+import NativeFs = require("node:fs") ;
+
 import Express = require("express") ;
 
 import {
@@ -75,6 +82,7 @@ const getEnclosingUrlInfo = (
 ) ;
 
 import {
+  readFileSync,
   statSync,
 } from 'node:fs';
 
@@ -87,6 +95,10 @@ import {
   XWhitelistOrBlacklistImpl ,
 } from "./generic-mapper" ;
 
+import {
+  getMimeTypeFromShortName ,
+} from "../../dist-raw/MimeTypeFromFileName.cjs" ;
+
 
 
 
@@ -96,6 +108,18 @@ import TsNode = require("../index") ;
 import React = require('react');
 
 import ReactDOMServer = require('react-dom/server');
+
+const allTscSupportedExtsLowercased = (
+  utilReiterated(function* () {
+    for (const esmNess of ["", "C", "M"] )
+    for (const allowJJsx of [false, true] )
+    for (const dialectId of ["J", "T"] )
+      yield (
+        ("" + esmNess + ("" + dialectId + "S" ) + (allowJJsx ? "X" : "" ) )
+        .toLowerCase()
+      ) ;
+  })
+) ;
 
 ;
 /**
@@ -133,9 +157,34 @@ namespace RxEv {
               startCode()
             )
           ) ;
-  
+
+          // @ts-expect-error
           const CImpl: React.FC<{}> = (
-            function CSpclRenderedContentDisplayC() { return codeReturnValue; }
+            function CSpclRenderedContentDisplayC()
+            {
+
+              return (
+
+                ((...[e]: [e: unknown]) => {
+                  ;
+
+                  if ((
+                    (((typeof e === "object" || typeof e === "function" ) /** it didn't outrule `null` */ && e ) && Object.getOwnPropertyNames(e).length <= 0 )
+                  ) ) {
+                    return (
+                      React.createElement("p", {}, `cannot render element:`, (
+                        React.createElement("code", {}, (
+                          `${String(e) }`
+                        ) )
+                      ) )
+                    ) ;
+                  }
+
+                  return e;
+                })
+                (codeReturnValue)
+              ) ;
+            }
           );
   
           return { default: CImpl, } ;
@@ -151,6 +200,13 @@ namespace RxEv {
   ;
 }
 
+class RxFileNotFoundException extends TypeError
+{
+}
+
+;
+import TsNodeEb = require("../eb") ;
+
 class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
   ;
 
@@ -159,6 +215,98 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
    * 
    */
   ejsFrontend: Express.Handler = (
+  (() => {
+  ;
+
+  /**
+   * whether the path ends with name-ext, and then
+   * returns the analyses
+   * 
+   */
+  const isFileNameExtensionedPath = (
+
+    (path: string) => {
+
+      const c = (
+        (
+          path
+          .replace(/\/$/, () => "" )
+          .match(/\.(\w+)$/)?.[1]
+        )
+        // TODO
+        ?.match(/^(\w+)$/)
+      ) || false ;
+
+      if (c) {
+        ;
+        const fmtShortName = c[1]! ;
+  
+        const fmtMimeType = (
+          getMimeTypeFromShortName(fmtShortName)
+          // ?? "application/octet-stream"
+        ) ;
+  
+        return (
+          {
+            fmtShortName ,
+            fmtMimeType ,
+          } as const
+        ) ;
+      } else {
+        return false ;
+      }
+    }
+  ) ;
+
+  // TODO
+  /**
+   * whether it's a path we wld pretend as "referring to file having one of the known fmts"
+   * 
+   */
+  const isKnownFmtFilePath = (
+
+    (path: string) => {
+
+      const beingNameExtensioned = isFileNameExtensionedPath(path) ;
+
+      return (
+        (
+          (beingNameExtensioned && getMimeTypeFromShortName(beingNameExtensioned.fmtShortName ) )
+        )
+        || false
+      ) ;
+    }
+  ) ;
+
+  /**
+   * whether it's a path we shall treat as static-asset path
+   * 
+   */
+  const isShallBeTreatedAsStaticFilePath = (
+
+    (path: string) => {
+
+      const beingNameExtensioned = isFileNameExtensionedPath(path) ;
+      // if (beingNameExtensioned) {
+      //   ;
+      //   if ((
+      //     beingNameExtensioned.fmtShortName
+      //     ?.match(/^(txt|csv|svg|[am]?e?ps\d+|[am]?(png|we?b[map]|tiff|(jp(eg|g|)2000|jpe?g))|gif|wa(sm|t)|[ot]tf)$/)
+      //   )) {
+      //     return beingNameExtensioned ;
+      //   } else {
+      //     return false ;
+      //   }
+      // } else {
+      //   return beingNameExtensioned ;
+      // }
+      return (
+        beingNameExtensioned
+      ) ;
+    }
+  ) ;
+
+  return (
 
     /**
      * for the right way to do it
@@ -168,6 +316,10 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
     async (...[req, respo, inext]) => {
       const this1 = this ;
       ;
+
+      try {
+      ;
+
       if (1) {
         const {
           xPath: path ,
@@ -176,6 +328,7 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           originHref,
           hostnamev ,
         } = getEnclosingUrlInfo(req) ;
+
         console["warn"](Date(), {
           path ,
           pathnameHref,
@@ -183,6 +336,52 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
           originHref,
           hostnamev ,
         }) ;
+
+        /**
+         * the value for `with.type` to run the main script (via {@link this1.peer.rerunRelativePath})
+         * 
+         */
+        let stta: string = (
+          "unknown"
+        ) ;
+
+        const evaluateMainOnce = (
+
+          once((): unknown => {
+
+            if (path === "/%20" ) {
+              throw new TypeError(`illegal access: ${inspect({ path, pathnameHref, }) }`) ;
+            }
+
+            return (
+              this1.peer.rerunRelativePath(path, {
+                with: {
+                  type: stta ,
+                } ,
+              })
+            ) ;
+          })
+        ) ;
+
+        const shallStatic = (
+          isShallBeTreatedAsStaticFilePath((path /* `pathname` */ ) )
+        ) ;
+
+        console.warn({ shallStatic, }) ;
+
+        if ((
+          req.accepts("html")
+          &&
+          (
+            1 ? (
+              !shallStatic
+            ) : 1
+          )
+        ) ) {
+        ;
+
+        stta = "cjs" ;
+
         const finalCont = (
 
           (() => {
@@ -197,13 +396,24 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
                */
               RxEv.evaluateSyncFunction(() => {
 
-                if (path === "/%20" ) {
-                  throw new TypeError(`illegal access: ${inspect({ path, pathnameHref, }) }`) ;
-                }
-
-                return (
-                  this1.peer.rerunRelativePath(path)
+                const value = (
+                  evaluateMainOnce()
                 ) ;
+
+                if ((
+                  isShallBeTreatedAsStaticFilePath(path )
+                ) ) {
+                  return (
+                    React.createElement("div", {}, (
+                      React.createElement(
+                        "p", {},
+                        `Unexpected React Rendition Of Static-Asset File`, ` `, (
+                          React.createElement("code", {}, path )
+                        ) )
+                    ))
+                  ) ;
+                }
+                return value ;
               })
             ) ;
 
@@ -228,30 +438,193 @@ class RxStyleApp<const I extends RxStyleApp.PeerItcMethods = any> {
          * see https://18.react.dev/reference/react-dom/server/renderToPipeableStream#rendering-a-react-tree-as-html-to-a-nodejs-stream ,
          * 
          */
+        const {
+          renderInp,
+        } = (
+          runHtmlTypedReactJsxResponse(finalCont)
+        ) ;
+        // (await new ReadableStreamDefaultReader(renderInp)) ;
+        // renderInp.pipe(respo) ;
+        return ;
+        } /* fmt: HTML */
+
+        if ((
+          0
+          &&
+          req.accepts(["json", "application/jsonc"])
+        )) {
+          ;
+          stta = "json" ;
+
+          const returnObj = (
+            evaluateMainOnce()
+          ) ;
+
+          respo.status(200) ;
+
+          return (
+            /**
+             * unftntely, this will omit the commts in
+             * 
+             */
+            respo.send((
+              JSON.stringify(returnObj)
+            ))
+            ,
+            void 0
+          ) ;
+        }
+
+        if ((
+          1
+        )) {
+          ;
+
+          stta = "raw" ;
+
+          const returnVal = (
+            evaluateMainOnce()
+          ) ;
+
+          if ((
+            (
+              typeof returnVal === "object" || typeof returnVal === "string"
+              ||
+              /**
+               * these primitive-value(s) cannot be meaningfully translated into string response, so
+               * we'd better bail out
+               * 
+               */
+              (
+                (
+                  ["symbol"].includes(typeof returnVal)
+                  // ||
+                  // ["number", "bigint"].includes(typeof returnVal)
+                ) && assert.fail(new TypeError(inspect({ returnVal, })) )
+                ,
+                false
+              )
+            )
+            &&
+            returnVal
+          )) {
+            ;
+
+            if ((
+              !(
+                (returnVal instanceof Blob )
+                || (returnVal instanceof Buffer )
+                || ((returnVal instanceof (globalThis.ArrayBuffer || Uint8Array ) ) )
+                || (returnVal instanceof Uint8Array )
+              )
+            )) {
+              console["warn"](`unsupported return-value ${(returnVal as Record<string, unknown>).constructor?.toString }`) ;
+            }
+
+            ;
+            respo.status(200) ;
+
+            respo.setHeader("content-type", (
+              (shallStatic || null)?.fmtMimeType
+              ?? "application/octet-stream"
+            )) ;
+  
+            respo.send((
+              (typeof returnVal === "boolean" || typeof returnVal === "number") ?
+              String(Number(returnVal) ) :
+              (returnVal instanceof Blob || returnVal instanceof (globalThis.Response) ) ?
+              /** Express can't directly handle {@link Blob}; convert to Buffer first */
+              (((e: ArrayBuffer) => (Buffer.copyBytesFrom(new Uint8Array(e ) ) ) )(await returnVal.arrayBuffer() ) ) :
+              returnVal
+            )) ;
+
+            return ;
+          }
+
+          ;
+        }
+
+      }
+
+      } catch (z) {
+        return (
+          runHtmlTypedInternalServerErrorResponse(z)
+          ,
+          void 0
+        ) ;
+      }
+
+      function warnSpecialcasedFileNotFoundException(...[error]: [error: any])
+      {
+        ;
+        void ( console["warn"](`Special-Cased FIle-Not-Found-Exception:`, String(error) ) ) ;
+      }
+
+      function runHtmlTypedFileNotFoundErrorResponse(...[error]: [error: any])
+      {
+        ;
+        respo.status(404);
+        respo.statusMessage = `Denied` ;
+        respo.setHeader('content-type', 'text/html');
+        respo.send('<h1>Not a Public Page</h1>' + `<p><u>this path does not name a public page. <br/> please make sure the path is properly-spelled.</u></p> <pre>${String(error) }`); 
+      }
+
+      function runHtmlTypedReactJsxResponse(...[finalCont]: [finalCont: React.ReactElement | React.ReactPortal ])
+      {
+        ;
+
+        /**
+         * have look at https://18.react.dev/reference/react-dom/server/renderToPipeableStream#rendering-a-react-tree-as-html-to-a-nodejs-stream ,
+         * for full listing of `ReactDOMServer`
+         * 
+         */
         const renderInp = ((
           (
             ReactDOMServer.renderToPipeableStream(finalCont, {
               //
-              onShellError: (error) => {
+              onShellError: (error): void => {
                 ;
-                respo.status(500);
-                respo.setHeader('content-type', 'text/html');
-                respo.send('<h1>Something went wrong</h1>' + `<pre> ${getStackOrMessage(error) }`); 
+                if (error instanceof RxFileNotFoundException) {
+                  warnSpecialcasedFileNotFoundException(error) ;
+                  runHtmlTypedFileNotFoundErrorResponse(error) ;
+                  return ;
+                }
+                {
+                ;
+                void ( console["warn"](`Code Exception:`, (error) ) ) ;
+                runHtmlTypedInternalServerErrorResponse(error) ;
+                }
               } ,
               onShellReady: (...e) => {
                 respo.setHeader("content-type", "text/html") ;
                 respo.status(200) ;
                 renderInp.pipe(respo) ;
               } ,
+              onError(error, errorInfo) {
+                /** we already sent this to client, so bypass full stacktrace */
+                console.warn(String(error)) ;
+              },
             } )
           )
         )) ;
-        // (await new ReadableStreamDefaultReader(renderInp)) ;
-        // renderInp.pipe(respo) ;
-        return ;
+
+        return {
+          renderInp: renderInp as Pick<typeof renderInp, "abort" > ,
+        } as const ;
       }
+
+      function runHtmlTypedInternalServerErrorResponse(...[error]: [error: any])
+      {
+        ;
+        respo.status(500);
+        respo.setHeader('content-type', 'text/html');
+        respo.send('<h1>Unexpected Failure</h1>' + `<p>Unexpected Failure</p> <pre>${getStackOrMessage(error) }`); 
+      }
+
       return inext() ;
     }
+  ) ;
+  })()
   ) ;
 
   /** @deprecated */
@@ -382,39 +755,112 @@ namespace RxStyleApp {
       } as const ;
     }
 
+    const xCheckPathExists = (
+
+      /** `throw`s {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      function (...[finalPath]: [path: string])
+      {
+
+      /** `throw`s if it doesn't strict exist as Regular File */
+      if (!NativeFs.existsSync(finalPath,) ) {
+        throw new RxFileNotFoundException(`for: ${inspect({ finalPath, }) }`) ;
+      }
+
+      }
+    ) ;
+
     /**
      * rerun {@link URL.path relative path (ie rooted at `/`) (with the trailing `?&lt;params>`) }
      * 
      */
-    function rerunRelativePath(...[rUrl]: Parameters<PeerItcMethods["rerunRelativePath"] > )
+    function rerunRelativePath(...rerArgs: Parameters<PeerItcMethods["rerunRelativePath"] > )
     {
+      const [rUrl, { with: { type: typeAttribv0 = "???" } = { }, } = {}] = rerArgs ;
       const {
         md: {
           rUrlO ,
         } ,
       } = parseRelativePath(rUrl) ;
 
-      const concatEdPath = (
-        Path.join(srcBaseDirPath , rUrlO.pathname )
+      const qpVerbatim = rUrlO.pathname ;
+
+      const qp1 = dropSearchParamAndHash(qpVerbatim) ;
+
+      if (!(qpVerbatim.startsWith(qp1) ) ) {
+        return assert.fail(`assertion failed: ${inspect({ qpVerbatim, qp1, }) }` ) ;
+      }
+
+      const pr2 = (
+        qp1.endsWith("/") ?
+        qp1
+        :
+        pathSimpleNameToActual.translateInAppFullName(qp1, {
+          srcBasePath: srcBaseDirPath ,
+        } )
       ) ;
 
-      const actualPath = (
-        statSync(concatEdPath).isDirectory() ?
-        Path.join(concatEdPath, "index.ts") :
-        concatEdPath
+      const p3 = (
+        Path.join(srcBaseDirPath , pr2 )
       ) ;
 
-      console["warn"](Date(), {
-        rUrl,
-        rUrlO,
-        concatEdPath,
-        actualPath,
-      }) ;
+      if (shallVerboseResol) {
+        ;
+        console.warn({
+          srcBaseDirPath ,
+          qp1,
+          pr2 ,
+          p3 ,
+        }) ;
+      }
+
+      /** `throw` {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      xCheckPathExists(p3 ) ;
+
+      /** `throw`s if it doesn't exist */
+      statSync(p3) ;
+
+      const finalPath = (
+        statSync(p3).isDirectory() ?
+        Path.join(p3, "index.ts") :
+        p3
+      ) ;
+
+      /** `throw` {@link RxFileNotFoundException} if it doesn't strict exist as Regular File */
+      xCheckPathExists(finalPath ) ;
+
+      /** `throw`s native Node Exception if it doesn't strict exist as Regular File */
+      readFileSync(finalPath, ) ;
+
+      const typeAttribvFinal = (
+
+        /** TODO Content Sniffing */
+        (
+          (typeAttribv0 === "???") ? TsNodeEb.SupportedEsmImportAttribProps.cjsTypeString :
+          typeAttribv0
+        )
+      ) satisfies string ;
+
+      if ((
+        shallVerboseResol
+        || 1
+      )) {
+        ;
+        console["warn"](Date(), {
+          rUrl,
+          rUrlO,
+          pr2 ,
+          p3,
+          finalPath,
+        }) ;
+      }
 
       const returnVal = (
         rtService.dispatchSrcFile((
-          actualPath
-        ))
+          finalPath
+        ), {
+          rerun: true ,
+          esmImportAttribs: { type: typeAttribvFinal, } ,
+        })
       ) ;
 
       return returnVal ;
@@ -425,15 +871,26 @@ namespace RxStyleApp {
     return (
 
       new RxStyleApp((
-        {
+
+        (
+          /**
+           * implementing `peer`.
+           * 
+           * if we _straight passed this directly as options_ rather than holding on and applying this idiom,
+           * we risk breaking existing code when renaming any members of {@link PeerItcMethods}, because presently Ver of `tsserver` doesn't properly make the link in that case
+           * 
+           */
+          function <T0, const T1 extends NoInfer<T0> & Record<string, unknown>>(c0: import("react").Dispatch<T0>, x: T1): T0 & T1
+          { return x ; }
+        )((x: PeerItcMethods) => {} , {
           //
     
           isWhitelistedSrcUrl ,
     
-          rerunRelativePath ,
+          rerunRelativePath: rerunRelativePath ,
     
-        } as const
-      ) satisfies (PeerItcMethods & Record<string, unknown>))
+        })
+      ))
     ) ;
   }
 
@@ -443,7 +900,15 @@ namespace RxStyleApp {
    * @deprecated
    */
   export interface PeerItcMethods {
-    rerunRelativePath: (...[rUrl]: [x: string] ) => any ,
+
+    /**
+     * 
+     * 
+     */
+    readonly rerunRelativePath: (...[rUrl]: (
+      ArgsWithOptions<[x: string], { with?: ImportAttributes, }>
+    ) ) => any ,
+
   }
 
   export namespace SrcRootedLinearRxApp {
@@ -526,6 +991,11 @@ namespace RxStyleApp {
     ;
   }
 
+  /**
+   * {@link ConformOrNever `ConformOrNever<TsNodeServiceDependentProps>`} -
+   * additionally allowing to specify neither of them.
+   * 
+   */
   export type OptionalTsNodeServiceDependentProps = (
     ConformOrNever<TsNodeServiceDependentProps>
   ) ;
@@ -537,6 +1007,12 @@ namespace RxStyleApp {
     }>
   ) ;
 
+  /**
+   * altered version of {@link getTsNodeServiceFromProps} which
+   * expects {@link OptionalTsNodeServiceDependentProps} instead of {@link TsNodeServiceDependentProps}.
+   * helper to instantiate `TSNode.Service`, in lieu of the possibility of neither of those props having been set.
+   * 
+   */
   export const getTsNodeServiceFromOptionalizedProps = (
 
     ((...[{
@@ -563,6 +1039,10 @@ namespace RxStyleApp {
     }) satisfies ((...x: ArgsWithOptions<[OptionalTsNodeServiceDependentProps], { warn ?: boolean, }>) => any )
   ) ;
 
+  /**
+   * helper to instantiate `TSNode.Service`, in lieu of the possibility of neither of those props having been set.
+   * 
+   */
   export const getTsNodeServiceFromProps = (
 
     (({
@@ -584,12 +1064,20 @@ namespace RxStyleApp {
     )) satisfies ((x: TsNodeServiceDependentProps) => any )
   ) ;
 
-  export interface PathSimpleNameTranslator extends Extract<(
-    & (
-      & { /** @deprecated */ readonly isPathSimpleNameTranslator ?: unknown }
-      & { readonly translate: (x: string) => string, }
-    )
-  ), any > {}
+  let shallVerboseResol: boolean = true ;
+
+  export class PathSimpleNameTranslator
+  {
+
+    readonly translateInAppFullName!: (...x: ArgsWithOptions<[x: string, ], { srcBasePath: string, }>) => string ;
+
+    // readonly translate?: (...x: ArgsWithOptions<[x: string, ], { base: string, }>) => string ;
+
+    constructor(
+       )
+    {}
+
+  }
 
   export namespace PathSimpleNameTranslator {
     ;
@@ -600,11 +1088,113 @@ namespace RxStyleApp {
      */
     export const createNoOpInstance = (
       function createNoOpPathSimpleNameTranslator()
-      : PathSimpleNameTranslator
       {
-        return { translate: (e) => e, } ;
+        return new PathSimpleNameTranslatorSimp((e) => e ) ;
       }
     ) ;
+
+  }
+
+  export class PathSimpleNameTranslatorSimp
+  extends PathSimpleNameTranslator
+  {
+    isPathSimpleNameTranslatorSimp = true as const ;
+
+    /** @deprecated */
+    constructor(
+      readonly translateInAppFullName: (x: string) => string, )
+    { super() ; }
+
+  }
+
+  export namespace PathSimpleNameTranslator {
+    ;
+
+    export const createTsInstance = (
+      function createTsInstanceImpl()
+      {
+        return new PathSimpleNameTranslatorRea((...[e, { srcBasePath: sbp0, }]) => {
+          {
+
+            const sbu1WithoutTrailingSlash = (
+              pathToFileURL(sbp0).href
+            ) ;
+            const sbu1 = (
+              mutationallyTransformUrl(sbu1WithoutTrailingSlash , e => {
+                e.hash = "" ;
+                e.search = "" ;
+                e.pathname = e.pathname.replace(/\/?$/, () => "/index" )
+              } )
+            ) ;
+
+            const resolveP = (
+
+              function (...[e]: [e: string])
+              {
+                return fileURLToPath(resolveUrl(sbu1, "." + e ) ) ;
+              }
+            ) ;
+
+            const shallVerbose = shallVerboseResol ;
+
+            ;
+            shallVerbose && console.warn({
+              e,
+              sbp0,
+              sbu1WithoutTrailingSlash,
+              sbu1,
+            }) ;
+
+            const xExistsSync = NativeFs.existsSync ;
+
+            ;
+            // const p1 = resolveP(e) ;
+
+            const extfMatch = (
+              // e.match(/\.([cm]?[jt]sx?)$/)
+              e.match(/\.\w+$/)
+            ) ;
+            if (extfMatch ) {
+              const ffnl = resolveP(e) ;
+              shallVerbose && console.warn({ ffnl, }) ;
+              if (xExistsSync(ffnl ) ) {
+                return e ;
+              }
+            }
+            
+            if (e.match(/\/$/) ) {
+              ;
+            } else {
+              for (const extnm of (
+                allTscSupportedExtsLowercased
+              ) )
+              {
+                const pToAdd = ("." + extnm ) ;
+                const ffnl = resolveP(e) + pToAdd ;
+                const efnl =           e + pToAdd ;
+                shallVerbose && console.warn({ pToAdd, ffnl, efnl, }) ;
+                if (xExistsSync(ffnl) ) {
+                  return efnl ;
+                }
+              }
+            }
+          }
+          return e ;
+        } ) ;
+      }
+    ) ;
+
+  }
+
+  class PathSimpleNameTranslatorRea
+  extends PathSimpleNameTranslator
+  {
+    isPathSimpleNameTranslatorRea = true as const ;
+
+    /** @deprecated */
+    constructor(
+      readonly translateInAppFullName: (...x: Parameters<PathSimpleNameTranslator["translateInAppFullName"]> ) => string, )
+    { super() ; }
 
   }
 
