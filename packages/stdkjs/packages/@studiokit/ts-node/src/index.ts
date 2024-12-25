@@ -2111,7 +2111,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
                   return (
                     spclPreMainCompileDoRefmt(...args)
                   ) ;
-                } )(_ts.EmitHint.SourceFile , (
+                } )((() => _ts.EmitHint.SourceFile as const )() , (
 
                   parseTsFileEb(code, {
                     fileExt: (
