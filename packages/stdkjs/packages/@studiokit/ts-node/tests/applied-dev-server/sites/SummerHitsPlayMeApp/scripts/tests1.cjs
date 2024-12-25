@@ -46,15 +46,10 @@ const {
 
 
 
-const appRootDir = Path.resolve(__filename, "..", ".." ) ;
-
-const appDesc = /** @satisfies {RxstaPreToPolyDesc } */ ({
-  srcs: {
-    basePath: appRootDir ,
-    mainPagesRelativeFromBasePath: Path.join(".", "pages") ,
-    psnta: RxStyleApp.PathSimpleNameTranslator.createNoOpInstance() ,
-  } ,
-}) ;
+const {
+  appDesc ,
+  appRootDir ,
+} = require("./man.cjs") ;
 
 SpclTests.describeRootedRxStyleAppPreToPolyTest1({
   metaDesc: appDesc ,
@@ -63,19 +58,30 @@ SpclTests.describeRootedRxStyleAppPreToPolyTest1({
 }) => {
   ;
 
-  it(`shall render this for Dir '/'`, async () => {
+  it(`shall render this for Dir '/EarlyMorningJpg'`, async () => {
     ;
 
-    const oF = await fetch("http://" + ("localhost:" + appPn ) )  ;
+    const oF = await fetch(("http://" + ("localhost:" + appPn ) ) + "/EarlyMorningJpg" )  ;
     const o = await oF.text() ;
 
     console.warn(`output: ${posixBlockquotify(o) } `) ;
 
     assertHttpOk(oF) ;
-    // assertContainsItAndPrint(o, 'this page have no title') ;
-    // assertContainsItAndPrint(o, 'path: &#x27;/&#x27;') ;
-    assertContainsItAndPrint(o, '<p>date: <input type="datetime-local"/></p>') ;
-    assertContainsItAndPrint(o, '<p>status: <input type="text"/></p>') ;
+    // assertContainsItAndPrint(o, 'SummerHitsPlayMeApp') ;
+
+    // resolve() ;
+  }) ;
+
+  it(`shall render this for Dir '/myicon.png'`, async () => {
+    ;
+
+    const oF = await fetch(("http://" + ("localhost:" + appPn ) ) + "/myicon.png" )  ;
+    const o = await oF.text() ;
+
+    // console.warn(`output: ${posixBlockquotify(o) } `) ;
+
+    assertHttpOk(oF) ;
+    // assertContainsItAndPrint(o, 'SummerHitsPlayMeApp') ;
 
     // resolve() ;
   }) ;

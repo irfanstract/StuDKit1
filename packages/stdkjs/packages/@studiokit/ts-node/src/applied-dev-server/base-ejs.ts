@@ -511,11 +511,25 @@ type SupportedStringOrBloblike = (
  * "RPHRC" was "Request; Pack HTML Request Content"
  * 
  */
-function analyseRphrc(...anRphrcArgs: ArgsWithOptions<[], { invokingRequestEvt: Express.Request, } >)
+function analyseRphrc(...anRphrcArgs: (
+  ArgsWithOptions<[], (
+    & { readonly invokingRequestEvt: Express.Request, }
+    & { readonly useTls?: boolean, }
+  ) >
+))
 {
-  const [{ invokingRequestEvt: requ, }] = anRphrcArgs ;
+  const [
+    {
+      invokingRequestEvt: requ,
+      useTls = false,
+    },
+  ] = anRphrcArgs ;
 
   const dt = Date() ;
+
+  const protocolId = (
+    useTls ? "https" : "http"
+  ) ;
 
   /**
    * see https://expressjs.com/en/api.html#req for the right usage of the right methods
@@ -523,13 +537,28 @@ function analyseRphrc(...anRphrcArgs: ArgsWithOptions<[], { invokingRequestEvt: 
    */
   void 0 ;
 
+  /**
+   * _the origin (ie including the port-nbr), excluding the scheme/protocol_ ;
+   * {@link requ.headers.host}
+   */
   const originOnly   = requ.headers.host ?? assert.fail(new TypeError(`cannot proceed; missing header 'Host'`) )            ;
+  /**
+   * {@link requ.hostname};
+   * "host device",
+   * "the domain-name or IP address, excluding port-no, of the running server, effectively the device the server is running on"
+   */
   const hostdev      = requ.hostname        ;
-  // const origin = hostdev ? ("http://" + hostdev ) : "???" ;
-  const originHref = "http://" + originOnly ;
+
+  /** full, up to `origin` (ie including the port-nbr,), including the protocol, HRef  */
+  const originHref = ((protocolId + ":") + "//" ) + originOnly ;
+
+  /** value of {@link requ.path } (defined to be `NodeJsUrl.parse(req.url).pathname`), verbatim as returned */
+  const ejsRequPathVl = requ.path ;
+
+  /** full, up to `pathname` (excluding search-params), including the protocol, HRef  */
   const pathnameHref        = originHref.replace(     /\/?$/, () => requ.originalUrl    )  ;
+  /** full, up to the base-url of the most-enclosing App (or Router?), including the protocol, HRef  */
   const basePathnameHref    = originHref.replace(     /\/?$/, () => requ.baseUrl        )  ;
-  const xPath = requ.path ;
 
   const defaultVisibleTrailer = (
     `<p> <code>${pathnameHref }</code> <code>${dt}</code> - hosted at <code>${basePathnameHref }</code> </p>`
@@ -598,15 +627,19 @@ function analyseRphrc(...anRphrcArgs: ArgsWithOptions<[], { invokingRequestEvt: 
         hostnamev: originOnly ,
         /** {@link originOnly} . @deprecated */
         origin: originOnly ,
+        /** {@link requ.headers.host} */
         originOnly ,
-        /** full, up to `origin` (ie including the port-nbr), address  */
+        protocolId,
+        /** full, up to `origin` (ie including the port-nbr), including the protocol, HRef  */
         originHref ,
-        /** full, up to `pathname` (excluding search-params), address  */
+        /** full, up to `pathname` (excluding search-params), including the protocol, HRef  */
         pathnameHref ,
-        /** full, up to the base-url of the most-enclosing App (or Router?), address  */
+        /** full, up to the base-url of the most-enclosing App (or Router?), including the protocol, HRef  */
         basePathnameHref ,
-        /** value of {@link requ.path }, verbatim as returned */
-        xPath ,
+        /** value of {@link requ.path } (defined to be `NodeJsUrl.parse(req.url).pathname`), verbatim as returned */
+        ejsRequPathVl ,
+        /** alias of {@link ejsRequPathVl}. @deprecated */
+        xPath: ejsRequPathVl ,
     
         defaultVisibleTrailer ,
       } as const

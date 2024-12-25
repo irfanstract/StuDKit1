@@ -628,7 +628,7 @@ function phase4Pre(payload: BootstrapState)
     alwaysPreTranspile: optAlwaysPreTranspile,
     tryNativeRunmain0: optTryNativeRunmain = false,
     noNativeRunmain0: optNoNativeRunmain = false ,
-    scanAndPrintDeps,
+    scanAndPrintDeps: optScanAndPrintDeps = false ,
   } = payload.parseArgvResult;
   const { cwd } = payload.phase2Result!;
   const { preloadedConfig } = payload.phase3Result!;
@@ -760,7 +760,7 @@ function phase4Pre(payload: BootstrapState)
     noRunApp ,
     argv , restArgs,
     showConfig ,
-    scanAndPrintDeps ,
+    scanAndPrintDeps: optScanAndPrintDeps || Number(process.env["STUDKTSNODE_RT_VERBOSE_IMPORT"]) || false ,
 
     cwd ,
     iTryNativeRunmain ,
@@ -1056,6 +1056,7 @@ function phase4ImplWhenAppEntrypt(payload: ReturnType<typeof phase4Pre> )
         preTranspiledRunfileMode : {
           service.dryDepScanningEb.dispatchSrcFile(entryPointPath, {
             alwaysAvoidNativeImport: true ,
+            rerun: true ,
           } ) ;
           if (nraArg) {
             ;
@@ -1072,6 +1073,7 @@ function phase4ImplWhenAppEntrypt(payload: ReturnType<typeof phase4Pre> )
 
           service.dispatchSrcFile(entryPointPath, {
             alwaysAvoidNativeImport: true ,
+            rerun: true ,
           } ) ;
 
           // break RUN ;
