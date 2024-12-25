@@ -1960,6 +1960,12 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })()
   ) ;
 
+  dryDepScanningEb.setNdImportResolvers({
+    getNodeCjsLoader ,
+    getNodeEsmGetFormat ,
+    getNodeEsmResolver ,
+  }) ;
+
   const s0 : ServiceCore = {
     [TS_NODE_SERVICE_BRAND]: true,
     ts,
