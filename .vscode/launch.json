@@ -10,14 +10,13 @@
    //
 
    "configurations": [
-      // TBD
-      {
-         "name": "Run StudkTsNodeSeriousExe.Exe Debug",
+      { /* MOCHA TESTS */
+         "name": "Run StudkTsNodeTests.Exe Mocha Debug",
          "request": "launch",
-         "cwd": "${workspaceFolder}/packages/stdkjs",
+         "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
          "runtimeArgs": [
             "run",
-            "runStudkTsNodeSeriousExe",
+            "test-mocha",
          ],
          "runtimeExecutable": "npm",
          "skipFiles": [
@@ -35,6 +34,143 @@
             "runStudkTsNodeDevServerExe",
          ],
          "runtimeExecutable": "npm",
+         "skipFiles": [
+            "<node_internals>/**"
+         ],
+         "type": "node" ,
+         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      } ,
+      // TBD
+      {
+         "name": "Run StudkElectronMochaTests.Exe Debug",
+         "request": "launch",
+         "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/electron-mocha",
+         "runtimeArgs": [
+            "run",
+            "test:renderer",
+         ],
+         "runtimeExecutable": "npm",
+         "skipFiles": [
+            "<node_internals>/**"
+         ],
+         "type": "node" ,
+         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      } ,
+      // {
+      //    "name": "Run StudkTsNodeSeriousExe.Exe Debug",
+      //    "request": "launch",
+      //    "cwd": "${workspaceFolder}/packages/stdkjs",
+      //    "runtimeArgs": [
+      //       "run",
+      //       "runStudkTsNodeSeriousExe",
+      //    ],
+      //    "runtimeExecutable": "npm",
+      //    "skipFiles": [
+      //       "<node_internals>/**"
+      //    ],
+      //    "type": "node" ,
+      //    "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      // } ,
+      // {
+      //    "name": "Run StudkTsNodeDevServer.Exe",
+      //    "request": "launch",
+      //    "cwd": "${workspaceFolder}/packages/stdkjs",
+      //    "runtimeArgs": [
+      //       "run",
+      //       "runStudkTsNodeDevServerExe",
+      //    ],
+      //    "runtimeExecutable": "npm",
+      //    "skipFiles": [
+      //       "<node_internals>/**"
+      //    ],
+      //    "type": "node" ,
+      //    "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      // } ,
+      // {
+      //    "name": "Run StudkTsNodeTests.Exe Mocha Debug",
+      //    "request": "launch",
+      //    "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
+      //    "runtimeArgs": [
+      //       "run",
+      //       "test-mocha",
+      //    ],
+      //    "runtimeExecutable": "npm",
+      //    "skipFiles": [
+      //       "<node_internals>/**"
+      //    ],
+      //    "type": "node" ,
+      //    "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      // } ,
+      {
+         "name": "Run StudkTsNodeMetaDemo.Exe Debug Skip ReBuild",
+         "request": "launch",
+         "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
+         "runtimeArgs": [
+            "J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/dist/bin.js",
+            "--transpileOnly",
+            "--alwaysPreTranspile",
+            "--scanAndPrintDeps",
+            "J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/dist/bin.js",
+            "--help",
+         ],
+         "runtimeExecutable": "node",
+         "skipFiles": [
+            "<node_internals>/**"
+         ],
+         "type": "node" ,
+         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      } ,
+      {
+         "name": "Run StudkTsNodeReactSsrDemo.Exe Debug Skip ReBuild",
+         "request": "launch",
+         "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
+         "runtimeArgs": [
+            "J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/dist/bin.js",
+            "--noNativeRunmain",
+            // "--alwaysPreTranspile",
+            "--transpileOnly",
+            // "--scanAndPrintDeps",
+            "J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/with-jsx-render-to-string.tsx",
+         ],
+         "runtimeExecutable": "node",
+         "skipFiles": [
+            "<node_internals>/**"
+         ],
+         "type": "node" ,
+         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      } ,
+      {
+         "name": "Run StudkTsNodeCoreJsImmutableJsDemo.Exe Debug Skip ReBuild",
+         "request": "launch",
+         "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
+         "runtimeArgs": [
+            "J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/dist/bin.js",
+            "--noNativeRunmain",
+            // "--alwaysPreTranspile",
+            "--transpileOnly",
+            // "--scanAndPrintDeps",
+            "J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/PopularLibsCoreJsImmutable03.ts",
+         ],
+         "runtimeExecutable": "node",
+         "skipFiles": [
+            "<node_internals>/**"
+         ],
+         "type": "node" ,
+         "envFile": "${workspaceFolder}/packages/stdkjs/dist/env.txt",
+      } ,
+      {
+         "name": "Run StudkTsNodeWebApiNativeFileSystemAdapterJsDemo.Exe Debug Skip ReBuild",
+         "request": "launch",
+         "cwd": "${workspaceFolder}/packages/stdkjs/packages/@studiokit/ts-node",
+         "runtimeArgs": [
+            "J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/dist/bin.js",
+            "--noNativeRunmain",
+            "--alwaysPreTranspile",
+            "--transpileOnly",
+            // "--scanAndPrintDeps",
+            "J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/PopularLibsNativeFileSystemAdapterJs01.ts",
+         ],
+         "runtimeExecutable": "node",
          "skipFiles": [
             "<node_internals>/**"
          ],

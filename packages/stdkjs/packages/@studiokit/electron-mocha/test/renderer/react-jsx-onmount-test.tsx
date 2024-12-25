@@ -1,3 +1,6 @@
+
+// /* @jsxRuntime classic */
+
 'use strict'
 
 import assert = require('node:assert')
