@@ -4,7 +4,7 @@
 
 
 
-import { builtinModules, Module } from 'node:module';
+import { builtinModules as builtinModulesListed0, Module } from 'node:module';
 import * as util from 'node:util';
 
 import assert = require('node:assert');
@@ -26,6 +26,104 @@ import {
   type ArgsWithOptions, 
   AtLeastEitherProp,
 } from './util';
+
+;
+/**
+ * verbatim what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
+ * 
+ */
+const builtinModulesListed = builtinModulesListed0 ;
+
+/**
+ * {@link builtinModules}
+ * 
+ * - return verbatim
+ *   what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
+ * 
+ * - the harder case of
+ *   `electron`, Electron's official "module"
+ *   whose `require(...)`ing gives different results depending on whether the running platform ({@link process.execPath}) is Electron (inwhichcase it ends with `namespace` or, possibly, Function) or Node (including `electron --as-regular-nodejs`) (inwhichcase it returns `string` Path ).
+ *   assuming that `require` refers to {@link Module.createRequire the native `require`},
+ *   `require("node:electron")`, unlike values listed in {@link builtinModulesListed0 `builtinModules`}, will fail (with `ERR_MODULE_NOT_FOUND: cannot find module 'node:electron'`),
+ *   raising debate astowhether `electron` deserves to be in this list.
+ * 
+ */
+const builtinModules = (
+
+  utilReiterated(function* () {
+
+    /**
+     * return verbatim
+     * what's reported by {@link builtinModulesListed0 `require("node:module").builtinModules`}
+     * 
+     */
+    yield* builtinModulesListed ;
+
+    /**
+     * the harder case of
+     * `electron`, Electron's official "module"
+     * whose `nativeRequire(...)`ing gives different results depending on whether the running platform ({@link process.execPath}) is Electron (inwhichcase it ends with `namespace` or, possibly, Function) or Node (including `electron --as-regular-nodejs`) (inwhichcase it returns `string` Path ).
+     * `nativeRequire("node:electron")`, unlike values listed in {@link builtinModulesListed0 `builtinModules`}, will fail (with `ERR_MODULE_NOT_FOUND: cannot find module 'node:electron'`),
+     * raising debate astowhether `electron` deserves to be in this list.
+     * 
+     */
+    {
+    ;
+    try {
+      ;
+      if (isWithinElectronJsInTermsOfRequireElectronPackage() ) {
+        yield "electron" ;
+      }
+    } catch (z) {
+      console["warn"](`[EbJs Enumerate BuiltinModules] cannot find module 'electron' `, String(z) ) ;
+    }
+    }
+
+  })
+) ;
+
+/* avoid using `const isSomeDoSome = function () { ... ... }` since we use forward reference! */
+
+/**
+ * whether
+ * the running platform is Electron rather than Regular NodeJS,
+ * intermsa {@link hasAlivatedElectronJsPackageLoadTreatment}
+ * 
+ */
+function isWithinElectronJsInTermsOfRequireElectronPackage()
+{
+
+    return (
+      hasAlivatedElectronJsPackageLoadTreatment()
+    ) ;
+}
+/**
+ * whether
+ * `require("electron")` (or {@link ImportMeta the default-import of it })
+ * will end with "alivated" `namespace` `ElectronApp`, instead of ending with String Path,
+ * which will vary depending on whether being run on Electron or Regular NodeJS
+ * 
+ */
+function hasAlivatedElectronJsPackageLoadTreatment()
+{
+
+  /**
+   * {@link happensProperElectronJsNamespace};
+   * it'd be
+   * `object` or `function` if the underlying platform is run as Electron (see also "run Electron as regular Node process"!), or
+   * `string` (`path/to/electron.exe`) otherwise
+   * 
+   * to anticipate future possibility of it yielding object with different `typeof` result
+   * we may deserve to handle additional value/result eg `"function"`
+   * 
+   */
+  const happensProperElectronJsNamespace = (
+    (typeof require("electron") === "object" )
+    || (typeof require("electron") === "function" )
+  ) ;
+
+  return happensProperElectronJsNamespace ;
+}
 
 import { createRequire, } from 'node:module';
 
@@ -229,49 +327,293 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
 
   console["log"](`[createSpclNodeEngine]`, { } ) ;
 
-  const dedicedCrossCallsCtx = (
-    VM.createContext(undefined , {  })
-  ) ;
+  const {
+    compileCjsToByCtxRunFnc1,
+  } = (
+  //
 
-  Object.assign(dedicedCrossCallsCtx, {
-    setInterval, clearInterval ,
-    setTimeout , clearTimeout ,
-    queueMicrotask   : globalThis.queueMicrotask ?? globalThis.setImmediate ,
-    setImmediate     : globalThis.setImmediate ?? globalThis.queueMicrotask ,
-    process ,
+  (() => {
 
-    ...(typeof fetch !== "undefined" ? { fetch, } : {} ) ,
-    ...(typeof Request !== "undefined" ? { Request, } : {} ) ,
-    ...(typeof Response !== "undefined" ? { Response, } : {} ) ,
+  interface CtxBt {
+    readonly module: NodeJS.Module,
+    readonly exports: Record<string, unknown>,
+    readonly require: NodeRequire,
+    readonly __filename: string,
+    readonly __dirname: string,
+  }
 
+  return ((): (
+    | {
 
-  } ) ;
+      compileCjsToByCtxRunFnc1(codeAsCjs: string, opts: {
+        purportedSrcPath: string;
+      }): (((...args: [ctx: CtxBt]) => any)) ;
+
+    }
+  ) => {
+  ;
+
+  // if ((
+  //   // TODO
+  //   (
+  //     (typeof window !== "undefined")
+  //     ||
+  //     (typeof HTMLDivElement !== "undefined")
+  //   )
+  // )) {
+
+  //   // return assert.fail(`TODO`) ;
+  //   return {
+
+  //     compileCjsToByCtxRunFnc1: (...[fo, { purportedSrcPath }] ) => {
+  //       ;
+  //       return assert.fail(`TODO`) ;
+  //     } ,
+
+  //   } ;
+  // }
 
   {
-    const kGlobalThis = Object.getOwnPropertyNames(globalThis) ;
-    0 && console["log"]({ kGlobalThis, }) ;
+  ;
 
-    if (0) {
-      ;
-      VM.runInContext((
-        `
-        for (const k in (
-          ${JSON.stringify(kGlobalThis, null, 2 ) }
-          // .filter(e => e.match(${"" + RegExp("^\\w+$", ) }) /* */ )
-        ) ) {
-          void [eval(k) ] ;
+  // const dedicedCrossCallsCtx = (
+  //   (
+  //     // TODO
+  //     !(
+  //       (typeof window !== "undefined")
+  //       ||
+  //       (typeof HTMLDivElement !== "undefined")
+  //     )
+  //   ) ?
+  //   VM.createContext(undefined , {  })
+  //   :
+  //   globalThis
+  // ) ;
+  const dedicedCrossCallsCtx = (
+    (() => {
+      if (
+        // TODO
+        !(
+          (typeof window !== "undefined")
+          ||
+          (typeof HTMLDivElement !== "undefined")
+        )
+      ) {
+        const newc1 = (
+          VM.createContext(undefined , {  })
+        ) ;
+
+        Object.assign(newc1, {
+          setInterval, clearInterval ,
+          setTimeout , clearTimeout ,
+          queueMicrotask   : globalThis.queueMicrotask ?? globalThis.setImmediate ,
+          setImmediate     : globalThis.setImmediate ?? globalThis.queueMicrotask ,
+          process ,
+      
+          ...(typeof fetch !== "undefined" ? { fetch, } : {} ) ,
+          ...(typeof Request !== "undefined" ? { Request, } : {} ) ,
+          ...(typeof Response !== "undefined" ? { Response, } : {} ) ,
+      
+      
+        } ) ;
+      
+        {
+          const kGlobalThis = Object.getOwnPropertyNames(globalThis) ;
+          0 && console["log"]({ kGlobalThis, }) ;
+
+          if (0) {
+            ;
+            VM.runInContext((
+              `
+              for (const k in (
+                ${JSON.stringify(kGlobalThis, null, 2 ) }
+                // .filter(e => e.match(${"" + RegExp("^\\w+$", ) }) /* */ )
+              ) ) {
+                void [eval(k) ] ;
+              }
+              `
+            ), newc1) ;
+          }
+
+          if (1) {
+            for (const k of kGlobalThis ) {
+              newc1[k] ||= (globalThis as Record<string, unknown> )[k] ;
+            }
+          }
+
         }
-        `
-      ), dedicedCrossCallsCtx) ;
-    }
 
-    if (1) {
-      for (const k of kGlobalThis ) {
-        dedicedCrossCallsCtx[k] ||= (globalThis as Record<string, unknown> )[k] ;
+        return newc1 ;
+      } else {
+
+        return globalThis ;
       }
-    }
+    })()
+  ) ;
+
+  ;
+  const expandCtx = (...[ctx]: [...[ctx: CtxBt] ]) => (
+    (() => {
+                    const { module, exports, require, __filename, __dirname, } = ctx ;
+                    const ctx1 = {
+                      module: module,
+                      __module: module,
+                      exports: exports,
+                      __exports: exports,
+                      require: require,
+                      __require: require,
+
+                      __filename, __dirname,
+                    } ;
+                    return ctx1 ;
+    })()
+  ) ;
+
+  ;
+  return {
+
+    compileCjsToByCtxRunFnc1: (
+
+      function compileCjsToByCtxRunFnc1Impl (...[fo, { purportedSrcPath }] )
+      : (
+        ((...args: [ctx: CtxBt ] ) => any )
+      )
+      {
+          ;
+          ;
+
+          {
+          ;
+
+          if (1) {
+
+          const evl1 = (
+            (...[ctx] : [...Parameters<ReturnType<typeof compileCjsToByCtxRunFnc1Impl> > ] ) => (
+                (() => {
+                  const ctx1 = expandCtx(ctx) ;
+                  try {
+                    return (
+                      VM.compileFunction(fo, [], {
+                        ...((dedicedCrossCallsCtx === globalThis) ? {} : { parsingContext: dedicedCrossCallsCtx , } ) ,
+                        filename: (
+                          purportedSrcPath
+                        ) ,
+                        contextExtensions: [ctx1] ,
+                      } )
+                    ) ;
+                  } catch (z) {
+                    const sm = String(z) ;
+                    throw z ;
+                  }
+                })()
+                ()
+              )
+            ) ;
+
+            return (
+              (...[ctx]: Parameters<typeof evl1>) => (
+                evl1(ctx)
+              )
+            ) ;
+          }
+
+          ;}
+
+          {
+          ;
+          const canBeStraightEval = (
+            (
+              (new VM.Script((
+                `(function () { "use strict" ; return /** @type {(  ) => any } */ ( ) => {
+                  ;
+    
+                  const __require = 1 ;
+    
+                  try {
+                    eval("__require") ;
+                    console["warning"]('[st-ts-node] eval seems to work', ) ;
+                    return true ;
+                  } catch (z) {
+                    if (z instanceof Error) {
+                      if (z instanceof ReferenceError || z instanceof TypeError || z instanceof RangeError) {
+                        console["error"]('[st-ts-node] buggy eval implementation evidenced by caught exception:', z ) ;
+                        console["error"]('[st-ts-node] if youre using Electron, please file issue to https://npmjs.com/package/electron :' ) ;
+                        return false ;
+                      }
+                    }
+                    throw z ;
+                  }
+                } ; }).call(undefined) `
+              ) , {
+                filename: purportedSrcPath,
+              } ) )
+              .runInContext(dedicedCrossCallsCtx)
+              (  )
+            ) as boolean
+          );
+          return (
+            (new (class extends VM.Script {
+              runInContext(...[c, ...o]: Parameters<VM.Script["runInContext"]> ) {
+                if (c === globalThis) {
+                  return this.runInThisContext(...o ) ;
+                }
+                return super.runInContext(c, ...o ) ;
+              }
+            })((
+              `(function () { "use strict" ; return /** @type {(ctx: { module: NodeJS.Module, exports: Record<string, unknown>, require: NodeRequire, __filename: string, __dirname: string, } ) => any } */ ({ module, exports, require, __filename, __dirname, }) => {
+                ;
+  
+                /* simulate 'import.meta' normally not available outside ESM */
+                const __import_meta = Object.freeze({ dirname: __dirname, filename: __filename, url: require("node:url").pathToFileURL(__filename), resolve: require.resolve, }) ;
+                /* to anticipate the user-code using these reserved names, we may need an unerrable aliases to these  */
+                const __module = module ;
+                const __exports = exports ;
+                const __require = require ;
+                const __process = process ;
+                const __console = console ;
+                module.__require = __require ;
+                /* extra builtins */
+                const __PromiseFromConst = (x) => Promise.resolve(x) ;
+                const __requireCjs = __require ;
+                const __requireEsm = __require ;
+                const __requireEsmDefaultExport = (x) => __requireEsm(x)["default"] ;
+  
+                if (globalThis.process?.env?.STUDKTSNODE_DISPATCHENGINEDEBUG ) { debugger ; }
+  
+                ${canBeStraightEval ? (
+                  `
+                  eval((
+                    ${JSON.stringify(fo) }
+                    .replaceAll(${String(/\bimport\.meta\b/g) }, "__import_meta" )
+                    .replaceAll(${String(/\bimport\s*\(/g) }, "((spcfier) => Promise.resolve(module.__require(spcfier ) ) )(" )
+                  ) ) ;
+                  `
+                ) : (
+                  console["error"](`falling back to flat interpolation, which may expand and complicate possible SyntaxError(s) `)
+                  ,
+                  (
+                    `{
+                    ${fo }
+                    }`
+                  )
+                ) }
+              } ; }).call(undefined) `
+            ) , {
+              filename: purportedSrcPath,
+            } ) )
+            .runInContext(dedicedCrossCallsCtx)
+          ) ;
+          ;}
+
+      }
+    ) ,
+  } ;
 
   }
+
+  ;})() ;
+  })()
+  ) ;
 
   const dispatchCompiledCjsImpl: (
     GnCsneOptions["dispatcher"]["dispatchCompiledCjsImpl"]
@@ -325,98 +667,10 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
             // .replace(/\.m?()([jt]sx?)$/, ".c$2")
           );
 
-          if (1) {
-
-            const evl1 = (
-              (...[ctx] : [...Parameters<ReturnType<typeof fImpl> > ] ) => (
-                (() => {
-                  try {
-                    const { module, exports, require, __filename, __dirname, } = ctx ;
-                    const ctx1 = {
-                      module: module,
-                      __module: module,
-                      exports: exports,
-                      __exports: exports,
-                      require: require,
-                      __require: require,
-
-                      __filename, __dirname,
-                    } ;
-                    return (
-                      VM.compileFunction(fo, [], {
-                        parsingContext: dedicedCrossCallsCtx ,
-                        filename: (
-                          purportedSrcPath
-                        ) ,
-                        contextExtensions: [ctx1] ,
-                      } )
-                    ) ;
-                  } catch (z) {
-                    const sm = String(z) ;
-                    // console["error"](...[
-                    //   String(z) ,
-                    //   // getStackOrMessage(z) ,
-                    //   JSON.stringify({ purportedSrcPath, assumedSrcPath, }, null, 2 ),
-                    // ]) ;
-                    // if ((z instanceof Error) && getStackOrMessage(z).startsWith("RangeError") ) {
-                    //   debugger ;
-                    // }
-                    // {
-                    //   const cedv = Number(process.env["STUDKTSNODE_EBJS_MEXECENGINE_CEVDEBUG"] || "???") ;
-                    //   if ((
-                    //     (1 <= cedv)
-                    //     ||
-                    //     (cedv && (assumedSrcPath === "J:\\Dev\\NStdkSrc\\packages\\stdkjs\\packages\\@studiokit\\ts-node\\dist\\index.js" ) )
-                    //   )) {
-                    //     debugger ;
-                    //   }
-                    // }
-                    throw z ;
-                  }
-                })()
-                ()
-              )
-            ) ;
-
-            return (
-              (...[ctx]: Parameters<typeof evl1>) => (
-                evl1(ctx)
-              )
-            ) ;
-          }
-
           return (
-            (new VM.Script((
-              `(function () { "use strict" ; return /** @type {(ctx: { module: NodeJS.Module, exports: Record<string, unknown>, require: NodeRequire, __filename: string, __dirname: string, } ) => any } */ ({ module, exports, require, __filename, __dirname, }) => {
-                ;
-  
-                /* simulate 'import.meta' normally not available outside ESM */
-                const __import_meta = Object.freeze({ dirname: __dirname, filename: __filename, url: require("node:url").pathToFileURL(__filename), resolve: require.resolve, }) ;
-                /* to anticipate the user-code using these reserved names, we may need an unerrable aliases to these  */
-                const __module = module ;
-                const __exports = exports ;
-                const __require = require ;
-                const __process = process ;
-                const __console = console ;
-                module.__require = __require ;
-                /* extra builtins */
-                const __PromiseFromConst = (x) => Promise.resolve(x) ;
-                const __requireCjs = __require ;
-                const __requireEsm = __require ;
-                const __requireEsmDefaultExport = (x) => __requireEsm(x)["default"] ;
-  
-                if (globalThis.process?.env?.STUDKTSNODE_DISPATCHENGINEDEBUG ) { debugger ; }
-  
-                eval((
-                  ${JSON.stringify(fo) }
-                  .replaceAll(${String(/\bimport\.meta\b/g) }, "__import_meta" )
-                  .replaceAll(${String(/\bimport\s*\(/g) }, "((spcfier) => Promise.resolve(module.__require(spcfier ) ) )(" )
-                ) ) ;
-              } ; }).call(undefined) `
-            ) , {
-              filename: purportedSrcPath,
-            } ) )
-            .runInContext(dedicedCrossCallsCtx)
+            compileCjsToByCtxRunFnc1(fo, {
+              purportedSrcPath,
+            })
           ) ;
         })()
       ) ;
@@ -436,7 +690,7 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
               __dirname: join(assumedSrcPath, "..") ,
             }) ;
           } catch (z) {
-            if (globalThis.process?.env?.["STUDKTSNODE_DEBUG"] ) {
+            if (Number(globalThis.process?.env?.["STUDKTSNODE_DEBUG"] ) ) {
               if (getStackOrMessage(z).match(/\bSyntaxError\b/) ) {
                 debugger ;
               }
@@ -891,6 +1145,26 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     }
   ) ;
 
+  let resolversVar: import("./index").NdResolversGcePublic | null = (
+
+    null
+  ) ;
+
+  const setNdImportResolvers = (
+    (() => {
+      type I = import("./index").NdResolversGcePropagator ;
+      const impl: I = (...[x] ) => {
+        resolversVar = x ;
+      } ;
+      return impl satisfies I as I ;
+    })()
+  ) ;
+
+  const getNdResolversOverallExpectNonnull = () => (
+    resolversVar
+    ?? assert.fail(new TypeError(`[studk-ts-node] [EB] this engine hasn't received the resolvers yet. please first register one via 'setNdImportResolvers'.`) )
+  );
+
   /**
    * 
    * @deprecated
@@ -921,6 +1195,14 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
       ;
       const assumedSrcUrl = pathToFileURL(assumedSrcPath) ;
 
+      const {
+        // getNodeCjsLoader ,
+        // getNodeEsmGetFormat ,
+        // getNodeEsmResolver ,
+      } = (
+        getNdResolversOverallExpectNonnull()
+      ) ;
+
       const irqr: NodeJS.RequireResolve = (spcfier: string) => {
         const spcfierResolvedPath = createRequire(assumedSrcUrl).resolve(spcfier) ;
         return (
@@ -930,7 +1212,9 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
       irqr.paths = nativeRequire.resolve.paths ;
 
       ;
-      const REQUIRE: NodeRequire = (spcfier) => {
+
+      // TODO
+      const requireCjsPath = (...[spcfier]: [string ]) => {
         /**
          * this seemingly extraneous `try .. catch` enclosure
          * is to give place for breakpoints in case things goes wrong
@@ -942,6 +1226,9 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         const spcfierResolvedPath = irqr(spcfier) ;
 
         if (builtinModules.includes(spcfier.replace(/^(?:node:)?/, "") ) && !existsSync(spcfierResolvedPath) ) {
+          if (spcfier === "electron") {
+            return nativeRequire("electron") ;
+          }
           return nativeRequire(spcfier.replace(/^(?:node:)?/, "node:") ) ;
         }
 
@@ -968,13 +1255,69 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         }
       } ;
 
+      // TODO
+      const requireS = function requireFromFUrlImpl(...[spcfr]: [urlOrSpecifier: string ]) {
+        ;
+
+        (typeof spcfr === "string") || assert.fail(`${util.inspect(spcfr) }` ) ;
+
+        if (spcfr.match(/^https?\:/) ) {
+          throw new TypeError(`Illegal Internet Imports (${spcfr })`) ;
+        }
+
+        if (spcfr.match(/^file\:/) ) {
+          const fpath = fileURLToPath(spcfr) ;
+          return (
+            requireCjsPath(fpath)
+          ) ;
+        }
+
+        /**
+         * single-letter protocols are generally held as sugar for corresponding (longer) `file:` URL
+         * eg `J:/Dev/Py3Pt10` becomes `file:///J:/Dev/Py3Pt10`, and `J:\Dev\Node21p1` become `file:///J:/Dev/Node21p1`
+         * 
+         */
+        if (spcfr.match(/^(\w)\:/) ) {
+          const fpath = (spcfr) ;
+          return (
+            requireCjsPath(fpath)
+          ) ;
+        }
+
+        // throw new TypeError(`TODO`) ;
+        return (
+
+          requireCjsPath(spcfr)
+        ) ;
+      } ;
+
+      // TODO
+      const REQUIRE: NodeRequire = (...[spcfier0]: [string | URL ]) => {
+        if ((
+          (spcfier0 instanceof URL)
+          /* the above is subject to fail for Cross-Realm */
+          || (typeof spcfier0 === "object")
+        )) {
+          console["warn"](new TypeError(`[studk-ts-node] [EB] deprecated use of 'URL(...)' ('[object URL]') as Specifier; please convert your Specifier into String first `) , { spcfier0, } );
+          const spcfUrl = String(spcfier0) ;
+          return (
+            requireS(spcfUrl)
+          ) ;
+        } else {
+          (typeof spcfier0 === "string") || assert.fail(`${util.inspect(spcfier0) }` ) ;
+          return (
+            requireS(spcfier0)
+          ) ;
+        }
+      } ;
+
       // @ts-ignore
       const newModule: NodeJS.Module = {
         exports: new Object,
         id: (
           `[studk-dispatchInlineScript]`
           + encodeURIComponent(assumedSrcPath )
-          + Math.random()
+          + (0.25125125125125 )
         ),
         require: REQUIRE,
         // TODO
@@ -1281,6 +1624,10 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
     behingMdueReentranceCheck,
 
+    /* Late-Bound Handlers */
+
+    setNdImportResolvers,
+
     /* Compiler Helper */
 
     compilerHelper: dccLinkerHelper,
@@ -1430,6 +1777,20 @@ export interface EbTranslateInlineScriptIntoCjs {
   )): string ;
 }
 
+
+
+
+
+
+export type {
+  SupportedEsmImportAttribProps ,
+} ;
+
+export type {
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ EbAaniAptProps ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ EbPickFromExportedProps ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ GnCsneXoduleObj ,
+} ;
 
 
 
