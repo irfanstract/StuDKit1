@@ -4,7 +4,7 @@
 
 
 
-import { builtinModules as builtinModulesListed, Module } from 'node:module';
+import { builtinModules as builtinModulesListed0, Module } from 'node:module';
 import * as util from 'node:util';
 
 import assert = require('node:assert');
@@ -27,23 +27,27 @@ import {
   AtLeastEitherProp,
 } from './util';
 
-const builtinModules = (
-  utilReiterated(function* () {
-    yield* builtinModulesListed ;
-    try {
-      ;
-      if (typeof require("electron") === "object" ) {
-        yield "electron" ;
-      }
-    } catch (z) {
-      console["warn"](String(z) ) ;
-    }
-  })
-) ;
+import {
+  MockBlob ,
+} from "./rt/EbMockBlob" ;
+
+import {
+  builtinModules ,
+  builtinModulesListed ,
+  // builtinModulesListed0 ,
+} from "./rt/BuiltinModules" ;
 
 import { createRequire, } from 'node:module';
 
 import * as VM from "node:vm" ;
+
+import {
+  newEbTsModuleDispatcherInt ,
+} from "./rt/EbModuleEval" ;
+
+import {
+  newRealm ,
+} from "./rt/Realms" ;
 
 import type * as _sourceMapSupport from '@cspotcode/source-map-support';
 import { BaseError } from 'make-error';
@@ -51,39 +55,48 @@ import type * as _ts from 'typescript';
 
 import type { Transpiler, TranspilerFactory } from './transpilers/types';
 
+import {
+
+  //
+  WhenImportantAssumedActualFileNameExtProps ,
+  WhenImportantAssumedActualSrcFilePathInfoProps ,
+
+  WhenImportantEsmImportAttribsProps ,
+
+} from "./EbCore" ;
+
+import {
+  SupportedEsmImportAttribProps ,
+  compactStringifyImportAttribs ,
+  SupportedImportConfig ,
+} from "./rt/EbSupportedEsmImportAttribProps" ;
+
+export {
+
+  //
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type WhenImportantAssumedActualFileNameExtProps ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type WhenImportantAssumedActualSrcFilePathInfoProps ,
+
+};
+
+export {
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type WhenImportantEsmImportAttribsProps ,
+  SupportedEsmImportAttribProps ,
+} ;
+
+import {
+
+  getFileNameExt,
+
+} from "./EbCore" ;
+
 import { relative, basename, extname, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { existsSync, readFileSync } from 'node:fs';
 
-/**
- * supported subset of known attribs
- * 
- */
-interface SupportedEsmImportAttribProps {
-  /** WHATWG Import Attribute 'type' */ type: string | null,
-}
-
-const compactStringifyImportAttribs = (
-
-  function (...[attribs]: [attribs: Record<string, (string | number ) | null > ])
-  {
-    return (
-      JSON.stringify(Immutable.Map(attribs).toObject(), null )
-    ) ;
-  }
-) ;
-
-interface XhrSyncTranslatorInvar<out R = any> {
-  (...args: ArgsWithOptions<[entryPointPath: string], SupportedEsmImportAttribProps > ): R ;
-}
-
-const getFileNameExt = (
-
-  // assumedSrcPath.match(/(\.(\w+))$/)?.[1]
-  (...[assumedSrcPath]: [path: string]) => (
-    assumedSrcPath.match(/(\.(\w+))$/)?.[1]
-  )
-) ;
+import {
+  XhrSyncTranslatorInvar ,
+} from "./ebModuleTreeLoadMgmt" ;
 
 import { findAndReadConfig, loadCompiler } from './configuration';
 import type { TSCommon, TSInternal } from './ts-compiler-types';
@@ -100,111 +113,36 @@ import { createTsTranspileModule } from './ts-transpile-module';
 import { assertScriptCanLoadAsCJS } from '../dist-raw/node-internal-modules-cjs-loader';
 
 
+import { EbTsUserspace, } from './rt/EbModuleEval';
+
 const checkIsValidCjs = (
 
-  function (...[fo, { assumedSrcPath, module: imd, fileExt: sfe, }] : (
+  function (...[c, { ...o }] : (
     Parameters<(
-      GnCsneOptions["dispatcher"]["dispatchCompiledCjsImpl"]
+      typeof EbTsUserspace.checkIsValidCjs
     )>
   ))
-  : void
   {
-    ;
-
-    ;
-    if ((
-      fo
-      .split(/\r?\n/)
-      .filter(e => (
-        e.match(/^\s*\bexport\s*\{\s*\}\s*;?\s*$/ )
-        ||
-        e.match(/^\s*\bexport\s*\{\s*$/ )
-      ))
-      .length
-    ) ) {
-      return (
-        assert.fail((
-          new Error(`assertion error, expected to be CJS but contains untransformed 'export {}', check your config! ${JSON.stringify({ assumedSrcPath, srcFileExt0: sfe, ndId: imd.id, }, null, 2 ) }`)
-        ))
-      ) ;
-    }
-
+    return EbTsUserspace.checkIsValidCjs(c, o ) ;
   }
 ) ;
 
-export interface ExportedValueHandler<out ReturnVal = any> {
+import {
 
-  /**
-   * select
-   * which - of those -
-   * to be the final return-value
-   * 
-   */
-  (vexport: any, originalExports: object, module: NodeJS.Module): ReturnVal ;
+  type ExportedValueHandler ,
+  type EbPickFromExportedProps ,
 
-}
+  type OndpeRProps ,
+  /** @deprecated please Dealias. */
+  type OndpeProps ,
 
-interface EbPickFromExportedProps extends Extract<{
+  type EbAaniAptProps ,
+  type OAlwaysPreTranspileOptProps ,
 
-  /**
-   * specify
-   * which - of those -
-   * to return
-   * 
-   */
-  pickFromExporteds ?: ExportedValueHandler | null,
+} from "./EbCore" ;
 
-} , any > {}
 
-/**
- * these two methods
- * handle found {@link _ts.Expression Expr(s) }
- * 
- */
-interface OndpeRProps<out R>
-{
 
-  //
-  onNewKnownPath : (value: string) => R ,
-  onNewDynamicPathExpr : (expr: _ts.Expression) => R ,
-
-}
-
-interface OndpeProps extends OndpeRProps<void> {}
-
-interface EbAaniAptProps extends Extract<{
-
-  /**
-   * if `true`, then
-   * we'll unconditionally avoid the native `require`-or-`import`, irrespective of these confnding props,
-   * which may be essential to avoid "bugs" (quirks) with the native support and to implement our config-dictated behvs
-   * 
-   */
-  alwaysAvoidNativeImport?: boolean | null,
-
-  //
-  /**
-   * try to
-   * pre-list and pre-bundle as much 'import'-ed module(s) as trivial,
-   * possibly extended by additional config(s)
-   * 
-   */
-  alwaysPreTranspile?: boolean | null,
-
-} , any > {}
-
-/**
- * 
- * 
- * 
- */
-interface OAlwaysPreTranspileOptProps
-{
-
-  //
-  readonly oAlwaysPreTranspile: boolean,
-
-}
 
 
 /* EMULATION FOR SOME NODEJS FEATS, LIVE-RUN OR SAVED-BUNDLE */
@@ -214,21 +152,18 @@ interface OAlwaysPreTranspileOptProps
 
 
 
-let tsc: typeof import("typescript") | null = (
-  (() => {
-    try {
-      const tscImpl = ((require) )("typescript") ;
-      console["log"](`[eb.js] good, we have TSC in hand`) ;
-      return tscImpl ;
-    } catch (z) {
-      console["info"](String(z) ) ;
-      console["debug"](z ) ;
-      return null ;
-    }
-  })()
-) ;
+
+import tsc0 = require("./rt/OptionalTsc") ;
+const tsc = tsc0 ;
 
 
+
+
+
+import {
+  EbTsCommonJsGlobalScopeValues,
+  EbXddiProto ,
+} from './rt/EbModuleEval';
 
 
 
@@ -245,290 +180,11 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
 
   const {
     compileCjsToByCtxRunFnc1,
+    dccLinkerHelper ,
   } = (
   //
 
-  (() => {
-
-  interface CtxBt {
-    readonly module: NodeJS.Module,
-    readonly exports: Record<string, unknown>,
-    readonly require: NodeRequire,
-    readonly __filename: string,
-    readonly __dirname: string,
-  }
-
-  return ((): (
-    | {
-
-      compileCjsToByCtxRunFnc1(codeAsCjs: string, opts: {
-        purportedSrcPath: string;
-      }): (((...args: [ctx: CtxBt]) => any)) ;
-
-    }
-  ) => {
-  ;
-
-  // if ((
-  //   // TODO
-  //   (
-  //     (typeof window !== "undefined")
-  //     ||
-  //     (typeof HTMLDivElement !== "undefined")
-  //   )
-  // )) {
-
-  //   // return assert.fail(`TODO`) ;
-  //   return {
-
-  //     compileCjsToByCtxRunFnc1: (...[fo, { purportedSrcPath }] ) => {
-  //       ;
-  //       return assert.fail(`TODO`) ;
-  //     } ,
-
-  //   } ;
-  // }
-
-  {
-  ;
-
-  // const dedicedCrossCallsCtx = (
-  //   (
-  //     // TODO
-  //     !(
-  //       (typeof window !== "undefined")
-  //       ||
-  //       (typeof HTMLDivElement !== "undefined")
-  //     )
-  //   ) ?
-  //   VM.createContext(undefined , {  })
-  //   :
-  //   globalThis
-  // ) ;
-  const dedicedCrossCallsCtx = (
-    (() => {
-      if (
-        // TODO
-        !(
-          (typeof window !== "undefined")
-          ||
-          (typeof HTMLDivElement !== "undefined")
-        )
-      ) {
-        const newc1 = (
-          VM.createContext(undefined , {  })
-        ) ;
-
-        Object.assign(newc1, {
-          setInterval, clearInterval ,
-          setTimeout , clearTimeout ,
-          queueMicrotask   : globalThis.queueMicrotask ?? globalThis.setImmediate ,
-          setImmediate     : globalThis.setImmediate ?? globalThis.queueMicrotask ,
-          process ,
-      
-          ...(typeof fetch !== "undefined" ? { fetch, } : {} ) ,
-          ...(typeof Request !== "undefined" ? { Request, } : {} ) ,
-          ...(typeof Response !== "undefined" ? { Response, } : {} ) ,
-      
-      
-        } ) ;
-      
-        {
-          const kGlobalThis = Object.getOwnPropertyNames(globalThis) ;
-          0 && console["log"]({ kGlobalThis, }) ;
-
-          if (0) {
-            ;
-            VM.runInContext((
-              `
-              for (const k in (
-                ${JSON.stringify(kGlobalThis, null, 2 ) }
-                // .filter(e => e.match(${"" + RegExp("^\\w+$", ) }) /* */ )
-              ) ) {
-                void [eval(k) ] ;
-              }
-              `
-            ), newc1) ;
-          }
-
-          if (1) {
-            for (const k of kGlobalThis ) {
-              newc1[k] ||= (globalThis as Record<string, unknown> )[k] ;
-            }
-          }
-
-        }
-
-        return newc1 ;
-      } else {
-
-        return globalThis ;
-      }
-    })()
-  ) ;
-
-  ;
-  const expandCtx = (...[ctx]: [...[ctx: CtxBt] ]) => (
-    (() => {
-                    const { module, exports, require, __filename, __dirname, } = ctx ;
-                    const ctx1 = {
-                      module: module,
-                      __module: module,
-                      exports: exports,
-                      __exports: exports,
-                      require: require,
-                      __require: require,
-
-                      __filename, __dirname,
-                    } ;
-                    return ctx1 ;
-    })()
-  ) ;
-
-  ;
-  return {
-
-    compileCjsToByCtxRunFnc1: (
-
-      function compileCjsToByCtxRunFnc1Impl (...[fo, { purportedSrcPath }] )
-      : (
-        ((...args: [ctx: CtxBt ] ) => any )
-      )
-      {
-          ;
-          ;
-
-          {
-          ;
-
-          if (1) {
-
-          const evl1 = (
-            (...[ctx] : [...Parameters<ReturnType<typeof compileCjsToByCtxRunFnc1Impl> > ] ) => (
-                (() => {
-                  const ctx1 = expandCtx(ctx) ;
-                  try {
-                    return (
-                      VM.compileFunction(fo, [], {
-                        ...((dedicedCrossCallsCtx === globalThis) ? {} : { parsingContext: dedicedCrossCallsCtx , } ) ,
-                        filename: (
-                          purportedSrcPath
-                        ) ,
-                        contextExtensions: [ctx1] ,
-                      } )
-                    ) ;
-                  } catch (z) {
-                    const sm = String(z) ;
-                    throw z ;
-                  }
-                })()
-                ()
-              )
-            ) ;
-
-            return (
-              (...[ctx]: Parameters<typeof evl1>) => (
-                evl1(ctx)
-              )
-            ) ;
-          }
-
-          ;}
-
-          {
-          ;
-          const canBeStraightEval = (
-            (
-              (new VM.Script((
-                `(function () { "use strict" ; return /** @type {(  ) => any } */ ( ) => {
-                  ;
-    
-                  const __require = 1 ;
-    
-                  try {
-                    eval("__require") ;
-                    console["warning"]('[st-ts-node] eval seems to work', ) ;
-                    return true ;
-                  } catch (z) {
-                    if (z instanceof Error) {
-                      if (z instanceof ReferenceError || z instanceof TypeError || z instanceof RangeError) {
-                        console["error"]('[st-ts-node] buggy eval implementation evidenced by caught exception:', z ) ;
-                        console["error"]('[st-ts-node] if youre using Electron, please file issue to https://npmjs.com/package/electron :' ) ;
-                        return false ;
-                      }
-                    }
-                    throw z ;
-                  }
-                } ; }).call(undefined) `
-              ) , {
-                filename: purportedSrcPath,
-              } ) )
-              .runInContext(dedicedCrossCallsCtx)
-              (  )
-            ) as boolean
-          );
-          return (
-            (new (class extends VM.Script {
-              runInContext(...[c, ...o]: Parameters<VM.Script["runInContext"]> ) {
-                if (c === globalThis) {
-                  return this.runInThisContext(...o ) ;
-                }
-                return super.runInContext(c, ...o ) ;
-              }
-            })((
-              `(function () { "use strict" ; return /** @type {(ctx: { module: NodeJS.Module, exports: Record<string, unknown>, require: NodeRequire, __filename: string, __dirname: string, } ) => any } */ ({ module, exports, require, __filename, __dirname, }) => {
-                ;
-  
-                /* simulate 'import.meta' normally not available outside ESM */
-                const __import_meta = Object.freeze({ dirname: __dirname, filename: __filename, url: require("node:url").pathToFileURL(__filename), resolve: require.resolve, }) ;
-                /* to anticipate the user-code using these reserved names, we may need an unerrable aliases to these  */
-                const __module = module ;
-                const __exports = exports ;
-                const __require = require ;
-                const __process = process ;
-                const __console = console ;
-                module.__require = __require ;
-                /* extra builtins */
-                const __PromiseFromConst = (x) => Promise.resolve(x) ;
-                const __requireCjs = __require ;
-                const __requireEsm = __require ;
-                const __requireEsmDefaultExport = (x) => __requireEsm(x)["default"] ;
-  
-                if (globalThis.process?.env?.STUDKTSNODE_DISPATCHENGINEDEBUG ) { debugger ; }
-  
-                ${canBeStraightEval ? (
-                  `
-                  eval((
-                    ${JSON.stringify(fo) }
-                    .replaceAll(${String(/\bimport\.meta\b/g) }, "__import_meta" )
-                    .replaceAll(${String(/\bimport\s*\(/g) }, "((spcfier) => Promise.resolve(module.__require(spcfier ) ) )(" )
-                  ) ) ;
-                  `
-                ) : (
-                  console["error"](`falling back to flat interpolation, which may expand and complicate possible SyntaxError(s) `)
-                  ,
-                  (
-                    `{
-                    ${fo }
-                    }`
-                  )
-                ) }
-              } ; }).call(undefined) `
-            ) , {
-              filename: purportedSrcPath,
-            } ) )
-            .runInContext(dedicedCrossCallsCtx)
-          ) ;
-          ;}
-
-      }
-    ) ,
-  } ;
-
-  }
-
-  ;})() ;
-  })()
+    newEbTsModuleDispatcherInt()
   ) ;
 
   const dispatchCompiledCjsImpl: (
@@ -537,7 +193,7 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
 
     function (...dpArgs )
     {
-      const [fo, { fileExt: srcFileExt0, assumedSrcPath, module: imd, }] = dpArgs;
+      const [fo, { fileExt: assumedSrcFileExt, assumedSrcPath, module: imd, }] = dpArgs;
 
       /**
        * a helper to (depending on value of {@link dccConsole.verboseDccImpl} ) log spurious `Maximum Call Stack Size Exceeded` problems
@@ -549,7 +205,7 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
         if (dccConsole.verboseDccImpl ) {
           console["log"]({
             assumedSrcPath ,
-            srcFileExt0 ,
+            srcFileExt0: assumedSrcFileExt ,
             id: imd.id ,
             __filename: imd.filename ,
           }) ;
@@ -558,7 +214,21 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
 
       const REQUIRE = imd.require;
 
-      const originalExports = imd.exports ;
+      const originalExports = imd.initialExportsObj ;
+
+      const assumedSrcedByEsm = (
+        !!assumedSrcFileExt.match(/^m[jt]sx?$/)
+      ) ;
+
+      const finaliseCrossFmtExports = (
+
+        once(() => (
+          GnCsneXModuleObj.finaliseNodeJsCrossFmtExports(imd, {
+            f: GnCsneXModuleObj.XFinAndQueryFlags.ALL_F ,
+            assumedSrcedByEsm,
+          })
+        ))
+      ) ;
 
       behingMdueReentranceCheck(imd, function () {
       //
@@ -566,7 +236,7 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
       if (1) {
         checkIsValidCjs(fo, {
           assumedSrcPath ,
-          fileExt: srcFileExt0 ,
+          fileExt: assumedSrcFileExt ,
           module: imd,
         }) ;
       }
@@ -574,21 +244,11 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
       // TODO
 
       const f1 = (
-        (function fImpl(): (
-          ((...args: [ctx: { module: NodeJS.Module, exports: Record<string, unknown>, require: NodeRequire, __filename: string, __dirname: string, } ] ) => any )
-        ) {
+        compileCjsToByCtxRunFnc1(fo, {
+          purportedSrcPath: assumedSrcPath,
+          purportedSrcFileExt: assumedSrcFileExt,
+        })
 
-          const purportedSrcPath = (
-            assumedSrcPath
-            // .replace(/\.m?()([jt]sx?)$/, ".c$2")
-          );
-
-          return (
-            compileCjsToByCtxRunFnc1(fo, {
-              purportedSrcPath,
-            })
-          ) ;
-        })()
       ) ;
 
       if (0) {
@@ -598,6 +258,11 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
       void (
         (() => {
           try {
+
+            if (assumedSrcedByEsm ) {
+              originalExports.__esModule ??= true ;
+            }
+
             f1({
               module: imd ,
               exports: originalExports ,
@@ -605,6 +270,9 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
               __filename: assumedSrcPath ,
               __dirname: join(assumedSrcPath, "..") ,
             }) ;
+
+            finaliseCrossFmtExports() ;
+
           } catch (z) {
             if (Number(globalThis.process?.env?.["STUDKTSNODE_DEBUG"] ) ) {
               if (getStackOrMessage(z).match(/\bSyntaxError\b/) ) {
@@ -634,6 +302,9 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
       return (
         ({
           finalMainExports: imd.exports,
+          finalCjsSoleExports : imd.finalCjsSoleExport ,
+          finalEsmMainExports : imd.finalEsmDefaultExport ,
+          finalEsmTotalExports: imd.finalEsmTotalExport ?? imd.initialExportsObj ,
           originalExports,
           module: imd,
         } as const )
@@ -645,49 +316,6 @@ export function createSpclNodeEngine<const ActualOpts extends LiveRunningCsneOpt
     new (class DccConsoleImpl {
       verboseDccImpl : boolean = false ;
     })
-  ) ;
-
-  const dccLinkerHelper = (
-    (() => {
-      if (tsc) {
-        ;
-
-        const dccEscapeBuiltinRef = (
-
-          (id: string): string => (
-      
-            "__" + id.replace(/\./g , () => "_" )
-          )
-        ) ;
-
-        const createEscapedBuiltinRef = (
-
-          (id: string): _ts.Expression => (
-      
-            tsc.factory.createIdentifier((
-              dccEscapeBuiltinRef(id)
-            ))
-          )
-        ) ;
-
-        ;
-        const createRequireCall = (
-          (...[args]: [argExprs: readonly _ts.Expression[]] ) => (
-            tsc.factory.createCallExpression(
-              createEscapedBuiltinRef("require") ,
-              undefined, args )
-          )
-        ) ;
-      
-        return {
-          dccEscapeBuiltinRef ,
-          createEscapedBuiltinRef,
-          createRequireCall,
-        } as const ;
-      } else {
-        return {} as const ;
-      }
-    })()
   ) ;
 
   const efnl = (
@@ -758,7 +386,7 @@ export function createSpclNodePackingEngine<const ActualOpts extends PackingCsne
 
       const REQUIRE = module.require;
 
-      const originalExports = module.exports ;
+      const originalExports = module.initialExportsObj ;
 
       // TODO
 
@@ -846,6 +474,9 @@ export function createSpclNodePackingEngine<const ActualOpts extends PackingCsne
       return (
         ({
           finalMainExports: module.exports,
+          finalCjsSoleExports: module.finalCjsSoleExport ,
+          finalEsmMainExports: module.finalEsmDefaultExport ,
+          finalEsmTotalExports: module.finalEsmTotalExport ?? module.initialExportsObj ,
           originalExports,
           module,
         } as const )
@@ -916,7 +547,13 @@ export function createSpclNodePackingEngine<const ActualOpts extends PackingCsne
   return efnl ;
 }
 
-export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XHelper>, const XHelper extends object>(...crArgs : (
+
+
+/**
+ * early part of {@link createSpclGnNodeEngine}.
+ * 
+ */
+function parseSpclGnNodeEngineProps<const ActualOpts extends GnCsneOptions<XHelper>, const XHelper extends object>(...crArgs : (
 
   /* no positional args; only options. */
   [opts: GnCsneOptions<XHelper> & ActualOpts ]
@@ -935,7 +572,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     /** making optional in case {@link _ts.factory} is unusable */
     onNewDynamicPathExpr: propagateNewDynamicPathExprImpl,
 
-    aux: { fs: spclFs, },
+    aux: { fs: spclFs, ...otherAuxes },
   } = opts ;
   const propagateNewKnownPath = (
 
@@ -945,25 +582,71 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     }
   ) ;
 
+  return {
+    crArgs ,
+    opts ,
+
+    compiler,
+    oAlwaysPreTranspile,
+
+    dispatchCompiledCjsImpl ,
+    dccLinkerHelper ,
+
+    propagateNewKnownPath ,
+    propagateNewKnownPathImpl ,
+    propagateNewDynamicPathExprImpl ,
+
+    spclFs ,
+
+    otherAuxes ,
+
+  } as const ;
+}
+
+/**
+ * early part of {@link createSpclGnNodeEngine}.
+ * 
+ */
+function createSpclGnNodeEnginePre<const ActualOpts extends GnCsneOptions<XHelper>, const XHelper extends object>(...crArgs : (
+
+  /* no positional args; only options. */
+  [opts: GnCsneOptions<XHelper> & ActualOpts ]
+))
+{
+  ;
+
+  ;
+
+  ;
+
+  ;
+
+  const {
+    opts ,
+
+    compiler,
+    oAlwaysPreTranspile,
+
+    dispatchCompiledCjsImpl ,
+    dccLinkerHelper ,
+
+    propagateNewKnownPath ,
+    propagateNewKnownPathImpl ,
+    propagateNewDynamicPathExprImpl ,
+
+    spclFs ,
+
+    otherAuxes ,
+
+  } = parseSpclGnNodeEngineProps(...crArgs) ;
+
   console["log"](`[createSpclGnNodeEngine]`, { oAlwaysPreTranspile, } ) ;
-
-  /**
-   * 
-   * 
-   */
-  const getScriptFileHash: XhrSyncTranslatorInvar<string> = (
-
-    (path, { ...attribs }) => (
-      path + "!" + compactStringifyImportAttribs(attribs)
-    )
-  ) ;
-  //
 
   const { translateInlineScriptIntoCjs , } = { ...compiler, } ;
 
   const behingMdueReentranceCheck = (
 
-    function (...[imd, runMain]: [GnCsneXoduleObj, main: () => void])
+    function (...[imd, runMain]: [GnCsneXModuleObj, main: () => void])
     {
       ;
       const { filename: assumedSrcPath, } = imd ;
@@ -1002,24 +685,30 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     }
   ) ;
 
-  const dispatchCompiledCjsOuterImpl = (
+  interface ToDispatchCompiledCjsOptions extends Extract<(
+    & WhenImportantAssumedActualSrcFilePathInfoProps
+    & WhenImportantAssumedActualFileNameExtProps
+    & {
+      scmc: SCMC ,
+    }
+    & WhenImportantEsmImportAttribsProps
+  ), any> {}
 
-    function (...dpArgs : ArgsWithOptions<[code: string] , {
-      fileExt: string,
-      assumedSrcPath: string ,
-    } >)
+  interface ToDispatchCompiledCjsOptionsAndPickFromOuter<out R> extends Extract<ToDispatchCompiledCjsOptions & {
+    pickFromExporteds: ExportedValueHandler<R>,
+  }, any> {}
+
+  const runCompiledCjsAndGetModuleExportsDesc = (
+
+    function (...dpArgs : ArgsWithOptions<[code: string] , ToDispatchCompiledCjsOptions >)
     {
-      const [fo, { fileExt: srcFileExt0, assumedSrcPath, }] = dpArgs;
-      // TODO
-      const imptTypeAttr: string | null = (
-        null
-      );
+      const [fo, { fileExt: srcFileExt0, assumedSrcPath, scmc, esmImportAttribs, }] = dpArgs;
 
       const {
         module ,
         require: REQUIRE ,
-      } = spclGetModuleAndRequire1(assumedSrcPath, {
-        type: imptTypeAttr ,
+      } = scmc.spclGetModuleAndRequire1(assumedSrcPath, {
+        with: esmImportAttribs ,
       }) ;
 
       return (
@@ -1032,15 +721,11 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     }
   ) ;
 
-  const dispatchCompiledCjs = (
+  const runCompiledCjsAndGetSelectedExport = (
 
-    function <const R>(...dpArgs : ArgsWithOptions<[code: string] , {
-      fileExt: string,
-      assumedSrcPath: string ,
-      pickFromExporteds: ExportedValueHandler<R>,
-    } >)
+    function <const R>(...dpArgs : ArgsWithOptions<[code: string] , ToDispatchCompiledCjsOptionsAndPickFromOuter<R> >)
     {
-      const [fo, { fileExt: srcFileExt0, assumedSrcPath, pickFromExporteds, }] = dpArgs;
+      const [fo, { pickFromExporteds, ...opts1 }] = dpArgs;
 
       // TODO
 
@@ -1049,9 +734,8 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         originalExports ,
         module ,
       } = (
-        dispatchCompiledCjsOuterImpl(fo, {
-          fileExt: srcFileExt0 ,
-          assumedSrcPath,
+        runCompiledCjsAndGetModuleExportsDesc(fo, {
+          ...opts1
         } )
       ) ;
 
@@ -1081,197 +765,160 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     ?? assert.fail(new TypeError(`[studk-ts-node] [EB] this engine hasn't received the resolvers yet. please first register one via 'setNdImportResolvers'.`) )
   );
 
-  /**
-   * 
-   * @deprecated
-   * 
-   */
-  const nativeRequire = require ;
+  return {
+    //
 
-  //
-  const spclGetModuleAndRequire1 = (
+    opts ,
 
-    memoize (function spclGetModuleAndRequire1Impl(...args: Parameters<typeof spclCreateModuleAndRequire1>)
-    {
-      return (
-        spclCreateModuleAndRequire1(...args)
-      ) ;
-    }, getScriptFileHash )
+    compiler,
+    oAlwaysPreTranspile,
+
+    dispatchCompiledCjsImpl ,
+    dccLinkerHelper ,
+
+    propagateNewKnownPath ,
+    propagateNewKnownPathImpl ,
+    propagateNewDynamicPathExprImpl ,
+
+    spclFs ,
+
+    otherAuxes ,
+
+    //
+
+    translateInlineScriptIntoCjs,
+    behingMdueReentranceCheck ,
+
+    runCompiledCjsAndGetModuleExportsDesc ,
+    runCompiledCjsAndGetSelectedExport ,
+
+    setNdImportResolvers ,
+    getNdResolversOverallExpectNonnull ,
+
+    //
+  } as const ;
+}
+
+import {
+  EbGnLoadedModuleTree ,
+  GnCsneXModuleObj ,
+  ToEmsp ,
+  SCMC ,
+} from "./ebModuleTreeLoadMgmt" ;
+
+function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XHelper>, const XHelper extends object>(...crArgs : (
+
+  /* no positional args; only options. */
+  [opts: GnCsneOptions<XHelper> & ActualOpts ]
+))
+{
+
+  const {
+    //
+
+    opts ,
+
+    compiler,
+    oAlwaysPreTranspile,
+
+    dispatchCompiledCjsImpl ,
+    dccLinkerHelper ,
+
+    propagateNewKnownPath ,
+    propagateNewKnownPathImpl ,
+    propagateNewDynamicPathExprImpl ,
+
+    spclFs ,
+
+    otherAuxes ,
+
+    //
+
+    translateInlineScriptIntoCjs,
+    behingMdueReentranceCheck ,
+
+    runCompiledCjsAndGetModuleExportsDesc ,
+    runCompiledCjsAndGetSelectedExport ,
+
+    setNdImportResolvers ,
+    getNdResolversOverallExpectNonnull ,
+
+  } = (
+    createSpclGnNodeEnginePre(...crArgs)
   ) ;
 
+  ;
   /**
+   * initial implementation didn't support LMGC (Loaded-Module-Graph Caching), but presently ver does;
+   * while {@link CachedXT } doesn't, {@link XT} defines named-param which in-turn define which {@link SCMC} to use
+   * 
+   * {@link CachedXT}
+   * is defined
+   * that `code` get typed as `string`, and `options` don't define `scmc`, 
    * 
    */
-  const spclCreateModuleAndRequire1 = (
+  interface CachedXT<out R = any > extends XhrSyncTranslatorInvar<R, { } > {}
 
-    function (...[assumedSrcPath] : (
-      Parameters<typeof getScriptFileHash>
-    ) )
-    {
-      ;
-      const assumedSrcUrl = pathToFileURL(assumedSrcPath) ;
+  /**
+   * initial implementation didn't support LMGC (Loaded-Module-Graph Caching), but presently ver does;
+   * while {@link CachedXT } doesn't, {@link XT} defines named-param which in-turn define which {@link SCMC} to use
+   * 
+   * {@link XT}
+   * is defined
+   * that `code` get typed as `string`, and `options` defines `scmc`, 
+   * 
+   */
+  interface XT<out R = any > extends XhrSyncTranslatorInvar<R, { readonly scmc: SCMC, } > {}
 
-      const {
-        // getNodeCjsLoader ,
-        // getNodeEsmGetFormat ,
-        // getNodeEsmResolver ,
-      } = (
-        getNdResolversOverallExpectNonnull()
-      ) ;
+  type ToDispatchCompiledCjsOptions = (
+    Parameters<typeof runCompiledCjsAndGetModuleExportsDesc>[1] & {}
+  ) ;
 
-      const irqr: NodeJS.RequireResolve = (spcfier: string) => {
-        const spcfierResolvedPath = createRequire(assumedSrcUrl).resolve(spcfier) ;
-        return (
-          spcfierResolvedPath
-        ) ;
-      } ;
-      irqr.paths = nativeRequire.resolve.paths ;
+  type ToDispatchCompiledCjsOptionsAndPickFromOuter<R> = (
+    //
+    Parameters<typeof runCompiledCjsAndGetSelectedExport<R>>[1] & {}
+  ) ;
 
-      ;
+  /** {@link newScmc} */
+  function newScmc()
+  : ReturnType<typeof EbGnLoadedModuleTree.newCache1>
+  {
+    return (
+      EbGnLoadedModuleTree.newCache1({
+        resolvers: getNdResolversOverallExpectNonnull(),
+        evaluateModuleOrSrcFileAtPath,
+      })
+    ) ;
+  }
 
-      // TODO
-      const requireCjsPath = (...[spcfier]: [string ]) => {
-        /**
-         * this seemingly extraneous `try .. catch` enclosure
-         * is to give place for breakpoints in case things goes wrong
-         * 
-         */
-        try {
-        ;
-
-        const spcfierResolvedPath = irqr(spcfier) ;
-
-        if (builtinModules.includes(spcfier.replace(/^(?:node:)?/, "") ) && !existsSync(spcfierResolvedPath) ) {
-          if (spcfier === "electron") {
-            return nativeRequire("electron") ;
-          }
-          return nativeRequire(spcfier.replace(/^(?:node:)?/, "node:") ) ;
-        }
-
-        return (
-          dispatchSrcFile(spcfierResolvedPath, {
-            alwaysAvoidNativeImport: true,
-            pickFromExporteds: ((...[e, originalExports]) => e )
-            ,
-          } )
-        ) ;
-
-        } catch (z) {
-
-          // if (globalThis.process?.env?.["STUDKTSNODE_DEBUG"] ) {
-          //   const stack = getStackOrMessage(z) ;
-          //   if ((
-          //     (stack.match(/\bSyntaxError\b/) && stack.toLowerCase().match(/\bunexpected token\b/) && stack.match(/'export'/ ) )
-          //   ) ) {
-          //     debugger ;
-          //   }
-          // }
-
-          throw z ;
-        }
-      } ;
-
-      // TODO
-      const requireS = function requireFromFUrlImpl(...[spcfr]: [urlOrSpecifier: string ]) {
-        ;
-
-        (typeof spcfr === "string") || assert.fail(`${util.inspect(spcfr) }` ) ;
-
-        if (spcfr.match(/^https?\:/) ) {
-          throw new TypeError(`Illegal Internet Imports (${spcfr })`) ;
-        }
-
-        if (spcfr.match(/^file\:/) ) {
-          const fpath = fileURLToPath(spcfr) ;
-          return (
-            requireCjsPath(fpath)
-          ) ;
-        }
-
-        /**
-         * single-letter protocols are generally held as sugar for corresponding (longer) `file:` URL
-         * eg `J:/Dev/Py3Pt10` becomes `file:///J:/Dev/Py3Pt10`, and `J:\Dev\Node21p1` become `file:///J:/Dev/Node21p1`
-         * 
-         */
-        if (spcfr.match(/^(\w)\:/) ) {
-          const fpath = (spcfr) ;
-          return (
-            requireCjsPath(fpath)
-          ) ;
-        }
-
-        // throw new TypeError(`TODO`) ;
-        return (
-
-          requireCjsPath(spcfr)
-        ) ;
-      } ;
-
-      // TODO
-      const REQUIRE: NodeRequire = (...[spcfier0]: [string | URL ]) => {
-        if ((
-          (spcfier0 instanceof URL)
-          /* the above is subject to fail for Cross-Realm */
-          || (typeof spcfier0 === "object")
-        )) {
-          console["warn"](new TypeError(`[studk-ts-node] [EB] deprecated use of 'URL(...)' ('[object URL]') as Specifier; please convert your Specifier into String first `) , { spcfier0, } );
-          const spcfUrl = String(spcfier0) ;
-          return (
-            requireS(spcfUrl)
-          ) ;
-        } else {
-          (typeof spcfier0 === "string") || assert.fail(`${util.inspect(spcfier0) }` ) ;
-          return (
-            requireS(spcfier0)
-          ) ;
-        }
-      } ;
-
-      // @ts-ignore
-      const newModule: NodeJS.Module = {
-        exports: new Object,
-        id: (
-          `[studk-dispatchInlineScript]`
-          + encodeURIComponent(assumedSrcPath )
-          + (0.25125125125125 )
-        ),
-        require: REQUIRE,
-        // TODO
-        filename: assumedSrcPath,
-      } ;
-
-      ;
-      REQUIRE.resolve = irqr ;
-      REQUIRE.main = newModule ;
-      REQUIRE.cache = nativeRequire.cache ;
-      REQUIRE.extensions = nativeRequire.extensions ;
-
-      return {
-        module: newModule ,
-        require: REQUIRE ,
-
-        assumedSrcPath,
-        assumedSrcUrl ,
-      } as const ;
-    }
+  /**
+   * the default {@link SCMC}
+   * to use for eg {@link evaluateModuleOrSrcFileAtPath} when `cached: true` (rather than explicit {@link SCMC} ref)
+   * 
+   * cannot use `const bar = ...` syntax because
+   * such def syntax implies immediate c/d/i to {@link getNdResolversOverallExpectNonnull} even with {@link resolversVar} not having been (re)assigned yet;
+   * 
+   */
+  const getDefaultScmc = (
+    once(() => (
+      newScmc()
+    ))
   ) ;
 
   let dispatchInlineScript : (
     | (
-      (...args : ArgsWithOptions<[code: string] , {
-        fileExt: string,
-        assumedSrcPath: string ,
-        // pickFromExporteds?: (vexport: any, originalExports: object, module: NodeJS.Module) => ({} | null ),
-      } >) => any
+      (...args : ArgsWithOptions<[code: string] , (
+        Omit<ToDispatchCompiledCjsOptions, keyof Pick<ToDispatchCompiledCjsOptions, "esmImportAttribs">>
+      ) >) => any
     )
     | null
   ) ;
 
   let resolvePreCompiled: (
-    (...args: Parameters<XhrSyncTranslatorInvar> ) => (
+    (...args: Parameters<XT> ) => (
       & {
         readonly assumedSrcPath: string;
-        readonly srcCode: string;
+        readonly srcCode: string | Blob;
         readonly sfe: string;
         readonly compiledCjsCode: string;
       }
@@ -1283,6 +930,54 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
   let ccc: import("lodash").MemoizedFunction | null = (
     null
+  ) ;
+
+  const spclReadFileSync = (
+
+    (...spArgs : ArgsWithOptions<[path: string], {
+      // encoding?: NodeJS.BufferEncoding,
+    }> ) => {
+      const [path, {
+        // encoding: encodingSpec = null,
+      } = {}] = spArgs ;
+
+      // const attemptibleEncods = (
+      //   encodingSpec ?
+      //   [encodingSpec]
+      //   : (Immutable.Seq.Indexed(["utf8", "latin1" ]) satisfies Immutable.Seq.Indexed<NodeJS.BufferEncoding>).toArray()
+      // ) ;
+
+      const c0 = (
+        spclFs.readFileSync(path, )
+      ) ;
+
+      // for (const encoding of attemptibleEncods) {
+      //   const s = new TextDecoder(encoding, ).decode(c0) ;
+      //   if ((
+      //     ((): boolean => {
+      //       try {
+      //         btoa(s) ;
+      //         return true ;
+      //       } catch (z) {
+      //         console.warn({ path, encoding0: encodingSpec, attemptibleEncods, encoding } , String(z)) ;
+      //         return false ;
+      //       }
+      //     })()
+      //   ) ) {
+      //     return s ;
+      //   }
+      // }
+
+      // throw new TypeError() ;
+
+      return (
+        // new Blob([c0], {
+        //   // type: "application/octet"
+        // })
+        // { data: c0, type: "application/octet", }
+        new MockBlob(c0, "application/octet-stream")
+      ) ;
+    }
   ) ;
 
   const spclReadTxtFileSync = (
@@ -1300,14 +995,17 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
   const internalDispatchScript = (
 
     //
-    function <const R>(...dpArgs : ArgsWithOptions<[code: string] , {
-      fileExt: string,
-      assumedSrcPath: string ,
-      pickFromExporteds: ExportedValueHandler<R>,
-    } >)
+    function <const R>(...dpArgs : ArgsWithOptions<[code: string] , (
+      // {
+      //   fileExt: string,
+      //   assumedSrcPath: string ,
+      //   pickFromExporteds: ExportedValueHandler<R>,
+      // }
+      ToDispatchCompiledCjsOptionsAndPickFromOuter<R>
+    ) >)
     {
       ;
-      const [srcCode, { fileExt: sfe, assumedSrcPath, pickFromExporteds, }] = dpArgs;
+      const [srcCode, { fileExt: sfe, assumedSrcPath, scmc, esmImportAttribs, pickFromExporteds, }] = dpArgs;
 
       // TODO
 
@@ -1317,13 +1015,16 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         translateInlineScriptIntoCjs(srcCode, {
           fileExt: sfe,
           assumedSrcPath,
+          esmImportAttribs ,
         } )
       ) ;
 
       return (
-        dispatchCompiledCjs(fo, {
+        runCompiledCjsAndGetSelectedExport(fo, {
           fileExt: sfe,
           assumedSrcPath,
+          scmc ,
+          esmImportAttribs ,
           pickFromExporteds,
         } )
       ) ;
@@ -1333,7 +1034,12 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
   ;
   const resolveAndCompile = (
 
-    memoize((function resolvePreCompiledImpl(...[assumedSrcPath, imptAttribs] ) {
+    /**
+     * i don't think we can safely pack into {@link memoize }, since
+     * this method is subject to being invoked by some the "rerunYyyYyy" methods below .
+     * 
+     */
+    ebWfnAsIfmemoized((function resolvePreCompiledImpl(...[assumedSrcPath, { scmc, with: imptAttribs, }] ) {
       ;
 
       propagateNewKnownPath(assumedSrcPath) ;
@@ -1344,19 +1050,35 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         getFileNameExt(assumedSrcPath) ?? ".tsx"
       ) ;
 
-      const srcCode = spclReadTxtFileSync(assumedSrcPath, ) ;
+      const appropriateSrcFileDecodeCharset = (
+
+        SupportedEsmImportAttribProps.getCharsetNameForTypev(imptAttribs.type )
+      ) ;
+
+      if (!appropriateSrcFileDecodeCharset.match(/^utf-?8$/ ) ) {
+        console.warn({ appropriateSrcFileDecodeCharset, imptAttribs, assumedSrcPath, }) ;
+      }
+
+      const srcCode = (
+
+        spclReadFileSync(assumedSrcPath, {
+          // encoding: appropriateSrcFileDecodeCharset
+          // ,
+        } )
+      ) ;
 
       const compiledCjsCode = (
         translateInlineScriptIntoCjs(srcCode, {
           fileExt: sfe,
           assumedSrcPath ,
+          esmImportAttribs: imptAttribs ,
         } )
       ) ;
 
       if (1) {
 
         const { module: simEdImd, } = (
-          spclCreateModuleAndRequire1(assumedSrcPath, imptAttribs )
+          scmc.spclCreateModuleAndRequire1(assumedSrcPath, { with: imptAttribs, } )
         ) ;
 
         checkIsValidCjs(compiledCjsCode, {
@@ -1375,7 +1097,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         sfe,
         compiledCjsCode,
       } as const ;
-    }) satisfies (typeof resolvePreCompiled), getScriptFileHash )
+    }) satisfies (typeof resolvePreCompiled), () => assert.fail() )
   ) ;
 
   ccc = resolveAndCompile ;
@@ -1386,13 +1108,17 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
   dispatchInlineScript = (
 
-    function (...[code, { fileExt, assumedSrcPath, }] )
+    function (...[code, { fileExt, assumedSrcPath, scmc, }] )
     {
       ;
       return (
         internalDispatchScript(code, {
           fileExt ,
           assumedSrcPath: "<repl++" + assumedSrcPath,
+          scmc ,
+          esmImportAttribs: {
+            type: SupportedEsmImportAttribProps.cjsTypeString ,
+          } ,
           pickFromExporteds: ((...[e, originalExports]) => e) ,
         })
       ) ;
@@ -1412,6 +1138,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         propagateNewKnownPath(assumedSrcPath) ;
 
         const compiledCjsCode = (
+          /** TODO although it seems clear static assets need to first be converted into CJS, maybe someone else 'd say otherwise */
           spclReadTxtFileSync(assumedSrcPath)
         ) ;
 
@@ -1428,9 +1155,31 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
   }
 
-  const dispatchSrcFileApt = (
+  /**
+   * returns the return-value
+   * if the Module-File already ran ({@link SCMC on given SCMC} with {@link ImportAttributes given attribs }), or
+   * run it if not yet;
+   * 
+   */
+  const evaluateModuleFilePretranspilativelyAtPath = (
 
-    memoize((function dispatchSrcFileAptImpl(...[assumedSrcPath, impoAttribs] ) {
+    ebWfnAsIfmemoized((function dispatchSrcFileAptImpl(...[assumedSrcPath, impoConfig] ) {
+      ;
+
+      {
+        const cmr = (
+          impoConfig.scmc.spclGetModuleAndRequire1(assumedSrcPath, impoConfig )
+        );
+        if (cmr.module.loaded ) {
+          return {
+            vecport: cmr.module.exports,
+            originalExports: cmr.module.initialExportsObj ,
+            module: cmr.module ,
+          } satisfies VemsModuleAndExportsDescProto ;
+        }
+      }
+
+      {
       ;
       propagateNewKnownPath(assumedSrcPath) ;
       const {
@@ -1438,39 +1187,75 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         sfe,
         compiledCjsCode,
       } = (
-        resolvePreCompiled(assumedSrcPath, impoAttribs )
+        resolvePreCompiled(assumedSrcPath, impoConfig )
       ) ;
       const result0 = (
 
-        dispatchCompiledCjs(compiledCjsCode, {
+        runCompiledCjsAndGetSelectedExport(compiledCjsCode, {
           fileExt: sfe,
           assumedSrcPath ,
+          scmc: impoConfig.scmc,
+          esmImportAttribs: impoConfig.with ,
           pickFromExporteds: (
             (...[vecport, originalExports, module]) =>
-              ({ vecport, originalExports, module, })
+              ({ vecport, originalExports, module, } satisfies VemsModuleAndExportsDescProto)
           ) ,
         } )
       ) ;
 
       return result0 ;
-    }) satisfies ((...args: Parameters<XhrSyncTranslatorInvar> ) => object ), getScriptFileHash)
+      }
+    }) satisfies ((...args: Parameters<XT> ) => VemsModuleAndExportsDescProto ), () => assert.fail() )
   ) ;
 
-  const dispatchSrcFileNatively = (
+  interface VemsModuleAndExportsDescProto { vecport, originalExports, module, }
+
+  // const reDispatchSrcFileAtPathAlt = (
+
+  //   function (...[assumedSrcPath, { sfe, } ]: ArgsWithOptions<[path: string,], { sfe: string }>)
+  //   {
+  //     // TODO
+  //     return (
+  //       dispatchCompiledCjs(readFileSync(assumedSrcPath) , {
+  //         assumedSrcPath ,
+  //         fileExt: sfe ,
+  //       } )
+  //     ) ;
+  //   }
+  // ) ;
+
+  const dispatchEntryPtSrcFileNativelyAtPath = (
 
     /**
-     * dispatch via native `require` or `import` with-little-to-no interception.
+     * dispatch via native `require` or `import` or {@link Module.runMain (the undocumented, yet remaining depended-on) `Module.runMain()`} with-little-to-no interception.
+     * EXPERIMENTAL.
+     * 
+     * @deprecated
+     * this method can only be run once whatever _args_, not safe to run again.
+     * considered WIP.
      * 
      */
     function (...[entryPointPath]: [path: string])
     {
+      // TODO
+      if (0) {
+        process.argv = [...(
+          Immutable.Seq.Indexed(process.argv)
+          .splice(1, 1, entryPointPath )
+        )] ;
+      }
       // // HACK workaround node regression
       // require('../dist-raw/runmain-hack.js').run(entryPointPath);
       Module.runMain() ;
     }
   ) ;
 
-  const dispatchSrcFile = (
+  /**
+   * evaluate src-file {@link readFileSync at given _path_},
+   * which may either simply returned cached return-value or-instead rerun it over depending on _options_
+   * 
+   */
+  const evaluateModuleOrSrcFileAtPath = (
 
     /**
      * load and dispatch given script-file
@@ -1478,13 +1263,7 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
      */
     function (...dpArgs: (
 
-      ArgsWithOptions<[path: string], (
-        & {
-
-        }
-        & EbAaniAptProps
-        & EbPickFromExportedProps
-      )>
+      Parameters<ToEmsp>
     ))
     {
       const [
@@ -1492,8 +1271,15 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
           alwaysAvoidNativeImport: elAvnArg = null,
           pickFromExporteds = null,
           alwaysPreTranspile: elAlwaysPreTranspileArg = null,
-        } = {},
+          cached: aCached = false , rerun: aRerun = false ,
+          XRError: TypeError = globalThis.ReferenceError ,
+          esmImportAttribs ,
+        } = null || {},
       ] = null ?? dpArgs ;
+
+      if (aCached && aRerun) {
+        return assert.fail(`unsupported combination ${util.inspect({ cached: aCached, rerun: aRerun, })}`) ;
+      }
 
       propagateNewKnownPath(entryPointPath) ;
 
@@ -1505,15 +1291,30 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
         ) ) {
           break C ;
         }
+        if (aCached) {
+          return assert.fail(new TypeError(`would've head to 'dispatchEntryPtSrcFileNativelyAtPath' but ${util.inspect({ cached: aCached, }) }`)) ;
+        }
         return (
-          dispatchSrcFileNatively(entryPointPath)
+          dispatchEntryPtSrcFileNativelyAtPath(entryPointPath)
         ) ;
       }
 
       {
         ;
+        if (!(aCached || aRerun) ) {
+          return assert.fail(new TypeError(`requires either be set. ${util.inspect({ cached: aCached, rerun: aRerun, })}` ) ) ;
+        }
+        const finalScmc: SCMC = (
+          aCached ? (aCached === true ? getDefaultScmc() : aCached ) :
+          aRerun ? (
+            console["warn"](`initialising new/fresh EUV/SCMC (due to 'rerun')`)
+            ,
+            newScmc()
+          ) :
+          assert.fail(new TypeError(`please turn-on either. ${util.inspect({ cached: aCached, rerun: aRerun, })}`) )
+        ) ;
         const result0 = (
-          dispatchSrcFileApt(entryPointPath , { type: null, } )
+          evaluateModuleFilePretranspilativelyAtPath(entryPointPath , { scmc: finalScmc, with: { type: SupportedEsmImportAttribProps.cjsTypeString, ...(esmImportAttribs ?? {} ) , } , } )
         );
         const result = (
           (pickFromExporteds ?? ((e) => e ) )(result0.vecport, result0.originalExports, result0.module)
@@ -1523,6 +1324,11 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     }
   ) ;
 
+  /**
+   * internal function to restore dependent-typing (internally using `as T`) -
+   * {@link NonNullable guarantee non-null} if-and-only-if `compiler` is actually set/present
+   * 
+   */
   const compiledThusNonNull = (
 
     <const V>(x: V) =>
@@ -1531,10 +1337,47 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
 
   return {
 
-    dispatchSrcFile,
-    dispatchInlineScript: compiledThusNonNull(dispatchInlineScript) ,
-    /** */
-    dispatchSrcFileNatively,
+    evaluateModuleOrSrcFileAtPath: evaluateModuleOrSrcFileAtPath,
+    /** alias of {@link evaluateModuleOrSrcFileAtPath}. @deprecated */
+    dispatchSrcFile: evaluateModuleOrSrcFileAtPath,
+    dispatchInlineScript: (
+      compiledThusNonNull((
+
+        /** work-around complaint "return-type uses private name" */
+
+        dispatchInlineScript && (
+          ((...[code, {
+            assumedSrcPath,
+            fileExt,
+            scmc,
+          }]  : (
+            ArgsWithOptions<[code: string] , (
+              // Omit<ToDispatchCompiledCjsOptions, keyof Pick<ToDispatchCompiledCjsOptions, "esmImportAttribs">>
+              (
+                & WhenImportantAssumedActualSrcFilePathInfoProps
+                & WhenImportantAssumedActualFileNameExtProps
+                & {
+                  scmc: SCMC ,
+                }
+                & WhenImportantEsmImportAttribsProps
+              )
+            ) >
+          ) ) => (
+
+            dispatchInlineScript(code, {
+              assumedSrcPath,
+              fileExt,
+              scmc,
+            })
+          ) )
+        )
+      ))
+    ) ,
+    dispatchEntryPtSrcFileNativelyAtPath ,
+    /** alias of {@link dispatchEntryPtSrcFileNativelyAtPath}. @deprecated */
+    dispatchSrcFileNativelyAtPath: dispatchEntryPtSrcFileNativelyAtPath,
+    /** alias of {@link dispatchEntryPtSrcFileNativelyAtPath}. @deprecated */
+    dispatchSrcFileNatively: dispatchEntryPtSrcFileNativelyAtPath,
 
     resolvePreCompiledCode: resolvePreCompiled,
 
@@ -1555,6 +1398,28 @@ export function createSpclGnNodeEngine<const ActualOpts extends GnCsneOptions<XH
     ccc: compiledThusNonNull(ccc) ,
   } as const ;
 }
+
+export {
+
+  createSpclGnNodeEngine ,
+
+  //
+  // /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type createSpclGnNodeEnginePre ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type EbGnLoadedModuleTree ,
+
+};
+
+
+
+
+/**
+ * this appears like {@link memoize} yet in-fact simply return the same fnc obj
+ * 
+ */
+const ebWfnAsIfmemoized = (
+
+  (((e: any) => e ) as typeof import("lodash-es").memoize )
+) ;
 
 
 
@@ -1584,7 +1449,9 @@ interface LiveRunningCsneOptions extends Extract<(
          * 
          */
         translateInlineScriptIntoCjs: (
-          EbTranslateInlineScriptIntoCjs
+          EbTranslateInlineScriptIntoCjsAlt<(
+            & WhenImportantEsmImportAttribsProps
+          )>
         )
         ,
       }
@@ -1630,15 +1497,28 @@ interface GnCsneOptions<out XHelper extends object | null = object | null> exten
       //
       readonly dispatchCompiledCjsImpl: {
         //
-        (...dpArgs : ArgsWithOptions<[code: string] , {
-          fileExt: string,
-          assumedSrcPath: string ,
-          module: GnCsneXoduleObj ,
-        } >) : {
-          readonly finalMainExports: any;
-          readonly originalExports: object;
-          readonly module: NodeJS.Module;
-        }
+        (...dpArgs : ArgsWithOptions<[code: string] , (
+          & WhenImportantAssumedActualSrcFilePathInfoProps
+          & WhenImportantAssumedActualFileNameExtProps
+          & {
+            // fileExt: string,
+            // assumedSrcPath: string ,
+            module: GnCsneXModuleObj ,
+          }
+        ) >) : (
+          // & {
+          //   /**
+          //    * @deprecated
+          //    */
+          //   readonly finalMainExports: any;
+          //   readonly finalEsmMainExports: any;
+          //   readonly finalEsmTotalExports: any;
+          //   readonly finalCjsSoleExports: any;
+          //   readonly originalExports: object;
+          //   readonly module: NodeJS.Module;
+          // }
+          & EbXddiProto
+        )
       } ;
     } ,
 
@@ -1649,11 +1529,15 @@ interface GnCsneOptions<out XHelper extends object | null = object | null> exten
 
 ), any > {}
 
-interface GnCsneXoduleObj extends Extract<NodeJS.Module & { loadingIncomplete ?: (true | Error) | false, }, any > {}
+export {
 
-export type {
-  CsneOptions ,
-  GnCsneOptions,
+  //
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type CsneOptions ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type LiveRunningCsneOptions ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type DepScnCsneOptions ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type PackingCsneOptions ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type GnCsneOptions ,
+
 };
 
 
@@ -1683,13 +1567,34 @@ export type {
   CsneAux ,
 } ;
 
-export interface EbTranslateInlineScriptIntoCjs {
+export type EbTranslateInlineScriptIntoCjsAlt<P2 extends {}> = (
+  EbTranslateInlineScriptIntoCjs<never, never, never, P2, string | MockBlob >
+) ;
+
+export interface EbTranslateInlineScriptIntoCjs<dmmy1 = never, dmmy2 = never, dmmy3 = never, P2 extends object = {}, SpclCodeT extends string | Blob | MockBlob = string, P1 extends {} = (
+  //
+  & WhenImportantAssumedActualFileNameExtProps
+  & {
+
+    /**
+     * don't use
+     * 
+     * @deprecated
+     * 
+     */
+    asSecondLevel?: boolean,
+
+  }
+)>
+{
   (...args: (
-    ArgsWithOptions<[code: string] , {
-      fileExt: string,
-      asSecondLevel?: boolean,
-      assumedSrcPath ?: string,
-    } >
+    ArgsWithOptions<[code: SpclCodeT] , (
+      & P1
+      & P2
+      & Partial<WhenImportantAssumedActualSrcFilePathInfoProps>
+      & {
+      }
+    ) >
   )): string ;
 }
 
@@ -1698,14 +1603,13 @@ export interface EbTranslateInlineScriptIntoCjs {
 
 
 
-export type {
-  SupportedEsmImportAttribProps ,
-} ;
+export {
 
-export type {
-  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ EbAaniAptProps ,
-  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ EbPickFromExportedProps ,
-  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ GnCsneXoduleObj ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type EbAaniAptProps ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type EbPickFromExportedProps ,
+  /** @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type GnCsneXModuleObj  ,
+  /** alias of {@link GnCsneXModuleObj}. @deprecated this re-export is still experimental. need to do this `export` otherwise DTS(es) won't emit */ type GnCsneXModuleObj as GnCsneXoduleObj ,
+
 } ;
 
 
