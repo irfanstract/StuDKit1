@@ -5,8 +5,15 @@
   "scripts": {
     "pretest": "standard",
     "test": "npm run test:main && npm run test:renderer",
-    "test:main": "node bin/electron-mocha --config .mocharc.main.json test/main",
-    "test:renderer": "node bin/electron-mocha --config .mocharc.renderer.json test/renderer",
+
+    "test:main": "node bin/electron-mocha --config .mocharc.main.cjs test/main",
+
+    "test:renderer": "node bin/electron-mocha --config .mocharc.renderer.cjs test/renderer",
+
+    "build-tsc": "tsc -b ./tsconfig.json",
+
+    "mocha-help": "npm run build-tsc && npm run mocha-help-no-rebuild",
+    "mocha-help-no-rebuild": "x-mochahelp.bat",
     "mocha": "node bin/electron-mocha",
     "prepublishOnly": "npm test"
   },
