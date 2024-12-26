@@ -2078,16 +2078,30 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         )
       );
 
+      return (
+      //
+
+      ((...[originalCode]: [code: string]): string => {
+      ;
+
+      ;
+      ;
       /** 
-       * {@link outCode}
+       * {@link code}.
+       * we can't just head on to {@link compile} with {@link originalCode};
+       * `--module="node16"` refused to transform Dynamic Import(s) (`import(....)`), but
+       * we need to get rid of those;
        * 
-       * note that,
-       * for ESM where it's necessary to additionally set `__esModule: true`,
-       * we leave it to {@link getOutputForceCommonJS `getOutputForceCommonJS`} to do it
+       * ;
+       * ;
        * 
        */
-      let outCode: string = (
-        compile((
+      let code : string = (
+        originalCode
+      );
+
+      code = (
+        (
           1 ?
           (
             /* formatted this way, to allow (when debug) quickly stepping into the call `compile(...)` without opening the 200k-LOC `tsc.js` (which shouldn't happen, but did happen for no reason ) */
@@ -2097,7 +2111,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
                   return (
                     spclPreMainCompileDoRefmt(...args)
                   ) ;
-                } )(_ts.EmitHint.SourceFile , (
+                } )((() => _ts.EmitHint.SourceFile as const )() , (
 
                   parseTsFileEb(code, {
                     fileExt: (
@@ -2120,6 +2134,22 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
             })()
           )
           :
+          code
+        )
+      ) ;
+
+      /** 
+       * {@link outCode}
+       * 
+       * note that,
+       * for ESM where it's necessary to additionally set `__esModule: true`,
+       * we leave it to {@link getOutputForceCommonJS `getOutputForceCommonJS`} to do it
+       * 
+       */
+      let outCode: string ;
+
+      outCode = (
+        compile((
           code
         ), assumedSrcPath, undefined, {
           forcedModuleType: "cjs" ,
@@ -2163,6 +2193,8 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
       }
 
       return outCode ;
+      })(code)
+      ) ;
       }
     }
   ) ;
