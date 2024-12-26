@@ -91,7 +91,8 @@ const isParseableAsCjs = (
 
     {
       /** check CSP */
-      new Function(` `) ;
+      // new Function(` `) ;
+      checkCspOk1({ errCon: ReferenceError, }) ;  
 
       return false ;
     }
@@ -108,23 +109,127 @@ const checkParseableAsCjs = (
   ))
   {
     ;
+
+    return (
+
+      checkParseableAsCjsAlt(outCode, {
+        assumedSrcPath ,
+        sfe ,
+
+        ifFailing: (z) => {
+          ;
+
+          const dueToSyntaxError = (
+            (z instanceof Error)
+            &&
+            isDueToSyntaxError(z)
+          ) ;
+    
+          throw (
+            newCpcErrorException({
+              assumedSrcPath ,
+              sfe,
+              dueToSyntaxError,
+              originalE: z,
+            })
+          ) ;
+        } ,
+
+      })
+    ) ;
+  }
+) ;
+
+const checkParseableAsCjsAlt = (
+
+  function <const FailRetV>(...cArgs: (
+    ArgsWithOptions<[outCode: string], {
+      assumedSrcPath: string,
+      sfe: string,
+      ifFailing: (x: Error) => FailRetV ,
+    }>
+  ))
+  {
+    const [outCode, { assumedSrcPath, sfe, ifFailing: icatch, }] = cArgs ;
+
+    checkCspOk1({ errCon: ReferenceError, }) ;
+
     try {
-      new Function(outCode) ;
-    } catch (z) {
-      const beingUnderCspRestriction = (
-        isUnderCspNoEvalsPolicy()
+
+      /**
+       * and immediately return it.
+       * can't doo anything else afterwards
+       * as that might cause another Exception
+       * 
+       */
+      return (
+        new Function(outCode)
       ) ;
-      const dueToSyntaxError = !beingUnderCspRestriction ;
+    } catch (z) {
+
+      const dueToSyntaxError = (
+        (z instanceof Error)
+        &&
+        isDueToSyntaxError(z)
+      ) ;
+
+      if (dueToSyntaxError) {
+        return (
+          icatch(z)
+        ) ;
+      }
+
       throw (
+        newCpcErrorException({
+          assumedSrcPath ,
+          sfe,
+          dueToSyntaxError,
+          originalE: z,
+        })
+      ) ;
+    }
+  }
+) ;
+
+const newCpcErrorException = (
+
+    function (...[{ assumedSrcPath, sfe, dueToSyntaxError, originalE: z, }]: (
+      ArgsWithOptions<[], (
+        & {
+          dueToSyntaxError: boolean,
+          assumedSrcPath: string,
+          sfe: string,
+        }
+        & ({ originalE: Error , } | { /** @deprecated */ originalE: unknown , } )
+      )>
+    ))
+    {
+      ;
+
+      return (
         new TypeError((
           `failed to construct Function (${String(z) }) ${(
-            beingUnderCspRestriction ? `due to CSP restriction` :
             dueToSyntaxError ? `due to syntax error` :
             ``
           ) }, check your config!! ${util.inspect({ assumedSrcPath, sfe, }, undefined, undefined, true ) }`
-        ), z )
+        ), ...(z instanceof Error ? [{ cause: z, }] : []) )
       ) ;
     }
+) ;
+
+const isDueToSyntaxError = (
+
+  function (...[z] : [Error]) {
+    ;
+    /* hopefully a SyntaxError */
+    if ((
+      ((typeof SyntaxError !== "undefined") && (z instanceof SyntaxError))
+      &&
+      !(String(z).match(/commonjs\s+module/gui ) )
+    )) {
+      return true ;
+    }
+    return false ;
   }
 ) ;
 
@@ -144,6 +249,18 @@ const isSyntaxErrorUnexpectedToken = (
     return false ;
   }
 ) ;
+
+const checkCspOk1: (
+  (...args: ArgsWithOptions<[], { errCon?: ErrorConstructor, }> ) =>
+    void
+) = function checkCspOkImpl(...[{ errCon: XError = TypeError, } = {}] )
+{
+
+  if (isUnderCspNoEvalsPolicy()) {
+    throw new XError(`CSP No-Eval`) ;
+  }
+
+}
 
 export {
 
