@@ -5,10 +5,7 @@
 
   ,
   "scripts": {
-
-    "uni-publish": "npx tsx scripts/PublishUniSnapshot.cjs"
-
-    ,"installAllDeps": "npm install"
+    "installAllDeps": "npm install"
   }
 
   ,
