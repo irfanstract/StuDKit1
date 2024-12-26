@@ -5,7 +5,10 @@
 
   ,
   "scripts": {
-    "installAllDeps": "npm install"
+
+    "uni-publish": "npx tsx scripts/PublishUniSnapshot.cjs"
+
+    ,"installAllDeps": "npm install"
 
     ,"runStudkTsNodeHelpExe"      : "npm run quickRebuildStudkTsNodeHelpExe && node node_modules/@studiokit/ts-node/dist/bin.js --help"
 
