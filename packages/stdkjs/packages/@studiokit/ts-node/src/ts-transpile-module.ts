@@ -1,13 +1,17 @@
 // Derived from
 // https://github.com/microsoft/TypeScript/blob/ae1b3db8ceaae7e93bddffa1eed26309068249d7/src/services/transpile.ts
 
-import type {
-  CompilerHost,
-  CompilerOptions,
-  Diagnostic,
-  SourceFile,
-  TranspileOptions,
-  TranspileOutput,
+import Immutable = require('immutable');
+
+import {
+  ModuleKind,
+  ModuleResolutionKind,
+  type CompilerHost,
+  type CompilerOptions,
+  type Diagnostic,
+  type SourceFile,
+  type TranspileOptions,
+  type TranspileOutput,
 } from 'typescript';
 import type { TSCommon } from './ts-compiler-types';
 
@@ -146,7 +150,22 @@ export function createTsTranspileModule(
     outputText = undefined;
     sourceMapText = undefined;
 
-    const program = createProgram([inputFileName], options, compilerHost);
+    /**
+     * motivation:
+     * - https://github.com/microsoft/TypeScript/issues/41513 and https://github.com/microsoft/TypeScript/issues/44040 ;
+     * 
+     */
+    const optionsAdjusted = (
+      (() => {
+        const o0 = options ;
+        const o1 = (
+          withEmitModuleTypeReadjusted1(o0, packageJsonType)
+        ) ;
+        return o1 ;
+      })()
+    ) ;
+
+    const program = createProgram([inputFileName], optionsAdjusted, compilerHost);
 
     const diagnostics = compilerOptionsDiagnostics.slice();
 
@@ -154,6 +173,21 @@ export function createTsTranspileModule(
       addRange(/*to*/ diagnostics, /*from*/ program.getSyntacticDiagnostics(sourceFile));
       addRange(/*to*/ diagnostics, /*from*/ program.getOptionsDiagnostics());
     }
+    /**
+     * remove/omit/strip `TS5110`(s) ({@link isEmitModuleTypeMismatchFromModuleResolutionKindDiagnosticItem}) ;
+     * we're forced to
+     * hard-set `module` to different values, depending on end-level parameter {@link packageJsonType}, and irrespective of `moduleResolution` in {@link options}
+     * 
+     * see docs for above {@link optionsAdjusted }
+     * 
+     */
+    diagnostics.splice(0, diagnostics.length, ...(
+      Immutable.Seq(diagnostics)
+      .filter(e => {
+        if (isEmitModuleTypeMismatchFromModuleResolutionKindDiagnosticItem(e) ) { return false ; }
+        return true ;
+      } )
+    ) ) ;
     // Emit
     program.emit(
       /*targetSourceFile*/ undefined,
@@ -167,4 +201,37 @@ export function createTsTranspileModule(
 
     return { outputText, diagnostics, sourceMapText };
   }
+
+  //
+  /**
+   * {@link withEmitModuleTypeReadjusted1}
+   * 
+   * https://github.com/microsoft/TypeScript/issues/41513 and https://github.com/microsoft/TypeScript/issues/44040
+   * 
+   * if you use this,
+   * be sure to
+   * remove/omit/strip `TS5110`(s) ({@link isEmitModuleTypeMismatchFromModuleResolutionKindDiagnosticItem})
+   * from `diagnostics`
+   * 
+   */
+  function withEmitModuleTypeReadjusted1( ...[{ module: mv0, ...etc }, mt]: [CompilerOptions, mt: "module" | "commonjs"] ): CompilerOptions {
+    return {
+      ...etc ,
+      module: (
+        (mt === "commonjs") ? ModuleKind.CommonJS :
+        (mt === "module"  ) ? ModuleKind.ESNext   :
+        mv0
+      ) ,
+    } ;
+  }
 }
+
+const isEmitModuleTypeMismatchFromModuleResolutionKindDiagnosticItem = (
+
+  function (...[e]: [Diagnostic])
+  {
+    return (
+      e.code === 5110
+    ) ;
+  }
+) ;
