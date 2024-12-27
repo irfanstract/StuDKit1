@@ -571,26 +571,94 @@ export interface DiagnosticFilter {
   diagnosticsIgnored: number[];
 }
 
+export const registerByArgvFlags: (
+  (...x: [flags: readonly string[] ]) =>
+    void
+) = function (...[flags]) {
+
+  return (
+    (require("./bin") as typeof import("./bin") ).main(["--only-register", ...flags, ] )
+  ) ;
+} ;
+
 /**
  * Create a new TypeScript compiler instance and register it onto node.js
  *
- * @category Basic
  */
-export function register(opts?: RegisterOptions): Service;
-/**
- * Register TypeScript compiler instance onto node.js
+;
 
+export {
+  register ,
+} ;
+
+/** Is it a {@link Service} or a {@link RegisterOptions}? */
+function toService(serviceOrOpts: Service | RegisterOptions | undefined): Service
+{
+  const service = (
+    (/** Is it a {@link Service} or a {@link RegisterOptions}? */ (serviceOrOpts: (Service | (RegisterOptions & { readonly [TS_NODE_SERVICE_BRAND] ?: false | null | undefined }) ) | undefined ): Service => {
+      if (!serviceOrOpts?.[TS_NODE_SERVICE_BRAND]) {
+        ;
+        // Not a service; is options
+        return (
+          create(serviceOrOpts satisfies (RegisterOptions | undefined) )
+        );
+      } else {
+        return serviceOrOpts ;
+      }
+    })(serviceOrOpts )
+  ) ;
+
+  return service ;
+}
+
+/**
+ * create a new TypeScript compiler instance and
+ * register it for `require` (note that this currently doesn't handle `import`; it'd be done somewhere out)
+ * 
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
  * @category Basic
+ * 
  */
-export function register(service: Service): Service;
-export function register(serviceOrOpts: Service | RegisterOptions | undefined): Service {
-  // Is this a Service or a RegisterOptions?
-  let service = serviceOrOpts as Service;
-  if (!(serviceOrOpts as Service)?.[TS_NODE_SERVICE_BRAND]) {
-    // Not a service; is options
-    service = create((serviceOrOpts ?? {}) as RegisterOptions);
+function register(opts?: RegisterOptions): Service;
+/**
+ * register it for `require` (note that this currently doesn't handle `import`; it'd be done somewhere out)
+ * 
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
+ * @category Basic
+ * 
+ */
+function register(service: Service): Service;
+function register(serviceOrOpts: Service | RegisterOptions | undefined): Service
+{
+  const service = (
+    /** Is it a {@link Service} or a {@link RegisterOptions}? */
+    toService(serviceOrOpts )
+  ) ;
+  {
   }
 
+  if (fRegisterHasBeenCalled++) {
+    onSecondTimeRegisterMethodCall(service, serviceOrOpts) ;
+  }
+
+  return (
+    registerImpl(service)
+    ,
+    service
+  ) ;
+}
+
+/**
+ * finally actually hook the Service at places.
+ * currently it's not safe to run this more-than-once; hopefully
+ * this could be adressed in future.
+ * 
+ */
+function registerImpl(service: Service) {
   const originalJsHandler = require.extensions['.js'];
 
   // Expose registered instance globally.
@@ -609,6 +677,15 @@ export function register(serviceOrOpts: Service | RegisterOptions | undefined): 
   return service;
 }
 
+let fRegisterHasBeenCalled: number = 0 ;
+
+const onSecondTimeRegisterMethodCall = (
+
+  (...[s]: [s: Service, sO: Service | RegisterOptions | undefined]) => {
+    console["error"](`[studiokit-ts-node] 'register()' has only been designed to run at-most once. running it more-than-once may lead to untested, unexpected effects`) ;
+  }
+);
+
 /**
  * Create TypeScript compiler instance.
  *
@@ -619,7 +696,9 @@ export function create(rawOptions: CreateOptions = {}): Service {
   return createFromPreloadedConfig(foundConfigResult);
 }
 
-export interface Service extends ReturnType<typeof createFromPreloadedConfigImpl> {}
+export interface Service extends Omit<ServiceFromPreloadedConfigImpl , (
+  | "ndResolvers"
+)> {}
 
 /** @internal */
 export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof findAndReadConfig>): Service {
@@ -996,7 +1075,7 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
           );
         }
 
-        return [output.outputFiles[1].text, output.outputFiles[0].text, false];
+        return [output.outputFiles[1]!.text, output.outputFiles[0]!.text, false];
       };
 
       getTypeInfo = (code: string, fileName: string, position: number) => {
@@ -1357,6 +1436,18 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })
   );
 
+  const resolvers1 = (
+    (() => {
+      const gclImpl = {
+        getNodeEsmResolver ,
+        getNodeEsmGetFormat ,
+        getNodeCjsLoader ,
+      } satisfies NdResolversGcePublic ;
+
+      return gclImpl  ;
+    })()
+  ) ;
+
   const compilerHelperExtra = (
 
     (() => {
@@ -1704,10 +1795,25 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         ) ;
       }
 
-      checkParseableAsCjs(outCode, {
-        assumedSrcPath ,
-        sfe: srcFileExt0 ,
-      }) ;
+      ;
+
+      try {
+        ;
+        checkParseableAsCjs(outCode, {
+          assumedSrcPath ,
+          sfe: srcFileExt0 ,
+        }) ;
+      } catch (z) {
+        {
+          const stack = getStackOrMessage(z) ;
+          if (Number(globalThis.process?.env?.["STUDKTSNODE_TROUBLESHOOT_LEAKINGJSX"] ) ) {
+            if (stack.match(/(\bunexpected\s+token\b)/iug ) && stack.match(/('<'|"<")/iug ) ) {
+              debugger ;
+            }
+          }
+        }
+        throw z ;
+      }
 
       return outCode ;
       }
@@ -1794,6 +1900,12 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })
   ) ;
 
+  eb.setNdImportResolvers({
+    getNodeCjsLoader ,
+    getNodeEsmGetFormat ,
+    getNodeEsmResolver ,
+  }) ;
+
   const {
     dispatchInlineScript: dispatchInlineScript,
     dispatchSrcFile     : dispatchSrcFile ,
@@ -1848,6 +1960,12 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })()
   ) ;
 
+  dryDepScanningEb.setNdImportResolvers({
+    getNodeCjsLoader ,
+    getNodeEsmGetFormat ,
+    getNodeEsmResolver ,
+  }) ;
+
   const s0 : ServiceCore = {
     [TS_NODE_SERVICE_BRAND]: true,
     ts,
@@ -1870,7 +1988,8 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     getNodeCjsLoader,
     extensions,
   };
-  return {
+  {
+  const s1 = {
     ...(
       {
         ...s0 ,
@@ -1881,12 +2000,44 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         dispatchSrcFile,
         eb ,
         dryDepScanningEb ,
+        getEmitExtension ,
+        //
+        ndResolvers: resolvers1 ,
         /** @deprecated */
         compilerHelper11,
       } as const
     ) ,
+  } as const ;
+  return s1 ;
   } ;
 }
+
+type ServiceFromPreloadedConfigImpl = (
+  ReturnType<typeof createFromPreloadedConfigImpl>
+) ;
+
+/**
+ * `ndResolvers`
+ * 
+ */
+interface NdResolversGcePublic extends Extract<(
+  (
+    {
+      getNodeEsmResolver:  () => ReturnType<typeof _nodeInternalModulesEsmResolve.createResolve       > ,
+      getNodeEsmGetFormat: () => ReturnType<typeof _nodeInternalModulesEsmGetFormat.createGetFormat   > ,
+      getNodeCjsLoader:    () => ReturnType<typeof _nodeInternalModulesCjsLoader.createCjsLoader      > ,
+    }
+  )
+), any > {}
+
+interface NdResolversGcePropagator {
+  (...[x]: [x: NdResolversGcePublic ] ) : void ;
+}
+
+export {
+  NdResolversGcePublic ,
+  NdResolversGcePropagator ,
+} ;
 
 import {
   getStaticGlobalBuiltinQuery,
@@ -1947,6 +2098,9 @@ function createIgnore(ignoreBaseDir: string, ignore: RegExp[]) {
 
 /**
  * Register the extensions to support when importing files.
+ * 
+ * looks like this could safely run multiple times, but haven't checked it.
+ * 
  */
 function registerExtensions(
   preferTsExts: boolean | null | undefined,
@@ -1972,7 +2126,16 @@ function registerExtensions(
   }
 
   if (preferTsExts) {
-    const preferredExtensions = new Set([...exts, ...Object.keys(require.extensions)]);
+    /** Re-sort iteration order of Object.keys() */
+    sortForPreferredExtension(exts) ;
+  }
+}
+
+function sortForPreferredExtension(...[exts]: [exts: Iterable<string>] )
+{
+
+  {
+    const preferredExtensions = Immutable.OrderedSet<string>([...exts, ...Object.keys(require.extensions)]);
 
     // Re-sort iteration order of Object.keys()
     for (const ext of preferredExtensions) {
@@ -1991,6 +2154,8 @@ function registerExtension(ext: string, service: Service, originalHandler: (m: N
 
   require.extensions[ext] = function (m: any, filename) {
     if (service.ignored(filename)) return old(m, filename);
+
+    /* TODO this is doing the thing backwards, isn't it? */
 
     assertScriptCanLoadAsCJS(service, m, filename);
 
