@@ -1216,7 +1216,9 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
       }
 
       const diagnosticList = filterDiagnostics(result.diagnostics || [], diagnosticFilters);
-      if (diagnosticList.length) reportTSError(diagnosticList, { fileName, ...(fileName.match(/\.jsonc?$/) ? { code: code.slice(0, 200 ) } : {} ), });
+      if (diagnosticList.length) {
+        reportTSError(diagnosticList, { fileName, ...(fileName.match(/\.jsonc?$/) ? { code: code.slice(0, 200 ) } : {} ), });
+      }
 
       return [result.outputText, result.sourceMapText ?? '{}', false];
     };
@@ -1644,7 +1646,11 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
             /* formatted this way, to allow (when debug) quickly stepping into the call `compile(...)` without opening the 200k-LOC `tsc.js` (which shouldn't happen, but did happen for no reason ) */
             (() => {
               return (
-                spclPreMainCompileDoRefmt(_ts.EmitHint.SourceFile , (
+                ((...args: Parameters<typeof spclPreMainCompileDoRefmt> ) => {
+                  return (
+                    spclPreMainCompileDoRefmt(...args)
+                  ) ;
+                } )(_ts.EmitHint.SourceFile , (
                   (
                     _ts.createSourceFile("<repl>", code , {
                       languageVersion: _ts.ScriptTarget.ESNext
