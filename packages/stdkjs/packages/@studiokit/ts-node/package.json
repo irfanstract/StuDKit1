@@ -70,7 +70,8 @@
     "build-pack": "node ./scripts/build-pack.js",
     "build-manifest": "node ./scripts/build-manifest.mjs",
 
-    "test-mocha": "mocha ",
+    "test-mocha": "npm run build-tsc && npm run test-mocha-skip ",
+    "test-mocha-skip": "mocha ",
     "test-spec": "ava",
     "test-cov": "nyc ava",
     "test": "npm run fmt && npm run build-tsc && npm run build-pack && npm run test-spec",
