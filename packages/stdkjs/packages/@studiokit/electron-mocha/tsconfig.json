@@ -1,0 +1,25 @@
+{
+  "extends": "../../../tsconfig.json" ,
+
+  //
+  "include": [
+    "**/*" ,
+    "bin/*" ,
+  ] ,
+  "exclude": [
+  ] ,
+
+  "compilerOptions": {
+
+    //
+    "composite": true,
+    "rootDir": ".",
+
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+
+    "allowJs": true,
+
+  } ,
+
+}
