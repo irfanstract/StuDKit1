@@ -1,0 +1,6 @@
+.eslintrc
+.mocharc.renderer.json
+.npmignore
+.travis.yml
+appveyor.yml
+test/
