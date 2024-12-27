@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json" ,
+  "compilerOptions": {
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true ,
+
+    "allowJs": true,
+    // "resolvePackageJsonExports": true,
+    "moduleResolution": "node16",
+
+  },
+  "references": [
+  ] ,
+}
