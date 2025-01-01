@@ -1,16 +1,14 @@
 {
-  "extends": "../../../../tsconfig.json" ,
+  "extends": "../testScripts/tsconfig.json" ,
 
   "compilerOptions": {
     //
-    "allowJs": true,
-    "noEmit": true,
-    "moduleResolution": "NodeNext",
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
   } ,
   "include": [
     "**/*",
   ],
+  // "references": [
+  //   { "path": "../testScripts" },
+  // ],
 
 }
