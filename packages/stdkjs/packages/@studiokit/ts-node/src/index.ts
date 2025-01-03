@@ -696,7 +696,9 @@ export function create(rawOptions: CreateOptions = {}): Service {
   return createFromPreloadedConfig(foundConfigResult);
 }
 
-export interface Service extends ReturnType<typeof createFromPreloadedConfigImpl> {}
+export interface Service extends Omit<ServiceFromPreloadedConfigImpl , (
+  | "ndResolvers"
+)> {}
 
 /** @internal */
 export function createFromPreloadedConfig(foundConfigResult: ReturnType<typeof findAndReadConfig>): Service {
@@ -1434,6 +1436,18 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })
   );
 
+  const resolvers1 = (
+    (() => {
+      const gclImpl = {
+        getNodeEsmResolver ,
+        getNodeEsmGetFormat ,
+        getNodeCjsLoader ,
+      } satisfies NdResolversGcePublic ;
+
+      return gclImpl  ;
+    })()
+  ) ;
+
   const compilerHelperExtra = (
 
     (() => {
@@ -1781,10 +1795,25 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         ) ;
       }
 
-      checkParseableAsCjs(outCode, {
-        assumedSrcPath ,
-        sfe: srcFileExt0 ,
-      }) ;
+      ;
+
+      try {
+        ;
+        checkParseableAsCjs(outCode, {
+          assumedSrcPath ,
+          sfe: srcFileExt0 ,
+        }) ;
+      } catch (z) {
+        {
+          const stack = getStackOrMessage(z) ;
+          if (Number(globalThis.process?.env?.["STUDKTSNODE_TROUBLESHOOT_LEAKINGJSX"] ) ) {
+            if (stack.match(/(\bunexpected\s+token\b)/iug ) && stack.match(/('<'|"<")/iug ) ) {
+              debugger ;
+            }
+          }
+        }
+        throw z ;
+      }
 
       return outCode ;
       }
@@ -1871,6 +1900,12 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })
   ) ;
 
+  eb.setNdImportResolvers({
+    getNodeCjsLoader ,
+    getNodeEsmGetFormat ,
+    getNodeEsmResolver ,
+  }) ;
+
   const {
     dispatchInlineScript: dispatchInlineScript,
     dispatchSrcFile     : dispatchSrcFile ,
@@ -1925,6 +1960,12 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     })()
   ) ;
 
+  dryDepScanningEb.setNdImportResolvers({
+    getNodeCjsLoader ,
+    getNodeEsmGetFormat ,
+    getNodeEsmResolver ,
+  }) ;
+
   const s0 : ServiceCore = {
     [TS_NODE_SERVICE_BRAND]: true,
     ts,
@@ -1947,7 +1988,8 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     getNodeCjsLoader,
     extensions,
   };
-  return {
+  {
+  const s1 = {
     ...(
       {
         ...s0 ,
@@ -1959,12 +2001,43 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         eb ,
         dryDepScanningEb ,
         getEmitExtension ,
+        //
+        ndResolvers: resolvers1 ,
         /** @deprecated */
         compilerHelper11,
       } as const
     ) ,
+  } as const ;
+  return s1 ;
   } ;
 }
+
+type ServiceFromPreloadedConfigImpl = (
+  ReturnType<typeof createFromPreloadedConfigImpl>
+) ;
+
+/**
+ * `ndResolvers`
+ * 
+ */
+interface NdResolversGcePublic extends Extract<(
+  (
+    {
+      getNodeEsmResolver:  () => ReturnType<typeof _nodeInternalModulesEsmResolve.createResolve       > ,
+      getNodeEsmGetFormat: () => ReturnType<typeof _nodeInternalModulesEsmGetFormat.createGetFormat   > ,
+      getNodeCjsLoader:    () => ReturnType<typeof _nodeInternalModulesCjsLoader.createCjsLoader      > ,
+    }
+  )
+), any > {}
+
+interface NdResolversGcePropagator {
+  (...[x]: [x: NdResolversGcePublic ] ) : void ;
+}
+
+export {
+  NdResolversGcePublic ,
+  NdResolversGcePropagator ,
+} ;
 
 import {
   getStaticGlobalBuiltinQuery,
@@ -2025,6 +2098,9 @@ function createIgnore(ignoreBaseDir: string, ignore: RegExp[]) {
 
 /**
  * Register the extensions to support when importing files.
+ * 
+ * looks like this could safely run multiple times, but haven't checked it.
+ * 
  */
 function registerExtensions(
   preferTsExts: boolean | null | undefined,
