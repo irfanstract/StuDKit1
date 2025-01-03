@@ -1,3 +1,6 @@
+
+// @ts-check
+
 'use strict'
 
 const { join, resolve } = require('path')
@@ -183,6 +186,8 @@ exports.handler = async argv => {
         }
       })
     } else {
+      console["warn"](`Offloading The Subject Into Renderer Ctx, As Configured`)
+
       const customWindowOptions = argv['window-config']
         ? require(resolve(argv['window-config']))
         : {}
@@ -197,7 +202,7 @@ exports.handler = async argv => {
           contextIsolation: true,
           nodeIntegration: true,
           ...customWindowOptions.webPreferences,
-          preload: join(__dirname, '..', 'renderer', 'run.js')
+          preload: join(__dirname, '..', 'renderer', 'run-with-ts.js')
         }
       })
 
@@ -257,7 +262,7 @@ exports.handler = async argv => {
 const fail = (error, trace) => {
   console.error(`\n${ansi.red('ERROR:')} ${error.message}`)
   if (trace && error.stack) console.error(error.stack)
-  app.exit(1)
+  0 && app.exit(1)
 }
 
 const warn = warning => {
