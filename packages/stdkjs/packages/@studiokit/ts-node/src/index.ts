@@ -1730,6 +1730,14 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         )
       );
 
+      /** 
+       * {@link outCode}
+       * 
+       * note that,
+       * for ESM where it's necessary to additionally set `__esModule: true`,
+       * we leave it to {@link getOutputForceCommonJS `getOutputForceCommonJS`} to do it
+       * 
+       */
       let outCode: string = (
         compile((
           1 ?
@@ -1823,7 +1831,11 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
   const translateInlineScriptIntoCjs = (
 
     function (...[code, opts] : (
-      Parameters<EB.EbTranslateInlineScriptIntoCjs>
+      Parameters<(
+        EB.EbTranslateInlineScriptIntoCjsAlt<(
+          & EB.WhenImportantEsmImportAttribsProps
+        )>
+      ) >
     ))
     : string
     {
