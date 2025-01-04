@@ -1730,6 +1730,14 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
         )
       );
 
+      /** 
+       * {@link outCode}
+       * 
+       * note that,
+       * for ESM where it's necessary to additionally set `__esModule: true`,
+       * we leave it to {@link getOutputForceCommonJS `getOutputForceCommonJS`} to do it
+       * 
+       */
       let outCode: string = (
         compile((
           1 ?
