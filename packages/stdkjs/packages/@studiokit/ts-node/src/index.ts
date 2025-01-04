@@ -712,6 +712,9 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
 
   const ts = loadCompiler(compiler);
 
+  const readFile = options.readFile || ts.sys.readFile;
+  const fileExists = options.fileExists || ts.sys.fileExists;
+
   // Experimental REPL await is not compatible targets lower than ES2018
   const targetSupportsTla = config.options.target! >= ts.ScriptTarget.ES2018;
   if (options.experimentalReplAwait === true && !targetSupportsTla) {
@@ -732,8 +735,6 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     }
   }
 
-  const readFile = options.readFile || ts.sys.readFile;
-  const fileExists = options.fileExists || ts.sys.fileExists;
   // typeCheck can override transpileOnly, useful for CLI flag to override config file
   const transpileOnly = (options.transpileOnly === true || options.swc === true) && options.typeCheck !== true;
   let transpiler: RegisterOptions['transpiler'] | undefined = undefined;
@@ -787,6 +788,38 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     // TODO switch to getCanonicalFileName we already create later in scope
     getCanonicalFileName: ts.sys.useCaseSensitiveFileNames ? (x) => x : (x) => x.toLowerCase(),
   };
+
+  const {
+    //
+    enabled ,
+    ignored ,
+  } = (
+
+    (() => {
+      ;
+      let active = true;
+      const enabled = (enabled?: boolean) => (enabled === undefined ? active : (active = !!enabled));
+      const ignored = (fileName: string) => {
+        if (!active) return true;
+        const ext = extname(fileName);
+        if (extensions.compiled.includes(ext)) {
+          return !isScoped(fileName) || shouldIgnore(fileName);
+        }
+        return true;
+      };
+      return {
+        enabled ,
+        ignored ,
+      } ;
+    })()
+  ) ;
+
+  function addDiagnosticFilter(filter: DiagnosticFilter) {
+    diagnosticFilters.push({
+      ...filter,
+      filenamesAbsolute: filter.filenamesAbsolute.map((f) => normalizeSlashes(f)),
+    });
+  }
 
   if (options.transpileOnly && typeof transformers === 'function') {
     throw new TypeError('Transformers function is unavailable in "--transpile-only"');
@@ -1396,24 +1429,6 @@ function createFromPreloadedConfigImpl(foundConfigResult: ReturnType<typeof find
     const output = updateOutput(value!, normalizedFileName, sourceMap!, getEmitExtension);
     outputCache.set(normalizedFileName, { content: output });
     return output;
-  }
-
-  let active = true;
-  const enabled = (enabled?: boolean) => (enabled === undefined ? active : (active = !!enabled));
-  const ignored = (fileName: string) => {
-    if (!active) return true;
-    const ext = extname(fileName);
-    if (extensions.compiled.includes(ext)) {
-      return !isScoped(fileName) || shouldIgnore(fileName);
-    }
-    return true;
-  };
-
-  function addDiagnosticFilter(filter: DiagnosticFilter) {
-    diagnosticFilters.push({
-      ...filter,
-      filenamesAbsolute: filter.filenamesAbsolute.map((f) => normalizeSlashes(f)),
-    });
   }
 
   const getNodeEsmResolver = once(() =>
