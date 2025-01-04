@@ -230,7 +230,7 @@ if (require.main === module) {
         (() => {
           ;
           const app = (
-            RxStyleApp.describeSrcRootedIe('J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/dist-raw/sttsn-devserver/demos/S1/pages', {
+            RxStyleApp.describeSrcRootedIe('J:/Dev/NStdkSrc/packages/stdkjs/packages/@studiokit/ts-node/tests/applied-dev-server/sites/S1/pages', {
               //
               pathSimpleNameToActual: RxStyleApp.PathSimpleNameTranslator.createNoOpInstance()
               ,
